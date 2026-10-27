@@ -82,6 +82,17 @@ with `rectool -f <fixture.REC> -k enhancement -k 1 -k 1 -s 3 --inplace`.
 Without that setting, the same input selects animation 24 (`P41`). This is
 why the signature trace needs an explicit pilot upgrade.
 
+## Ice-blade recording
+
+`rectests/SHADOW-ICE-BLADE.REC` is a ready-made Shadow Punch (`P4123`) at enhancement
+level 3, built with the measurement harness but without its position teleport, so the
+fighters keep the base recording's start spacing (Jaguar x=66.8, Shadow x=248.2). Replay it with
+`project/scripts/replay-rec.ps1 -Rec SHADOW-ICE-BLADE` (add `-CaptureTick 138,143,146` for
+screenshots). Shadow plays animation 23 on ticks 126–140; the ice blade (animation 54)
+slides along the floor from x=193 on tick 135 to x=53 on tick 142 and bursts (animation 60)
+on tick 143, when Jaguar's health falls from 213 to 199. The burst is drawn at the blade's
+source position, which is at or behind Jaguar's feet.
+
 ## Remaining presentation work
 
 The blockouts still need final shape, scale, and effects, including review of
