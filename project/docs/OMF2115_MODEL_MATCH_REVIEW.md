@@ -159,6 +159,23 @@ side. Whether the arm and torso poses hand off cleanly between the two robots
 has not been judged from these stills; that needs a normal-speed look at the
 replay.
 
+## Shadow Grab trace — 2026-10-27
+
+`rectests/SHADOW-GRAB.REC` and `SHADOW-GRAB-INTERRUPT-HIT.REC` were replayed with
+`project/scripts/replay-shadow-grab.ps1`. Shadow is at x=110 throughout. Shadow's
+animation 16 starts at ticks 105 and 386 (189 in the interrupted recording).
+The first grab does not reach Electra, 100 source units away; she enters throw
+state 7 (animation 9) at ticks 155 and 436, and her health stayed at 196 in the
+sampled rows. The grab is carried out by Shadow's projection (animations 39, 40,
+50, 51), which drops onto the opponent at x=238–240.
+
+The first source-replay captures showed the projection facing the same way as
+Shadow. The source already mirrors animations 39, 40, 50, and 51 because their
+scripts carry the `r` flip tag, but the viewer executable had not been rebuilt
+with that change. After a rebuild the projection faces Shadow, and the live
+playtest confirmed this side is correct. Rebuild with `build.ps1 -Config Debug`
+after editing `main.c`; the `run-blockout*.ps1` launchers do not build.
+
 ## Shadow Punch animation
 
 The first source-driven Shadow Punch view changed the arm joints across
