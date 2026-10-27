@@ -99,8 +99,9 @@ stack; it would then need the same state exporter and REC parity checks.
      fixture teleport at tick 123 (watch from tick 124) and source frames and
      facing changes, not renderer faults; the facing turn is now eased in the
      viewer, which still needs a live look.
-   - The enlarged projectile visuals were reviewed by screenshot only; the
-     Shadow ice-blade burst is large and hides part of the opponent's legs.
+   - The ice-blade sequence (`rectests/SHADOW-ICE-BLADE.REC`) was watched live and
+     judged better after the air flash was removed and the blade ramped in; the
+     Jaguar concussion shot has been reviewed by screenshot only.
    - Shadow's purple figures have no trails (the renderer has no transparency).
    - Skinned deformation rigs remain deferred to the finished asset pass.
 5. In parallel, pose and mesh authoring: mesh landmarks
