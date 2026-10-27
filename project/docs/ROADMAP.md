@@ -92,8 +92,8 @@ stack; it would then need the same state exporter and REC parity checks.
    crossings, and throws is accepted because OpenOMF has no body collision. A
    Shadow Grab projection facing error was a stale executable, not a code fault
    (rebuild with `build.ps1 -Config Debug` after editing `main.c`; the
-   `run-blockout*.ps1` launchers do not build). Carried over before the gate is
-   treated as closed:
+   `run-blockout*.ps1` launchers do not build). **Gate closed 2026-10-27**; carried over
+   into Stage 4 as polish, none a source-fidelity problem:
    - Shadow's close throw (animation 20) is now recorded
      (`rectests/SHADOW-CLOSE-THROW.REC`) and compared. Its anomalies were a
      fixture teleport at tick 123 (watch from tick 124) and source frames and
@@ -104,7 +104,9 @@ stack; it would then need the same state exporter and REC parity checks.
      Jaguar concussion shot has been reviewed by screenshot only.
    - Shadow's purple figures have no trails (the renderer has no transparency).
    - Skinned deformation rigs remain deferred to the finished asset pass.
-5. In parallel, pose and mesh authoring: mesh landmarks
+5. Stage 4 planning has started: see [OMF2115_STAGE4_PLAN.md](OMF2115_STAGE4_PLAN.md)
+   for the proposed scope, work order, and open decisions.
+6. In parallel, pose and mesh authoring: mesh landmarks
    (`project/data/mesh_landmarks.json`, landmark editor) and projection-pose
    matching (`match_projection_poses.py`) feed the pose catalog; see
    [POSE_AUTHORING.md](POSE_AUTHORING.md).
