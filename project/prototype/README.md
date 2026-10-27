@@ -320,7 +320,8 @@ build/omf_debug_z7/story_check.exe play project/data/story/crystal_christian.sto
 At a `fight` line, Enter starts a real match: the first fighter is you and the second is the AI. The
 story viewer runs `project/scripts/run-blockout-jaguar.ps1` as a child process (Windows only) and waits;
 when the match is decided the live viewer writes `project/build/story/match-result.txt`, shows the result
-for a few seconds, and exits, and the story continues on its win or lose scene and autosaves. Closing the
+for a few seconds (Enter or Space returns at once), and exits, and the story continues on its win or lose
+scene and autosaves. A story match is played once: the retry prompt and rematch keys are off in this mode. Closing the
 match window cancels and leaves the story at the match to retry. The child runs in a job object, so
 closing the story window also ends the match and OpenOMF. The two fighters must use different HARs
 (Jaguar and Shadow), and a match is one round in Stadium with hazards off against the default AI.

@@ -74,7 +74,14 @@ text with placeholder portraits.
   keyboard: the story viewer starts the match, the AI wins, the result file is read, the story moves to the
   lose scene, and the log and autosave record it. Also tested: closing the story window mid-match ends
   OpenOMF and the match viewer, and closing only the match window leaves the story at the match with no
-  result. Not yet tested: winning a match by playing it, and the retry prompt text on screen.
+  result. Not yet tested: winning a match by playing it.
+- **Fixes after the first playtest (2026-10-27).** (1) A second round appeared whatever the result. OpenOMF
+  plays one round (a headless run showed a single round and match winner on the same tick), but in the
+  match viewer Enter and Y on the result overlay still meant "try again", which restarted the arena. In
+  story mode those keys now return to the story, and rematch requests are ignored. (2) The match did not
+  seem to change the story, because the win and lose scenes only differed by a line before merging. The draft
+  now lets the result decide who receives WAR's Tier-2 offer, which recovery scene plays, and the closing.
+  The first fix is from reading the code and was not reproduced by playing, so it needs a playtest.
 - **Not yet done:** review and rewrite of the draft dialogue, portraits, audio, and the polish in
   steps 4 to 6.
 

@@ -123,6 +123,7 @@ static bool write_selection(void) {
 }
 
 static void request_live_restart(void) {
+    if(live_result_path) return;   // a story match is played once; its result is final
     restart_live_match = true;
 #ifdef _WIN32
     if(source_shared_input) InterlockedExchange(&source_shared_input->restart_requested, 1);
@@ -1552,7 +1553,7 @@ static void hud(void) {
                       source_live_winner==0?.95f:.58f,
                       source_live_winner==0?.77f:.63f);
                 if(live_result_path) {
-                    label(-.42f,.06f,.015f,"BACK TO THE STORY",.85f,.9f,.96f);
+                    label(-.60f,.08f,.015f,"ENTER: BACK TO THE STORY",.85f,.9f,.96f);
                 } else {
                     label(-.68f,.10f,.015f,"TRY AGAIN?",.85f,.9f,.96f);
                     label(-.40f,-.08f,.018f,"YES",try_again_choice==0?.38f:.48f,
@@ -1942,6 +1943,9 @@ int main(int argc,char **argv) {
                     if(e.key.keysym.scancode==SDL_SCANCODE_9) model_preview_pose=6;
                     if(e.key.keysym.scancode==SDL_SCANCODE_H) model_preview_pose=7;
                     if(e.key.keysym.scancode==SDL_SCANCODE_M) model_preview_pose=8;
+                } else if(source_follow_mode && live_result_path) {
+                    if(live_result_written && (e.key.keysym.scancode==SDL_SCANCODE_RETURN ||
+                                               e.key.keysym.scancode==SDL_SCANCODE_SPACE)) live_result_timer=0;
                 } else if(source_follow_mode) {
                     if(source_live_winner >= 0) {
                         if(e.key.keysym.scancode==SDL_SCANCODE_LEFT || e.key.keysym.scancode==SDL_SCANCODE_A)
@@ -2088,6 +2092,9 @@ int main(int argc,char **argv) {
                 if(result) {
                     fprintf(result,"winner=%d\nhealth=%d\n",source_live_winner,(int)last->fighter[source_live_winner].health);
                     fclose(result);
+                    printf("Match decided at tick %u: winner=%d health=%d\n",last->tick,source_live_winner,
+                           (int)last->fighter[source_live_winner].health);
+                    fflush(stdout);
                 } else {
                     fprintf(stderr,"Could not write the result file: %s\n",live_result_path);
                     capture_ok=false;

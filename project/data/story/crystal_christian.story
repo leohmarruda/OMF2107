@@ -2,6 +2,10 @@
 # Built only from project/docs/OMF20115_SIMPLE_LORE.md. The wording is placeholder dialogue for testing the
 # runner and the flow of the slice, not final writing. Check it with:
 #   build/omf_debug_z7/story_check.exe check project/data/story/crystal_christian.story
+#
+# Flags: tremors (told or hidden) is set before the match; result (won or lost, from Crystal's side) is set
+# by the match; evidence (released, verified, or christian) is set by the choice after it.
+# The result decides who WAR's Tier-2 offer goes to, which recovery scene plays, and how the story closes.
 
 scene start
 bg green room
@@ -31,17 +35,33 @@ fight Crystal Jaguar vs Christian Shadow win -> won lose -> lost
 
 scene won
 set result=won
-say : Jaguar stands over a fallen Shadow. Crystal's hands will not stop shaking.
+say : Jaguar stands over a fallen Shadow. The crowd roars. Crystal's hands will not stop shaking.
+say Christian: You did not hold back. Good.
 jump recovery
 
 scene lost
 set result=lost
 say : Shadow takes the match. Christian does not celebrate. He is looking at his sister's hands.
+say Christian: Did you let me win? Or could you not hold the stick?
 jump recovery
 
 scene recovery
 bg medical bay
-say : In the corridor a message waits on Crystal's datapad: leaked Tier-2 medical telemetry, showing what the deep-link does to pilots.
+if result=won -> recovery_won
+say : In the corridor Dr. Varga finds Christian and calls his readings exceptional. A Tier-2 invitation follows, framed as a promotion.
+say Christian: Exceptional. My head has been pounding all day.
+say Crystal: Do not take it. Please.
+jump evidence
+
+scene recovery_won
+bg medical bay
+say : The winner's reward arrives on Crystal's datapad: an invitation to WAR's Tier-2 program, framed as a promotion.
+say Crystal: A promotion. That is what they call it.
+say Christian: You won. They will not take no easily.
+jump evidence
+
+scene evidence
+say : Later, a second message reaches Crystal's datapad: leaked Tier-2 medical telemetry, showing what the deep-link does to pilots.
 say Crystal: This is proof. Or it is bait.
 say Christian: Release it. Burn the whole thing down.
 say Crystal: Unverified evidence can hurt the wrong people.
@@ -66,6 +86,15 @@ say Crystal: No. Not civilians. Not like this.
 jump closing
 
 scene closing
+if result=won -> closing_won
+say : Christian keeps the Tier-2 invitation in his pocket. He has not decided what to do with it.
+jump closing_end
+
+scene closing_won
+say : Crystal keeps the Tier-2 invitation on her datapad. WAR will expect an answer, and she has already tried the Nova code once.
+jump closing_end
+
+scene closing_end
 if tremors=told -> closing_trust
 say : They leave the building apart. Neither has said what they are afraid of.
 end
