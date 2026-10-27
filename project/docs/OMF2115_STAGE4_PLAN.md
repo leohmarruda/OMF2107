@@ -51,7 +51,21 @@ IDs refer to the development plan.
 Steps 1–3 can proceed without final art or finished writing, and they carry most of
 the technical risk, so they come first.
 
-## Decisions needed before step 1
+## Progress
+
+Decisions made 2026-10-27: the slice is Crystal versus Christian, the scene runner lives in
+the 3D prototype for easier testing (integration with OpenOMF comes later), and the first pass is
+text with placeholder portraits.
+
+- **Step 1, scene format and runner: built.** `story.c` parses and validates the script format,
+  runs it, and keeps a log and flags; `story_check` self-tests and plays scripts without a window;
+  `omf3d_prototype --story` plays a script with a dialogue box, choices, skip, and a log. A draft
+  of the slice (`project/data/story/crystal_christian.story`, 12 scenes) was written from
+  `OMF20115_SIMPLE_LORE.md` and checks and plays through.
+- **Not yet done:** save data (step 2), the real match handoff (step 3), review and rewrite of the
+  draft dialogue, portraits, and audio.
+
+## Decisions that were needed before step 1 (answered above)
 
 1. **Which slice.** The specification and development plan say Crystal versus Christian
    (exchange, match, recovery, evidence choice, consequence). The story treatment's

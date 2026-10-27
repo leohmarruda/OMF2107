@@ -290,3 +290,34 @@ support, save data, audio, or online play. The render has been inspected via a
 captured frame; live play still needs human playtesting. The crouch is an
 articulated first pass, not a finished pose matched frame by frame to the
 original sprites.
+
+## Story mode
+
+`--story` plays a scene script (dialogue, choices, flags, and a match handoff marker) in the same
+window system as the viewer. The format, validator, and runner live in `story.h` and `story.c` with
+no graphics code, so they can move into the full game later. The draft Crystal versus Christian
+slice is `project/data/story/crystal_christian.story`, written from
+`project/docs/OMF20115_SIMPLE_LORE.md`; its wording is placeholder dialogue.
+
+```text
+build/omf_debug_z7/omf3d_prototype.exe --story project/data/story/crystal_christian.story
+```
+
+Enter or Space advances and picks, Up and Down move the choice, S skips to the next choice or match,
+L opens the log, R restarts, and Escape quits. At a match marker the prototype only offers Y for a win
+and N for a loss; the real match handoff is a later step. Options: `--scene id` starts at a scene,
+`--script a,a,c1,w` applies scripted inputs first (a advance, cN choose, u/d move, w/l match result,
+s skip, g log, r restart), and `--shot out.bmp` saves one frame headlessly and exits.
+
+`story_check` validates and tests scripts without a window:
+
+```text
+build/omf_debug_z7/story_check.exe selftest
+build/omf_debug_z7/story_check.exe check project/data/story/crystal_christian.story
+build/omf_debug_z7/story_check.exe play project/data/story/crystal_christian.story --choices 0,1 --results 1
+```
+
+Validation rejects unknown scenes and commands, duplicate scene ids, scenes that can run off their
+end, commands after a jump, end, fight, or choice menu, more than six choices, and fight lines naming
+an unknown pilot or HAR, each with the script line number. It warns about scenes that cannot be reached.
+
