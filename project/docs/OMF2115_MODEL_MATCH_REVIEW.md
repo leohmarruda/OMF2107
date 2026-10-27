@@ -215,7 +215,7 @@ and both were judged good overall. Findings:
 
 1. Validate standing and down-punch plus kick contact through complete move
    traces and live play; the sampled Jaguar contacts now fold visually without
-   changing source hit results. The down-punch recovery tail remains unmeasured.
+   changing source hit results. The down-punch recovery tail is now measured (14 ticks; see [OMF2115_MOVE_MEASUREMENTS.md](OMF2115_MOVE_MEASUREMENTS.md)).
 2. Refine the source-positioned concussion shot and Shadow projection
    blockouts, including near Shadow Punch contact. The
    [signature move trace](OMF2115_SIGNATURE_MOVE_TRACE.md) records their travel.

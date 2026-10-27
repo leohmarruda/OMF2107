@@ -39,10 +39,10 @@ POSITION_TICK = 123       # tick at which fighter X positions are set
 END_TICK = 300            # keep-alive assertion so playback continues past recovery
 PUNCH, KICK = 0x01, 0x02
 # REC direction nibbles (screen directions).
-SCREEN = {"U": 0x10, "UR": 0x20, "R": 0x30, "DR": 0x40, "D": 0x50, "DL": 0x60, "L": 0x70, "UL": 0x80}
-# Numpad directions relative to facing; 6 = forward.
-NUMPAD_RIGHT = {"1": "DL", "2": "D", "3": "DR", "4": "L", "6": "R", "7": "UL", "8": "U", "9": "UR"}
-NUMPAD_LEFT = {"1": "DR", "2": "D", "3": "DL", "4": "R", "6": "L", "7": "UR", "8": "U", "9": "UL"}
+SCREEN = {"N": 0x00, "U": 0x10, "UR": 0x20, "R": 0x30, "DR": 0x40, "D": 0x50, "DL": 0x60, "L": 0x70, "UL": 0x80}
+# Numpad directions relative to facing; 6 = forward, 5 = neutral (release, as in Shadow's P252).
+NUMPAD_RIGHT = {"1": "DL", "2": "D", "3": "DR", "4": "L", "5": "N", "6": "R", "7": "UL", "8": "U", "9": "UR"}
+NUMPAD_LEFT = {"1": "DR", "2": "D", "3": "DL", "4": "R", "5": "N", "6": "L", "7": "UR", "8": "U", "9": "UL"}
 
 STATE_NAMES = {1: "standing", 2: "walk-to", 3: "walk-from", 4: "crouch", 5: "crouch-block", 6: "jump",
                7: "recoil", 8: "standing-up", 9: "stunned", 10: "blockstun", 11: "victory", 12: "defeat",

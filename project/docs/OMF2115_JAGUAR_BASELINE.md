@@ -182,7 +182,8 @@ confirms animation 30. The recorded sprite order is 1 on ticks 126–127, 2 on
 tick 129, when Jaguar is on animation tick 5/sprite 2; the event mask confirms
 player 2 was hit. This is one close-range contact sample, not a range or full
 recovery measurement: the trace ends at tick 134 while animation 30 is still
-active. The 3D view now folds Jaguar's down-punch arm toward a nearby opponent
+active. The full move runs 14 ticks (126–139 in a 30-unit-gap fixture); see
+[OMF2115_MOVE_MEASUREMENTS.md](OMF2115_MOVE_MEASUREMENTS.md). The 3D view now folds Jaguar's down-punch arm toward a nearby opponent
 at contact, like its standing punch fit. Local before/after captures are
 `project/build/omf3d_jag_down_punch_tick129.png` and
 `project/build/omf3d_jag_down_punch_contact_tick129.png`.

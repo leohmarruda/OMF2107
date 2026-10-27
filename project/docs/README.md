@@ -11,6 +11,7 @@
 - [Stadium and full-match source baseline](OMF2115_STADIUM_BASELINE.md) — measured
   Stadium/Power Plant wall responses and a replayable Jaguar–Shadow result.
 - [Story treatment](OMF2115_LORE_v2.md) — proposed OMF2115 story.
+- [Move measurements](OMF2115_MOVE_MEASUREMENTS.md) — range, timing, damage, and guard for every selectable Jaguar and Shadow attack.
 - [Source build baseline](OMF2115_BASELINE.md), [Jaguar combat baseline](OMF2115_JAGUAR_BASELINE.md), and [match contract](OMF2115_MATCH_CONTRACT.md).
 
 The original OpenOMF documentation remains in the repository's top-level `docs/` folder.
