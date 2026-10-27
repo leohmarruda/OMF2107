@@ -68,6 +68,9 @@ text with placeholder portraits.
   autosaves at every choice and match result, resumes on start, and clears the save on restart.
   `story_check selftest` covers round trips at a say line, a choice, a match, and the end, and each
   refusal case.
+- **Debug fights: built.** `--debug-fights` lets a tester skip a match by choosing win or loss, and
+  logs it; `run-story.ps1` launches story mode and warns about a stale executable. Without the flag
+  the match screen says the real match is not connected, so a normal run stops there until step 3.
 - **Not yet done:** the real match handoff (step 3), review and rewrite of the draft dialogue,
   portraits, and audio.
 

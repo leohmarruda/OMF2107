@@ -88,6 +88,7 @@ static StoryRun story_run;
 static const char *story_start_scene;
 static int story_sel;
 static bool story_log_open;
+static bool story_debug_fights;   // --debug-fights: matches can be skipped by choosing the result
 static bool story_save_enabled;
 static char story_save_buf[512];
 static const char *story_save_path;
@@ -1110,6 +1111,7 @@ static void story_hud(void) {
     snprintf(scene_label,sizeof(scene_label),"SCENE %.10s",story_data.scenes[story_run.scene].id);
     label(.10f,.93f,.009f,scene_label,.48f,.60f,.72f);
     if(story_run.bg[0]) label(-.94f,.78f,.022f,story_run.bg,.80f,.88f,.96f);
+    if(story_debug_fights) label(.38f,.62f,.008f,"DEBUG: FIGHTS",1,.75f,.30f);
     if(story_notice_pending) { story_notice_until=SDL_GetTicks64()+5000; story_notice_pending=false; }
     if(story_notice[0] && SDL_GetTicks64()<story_notice_until) label(-.94f,.60f,.009f,story_notice,.85f,1,.70f);
     quad(-.97f,-.98f,1.94f,.74f,.02f,.05f,.11f);
@@ -1146,7 +1148,13 @@ static void story_hud(void) {
         label(-.92f,-.44f,.009f,who[0],.55f,.90f,1);
         label(-.92f,-.53f,.009f,"VS",.70f,.78f,.85f);
         label(-.92f,-.62f,.009f,who[1],1,.70f,.62f);
-        hint="TEST: Y WIN  N LOSE (REAL MATCH LATER)";
+        if(story_debug_fights) {
+            hint="DEBUG: Y WIN  N LOSE";
+        } else {
+            label(-.92f,-.74f,.009f,"REAL MATCH NOT CONNECTED YET.",.92f,.95f,.98f);
+            label(-.92f,-.83f,.009f,"USE --DEBUG-FIGHTS TO SKIP.",.92f,.95f,.98f);
+            hint="L LOG";
+        }
     } else {
         label(-.92f,-.30f,.012f,"THE END",.80f,.90f,.55f);
         label(-.92f,-.44f,.009f,"R RESTART  ESC QUIT",.92f,.95f,.98f);
@@ -1210,8 +1218,14 @@ static void story_act(char action,int number) {
         case 'c': if(story_choose(&story_run,number)) story_sel=0; break;
         case 'u': if(story_run.event==STORY_EVENT_CHOICE) story_sel=(story_sel+story_run.choice_count-1)%story_run.choice_count; break;
         case 'd': if(story_run.event==STORY_EVENT_CHOICE) story_sel=(story_sel+1)%story_run.choice_count; break;
-        case 'w': story_fight_result(&story_run,true); break;
-        case 'l': story_fight_result(&story_run,false); break;
+        case 'w':
+            if(story_run.event==STORY_EVENT_FIGHT) story_note(&story_run,"Match skipped: win");
+            story_fight_result(&story_run,true);
+            break;
+        case 'l':
+            if(story_run.event==STORY_EVENT_FIGHT) story_note(&story_run,"Match skipped: loss");
+            story_fight_result(&story_run,false);
+            break;
         case 's': story_skip(&story_run); story_sel=0; break;
         case 'g': story_log_open=!story_log_open; break;
         case 'r': story_restart(); break;
@@ -1228,8 +1242,8 @@ static void story_key(SDL_Scancode key) {
         case SDL_SCANCODE_S: story_act('s',0); break;
         case SDL_SCANCODE_L: story_act('g',0); break;
         case SDL_SCANCODE_R: story_act('r',0); break;
-        case SDL_SCANCODE_Y: story_act('w',0); break;
-        case SDL_SCANCODE_N: story_act('l',0); break;
+        case SDL_SCANCODE_Y: if(story_debug_fights) story_act('w',0); break;
+        case SDL_SCANCODE_N: if(story_debug_fights) story_act('l',0); break;
         default: break;
     }
 }
@@ -1593,6 +1607,7 @@ int main(int argc,char **argv) {
         bool good=argc>=3;
         for(int i=3;good && i<argc;) {
             if(strcmp(argv[i],"--new")==0) { story_new=true; i++; continue; }
+            if(strcmp(argv[i],"--debug-fights")==0) { story_debug_fights=true; i++; continue; }
             if(i+1>=argc) { good=false; break; }
             if(strcmp(argv[i],"--scene")==0) story_start_scene=argv[i+1];
             else if(strcmp(argv[i],"--script")==0) story_script=argv[i+1];
@@ -1602,7 +1617,7 @@ int main(int argc,char **argv) {
             i+=2;
         }
         if(!good) {
-            fputs("Usage: omf3d_prototype --story script.story [--new] [--save-file path] [--scene id]\n"
+            fputs("Usage: omf3d_prototype --story script.story [--new] [--debug-fights] [--save-file path] [--scene id]\n"
                   "                       [--script a,c1,w,...] [--shot out.bmp]\n",stderr);
             return 1;
         }

@@ -100,6 +100,7 @@ bool story_choose(StoryRun *run, int index);                       // after a ch
 bool story_fight_result(StoryRun *run, bool win);                  // after a fight event
 int story_skip(StoryRun *run);                                     // skips say lines up to the next choice, fight, or end
 const char *story_flag(const StoryRun *run, const char *name);     // "" when unset
+void story_note(StoryRun *run, const char *text);                   // adds a "DEBUG" entry to the log
 int story_log_count(const StoryRun *run);
 const StoryLogEntry *story_log_at(const StoryRun *run, int index); // 0 is the oldest kept entry
 

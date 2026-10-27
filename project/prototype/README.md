@@ -317,6 +317,12 @@ build/omf_debug_z7/story_check.exe check project/data/story/crystal_christian.st
 build/omf_debug_z7/story_check.exe play project/data/story/crystal_christian.story --choices 0,1 --results 1
 ```
 
+Matches cannot be played from the story yet. `--debug-fights` (or `run-story.ps1 -DebugFights`) lets
+you skip each match by choosing the result with Y (win) or N (loss); the log records "Match skipped".
+Without it the match screen says the real match is not connected. `project/scripts/run-story.ps1`
+starts story mode (`-New`, `-DebugFights`, `-Scene id`) and warns when the viewer executable is older
+than its sources, since the run scripts do not build.
+
 Progress is saved automatically to `project/build/story/<script name>.save` whenever a choice or a
 match result is decided and whenever play stops at a choice, match, or the end. Opening the same
 script again resumes from the save, and R restarts and clears it. `--new` ignores the existing save,
