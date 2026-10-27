@@ -220,6 +220,17 @@ Live replay review of Jaguar (the thrown fighter), 2026-10-27, checked against t
   displayed yaw over about 0.15 s (presentation only; captures and large frame jumps
   still snap). This was built and the capture path re-checked, but the eased turn only
   runs in the live viewer and has not been watched yet.
+- **Upright "jump" pose while falling between ticks 144 and 164.** This is the source,
+  and per OpenOMF's own comment it comes from the original game's data. Ticks 144–147
+  show sprite 15 during the throw. When the thrown fighter hits the wall at tick 152,
+  `arena_har_hit_wall_hook` (`src/game/scenes/arena.c`) plays animation 9 with the custom
+  frame string `hQ1-hQ7-x-3Q5-x-2L5-x-2M900`, commented "from MASTER.DAT". Letters
+  index sprites (Q is 16, L is 11, M is 12), so the string holds sprite 16 (upright, arm
+  raised) for 1 + 7 + 5 = 13 ticks while he slides down the wall (vy rises from 5.5 to
+  8.3), then shows sprite 11 (falling) from tick 165 and sprite 12 on landing. The trace
+  matches this exactly (sprite 16 on ticks 152–164, sprite 11 at 165, sprite 12 at 170).
+  I have not checked the string against the original `MASTER.DAT` myself, only the
+  OpenOMF source comment and the trace.
 
 ## Shadow Punch animation
 
