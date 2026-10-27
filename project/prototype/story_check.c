@@ -1,6 +1,6 @@
 // Command-line checker for story scripts.
 //   story_check check <script>                       validate and list unreachable scenes
-//   story_check play <script> [--scene id] [--choices 0,1,...] [--results W,L,...]
+//   story_check play <script> [--scene id] [--har Jaguar|Shadow] [--choices 0,1,...] [--results W,L,...]
 //                                                    play a script with scripted answers and print a transcript
 //   story_check selftest                             run the module's own tests
 #include "story.h"
@@ -39,9 +39,10 @@ static int next_number(const char **list, int def) {
 }
 
 static int cmd_play(int argc, char **argv) {
-    const char *path = argv[2], *scene = NULL, *choices = NULL, *results = NULL;
+    const char *path = argv[2], *scene = NULL, *choices = NULL, *results = NULL, *har = NULL;
     for(int i = 3; i + 1 < argc; i += 2) {
         if(strcmp(argv[i], "--scene") == 0) scene = argv[i + 1];
+        else if(strcmp(argv[i], "--har") == 0) har = argv[i + 1];
         else if(strcmp(argv[i], "--choices") == 0) choices = argv[i + 1];
         else if(strcmp(argv[i], "--results") == 0) results = argv[i + 1];
         else { fprintf(stderr, "unknown option %s\n", argv[i]); return 2; }
@@ -50,12 +51,27 @@ static int cmd_play(int argc, char **argv) {
     char err[256];
     if(!story_load(&story, path, err, sizeof(err))) { fprintf(stderr, "%s\n", err); return 1; }
     StoryRun run;
-    if(!story_start(&run, &story, scene)) { fprintf(stderr, "unknown scene '%s'\n", scene); story_free(&story); return 1; }
+    StoryFlag flags[2];
+    int flag_count = 0;
+    if(story.has_cast) {
+        // The selection screen's job: the player's HAR (default the recommended one) and the rival's other HAR.
+        const char *player_har = har ? har : story.player_har;
+        const char *rival_har = strcmp(player_har, "Shadow") == 0 ? "Jaguar" : "Shadow";
+        snprintf(flags[0].name, STORY_NAME, "player_har"); snprintf(flags[0].value, STORY_NAME, "%s", player_har);
+        snprintf(flags[1].name, STORY_NAME, "rival_har"); snprintf(flags[1].value, STORY_NAME, "%s", rival_har);
+        flag_count = 2;
+        printf("[%s in %s versus %s in %s]\n", story.player_pilot, player_har, story.rival_pilot, rival_har);
+    }
+    if(!story_start_with_flags(&run, &story, scene, flags, flag_count)) {
+        fprintf(stderr, "unknown scene '%s'\n", scene);
+        story_free(&story);
+        return 1;
+    }
     for(int guard = 0; guard < 1000; guard++) {
         const StoryCmd *c;
         if(run.event == STORY_EVENT_SAY) {
             c = story_event_cmd(&run);
-            printf("%s%s%s\n", c->speaker, *c->speaker ? ": " : "", c->text);
+            printf("%s%s%s\n", c->speaker, *c->speaker ? ": " : "", story_say_text(&run));
             story_advance(&run);
         } else if(run.event == STORY_EVENT_CHOICE) {
             int pick = next_number(&choices, 0);
@@ -65,7 +81,13 @@ static int cmd_play(int argc, char **argv) {
         } else if(run.event == STORY_EVENT_FIGHT) {
             c = story_event_cmd(&run);
             bool win = next_number(&results, 1) != 0;
-            printf("[FIGHT %s/%s vs %s/%s -> %s]\n", c->pilot[0], c->har[0], c->pilot[1], c->har[1], win ? "win" : "lose");
+            char har0[STORY_NAME], har1[STORY_NAME];
+            if(!story_fight_har(&run, c, 0, har0, sizeof(har0)) || !story_fight_har(&run, c, 1, har1, sizeof(har1))) {
+                fprintf(stderr, "the fight at line %d has no usable HAR (%s, %s)\n", c->line, har0, har1);
+                story_free(&story);
+                return 1;
+            }
+            printf("[FIGHT %s/%s vs %s/%s -> %s]\n", c->pilot[0], har0, c->pilot[1], har1, win ? "win" : "lose");
             story_fight_result(&run, win);
         } else {
             break;
@@ -219,6 +241,84 @@ static void selftest_saves(const Story *story) {
     remove(path);
 }
 
+static const char *const cast_script =
+    "player Crystal Jaguar\n"
+    "rival Christian\n"
+    "card Crystal: The Seeker. Wants proof.\n"
+    "card Christian: The Shield.\n"
+    "scene start\n"
+    "say Narrator: Crystal fights in {player_har} against {rival_har}. {missing} stays.\n"
+    "fight Crystal @player_har vs Christian @rival_har win -> won lose -> lost\n"
+    "scene won\n"
+    "say : won\n"
+    "end\n"
+    "scene lost\n"
+    "say : lost\n"
+    "end\n";
+
+static void selftest_cast(void) {
+    Story story;
+    char err[256];
+    StoryRun run, loaded;
+    CHECK(story_parse(&story, cast_script, "cast", err, sizeof(err)));
+    CHECK(story.has_cast && strcmp(story.player_pilot, "Crystal") == 0 && strcmp(story.player_har, "Jaguar") == 0);
+    CHECK(strcmp(story.rival_pilot, "Christian") == 0 && story.card_count == 2);
+    CHECK(strcmp(story_card_text(&story, "crystal"), "The Seeker. Wants proof.") == 0);
+    CHECK(story_card_text(&story, "Milano")[0] == 0);
+
+    // Flags chosen on the selection screen reach the text and the fight.
+    StoryFlag flags[2] = {{"player_har", "Shadow"}, {"rival_har", "Jaguar"}};
+    CHECK(story_start_with_flags(&run, &story, NULL, flags, 2));
+    CHECK(strcmp(story_say_text(&run), "Crystal fights in Shadow against Jaguar. {missing} stays.") == 0);
+    CHECK(strcmp(story_log_at(&run, 0)->text, story_say_text(&run)) == 0);
+    story_advance(&run);
+    CHECK(run.event == STORY_EVENT_FIGHT);
+    char h0[STORY_NAME], h1[STORY_NAME];
+    CHECK(story_fight_har(&run, story_event_cmd(&run), 0, h0, sizeof(h0)) && strcmp(h0, "Shadow") == 0);
+    CHECK(story_fight_har(&run, story_event_cmd(&run), 1, h1, sizeof(h1)) && strcmp(h1, "Jaguar") == 0);
+
+    // The state still round-trips through a save.
+    CHECK(story_save(&run, "story_selftest_cast.save", err, sizeof(err)));
+    CHECK(story_load_save(&loaded, &story, "story_selftest_cast.save", err, sizeof(err)) && same_run(&run, &loaded));
+    CHECK(story_fight_har(&loaded, story_event_cmd(&loaded), 0, h0, sizeof(h0)) && strcmp(h0, "Shadow") == 0);
+    remove("story_selftest_cast.save");
+
+    // Without the flags the placeholders stay visible and the fight has no HAR.
+    CHECK(story_start(&run, &story, NULL));
+    CHECK(strstr(story_say_text(&run), "{player_har}") != NULL);
+    story_advance(&run);
+    CHECK(!story_fight_har(&run, story_event_cmd(&run), 0, h0, sizeof(h0)));
+    StoryFlag bad[1] = {{"player_har", "Katana"}};
+    CHECK(story_start_with_flags(&run, &story, NULL, bad, 1));
+    story_advance(&run);
+    CHECK(!story_fight_har(&run, story_event_cmd(&run), 0, h0, sizeof(h0)));
+
+    // Editing a card changes the fingerprint, so an old save is refused.
+    Story edited;
+    char text[2048];
+    snprintf(text, sizeof(text), "%s", cast_script);
+    char *w = strstr(text, "Wants proof");
+    CHECK(w != NULL);
+    if(w) {
+        memcpy(w, "Wants truth", 11);
+        CHECK(story_parse(&edited, text, "edited", err, sizeof(err)));
+        CHECK(story_fingerprint(&edited) != story_fingerprint(&story));
+        story_free(&edited);
+    }
+    story_free(&story);
+
+    CHECK(rejects("player Bob Jaguar\nscene a\nend\n", "unknown pilot"));
+    CHECK(rejects("player Crystal Katana\nscene a\nend\n", "unknown HAR"));
+    CHECK(rejects("player Crystal\nscene a\nend\n", "player needs"));
+    CHECK(rejects("player Crystal Jaguar\nscene a\nend\n", "needs both"));
+    CHECK(rejects("rival Christian\nscene a\nend\n", "needs both"));
+    CHECK(rejects("player Crystal Jaguar\nrival Crystal\nscene a\nend\n", "same pilot"));
+    CHECK(rejects("scene a\nend\nplayer Crystal Jaguar\n", "before the first scene"));
+    CHECK(rejects("card Bob: hi\nscene a\nend\n", "unknown pilot"));
+    CHECK(rejects("card Crystal hi\nscene a\nend\n", "card needs"));
+    CHECK(rejects("scene a\nfight Crystal @ vs Christian Shadow win -> a lose -> a\n", "'@' needs"));
+}
+
 static int cmd_selftest(void) {
     Story story;
     char err[256];
@@ -266,6 +366,7 @@ static int cmd_selftest(void) {
     CHECK(strcmp(story_event_cmd(&run)->text, "Won plainly.") == 0);   // flag unset: the if falls through
     CHECK(!story_start(&run, &story, "nowhere"));
     selftest_saves(&story);
+    selftest_cast();
     story_free(&story);
 
     // A long run keeps only the newest log entries.
@@ -305,6 +406,6 @@ int main(int argc, char **argv) {
     if(argc == 3 && strcmp(argv[1], "check") == 0) return cmd_check(argv[2]);
     if(argc >= 3 && strcmp(argv[1], "play") == 0) return cmd_play(argc, argv);
     if(argc == 2 && strcmp(argv[1], "selftest") == 0) return cmd_selftest();
-    fputs("Usage: story_check check <script> | play <script> [--scene id] [--choices 0,1] [--results 1,0] | selftest\n", stderr);
+    fputs("Usage: story_check check <script> | play <script> [--scene id] [--har Jaguar|Shadow] [--choices 0,1] [--results 1,0] | selftest\n", stderr);
     return 2;
 }

@@ -12,6 +12,12 @@
 //   fight <pilot> <har> vs <pilot> <har> win -> <scene> lose -> <scene>
 //                                       hands off to a match; the host reports the result
 //   end                                 finishes the story
+// Header directives (before the first scene) describe who is playing, for a selection screen:
+//   player <pilot> <har>                the pilot the player controls and the HAR the story recommends
+//   rival <pilot>                       the AI opponent's pilot
+//   card <pilot>: <text>                context shown for that pilot on the selection screen
+// A fight's HAR may be written @flag, taking the HAR from a flag when the match is reached, and say text may
+// contain {flag}, replaced by that flag's value (left as written when the flag is unset).
 // Every scene must finish with jump, end, fight, or a choice menu; nothing may follow those.
 #ifndef OMF2115_STORY_H
 #define OMF2115_STORY_H
@@ -58,11 +64,21 @@ typedef struct {
     int line;
 } StoryScene;
 
+#define STORY_MAX_CARDS 4
+
+typedef struct { char pilot[STORY_NAME]; char text[STORY_TEXT]; } StoryCard;
+
 typedef struct {
     StoryScene *scenes;
     int scene_count;
     StoryCmd *cmds;
     int cmd_count;
+    bool has_cast;                   // the script declared a player and a rival
+    char player_pilot[STORY_NAME];
+    char player_har[STORY_NAME];     // the HAR the story recommends for the player
+    char rival_pilot[STORY_NAME];
+    StoryCard cards[STORY_MAX_CARDS];
+    int card_count;
 } Story;
 
 // Parses and validates script text. On failure returns false and writes "name:line: message" to err.
@@ -87,12 +103,19 @@ typedef struct {
     char bg[STORY_NAME];
     int flag_count;
     StoryFlag flags[STORY_MAX_FLAGS];
+    char say_text[STORY_TEXT];      // the current say line with {flag} placeholders replaced
     int log_total;                  // entries ever logged; the last STORY_LOG are kept
     StoryLogEntry log[STORY_LOG];
 } StoryRun;
 
 // Starts at the given scene (NULL for the first) and runs to the first event. False if the scene is unknown.
 bool story_start(StoryRun *run, const Story *story, const char *scene_id);
+// The same, with flags set before the first line runs (for example the HARs chosen on a selection screen).
+bool story_start_with_flags(StoryRun *run, const Story *story, const char *scene_id, const StoryFlag *flags, int count);
+// The HAR for one side (0 or 1) of a fight command, resolving @flag. False when it is unset or not a known HAR.
+bool story_fight_har(const StoryRun *run, const StoryCmd *fight, int side, char *out, size_t out_size);
+const char *story_say_text(const StoryRun *run);                   // the current say line, placeholders replaced
+const char *story_card_text(const Story *story, const char *pilot); // "" when the script has no card for the pilot
 const StoryCmd *story_event_cmd(const StoryRun *run);              // the say or fight command now shown
 const StoryCmd *story_choice_cmd(const StoryRun *run, int index);  // a menu entry
 void story_advance(StoryRun *run);                                 // after a say event

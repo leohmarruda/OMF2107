@@ -112,6 +112,43 @@ static bool parse_line(Story *s, char *line_text, int line, const char *name, ch
     rest = trim(rest);
     StoryScene *scene = s->scene_count ? &s->scenes[s->scene_count - 1] : NULL;
 
+    if(strcmp(word, "player") == 0 || strcmp(word, "rival") == 0 || strcmp(word, "card") == 0) {
+        if(scene) { fail(err, err_size, name, line, "'%s' must come before the first scene", word); return false; }
+        if(strcmp(word, "card") == 0) {
+            char *colon = strchr(rest, ':');
+            if(!colon) { fail(err, err_size, name, line, "card needs '<pilot>: <text>'"); return false; }
+            *colon = 0;
+            char *pilot = trim(rest), *text = trim(colon + 1);
+            if(!in_list(pilot, known_pilots, sizeof(known_pilots) / sizeof(known_pilots[0]))) {
+                fail(err, err_size, name, line, "unknown pilot '%s'", pilot); return false;
+            }
+            if(!*text) { fail(err, err_size, name, line, "card has no text"); return false; }
+            if(s->card_count >= STORY_MAX_CARDS) { fail(err, err_size, name, line, "at most %d cards", STORY_MAX_CARDS); return false; }
+            StoryCard *card = &s->cards[s->card_count++];
+            if(!copy(card->pilot, STORY_NAME, pilot) || !copy(card->text, STORY_TEXT, text)) {
+                fail(err, err_size, name, line, "card text is too long"); return false;
+            }
+        } else if(strcmp(word, "player") == 0) {
+            char *pilot = token(&rest), *har = token(&rest), *extra = token(&rest);
+            if(!pilot || !har || extra) { fail(err, err_size, name, line, "player needs '<pilot> <recommended har>'"); return false; }
+            if(!in_list(pilot, known_pilots, sizeof(known_pilots) / sizeof(known_pilots[0]))) {
+                fail(err, err_size, name, line, "unknown pilot '%s'", pilot); return false;
+            }
+            if(!in_list(har, known_hars, sizeof(known_hars) / sizeof(known_hars[0]))) {
+                fail(err, err_size, name, line, "unknown HAR '%s' (the prototype renders Jaguar and Shadow)", har); return false;
+            }
+            copy(s->player_pilot, STORY_NAME, pilot);
+            copy(s->player_har, STORY_NAME, har);
+        } else {
+            if(!*rest || strchr(rest, ' ')) { fail(err, err_size, name, line, "rival needs one pilot"); return false; }
+            if(!in_list(rest, known_pilots, sizeof(known_pilots) / sizeof(known_pilots[0]))) {
+                fail(err, err_size, name, line, "unknown pilot '%s'", rest); return false;
+            }
+            copy(s->rival_pilot, STORY_NAME, rest);
+        }
+        return true;
+    }
+
     if(strcmp(word, "scene") == 0) {
         if(!*rest || strchr(rest, ' ')) { fail(err, err_size, name, line, "scene needs one id"); return false; }
         if(story_find_scene(s, rest) >= 0) { fail(err, err_size, name, line, "duplicate scene '%s'", rest); return false; }
@@ -204,7 +241,9 @@ static bool parse_line(Story *s, char *line_text, int line, const char *name, ch
             if(!in_list(c->pilot[i], known_pilots, sizeof(known_pilots) / sizeof(known_pilots[0]))) {
                 fail(err, err_size, name, line, "unknown pilot '%s'", c->pilot[i]); return false;
             }
-            if(!in_list(c->har[i], known_hars, sizeof(known_hars) / sizeof(known_hars[0]))) {
+            if(c->har[i][0] == '@') {
+                if(!c->har[i][1]) { fail(err, err_size, name, line, "'@' needs a flag name"); return false; }
+            } else if(!in_list(c->har[i], known_hars, sizeof(known_hars) / sizeof(known_hars[0]))) {
                 fail(err, err_size, name, line, "unknown HAR '%s' (the prototype renders Jaguar and Shadow)",
                      c->har[i]);
                 return false;
@@ -224,6 +263,17 @@ static bool parse_line(Story *s, char *line_text, int line, const char *name, ch
 
 static bool validate(Story *s, const char *name, char *err, size_t err_size) {
     if(s->scene_count == 0) { fail(err, err_size, name, 1, "the script has no scenes"); return false; }
+    if(s->player_pilot[0] || s->rival_pilot[0]) {
+        if(!s->player_pilot[0] || !s->rival_pilot[0]) {
+            fail(err, err_size, name, 1, "a script with a selection screen needs both a 'player' and a 'rival' line");
+            return false;
+        }
+        if(ieq(s->player_pilot, s->rival_pilot)) {
+            fail(err, err_size, name, 1, "the player and the rival cannot be the same pilot");
+            return false;
+        }
+        s->has_cast = true;
+    }
     for(int i = 0; i < s->scene_count; i++) {
         const StoryScene *sc = &s->scenes[i];
         if(sc->count == 0) {
@@ -359,6 +409,36 @@ const char *story_flag(const StoryRun *run, const char *name) {
     return "";
 }
 
+static const char *find_flag(const StoryRun *r, const char *name) {
+    for(int i = 0; i < r->flag_count; i++)
+        if(strcmp(r->flags[i].name, name) == 0) return r->flags[i].value;
+    return NULL;
+}
+
+// Copies src to dst, replacing {flag} with the flag's value. An unset flag is left as written so a typo shows up.
+static void expand(const StoryRun *r, const char *src, char *dst, size_t size) {
+    size_t n = 0;
+    for(const char *p = src; *p && n + 1 < size;) {
+        if(*p == '{') {
+            const char *end = strchr(p, '}');
+            size_t len = end ? (size_t)(end - p - 1) : 0;
+            if(end && len > 0 && len < STORY_NAME) {
+                char name[STORY_NAME];
+                memcpy(name, p + 1, len);
+                name[len] = 0;
+                const char *value = find_flag(r, name);
+                if(value) {
+                    for(const char *v = value; *v && n + 1 < size; v++) dst[n++] = *v;
+                    p = end + 1;
+                    continue;
+                }
+            }
+        }
+        dst[n++] = *p++;
+    }
+    dst[n] = 0;
+}
+
 static void goto_scene(StoryRun *r, int scene) { r->scene = scene; r->pc = 0; }
 
 // Runs commands that need no input until one needs the host. log_say is false when restoring a save,
@@ -376,7 +456,8 @@ static void step_to_event(StoryRun *r, bool log_say) {
                 break;
             case STORY_CMD_JUMP: goto_scene(r, c->target); break;
             case STORY_CMD_SAY:
-                if(log_say) log_add(r, c->speaker, c->text);
+                expand(r, c->text, r->say_text, sizeof(r->say_text));
+                if(log_say) log_add(r, c->speaker, r->say_text);
                 r->event = STORY_EVENT_SAY;
                 return;
             case STORY_CMD_CHOICE:
@@ -396,14 +477,38 @@ static void step_to_event(StoryRun *r, bool log_say) {
 
 static void step(StoryRun *r) { step_to_event(r, true); }
 
-bool story_start(StoryRun *run, const Story *story, const char *scene_id) {
+bool story_start_with_flags(StoryRun *run, const Story *story, const char *scene_id, const StoryFlag *flags, int count) {
     memset(run, 0, sizeof(*run));
     run->story = story;
     int scene = scene_id ? story_find_scene(story, scene_id) : 0;
     if(scene < 0) return false;
+    for(int i = 0; i < count && i < STORY_MAX_FLAGS; i++) set_flag(run, flags[i].name, flags[i].value);
     goto_scene(run, scene);
     step(run);
     return true;
+}
+
+bool story_start(StoryRun *run, const Story *story, const char *scene_id) {
+    return story_start_with_flags(run, story, scene_id, NULL, 0);
+}
+
+bool story_fight_har(const StoryRun *run, const StoryCmd *fight, int side, char *out, size_t out_size) {
+    const char *har = fight->har[side];
+    if(har[0] == '@') {
+        const char *value = find_flag(run, har + 1);
+        snprintf(out, out_size, "%s", value ? value : "");
+    } else {
+        snprintf(out, out_size, "%s", har);
+    }
+    return in_list(out, known_hars, sizeof(known_hars) / sizeof(known_hars[0]));
+}
+
+const char *story_say_text(const StoryRun *run) { return run->say_text; }
+
+const char *story_card_text(const Story *story, const char *pilot) {
+    for(int i = 0; i < story->card_count; i++)
+        if(ieq(story->cards[i].pilot, pilot)) return story->cards[i].text;
+    return "";
 }
 
 const StoryCmd *story_event_cmd(const StoryRun *run) {
@@ -474,6 +579,10 @@ static unsigned fnv_str(unsigned h, const char *s) { return fnv_bytes(h, s, strl
 
 unsigned story_fingerprint(const Story *story) {
     unsigned h = 2166136261u;
+    h = fnv_str(h, story->player_pilot);
+    h = fnv_str(h, story->player_har);
+    h = fnv_str(h, story->rival_pilot);
+    for(int i = 0; i < story->card_count; i++) { h = fnv_str(h, story->cards[i].pilot); h = fnv_str(h, story->cards[i].text); }
     for(int i = 0; i < story->scene_count; i++) {
         const StoryScene *sc = &story->scenes[i];
         h = fnv_str(h, sc->id);

@@ -6,6 +6,13 @@
 # Flags: tremors (told or hidden) is set before the match; result (won or lost, from Crystal's side) is set
 # by the match; evidence (released, verified, or christian) is set by the choice after it.
 # The result decides who WAR's Tier-2 offer goes to, which recovery scene plays, and how the story closes.
+# The HARs come from the selection screen: {player_har} and {rival_har} are filled in, and the fight reads them
+# with @player_har and @rival_har. The player is Crystal; the story recommends Jaguar but any pairing works.
+
+player Crystal Jaguar
+rival Christian
+card Crystal: The Seeker. Composed and camera-ready, the pilot who handles pressure. She wants proof of her parents' fate.
+card Christian: The Shield. Aggressive and outwardly confident. He wants revenge, and he wants Crystal kept alive.
 
 scene start
 bg green room
@@ -28,20 +35,20 @@ jump prefight
 
 scene prefight
 bg stadium
-say : The siblings take their HARs. Crystal in Jaguar. Christian in Shadow.
+say : The siblings take their HARs. Crystal in {player_har}. Christian in {rival_har}.
 say Christian: Do not hold back on my account.
 say Crystal: I never do.
-fight Crystal Jaguar vs Christian Shadow win -> won lose -> lost
+fight Crystal @player_har vs Christian @rival_har win -> won lose -> lost
 
 scene won
 set result=won
-say : Jaguar stands over a fallen Shadow. The crowd roars. Crystal's hands will not stop shaking.
+say : {player_har} stands over a fallen {rival_har}. The crowd roars. Crystal's hands will not stop shaking.
 say Christian: You did not hold back. Good.
 jump recovery
 
 scene lost
 set result=lost
-say : Shadow takes the match. Christian does not celebrate. He is looking at his sister's hands.
+say : {rival_har} takes the match. Christian does not celebrate. He is looking at his sister's hands.
 say Christian: Did you let me win? Or could you not hold the stick?
 jump recovery
 

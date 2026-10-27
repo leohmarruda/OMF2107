@@ -102,6 +102,16 @@ static const char *story_save_path;
 static char story_notice[96];
 static Uint64 story_notice_until;
 static bool story_notice_pending;
+// Selection screen: shown first when the script declares a player and a rival, until a HAR is confirmed.
+static bool story_setup;
+static int story_setup_har;          // 0 Jaguar, 1 Shadow
+typedef struct { int w,h; unsigned char *rgb; } StoryPortrait;
+static StoryPortrait story_portraits[2];   // the player's pilot, then the rival's
+// Power, agility and endurance of the ten playable pilots, copied from src/resources/pilots.c (OpenOMF).
+static const struct { const char *name; int power,agility,endurance; } story_pilot_stats[] = {
+    {"Crystal",5,16,9},{"Steffan",13,9,8},{"Milano",7,20,4},{"Christian",9,7,15},{"Shirro",20,1,8},
+    {"JeanPaul",9,10,11},{"Ibrahim",10,1,20},{"Angel",7,10,13},{"Cossette",14,8,8},{"Raven",14,4,12}
+};
 static const char *selection_path;
 static int selection_har;
 static int selection_pilot;
@@ -154,7 +164,7 @@ static const Glyph font[] = {
     {'!',{4,4,4,4,4,0,4}}, {'?',{14,17,1,2,4,0,4}},
     {',',{0,0,0,0,12,4,8}}, {'\'',{4,4,8,0,0,0,0}}, {'"',{10,10,0,0,0,0,0}},
     {'(',{2,4,8,8,8,4,2}}, {')',{8,4,2,2,2,4,8}}, {';',{0,12,12,0,12,4,8}},
-    {'>',{16,8,4,2,4,8,16}}, {'_',{0,0,0,0,0,0,31}},
+    {'>',{16,8,4,2,4,8,16}}, {'<',{1,2,4,8,4,2,1}}, {'_',{0,0,0,0,0,0,31}},
     {' ',{0,0,0,0,0,0,0}}
 };
 
@@ -1111,7 +1121,100 @@ static void story_speaker_color(const char *speaker,float *r,float *g,float *b) 
     else if(!strcmp(speaker,"YOU")) { c[0]=.85f; c[1]=1; c[2]=.70f; }
     *r=c[0]; *g=c[1]; *b=c[2];
 }
+// Loads project/build/portraits/<Pilot>.bmp, exported from the original game's data by
+// project/tools/export_pilot_portraits.py. Local only: the art is never committed. Missing files fall back to a card.
+static void story_load_portrait(StoryPortrait *portrait,const char *pilot) {
+    free(portrait->rgb);
+    portrait->rgb=NULL; portrait->w=portrait->h=0;
+    char path[256];
+    snprintf(path,sizeof(path),"project/build/portraits/%s.bmp",pilot);
+    SDL_Surface *loaded=SDL_LoadBMP(path);
+    if(!loaded) return;
+    SDL_Surface *rgb=SDL_ConvertSurfaceFormat(loaded,SDL_PIXELFORMAT_RGB24,0);
+    SDL_FreeSurface(loaded);
+    if(!rgb) return;
+    portrait->rgb=malloc((size_t)rgb->w*(size_t)rgb->h*3);
+    if(portrait->rgb) {
+        for(int y=0;y<rgb->h;y++)
+            memcpy(portrait->rgb+(size_t)y*(size_t)rgb->w*3,(unsigned char*)rgb->pixels+(size_t)y*(size_t)rgb->pitch,(size_t)rgb->w*3);
+        portrait->w=rgb->w; portrait->h=rgb->h;
+    }
+    SDL_FreeSurface(rgb);
+}
+// Draws a portrait from its top-left corner, one source pixel per px screen pixels, merging runs of one colour.
+static void story_draw_portrait(const StoryPortrait *portrait,const char *pilot,float x,float y,float px) {
+    float dx=2.0f*px/(float)win_width, dy=2.0f*px/(float)win_height;
+    if(!portrait->rgb) {   // no original art exported: a plain card with the pilot's initial
+        quad(x,y-57*dy,57*dx,57*dy,.10f,.16f,.26f);
+        char initial[2]={pilot[0],0};
+        label(x+17*dx,y-14*dy,.030f,initial,.55f,.70f,.84f);
+        return;
+    }
+    for(int row=0;row<portrait->h;row++) {
+        const unsigned char *line=portrait->rgb+(size_t)row*(size_t)portrait->w*3;
+        for(int col=0;col<portrait->w;) {
+            int end=col+1;
+            while(end<portrait->w && !memcmp(line+col*3,line+end*3,3)) end++;
+            quad(x+(float)col*dx,y-(float)(row+1)*dy,(float)(end-col)*dx+.0008f,dy+.0008f,
+                 line[col*3]/255.0f,line[col*3+1]/255.0f,line[col*3+2]/255.0f);
+            col=end;
+        }
+    }
+}
+static void story_stat_row(float x,float y,const char *name,int value) {
+    label(x,y,.008f,name,.55f,.70f,.84f);
+    quad(x+.46f,y-.040f,.40f,.040f,.08f,.12f,.20f);
+    quad(x+.46f,y-.040f,.40f*(float)value/20.0f,.040f,.30f,.80f,.95f);
+}
+static void story_setup_card(int side,float x,const char *pilot,const char *har,const char *role) {
+    char lines[8][80];
+    story_draw_portrait(&story_portraits[side],pilot,x,.50f,3.0f);
+    char upper[STORY_NAME];
+    snprintf(upper,sizeof(upper),"%s",pilot);
+    label(x+.40f,.46f,.009f,upper,side==0 ? .55f : 1,side==0 ? .90f : .70f,side==0 ? 1 : .62f);
+    label(x+.40f,.36f,.0065f,role,.48f,.60f,.72f);
+    char in_har[48];
+    snprintf(in_har,sizeof(in_har),"IN %s",har);
+    label(x+.40f,.29f,.008f,in_har,.92f,.95f,.98f);
+    const int count=(int)(sizeof(story_pilot_stats)/sizeof(story_pilot_stats[0]));
+    for(int i=0;i<count;i++) {
+        if(strcmp(story_pilot_stats[i].name,pilot)) continue;
+        story_stat_row(x,-.14f,"POWER",story_pilot_stats[i].power);
+        story_stat_row(x,-.23f,"AGILITY",story_pilot_stats[i].agility);
+        story_stat_row(x,-.32f,"ENDURANCE",story_pilot_stats[i].endurance);
+    }
+    int n=story_wrap(story_card_text(&story_data,pilot),20,lines,7);
+    for(int i=0;i<n;i++) label(x,-.48f-.065f*(float)i,.0075f,lines[i],.85f,.90f,.95f);
+}
+static void story_setup_hud(void) {
+    static const char *har_names[2]={"JAGUAR","SHADOW"};
+    quad(-1,-1,2,2,.015f,.025f,.065f);
+    label(-.94f,.985f,.008f,"OMF2115 / STORY",.65f,.92f,1);
+    label(-.94f,.89f,.016f,"CHOOSE YOUR HAR",.80f,.88f,.96f);
+    char choice[32];
+    snprintf(choice,sizeof(choice),"< %s >",har_names[story_setup_har]);
+    label(-.94f,.73f,.020f,choice,.30f,.90f,1);
+    bool recommended=story_data.player_har[0] && (story_data.player_har[0]|32)==(har_names[story_setup_har][0]|32);
+    if(recommended) label(.34f,.69f,.0075f,"RECOMMENDED",1,.85f,.40f);
+    story_setup_card(0,-.94f,story_data.player_pilot,har_names[story_setup_har],"YOU");
+    story_setup_card(1,.06f,story_data.rival_pilot,har_names[story_setup_har^1],"RIVAL");
+    label(-.94f,-.945f,.007f,"LEFT RIGHT HAR  ENTER START  ESC QUIT",.48f,.60f,.72f);
+}
+// Starts the story with the chosen HAR for the player; the rival takes the other.
+static void story_begin(int har_index) {
+    static const char *names[2]={"Jaguar","Shadow"};
+    StoryFlag flags[2];
+    snprintf(flags[0].name,STORY_NAME,"player_har");
+    snprintf(flags[0].value,STORY_NAME,"%s",names[har_index]);
+    snprintf(flags[1].name,STORY_NAME,"rival_har");
+    snprintf(flags[1].value,STORY_NAME,"%s",names[har_index^1]);
+    story_start_with_flags(&story_run,&story_data,story_start_scene,flags,2);
+    story_setup=false;
+    story_sel=0;
+    story_log_open=false;
+}
 static void story_hud(void) {
+    if(story_setup) { story_setup_hud(); return; }
     quad(-1,-1,2,2,.015f,.025f,.065f);
     quad(-1,.55f,2,.45f,.03f,.07f,.14f);
     label(-.94f,.93f,.010f,"OMF2115 / STORY",.65f,.92f,1);
@@ -1130,7 +1233,7 @@ static void story_hud(void) {
         const StoryCmd *c=story_event_cmd(&story_run);
         story_speaker_color(c->speaker,&r,&g,&b);
         label(-.92f,-.30f,.012f,*c->speaker ? c->speaker : "-",r,g,b);
-        int n=story_wrap(c->text,34,lines,6);
+        int n=story_wrap(story_say_text(&story_run),34,lines,6);
         for(int i=0;i<n;i++) label(-.92f,-.42f-.085f*(float)i,.009f,lines[i],.92f,.95f,.98f);
         hint="ENTER NEXT  S SKIP  L LOG";
     } else if(story_run.event==STORY_EVENT_CHOICE) {
@@ -1152,7 +1255,11 @@ static void story_hud(void) {
         const StoryCmd *c=story_event_cmd(&story_run);
         label(-.92f,-.30f,.012f,"MATCH",1,.80f,.45f);
         char who[2][80];
-        for(int i=0;i<2;i++) snprintf(who[i],sizeof(who[i]),"%s IN %s",c->pilot[i],c->har[i]);
+        for(int i=0;i<2;i++) {
+            char har[STORY_NAME];
+            if(!story_fight_har(&story_run,c,i,har,sizeof(har))) snprintf(har,sizeof(har),"?");
+            snprintf(who[i],sizeof(who[i]),"%s IN %s",c->pilot[i],har);
+        }
         label(-.92f,-.44f,.009f,who[0],.55f,.90f,1);
         label(-.92f,-.53f,.009f,"VS",.70f,.78f,.85f);
         label(-.92f,-.62f,.009f,who[1],1,.70f,.62f);
@@ -1200,7 +1307,7 @@ static void story_make_dirs(void) {
 #endif
 }
 static void story_autosave(void) {
-    if(!story_save_enabled) return;
+    if(!story_save_enabled || !story_run.story) return;
     char error[256];
     story_make_dirs();
     if(!story_save(&story_run,story_save_path,error,sizeof(error))) {
@@ -1234,8 +1341,13 @@ static void story_match_start(void) {
     if(story_run.event!=STORY_EVENT_FIGHT || story_match_state==1) return;
     const StoryCmd *c=story_event_cmd(&story_run);
     story_match_message[0]=0;
-    if(story_har_equal(c->har[0],c->har[1])) {
-        snprintf(story_match_message,sizeof(story_match_message),"BOTH FIGHTERS USE %s: NOT SUPPORTED YET.",c->har[0]);
+    char har0[STORY_NAME],har1[STORY_NAME];
+    if(!story_fight_har(&story_run,c,0,har0,sizeof(har0)) || !story_fight_har(&story_run,c,1,har1,sizeof(har1))) {
+        snprintf(story_match_message,sizeof(story_match_message),"A FIGHTER HAS NO HAR: CHECK THE SCRIPT.");
+        return;
+    }
+    if(story_har_equal(har0,har1)) {
+        snprintf(story_match_message,sizeof(story_match_message),"BOTH FIGHTERS USE %s: NOT SUPPORTED YET.",har0);
         return;
     }
 #ifdef _WIN32
@@ -1256,7 +1368,7 @@ static void story_match_start(void) {
     snprintf(story_match_result_path,sizeof(story_match_result_path),"%s",result);
     char cmd[1600];
     snprintf(cmd,sizeof(cmd),"powershell.exe -NoProfile -ExecutionPolicy Bypass -File \"%s\" -Player %s -Pilot %s "
-             "-RivalPilot %s -ResultFile \"%s\"",launcher,c->har[0],c->pilot[0],c->pilot[1],result);
+             "-RivalPilot %s -ResultFile \"%s\"",launcher,har0,c->pilot[0],c->pilot[1],result);
     if(!story_match_job) {
         story_match_job=CreateJobObjectA(NULL,NULL);
         if(story_match_job) {
@@ -1306,7 +1418,13 @@ static void story_match_poll(void) {
 #endif
 }
 static void story_restart(void) {
-    story_start(&story_run,&story_data,story_start_scene);
+    if(story_data.has_cast) {
+        memset(&story_run,0,sizeof(story_run));
+        story_setup=true;
+        story_setup_har=story_data.player_har[0]=='S' || story_data.player_har[0]=='s';
+    } else {
+        story_start(&story_run,&story_data,story_start_scene);
+    }
     story_sel=0;
     story_log_open=false;
     if(story_save_enabled) {
@@ -1316,6 +1434,7 @@ static void story_restart(void) {
 }
 // One input, shared by the keyboard and the scripted --script option. Tokens: a, c<N>, u, d, w, l, s, g, r.
 static void story_act(char action,int number) {
+    if(story_setup) return;   // nothing to act on until a HAR is chosen
     StoryEventKind before=story_run.event;
     switch(action) {
         case 'a':
@@ -1344,6 +1463,12 @@ static void story_act(char action,int number) {
     if(progressed && (before!=STORY_EVENT_SAY || story_run.event!=STORY_EVENT_SAY)) story_autosave();
 }
 static void story_key(SDL_Scancode key) {
+    if(story_setup) {
+        if(key==SDL_SCANCODE_LEFT || key==SDL_SCANCODE_RIGHT || key==SDL_SCANCODE_A || key==SDL_SCANCODE_D ||
+           key==SDL_SCANCODE_UP || key==SDL_SCANCODE_DOWN) story_setup_har^=1;
+        else if(key==SDL_SCANCODE_RETURN || key==SDL_SCANCODE_SPACE) story_begin(story_setup_har);
+        return;
+    }
     switch(key) {
         case SDL_SCANCODE_SPACE: case SDL_SCANCODE_RETURN: story_act('a',0); break;
         case SDL_SCANCODE_UP: story_act('u',0); break;
@@ -1714,7 +1839,7 @@ int main(int argc,char **argv) {
         return 1;
     }
     story_mode=argc>1 && strcmp(argv[1],"--story")==0;
-    const char *story_path=NULL,*story_script=NULL,*story_shot_path=NULL,*story_save_file=NULL;
+    const char *story_path=NULL,*story_script=NULL,*story_shot_path=NULL,*story_save_file=NULL,*story_arg_har=NULL;
     bool story_new=false;
     if(story_mode) {
         bool good=argc>=3;
@@ -1726,11 +1851,12 @@ int main(int argc,char **argv) {
             else if(strcmp(argv[i],"--script")==0) story_script=argv[i+1];
             else if(strcmp(argv[i],"--shot")==0) story_shot_path=argv[i+1];
             else if(strcmp(argv[i],"--save-file")==0) story_save_file=argv[i+1];
+            else if(strcmp(argv[i],"--har")==0) story_arg_har=argv[i+1];
             else good=false;
             i+=2;
         }
         if(!good) {
-            fputs("Usage: omf3d_prototype --story script.story [--new] [--debug-fights] [--save-file path] [--scene id]\n"
+            fputs("Usage: omf3d_prototype --story script.story [--new] [--debug-fights] [--save-file path] [--scene id] [--har Jaguar|Shadow]\n"
                   "                       [--script a,c1,w,...] [--shot out.bmp]\n",stderr);
             return 1;
         }
@@ -1815,14 +1941,34 @@ int main(int argc,char **argv) {
         // Scripted and screenshot runs are tests: they neither resume nor overwrite the player's save,
         // unless a save file is named explicitly.
         story_save_enabled=story_save_file || (!story_shot_path && !story_script);
+        bool story_resumed=false;
         if(story_save_enabled && !story_new && story_save_exists(story_save_path)) {
             StoryRun restored;
             if(story_load_save(&restored,&story_data,story_save_path,error,sizeof(error))) {
                 story_run=restored;
+                story_resumed=true;
                 story_notify("RESUMED FROM SAVE  R RESTARTS");
             } else {
                 fprintf(stderr,"Save ignored: %s\n",error);
                 story_notify("SAVE IGNORED  STARTING OVER");
+            }
+        }
+        if(story_data.has_cast) {
+            story_load_portrait(&story_portraits[0],story_data.player_pilot);
+            story_load_portrait(&story_portraits[1],story_data.rival_pilot);
+            story_setup_har=story_data.player_har[0]=='S' || story_data.player_har[0]=='s';
+            if(story_arg_har && strcmp(story_arg_har,"Jaguar") && strcmp(story_arg_har,"Shadow")) {
+                fprintf(stderr,"--har must be Jaguar or Shadow\n");
+                story_free(&story_data);
+                return 1;
+            }
+            if(!story_resumed) {
+                if(story_arg_har || story_script) {
+                    story_begin(story_arg_har ? story_arg_har[0]=='S' : story_setup_har);
+                } else {
+                    memset(&story_run,0,sizeof(story_run));
+                    story_setup=true;
+                }
             }
         }
         if(story_script) story_run_script(story_script);
