@@ -317,6 +317,14 @@ build/omf_debug_z7/story_check.exe check project/data/story/crystal_christian.st
 build/omf_debug_z7/story_check.exe play project/data/story/crystal_christian.story --choices 0,1 --results 1
 ```
 
+Progress is saved automatically to `project/build/story/<script name>.save` whenever a choice or a
+match result is decided and whenever play stops at a choice, match, or the end. Opening the same
+script again resumes from the save, and R restarts and clears it. `--new` ignores the existing save,
+and `--save-file path` uses another file. The save is a small versioned text file with the position,
+flags, and log, plus a fingerprint of the script: a save made against an edited script, or by a
+different format version, is refused with a message and the story starts over. Scripted
+(`--script`) and screenshot (`--shot`) runs do not touch the save unless `--save-file` is given.
+
 Validation rejects unknown scenes and commands, duplicate scene ids, scenes that can run off their
 end, commands after a jump, end, fight, or choice menu, more than six choices, and fight lines naming
 an unknown pilot or HAR, each with the script line number. It warns about scenes that cannot be reached.

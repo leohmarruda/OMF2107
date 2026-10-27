@@ -62,8 +62,14 @@ text with placeholder portraits.
   `omf3d_prototype --story` plays a script with a dialogue box, choices, skip, and a log. A draft
   of the slice (`project/data/story/crystal_christian.story`, 12 scenes) was written from
   `OMF20115_SIMPLE_LORE.md` and checks and plays through.
-- **Not yet done:** save data (step 2), the real match handoff (step 3), review and rewrite of the
-  draft dialogue, portraits, and audio.
+- **Step 2, save data: built.** `story_save` and `story_load_save` write and read a versioned
+  text save (position, flags, log, script fingerprint); an older or newer format version, a changed
+  script, or a damaged file is refused with a message and leaves the run untouched. The viewer
+  autosaves at every choice and match result, resumes on start, and clears the save on restart.
+  `story_check selftest` covers round trips at a say line, a choice, a match, and the end, and each
+  refusal case.
+- **Not yet done:** the real match handoff (step 3), review and rewrite of the draft dialogue,
+  portraits, and audio.
 
 ## Decisions that were needed before step 1 (answered above)
 
