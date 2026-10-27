@@ -56,6 +56,7 @@ class Move:
     string: str        # AF move string, e.g. "P6321"
     name: str
     jump: bool = False  # air attack: neutral jump first, button at the apex window
+    jump_lead: int = 6  # ticks between the jump input and the button; later presses hit lower in the jump
     enhancement: int = 0  # Shadow only: upgrade level set on the attacker (Shadow Punch needs 3)
     gaps: list[int] = field(default_factory=lambda: [30, 40, 55, 70, 85, 100, 120, 140, 170, 200])
 
@@ -96,7 +97,8 @@ MOVES = [
     Move("shadow", 24, "P41", "P41 special (unenhanced)"),
     Move("shadow", 21, "K41", "K41 special"),
     Move("shadow", 46, "P", "jump punch", jump=True, gaps=[20, 30, 40, 55, 70, 85]),
-    Move("shadow", 68, "K", "jump kick", jump=True, gaps=[20, 30, 40, 55, 70, 85, 100, 120, 140]),
+    # Shadow's jump kick only connects late in the jump: a 6-tick lead misses at every distance.
+    Move("shadow", 68, "K", "jump kick", jump=True, jump_lead=12, gaps=[20, 30, 40, 55, 70, 85, 100, 120, 140]),
 ]
 
 
@@ -133,7 +135,8 @@ def input_schedule(move: Move) -> list[tuple[int, int]]:
     dirs = [SCREEN[facing[c]] for c in reversed(move.string[1:])]  # AF strings list newest input first
     if move.jump:
         # Neutral jump, then the button a few ticks later while airborne.
-        return [(INPUT_TICK - 6, SCREEN["U"]), (INPUT_TICK - 5, 0x00), (INPUT_TICK, button), (INPUT_TICK + 1, 0x00)]
+        lead = move.jump_lead
+        return [(INPUT_TICK - lead, SCREEN["U"]), (INPUT_TICK - lead + 1, 0x00), (INPUT_TICK, button), (INPUT_TICK + 1, 0x00)]
     schedule = []
     for i, d in enumerate(dirs):
         schedule.append((INPUT_TICK - 2 * (len(dirs) - i), d))

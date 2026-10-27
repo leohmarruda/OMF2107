@@ -54,7 +54,7 @@ repository root; outputs go to the ignored `build/omf_trace_z7/moves/`.
 | shadow | 24 | `P41` | P41 special (unenhanced) | 15 | 8 | 41 | 205.5 | recoil>standing-up>standing | 35 | block (–) | block (1) |
 | shadow | 21 | `K41` | K41 special | 13 | 7 | 41 | 205.5 | recoil>standing-up>standing | 36 | hit (–) | block (-1) |
 | shadow | 46 | `P` | jump punch | 18 | 12 | 27 | 62.0 | recoil>standing | -1 | miss (–) | miss (–) |
-| shadow | 68 | `K` | jump kick | – | – | – | – | – | – | – (–) | – (–) |
+| shadow | 68 | `K` | jump kick | 16 | 12 | 34 | 69.0 | recoil>standing | 6 | miss (–) | miss (–) |
 
 Columns: **Anim ticks** is the move's full animation length in source ticks (startup,
 active, and recovery). **Startup** is ticks from the final input to damage.
@@ -84,10 +84,13 @@ guard columns give the result against standing and low guard.
   to the grab, and the grab is not stopped by standing or low guard. The table's
   startup counts ticks to the grab, "damage" is empty by design, and "Adv. on hit"
   (121) is the harness's free-tick comparison, not a normal frame advantage.
-- **Shadow jump kick (animation 68)** is performed (ticks 126–143) but never connected
-  at any distance from 20 to 140 source units with the harness's neutral-jump timing,
-  where the jump punch does connect. That is probably a timing or height effect, not a
-  move that cannot hit; it needs a different input timing and has not been measured.
+- **Shadow jump kick (animation 68)** only connects late in the jump. The harness
+  normally presses the button 6 ticks after the jump input, and the kick misses at every
+  distance with that lead; with a 12-tick lead (`jump_lead` in `measure_moves.py`) it hits
+  for 34 with startup 12. The table row uses a neutral jump, so its 69-unit reach
+  understates a forward jump: a scratch run with a forward jump and the same lead hit
+  at 40, 70 and 100 units (sample points, not a refined sweep) and missed at 20 and 140.
+  The kick missed both standing and low guard in the guard check.
 - **Shadow Punch (animation 23, `P4123`)** only exists at enhancement level 3 (its
   base script is a no-op, as in the original Tournament), so the harness sets Shadow's
   upgrade level to 3 for it. Its ice blade travels along the floor: it hits standing
