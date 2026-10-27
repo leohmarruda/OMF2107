@@ -242,6 +242,33 @@ static void interpolate_live_fighters(Uint64 now, bool exact) {
     rival.y=before.y+(after.y-before.y)*blend;
     elapsed=((float)previous->tick+blend)*source_tick_seconds;
 }
+// Presentation only: the source turns a fighter in a single tick (for example when a get-up begins), so ease the
+// displayed yaw over a few ticks instead of snapping the mesh through 180 degrees. Position, state, and hit logic
+// still read the source. Seeking, frame jumps, and captures snap so screenshots stay exact.
+static void smooth_source_facing(double dt, bool snap) {
+    static float shown[2];
+    static bool valid;
+    static size_t last_index;
+    if(!source_replay.count) return;
+    if(!valid || snap || source_replay_index>last_index+3 || source_replay_index+3<last_index) {
+        for(int i=0;i<2;i++) {
+            const SourceFighter *f=&source_replay.frames[source_replay_index].fighter[i];
+            shown[i]=f->facing==1 ? -1.5707963f : 1.5707963f;
+        }
+        valid=true;
+    } else {
+        const float max_step=(float)(dt*3.14159265/.15);
+        for(int i=0;i<2;i++) {
+            const SourceFighter *f=&source_replay.frames[source_replay_index].fighter[i];
+            float target=f->facing==1 ? -1.5707963f : 1.5707963f;
+            float delta=target-shown[i];
+            shown[i]+=clampf(delta,-max_step,max_step);
+        }
+    }
+    last_index=source_replay_index;
+    player.facing=shown[0];
+    rival.facing=shown[1];
+}
 static void write_source_input(const unsigned char *keys) {
     if(!source_input_enabled) return;
     static int last_action = -1;
@@ -1699,6 +1726,8 @@ int main(int argc,char **argv) {
         Uint64 profile_after_poll=SDL_GetPerformanceCounter();
         interpolate_live_fighters(now,source_capture && source_replay.count &&
                                   source_replay.frames[source_replay_index].tick>=capture_tick);
+        if((source_replay_mode || source_follow_mode) && source_replay.count)
+            smooth_source_facing(frame>.25 ? .25 : frame,source_capture);
         SDL_GetWindowSize(window,&win_width,&win_height);
         if(win_height<1) win_height=1;
         glViewport(0,0,win_width,win_height);
