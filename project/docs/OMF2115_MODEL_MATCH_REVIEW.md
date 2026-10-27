@@ -138,6 +138,31 @@ The projection still spawns and travels only from OpenOMF's recorded projectile
 objects. Local startup, active, projection-spawn, and near/far hit captures are
 linked in the [signature move trace](OMF2115_SIGNATURE_MOVE_TRACE.md).
 
+## Live playtest — 2026-10-27
+
+Full Stadium matches were played live with both the blockout and Meshy models,
+and both were judged good overall. Findings:
+
+- **Body overlap during kicks and falls.** The meshes visibly intersect during
+  kicks and when a fighter falls. The close-contact separation offset above
+  covers only the sampled standing punch and kick fixtures, so these cases are
+  open. OpenOMF owns positions, so any fix must stay render-only.
+- **Crossing fighters.** Bodies often intersect when the fighters cross each
+  other. OpenOMF has no body-to-body collision between HARs:
+  `har_collide` only checks attack hit points, `har_check_closeness` just sets
+  an AI-only `close` flag, and positions are clamped only to the arena walls
+  (`src/game/objects/har.c`). The overlap is therefore faithful to the source;
+  the thicker 3D meshes only make it more visible. Any push-away velocity comes
+  from move scripts and hit reactions, not continuous collision (not traced).
+- **Decision (2026-10-27):** accept the kick, fall, and crossing overlap for
+  now. If revisited, the fix must be render-only mesh separation that leaves
+  OpenOMF positions and hit results untouched.
+- **Close punches not observed.** Punches at close range usually became throws
+  in live play, so the close-punch fixture was not exercised. A throw triggers
+  when the HAR distance is within the move's range times the `throw_range` match
+  setting (default 100%; `har.c`). Throw animations have not been compared with
+  the 3D presentation.
+
 ## Remaining work
 
 1. Validate standing and down-punch plus kick contact through complete move
@@ -146,10 +171,11 @@ linked in the [signature move trace](OMF2115_SIGNATURE_MOVE_TRACE.md).
 2. Refine the source-positioned concussion shot and Shadow projection
    blockouts, including near Shadow Punch contact. The
    [signature move trace](OMF2115_SIGNATURE_MOVE_TRACE.md) records their travel.
-3. Human-review the close-contact separation, accepted side silhouettes, and
-   signature moves at normal speed through a full live match. The source replay
-   captures verify geometry placement at sampled contact ticks but do not
-   replace an OMF-familiar playtest.
+3. Human review of accepted side silhouettes and signature moves in a full
+   live match is done (2026-10-27, see above). It found body overlap during
+   kicks, falls, and crossings, which are accepted for now because the source
+   has no body collision. Throws still need a comparison against the source
+   animations.
 4. For the finished asset pass, replace rigid-part motion with skinned
    deformation rigs and refine clip timing against full source move traces.
 
