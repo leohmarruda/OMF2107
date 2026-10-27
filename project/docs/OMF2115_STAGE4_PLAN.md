@@ -69,12 +69,16 @@ text with placeholder portraits.
   `story_check selftest` covers round trips at a say line, a choice, a match, and the end, and each
   refusal case.
 - **Debug fights: built.** `--debug-fights` lets a tester skip a match by choosing win or loss, and
-  logs it; `run-story.ps1` launches story mode and warns about a stale executable. Without the flag
-  the match screen says the real match is not connected, so a normal run stops there until step 3.
-- **Not yet done:** the real match handoff (step 3), review and rewrite of the draft dialogue,
-  portraits, and audio.
+  logs it; `run-story.ps1` launches story mode and warns about a stale executable.
+- **Step 3, the match handoff: built** as designed below. Tested end to end headlessly with no one at the
+  keyboard: the story viewer starts the match, the AI wins, the result file is read, the story moves to the
+  lose scene, and the log and autosave record it. Also tested: closing the story window mid-match ends
+  OpenOMF and the match viewer, and closing only the match window leaves the story at the match with no
+  result. Not yet tested: winning a match by playing it, and the retry prompt text on screen.
+- **Not yet done:** review and rewrite of the draft dialogue, portraits, audio, and the polish in
+  steps 4 to 6.
 
-## Step 3 design: the match handoff (proposed, not built)
+## Step 3 design: the match handoff (built)
 
 **What exists today.** A live match is two processes joined by shared memory: OpenOMF with
 `--omf3k-live`, and the viewer in `--source-live` mode, both started by `run-blockout-jaguar.ps1`.
