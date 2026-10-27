@@ -94,7 +94,11 @@ stack; it would then need the same state exporter and REC parity checks.
    (rebuild with `build.ps1 -Config Debug` after editing `main.c`; the
    `run-blockout*.ps1` launchers do not build). Carried over before the gate is
    treated as closed:
-   - Shadow's close throw (animation 20) has no recording, so it is not compared.
+   - Shadow's close throw (animation 20) is now recorded
+     (`rectests/SHADOW-CLOSE-THROW.REC`) and compared. Its anomalies were a
+     fixture teleport at tick 123 (watch from tick 124) and source frames and
+     facing changes, not renderer faults; the facing turn is now eased in the
+     viewer, which still needs a live look.
    - The enlarged projectile visuals were reviewed by screenshot only; the
      Shadow ice-blade burst is large and hides part of the opponent's legs.
    - Shadow's purple figures have no trails (the renderer has no transparency).
