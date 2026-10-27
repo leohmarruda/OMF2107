@@ -30,7 +30,7 @@ repository root; outputs go to the ignored `build/omf_trace_z7/moves/`.
 | jaguar | 19 | `K2` | down kick | 14 | 2 | 19 | 85.0 | recoil>standing | -2 | hit (–) | block (0) |
 | jaguar | 33 | `K1` | down-back kick | 24 | 5 | 27 | 107.0 | recoil>standing-up>standing | 33 | hit (–) | block (-6) |
 | jaguar | 24 | `K4` | back kick | 18 | 1 | 30 | 89.6 | recoil>standing | -5 | block (–) | block (-3) |
-| jaguar | 20 | `P6` | close throw | 23 | 19 | 38 | 48.0 | recoil>standing-up>standing | 49 | hit (–) | hit (49) |
+| jaguar | 20 | `P6` | close throw | 23 | 19 | 38 | 38.0 | recoil>standing-up>standing | 49 | hit (–) | hit (49) |
 | jaguar | 17 | `P63` | leap (grounded P63) | 21 | 1 | 19 | 151.0 | recoil>standing-up>standing | 13 | block (–) | block (-7) |
 | jaguar | 16 | `P6321` | overhead throw special (P6321) | 26 | 1 | 19 | 176.0 | recoil>standing-up>standing | 39 | block (–) | block (-7) |
 | jaguar | 21 | `P41` | concussion cannon | 19 | 6 | 22 | 199.6 | recoil>standing | -1 | block (–) | block (1) |
@@ -38,7 +38,7 @@ repository root; outputs go to the ignored `build/omf_trace_z7/moves/`.
 | jaguar | 43 | `K` | jump kick | 15 | 10 | 21 | 85.0 | recoil>standing | 5 | block (–) | hit (7) |
 | shadow | 43 | `P` | standing punch | 13 | 2 | 30 | 95.0 | recoil>standing | -1 | block (–) | block (1) |
 | shadow | 42 | `K` | standing kick | 15 | 3 | 30 | 101.0 | recoil>standing | -2 | block (–) | block (0) |
-| shadow | 41 | `P6` | forward punch | – | – | 61 | 95.4 | recoil>wall-damage>recoil>standing-up>standing | – | hit (–) | hit (–) |
+| shadow | 41 | `P6` | forward punch | 7 | 1 | 11 | 95.4 | recoil>standing | 1 | block (–) | block (3) |
 | shadow | 15 | `P3` | down-forward punch | 5 | 1 | 17 | 77.0 | recoil>standing | 4 | block (–) | block (6) |
 | shadow | 36 | `P2` | down punch | 10 | 1 | 30 | 77.0 | recoil>standing | 1 | block (–) | block (3) |
 | shadow | 31 | `P1` | down-back punch | 18 | 5 | 38 | 89.0 | recoil>standing | -2 | block (–) | block (0) |
@@ -48,8 +48,9 @@ repository root; outputs go to the ignored `build/omf_trace_z7/moves/`.
 | shadow | 19 | `K1` | down-back kick | 15 | 3 | 41 | 111.0 | recoil>standing-up>standing | 28 | hit (–) | block (-5) |
 | shadow | 32 | `K6` | forward kick | 11 | 3 | 17 | 101.4 | recoil>standing | 0 | block (–) | block (2) |
 | shadow | 33 | `K4` | back kick | 19 | 4 | 43 | 93.5 | recoil>standing-up>standing | 27 | block (–) | block (-5) |
-| shadow | 20 | `P6` | close throw | 46 | 21 | 61 | 53.4 | recoil>wall-damage>recoil>standing-up>standing | 28 | miss (–) | hit (28) |
-| shadow | 16 | `P252` | P252 special | – | – | – | – | – | – | – (–) | – (–) |
+| shadow | 20 | `P6` | close throw | 46 | 21 | 61 | 37.4 | recoil>wall-damage>recoil>standing-up>standing | 28 | miss (–) | hit (28) |
+| shadow | 23 | `P4123` | Shadow Punch (needs enhancement 3) | not performed | | | | | | | |
+| shadow | 16 | `P252` | Shadow Grab (P252; holds, no damage) | 14 | 50 | – | 200.0 | recoil>standing | 121 | grab (–) | grab (121) |
 | shadow | 24 | `P41` | P41 special (unenhanced) | 15 | 8 | 41 | 205.5 | recoil>standing-up>standing | 35 | block (–) | block (1) |
 | shadow | 21 | `K41` | K41 special | 13 | 7 | 41 | 205.5 | recoil>standing-up>standing | 36 | hit (–) | block (-1) |
 | shadow | 46 | `P` | jump punch | 18 | 12 | 27 | 62.0 | recoil>standing | -1 | miss (–) | miss (–) |
@@ -74,17 +75,27 @@ guard columns give the result against standing and low guard.
 - Jaguar's down punch, the move whose recovery tail was previously unmeasured, runs
   14 ticks: 3 to damage, −1 on hit, +1 against low guard.
 
-## Gaps
+## Gaps and special rows
 
-- **Shadow `P252` (Shadow Grab, animation 16)** and **Shadow jump kick (animation
-  68)** produced no hit at any tested distance. The grab is carried out by a
-  projection that connects about 50 ticks after the input (see the
-  [model match review](OMF2115_MODEL_MATCH_REVIEW.md)), which is probably outside the
-  harness's hit window. The jump kick row is empty because no distance connected;
-  neither has been confirmed as a move that cannot hit.
-- **Shadow `P6` forward punch (animation 41)** has no animation-length or startup
-  value; its row reports a hit with wall damage and a 61 HP loss.
-- Shadow Punch (animation 23, `P4123`) is not in the harness's move list and is
-  unmeasured. Shadow's `P41` (animation 24) and `K41` (animation 21) were measured
-  unenhanced, as in the original Tournament; enhancement level 3 is not covered.
+- **Shadow Grab (animation 16, `P252`)** grabs rather than damages. In every tested
+  distance up to the 200-unit end of the sweep, Shadow's projection reaches the
+  opponent, holds them in throw state 7 for about 85 ticks (tick 176 to 261 in the
+  fixture), and releases them with no health loss. It takes 50 ticks from the input
+  to the grab, and the grab is not stopped by standing or low guard. The table's
+  startup counts ticks to the grab, "damage" is empty by design, and "Adv. on hit"
+  (121) is the harness's free-tick comparison, not a normal frame advantage.
+- **Shadow jump kick (animation 68)** is performed (ticks 126–143) but never connected
+  at any distance from 20 to 140 source units with the harness's neutral-jump timing,
+  where the jump punch does connect. That is probably a timing or height effect, not a
+  move that cannot hit; it needs a different input timing and has not been measured.
+- **Shadow Punch (animation 23, `P4123`)** is not performed in the unenhanced fixture.
+  This matches the original Tournament, where its script only exists at enhancement
+  level 3; enhancement 3 is not covered here.
+- **Shadow forward punch (animation 41)** now reports a normal punch (7 ticks, 11
+  damage). At gaps near 30 units the same `P6` input becomes the close throw (animation
+  20), so the harness only counts a hit when the attacker is playing the tested
+  animation. That correction also lowered Shadow's close-throw reach from 53.4 to 37.4
+  units, against Jaguar's 48.0.
+- Shadow's `P41` (animation 24) and `K41` (animation 21) were measured unenhanced, as in
+  the original Tournament.
 - These are single-pilot, single-stage measurements, not universal values.

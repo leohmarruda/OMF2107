@@ -90,11 +90,12 @@ MOVES = [
     Move("shadow", 32, "K6", "forward kick"),
     Move("shadow", 33, "K4", "back kick"),
     Move("shadow", 20, "P6", "close throw", gaps=[25, 30, 35, 40, 45, 50, 60]),
-    Move("shadow", 16, "P252", "P252 special"),
+    Move("shadow", 23, "P4123", "Shadow Punch (needs enhancement 3)"),
+    Move("shadow", 16, "P252", "Shadow Grab (P252; holds, no damage)"),
     Move("shadow", 24, "P41", "P41 special (unenhanced)"),
     Move("shadow", 21, "K41", "K41 special"),
     Move("shadow", 46, "P", "jump punch", jump=True, gaps=[20, 30, 40, 55, 70, 85]),
-    Move("shadow", 68, "K", "jump kick", jump=True, gaps=[20, 30, 40, 55, 70, 85]),
+    Move("shadow", 68, "K", "jump kick", jump=True, gaps=[20, 30, 40, 55, 70, 85, 100, 120, 140]),
 ]
 
 
@@ -196,8 +197,13 @@ def analyse(rows: list[dict], move: Move) -> dict:
                        int(d[t].get("block_mask", 0) or 0) & (1 << int(defender))), None)
     if hit_tick is None and block_tick is None:
         block_tick = next((t for t in sorted(d) if t >= INPUT_TICK and int(d[t]["state"]) == 10), None)
-    contact = hit_tick if hit_tick is not None else block_tick
-    res["result"] = "hit" if hit_tick is not None else ("block" if block_tick is not None else "miss")
+    # A grab (Shadow's P252) holds the defender in throw state 7 without any health loss.
+    grab_tick = None
+    if hit_tick is None and block_tick is None:
+        grab_tick = next((t for t in sorted(d) if t >= INPUT_TICK and int(d[t]["state"]) == 7), None)
+    contact = hit_tick if hit_tick is not None else (grab_tick if grab_tick is not None else block_tick)
+    res["result"] = ("hit" if hit_tick is not None else "grab" if grab_tick is not None else
+                     "block" if block_tick is not None else "miss")
     if contact is not None:
         res["contact_tick"] = contact
         if res.get("anim_start") is not None:
@@ -235,22 +241,28 @@ def job(move: Move, gap: int, guard: str) -> tuple[Move, int, str, dict]:
     return move, gap, guard, analyse(run_fixture(rec, trace), move)
 
 
+def connects(r: dict) -> bool:
+    """The tested move itself reached the defender. At close range a button can turn into another
+    move (Shadow's P6 becomes the close throw), so the attacker must be playing the move's animation."""
+    return r["performed"] and r["result"] in ("hit", "grab")
+
+
 def measure(move: Move, pool: cf.Executor) -> dict:
     sweep = {gap: r for _, gap, _, r in pool.map(lambda g: job(move, g, "none"), move.gaps)}
-    hits = sorted(g for g, r in sweep.items() if r["result"] == "hit")
+    hits = sorted(g for g, r in sweep.items() if connects(r))
     out = {"move": move, "sweep": sweep, "performed": any(r["performed"] for r in sweep.values())}
     if not hits:
         return out
     # Refine the far edge of the hit range to one source unit.
     lo = max(hits)
-    misses = sorted(g for g, r in sweep.items() if g > lo and r["result"] != "hit")
+    misses = sorted(g for g, r in sweep.items() if g > lo and not connects(r))
     if misses:
         hi = misses[0]
         while hi - lo > 1:
             mid = (lo + hi) // 2
             r = job(move, mid, "none")[3]
             sweep[mid] = r
-            if r["result"] == "hit":
+            if connects(r):
                 lo = mid
             else:
                 hi = mid

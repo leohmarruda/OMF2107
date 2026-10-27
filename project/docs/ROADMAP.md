@@ -69,9 +69,10 @@ stack; it would then need the same state exporter and REC parity checks.
 ## Immediate next work
 
 1. Finish the **original-game baseline**. Isolated range, timing, and guard
-   checks now cover 31 of 34 Jaguar and Shadow attacks in
-   [OMF2115_MOVE_MEASUREMENTS.md](OMF2115_MOVE_MEASUREMENTS.md); Shadow Grab,
-   Shadow's jump kick, and Shadow Punch (animation 23) remain unmeasured. Signature traces, Stadium
+   checks now cover 33 of 35 Jaguar and Shadow attacks in
+   [OMF2115_MOVE_MEASUREMENTS.md](OMF2115_MOVE_MEASUREMENTS.md); Shadow's jump kick
+   and Shadow Punch (animation 23, enhancement 3 only) remain unmeasured.
+   Signature traces, Stadium
    wall response, and a replayable source-driven match are recorded. Full-match
    readability has had a human playtest with both the blockout and Meshy
    models (2026-10-27): both judged good.
