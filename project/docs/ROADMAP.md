@@ -69,18 +69,24 @@ stack; it would then need the same state exporter and REC parity checks.
 ## Immediate next work
 
 1. Finish the **original-game baseline** with isolated range and guard/stun
-   checks for the remaining Jaguar and Shadow moves, then validate full-match
-   readability with a human playtest. Signature traces, Stadium wall response,
-   and a replayable source-driven match are now recorded.
-2. Human-review the updated close-contact punch/kick spacing and signature
-   poses at normal speed; source-replay captures now verify the sampled contact
-   positions without changing OpenOMF timing or results.
-3. Stadium staging now has an enclosed bowl, stepped crowd stands, and a
-   central board. The live launcher now opens an in-game selection screen that
-   connects ten playable pilots to Jaguar or Shadow, using their OpenOMF stats.
-   Human-test the full Stadium match while OpenOMF owns combat timing/results.
+   checks for the remaining Jaguar and Shadow moves. Signature traces, Stadium
+   wall response, and a replayable source-driven match are recorded. Full-match
+   readability has had a human playtest with both the blockout and Meshy
+   models (2026-10-27): both judged good.
+2. Human-review of close-contact punch/kick spacing and signature poses at
+   normal speed was part of that playtest; source-replay captures verify the
+   sampled contact positions without changing OpenOMF timing or results.
+3. Stadium staging has an enclosed bowl, stepped crowd stands, and a central
+   board. The blockout launcher (`run-blockout.ps1`; `run-meshy.ps1 -Fight` for
+   the Meshy stand-ins) opens an in-game selection screen that connects ten
+   playable pilots to Jaguar or Shadow, using their OpenOMF stats. The full
+   Stadium match was human-tested while OpenOMF owns combat timing/results.
 4. Compare that playable match against the [recorded model match review](OMF2115_MODEL_MATCH_REVIEW.md)
-   before expanding the roster or adding story scenes.
+   before expanding the roster or adding story scenes. This is the next gate.
+5. In parallel, pose and mesh authoring: mesh landmarks
+   (`project/data/mesh_landmarks.json`, landmark editor) and projection-pose
+   matching (`match_projection_poses.py`) feed the pose catalog; see
+   [POSE_AUTHORING.md](POSE_AUTHORING.md).
 
 ## Scope boundaries
 
