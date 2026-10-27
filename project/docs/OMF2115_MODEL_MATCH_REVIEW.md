@@ -128,6 +128,37 @@ and [after](../build/omf3d_jag_down_punch_contact_tick129.png) fight-camera
 captures. This is a single contact sample; see the [Jaguar baseline](OMF2115_JAGUAR_BASELINE.md)
 for the trace timeline and remaining recovery measurement.
 
+## Jaguar throw trace — 2026-10-27
+
+`rectests/JAG-CORNER-THROW.REC` (Crystal/Jaguar vs Shirro/Electra, Stadium) was
+replayed headlessly with the trace build and displayed with `--source-replay`.
+The replay reproduces the [Jaguar baseline](OMF2115_JAGUAR_BASELINE.md) values:
+Jaguar enters animation 20 on tick 191, Electra enters state 7 and animation 9
+on the same tick, Electra's health falls from 196 to 158 on tick 210, and Jaguar
+returns to idle on tick 214. The replay check passes (441 frames).
+
+The thrown HAR is not held at one offset from the thrower. Source positions in
+the trace:
+
+| Tick | Jaguar x | Electra x | Gap | Electra sprite |
+| ---: | ---: | ---: | ---: | ---: |
+| 191 | 36.0 | 71.0 | 35.0 | 1 |
+| 194 | 36.0 | 61.0 | 25.0 | 2 |
+| 198 | 36.0 | 29.0 | −7.0 (Electra behind Jaguar) | 12 |
+| 202 | 52.0 | 20.0 | −32.0 | 11 |
+| 206 | 55.0 | 20.0 | −35.0 | 2 |
+| 210 | 55.0 | 20.0 | −35.0 | 12 |
+
+Electra passes over Jaguar between ticks 194 and 198 and ends behind the
+thrower, so the two bodies are meant to overlap during the throw. This is
+source behavior, not a rendering fault. Local captures (ignored `project/build/`)
+are in `project/build/mesh-match-ticks/throw-191.bmp`, `throw-198.bmp`,
+`throw-202.bmp`, and `throw-210.bmp`. In the tick-198 capture the thrown robot
+is above the thrower; at tick 210 the two meshes overlap again at the wall
+side. Whether the arm and torso poses hand off cleanly between the two robots
+has not been judged from these stills; that needs a normal-speed look at the
+replay.
+
 ## Shadow Punch animation
 
 The first source-driven Shadow Punch view changed the arm joints across
