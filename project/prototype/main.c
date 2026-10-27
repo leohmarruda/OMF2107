@@ -891,29 +891,49 @@ static void source_projectiles(void) {
         if(p->owner<0 || p->owner>1) continue;
         int har=frame->fighter[p->owner].har;
         if(har==0 && (p->animation==38 || p->animation==37)) {
-            float size=p->animation==37 ? .43f : .28f;
+            // Concussion shot (38) in flight and its impact burst (37). The burst grows with the source impact
+            // sprite 0-5, so it reads at fight-camera scale; position and timing stay as OpenOMF reports them.
             float direction=p->facing>=0 ? 1.0f : -1.0f;
             float yaw=p->facing>=0 ? -1.5707963f : 1.5707963f;
-            for(int trail=3;trail>=1;trail--)
-                box(x-direction*(size*.45f+trail*.16f),y,0,
-                    size*(.34f-trail*.06f),size*(.42f-trail*.08f),size*(.82f-trail*.13f),yaw,
-                    .08f,.36f+trail*.08f,.48f+trail*.08f);
-            box(x,y,0,size*.54f,size*.72f,size*1.48f,yaw,.08f,.42f,.68f);
-            box(x+direction*size*.06f,y,0,size*.34f,size*.48f,size*1.30f,yaw,.20f,.74f,.96f);
-            box(x+direction*size*.12f,y,0,size*.16f,size*.25f,size*1.08f,yaw,.85f,1.0f,1.0f);
+            if(p->animation==38) {
+                float size=.62f;
+                for(int trail=5;trail>=1;trail--)
+                    box(x-direction*(size*.45f+trail*.22f),y,0,
+                        size*(.38f-trail*.05f),size*(.46f-trail*.06f),size*(.90f-trail*.12f),yaw,
+                        .08f,.30f+trail*.07f,.44f+trail*.07f);
+                box(x,y,0,size*.20f,size*1.00f,size*1.70f,yaw,.05f,.26f,.50f);              // outer glow: a thin sheet the core sticks out of
+                // Each brighter layer is shorter and thinner but deeper toward the camera, so the layers stack visibly.
+                box(x,y,0,size*.30f,size*.72f,size*1.48f,yaw,.08f,.42f,.68f);
+                box(x+direction*size*.06f,y,0,size*.40f,size*.48f,size*1.30f,yaw,.20f,.74f,.96f);
+                box(x+direction*size*.12f,y,0,size*.50f,size*.25f,size*1.08f,yaw,.85f,1.0f,1.0f);
+            } else {
+                int frame_index=p->sprite>5 ? 5 : p->sprite;
+                float size=.55f+.14f*(float)frame_index;
+                box(x,y,0,size*.20f,size*1.00f,size*1.30f,yaw,.05f,.26f,.50f);
+                box(x,y,0,size*.30f,size*.72f,size*1.10f,yaw,.08f,.42f,.68f);
+                box(x,y,0,size*.40f,size*.48f,size*.90f,yaw,.20f,.74f,.96f);
+                box(x,y,0,size*.50f,size*.25f,size*.70f,yaw,.85f,1.0f,1.0f);
+                for(int k=0;k<8;k++) {
+                    float a=.785398f*(float)k;
+                    box(x+cosf(a)*size*.85f,y+sinf(a)*size*.85f,0,size*.12f,size*.12f,size*.32f,yaw,.55f,.92f,1.0f);
+                }
+            }
         } else if(har==1 && (p->animation==54 || p->animation==60)) {
-            // Shadow Punch's ice blade slides along the floor (54) and bursts on contact (60).
+            // Shadow Punch's ice blade slides along the floor (54) and bursts on contact (60); larger and
+            // trailing so it reads at fight-camera scale. The burst grows with the source sprite.
             float direction=p->facing>=0 ? 1.0f : -1.0f;
             float yaw=p->facing>=0 ? -1.5707963f : 1.5707963f;
             ring(x,0,.48f,.55f,.34f,.24f,.74f);
             if(p->animation==54) {
-                for(int k=0;k<4;k++)
-                    box(x-direction*.16f*(float)k,.10f+.03f*(float)k,0,.30f-.05f*(float)k,.16f+.04f*(float)k,
-                        .46f-.08f*(float)k,yaw,.40f,.86f,.98f);
+                for(int k=0;k<6;k++)
+                    box(x-direction*.26f*(float)k,.14f+.04f*(float)k,0,.48f-.06f*(float)k,.26f+.05f*(float)k,
+                        .72f-.09f*(float)k,yaw,.40f,.86f-.04f*(float)k,.98f);
             } else {
-                for(int k=0;k<5;k++)
-                    box(x+direction*(.12f*(float)(k-2)),.22f+.14f*(float)(k%3),0,.14f,.40f+.16f*(float)(k%2),
-                        .22f,yaw,.60f,.94f,1.0f);
+                int frame_index=p->sprite>5 ? 5 : (p->sprite<0 ? 0 : p->sprite);
+                float grow=1.0f+.22f*(float)frame_index;
+                for(int k=0;k<7;k++)
+                    box(x+direction*(.18f*(float)(k-3))*grow,(.30f+.20f*(float)(k%3))*grow,0,.20f*grow,
+                        (.56f+.22f*(float)(k%2))*grow,.32f*grow,yaw,.60f,.94f,1.0f);
             }
         } else if(har==1 && shadow_projection_animation(p->animation)) {
             // Shadow's projections are full Shadow figures, drawn with the rig. A sprite authored in the pose editor
