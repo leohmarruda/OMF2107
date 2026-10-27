@@ -72,11 +72,27 @@ void path_from_str(path *path, const str *src) {
 }
 
 #if defined(_WIN32) || defined(WIN32)
+// Names must differ between processes, so seed from the clock and process id instead of the
+// (unseeded, deterministic) C rand().
+static uint64_t noise_state = 0;
+
+static uint32_t noise_next(void) {
+    if(noise_state == 0) {
+        LARGE_INTEGER counter;
+        QueryPerformanceCounter(&counter);
+        noise_state = (uint64_t)counter.QuadPart ^ ((uint64_t)GetCurrentProcessId() << 32) ^ 0x9E3779B97F4A7C15ULL;
+    }
+    noise_state ^= noise_state << 13;
+    noise_state ^= noise_state >> 7;
+    noise_state ^= noise_state << 17;
+    return (uint32_t)(noise_state >> 16);
+}
+
 static void generate_noise(str *component, size_t size) {
     char characters[] = "ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789";
     size_t len = strlen(characters);
     for(size_t i = 0; i < size; i++) {
-        str_append_char(component, characters[rand() % len]);
+        str_append_char(component, characters[noise_next() % len]);
     }
 }
 #endif

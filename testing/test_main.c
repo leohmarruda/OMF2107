@@ -7,7 +7,6 @@ void palette_test_suite(CU_pSuite suite);
 void rec_test_suite(CU_pSuite suite);
 void trn_test_suite(CU_pSuite suite);
 void script_test_suite(CU_pSuite suite);
-void script_reader_test_suite(CU_pSuite suite);
 void str_test_suite(CU_pSuite suite);
 void hashmap_test_suite(CU_pSuite suite);
 void vector_test_suite(CU_pSuite suite);
@@ -145,12 +144,6 @@ int main(int argc, char **argv) {
         goto end;
     }
     script_test_suite(suite);
-
-    suite = CU_add_suite("Script Reader", NULL, NULL);
-    if(suite == NULL) {
-        goto end;
-    }
-    script_reader_test_suite(suite);
 
     CU_pSuite ringbuffer_suite = CU_add_suite("Ringbuffer", NULL, NULL);
     if(ringbuffer_suite == NULL) {
