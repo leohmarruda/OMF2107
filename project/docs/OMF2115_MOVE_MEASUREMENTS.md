@@ -49,7 +49,7 @@ repository root; outputs go to the ignored `build/omf_trace_z7/moves/`.
 | shadow | 32 | `K6` | forward kick | 11 | 3 | 17 | 101.4 | recoil>standing | 0 | block (–) | block (2) |
 | shadow | 33 | `K4` | back kick | 19 | 4 | 43 | 93.5 | recoil>standing-up>standing | 27 | block (–) | block (-5) |
 | shadow | 20 | `P6` | close throw | 46 | 21 | 61 | 37.4 | recoil>wall-damage>recoil>standing-up>standing | 28 | miss (–) | hit (28) |
-| shadow | 23 | `P4123` | Shadow Punch (needs enhancement 3) | not performed | | | | | | | |
+| shadow | 23 | `P4123` | Shadow Punch (enhancement 3) | 15 | 10 | 14 | 205.5 | recoil>standing | 66 | hit (–) | block (5) |
 | shadow | 16 | `P252` | Shadow Grab (P252; holds, no damage) | 14 | 50 | – | 200.0 | recoil>standing | 121 | grab (–) | grab (121) |
 | shadow | 24 | `P41` | P41 special (unenhanced) | 15 | 8 | 41 | 205.5 | recoil>standing-up>standing | 35 | block (–) | block (1) |
 | shadow | 21 | `K41` | K41 special | 13 | 7 | 41 | 205.5 | recoil>standing-up>standing | 36 | hit (–) | block (-1) |
@@ -88,9 +88,11 @@ guard columns give the result against standing and low guard.
   at any distance from 20 to 140 source units with the harness's neutral-jump timing,
   where the jump punch does connect. That is probably a timing or height effect, not a
   move that cannot hit; it needs a different input timing and has not been measured.
-- **Shadow Punch (animation 23, `P4123`)** is not performed in the unenhanced fixture.
-  This matches the original Tournament, where its script only exists at enhancement
-  level 3; enhancement 3 is not covered here.
+- **Shadow Punch (animation 23, `P4123`)** only exists at enhancement level 3 (its
+  base script is a no-op, as in the original Tournament), so the harness sets Shadow's
+  upgrade level to 3 for it. Its ice blade travels along the floor: it hits standing
+  guard and is blocked by low guard, and its reach (205.5 units) is the end of the
+  sweep. Unenhanced, the same input performs animation 24 (`P41`).
 - **Shadow forward punch (animation 41)** now reports a normal punch (7 ticks, 11
   damage). At gaps near 30 units the same `P6` input becomes the close throw (animation
   20), so the harness only counts a hit when the attacker is playing the tested

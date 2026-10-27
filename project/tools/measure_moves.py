@@ -56,6 +56,7 @@ class Move:
     string: str        # AF move string, e.g. "P6321"
     name: str
     jump: bool = False  # air attack: neutral jump first, button at the apex window
+    enhancement: int = 0  # Shadow only: upgrade level set on the attacker (Shadow Punch needs 3)
     gaps: list[int] = field(default_factory=lambda: [30, 40, 55, 70, 85, 100, 120, 140, 170, 200])
 
 
@@ -90,7 +91,7 @@ MOVES = [
     Move("shadow", 32, "K6", "forward kick"),
     Move("shadow", 33, "K4", "back kick"),
     Move("shadow", 20, "P6", "close throw", gaps=[25, 30, 35, 40, 45, 50, 60]),
-    Move("shadow", 23, "P4123", "Shadow Punch (needs enhancement 3)"),
+    Move("shadow", 23, "P4123", "Shadow Punch (enhancement 3)", enhancement=3),
     Move("shadow", 16, "P252", "Shadow Grab (P252; holds, no damage)"),
     Move("shadow", 24, "P41", "P41 special (unenhanced)"),
     Move("shadow", 21, "K41", "K41 special"),
@@ -157,6 +158,9 @@ def build_fixture(path: Path, move: Move, gap: int, guard: str) -> None:
         events.append((POSITION_TICK + 1, defender, hold))
     for tick, player, action in sorted(events):
         append_action(path, tick, player, action)
+    if move.enhancement:
+        # Same rectool call the signature trace fixtures use: pilot 2's Shadow upgrade level.
+        rectool("-f", str(path), "--inplace", "-k", "enhancement", "-k", "1", "-k", "1", "-s", str(move.enhancement))
     rectool("-f", str(path), "--inplace", "--assert", "--assertion_tick", str(END_TICK),
             "--operator", "gt", "--operand1", "har1", "--operand1_value", "xpos",
             "--operand2", "literal", "--operand2_value", "0")
@@ -229,7 +233,7 @@ def analyse(rows: list[dict], move: Move) -> dict:
 
 
 def job(move: Move, gap: int, guard: str) -> tuple[Move, int, str, dict]:
-    stem = f"{move.har}-{move.move_id}-{guard}-{gap}"
+    stem = f"{move.har}-{move.move_id}{f'-enh{move.enhancement}' if move.enhancement else ''}-{guard}-{gap}"
     rec, trace = OUT / f"{stem}.REC", OUT / f"{stem}.csv"
     if trace.exists() and trace.stat().st_size > 0:
         # Reuse a finished trace so interrupted batches can resume.
