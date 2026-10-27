@@ -317,11 +317,19 @@ build/omf_debug_z7/story_check.exe check project/data/story/crystal_christian.st
 build/omf_debug_z7/story_check.exe play project/data/story/crystal_christian.story --choices 0,1 --results 1
 ```
 
-Matches cannot be played from the story yet. `--debug-fights` (or `run-story.ps1 -DebugFights`) lets
-you skip each match by choosing the result with Y (win) or N (loss); the log records "Match skipped".
-Without it the match screen says the real match is not connected. `project/scripts/run-story.ps1`
-starts story mode (`-New`, `-DebugFights`, `-Scene id`) and warns when the viewer executable is older
-than its sources, since the run scripts do not build.
+At a `fight` line, Enter starts a real match: the first fighter is you and the second is the AI. The
+story viewer runs `project/scripts/run-blockout-jaguar.ps1` as a child process (Windows only) and waits;
+when the match is decided the live viewer writes `project/build/story/match-result.txt`, shows the result
+for a few seconds, and exits, and the story continues on its win or lose scene and autosaves. Closing the
+match window cancels and leaves the story at the match to retry. The child runs in a job object, so
+closing the story window also ends the match and OpenOMF. The two fighters must use different HARs
+(Jaguar and Shadow), and a match is one round in Stadium with hazards off against the default AI.
+
+`--debug-fights` (or `run-story.ps1 -DebugFights`) lets you skip a match by choosing the result with Y
+(win) or N (loss); the log records "Match skipped". `project/scripts/run-story.ps1` starts story mode
+(`-New`, `-DebugFights`, `-Scene id`) and warns when the viewer executable is older than its sources,
+since the run scripts do not build. Rebuild OpenOMF's trace build as well (`build.ps1 -Config All`) after
+changes under `src/`, because the live match uses `build/omf_trace_z7/openomf.exe`.
 
 Progress is saved automatically to `project/build/story/<script name>.save` whenever a choice or a
 match result is decided and whenever play stops at a choice, match, or the end. Opening the same

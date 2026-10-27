@@ -451,6 +451,8 @@ int story_skip(StoryRun *run) {
 
 void story_note(StoryRun *run, const char *text) { log_add(run, "DEBUG", text); }
 
+void story_record(StoryRun *run, const char *speaker, const char *text) { log_add(run, speaker, text); }
+
 int story_log_count(const StoryRun *run) { return run->log_total < STORY_LOG ? run->log_total : STORY_LOG; }
 
 const StoryLogEntry *story_log_at(const StoryRun *run, int index) {

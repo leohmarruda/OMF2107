@@ -8,7 +8,12 @@ param(
     # Original Tournament upgrade level for Shadow (0-3). Shadow's shadow attacks,
     # such as Shadow Punch, only exist in the original data at level 3.
     [ValidateRange(0, 3)]
-    [int]$ShadowEnhancement = 0
+    [int]$ShadowEnhancement = 0,
+    # Story matches: the AI rival's pilot, and a file the viewer writes the winner to before it exits
+    # (without the retry prompt). The rival always fights in the HAR the player did not pick.
+    [ValidateSet('', 'Crystal', 'Steffan', 'Milano', 'Christian', 'Shirro', 'JeanPaul', 'Ibrahim', 'Angel', 'Cossette', 'Raven')]
+    [string]$RivalPilot = '',
+    [string]$ResultFile = ''
 )
 
 $ErrorActionPreference = 'Stop'
@@ -36,12 +41,19 @@ $Pilot = $pilotNames | Where-Object { $_ -ieq $Pilot } | Select-Object -First 1
 $env:OMF3K_LIVE_PILOT_ID = [string][array]::IndexOf($pilotNames, $Pilot)
 $env:OMF3K_LIVE_PILOT_NAME = $Pilot.ToUpperInvariant()
 $env:OMF3K_LIVE_RIVAL_NAME = if ($Player -eq 'Shadow') { 'CRYSTAL' } else { 'SHIRRO' }
+$env:OMF3K_LIVE_RIVAL_PILOT_ID = $null
+if ($RivalPilot -ne '') {
+    $RivalPilot = $pilotNames | Where-Object { $_ -ieq $RivalPilot } | Select-Object -First 1
+    $env:OMF3K_LIVE_RIVAL_PILOT_ID = [string][array]::IndexOf($pilotNames, $RivalPilot)
+    $env:OMF3K_LIVE_RIVAL_NAME = $RivalPilot.ToUpperInvariant()
+}
 $env:OMF3K_SHADOW_ENHANCEMENT = [string]$ShadowEnhancement
 Write-Host "Starting $Pilot / $Player in Stadium"
 $env:OMF3K_INPUT_MAP = 'Local\OMF3KInput_' + [Guid]::NewGuid().ToString('N')
 $env:OMF3K_STATE_MAP = 'Local\OMF3KState_' + [Guid]::NewGuid().ToString('N')
 $viewerArgs = @('--source-live', $tracePath)
 if ($CaptureTick -ge 0) { $viewerArgs += @('--capture-tick', [string]$CaptureTick) }
+if ($ResultFile -ne '') { $viewerArgs += @('--result-file', $ResultFile) }
 $viewerOut = Join-Path $sourceDir 'omf3k-live-viewer-out.txt'
 $viewerErr = Join-Path $sourceDir 'omf3k-live-viewer-err.txt'
 $sourceOut = Join-Path $sourceDir 'omf3k-live-source-out.txt'

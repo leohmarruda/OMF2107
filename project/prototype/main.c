@@ -46,6 +46,11 @@ static float camera_y;
 static int phase; // 0 briefing, 1 fight, 2 victory, 3 defeat
 static int try_again_choice; // 0 yes, 1 no
 static int source_live_winner = -1;
+// --result-file: when the live match is decided, write the winner here, hold the final pose briefly, and
+// exit, so a story can read the result. Replaces the retry prompt.
+static const char *live_result_path;
+static bool live_result_written;
+static double live_result_timer;
 static bool restart_live_match;
 static Fighter player, rival;
 static float elapsed;
@@ -88,6 +93,8 @@ static StoryRun story_run;
 static const char *story_start_scene;
 static int story_sel;
 static bool story_log_open;
+static int story_match_state;              // real match: 0 idle, 1 running, 2 closed without a result
+static char story_match_message[96];
 static bool story_debug_fights;   // --debug-fights: matches can be skipped by choosing the result
 static bool story_save_enabled;
 static char story_save_buf[512];
@@ -1148,12 +1155,14 @@ static void story_hud(void) {
         label(-.92f,-.44f,.009f,who[0],.55f,.90f,1);
         label(-.92f,-.53f,.009f,"VS",.70f,.78f,.85f);
         label(-.92f,-.62f,.009f,who[1],1,.70f,.62f);
-        if(story_debug_fights) {
-            hint="DEBUG: Y WIN  N LOSE";
+        if(story_match_state==1) {
+            label(-.92f,-.74f,.009f,"MATCH IN PROGRESS",1,.80f,.45f);
+            label(-.92f,-.83f,.009f,"PLAY IN THE MATCH WINDOW.",.92f,.95f,.98f);
+            hint="CLOSE THE MATCH WINDOW TO CANCEL";
         } else {
-            label(-.92f,-.74f,.009f,"REAL MATCH NOT CONNECTED YET.",.92f,.95f,.98f);
-            label(-.92f,-.83f,.009f,"USE --DEBUG-FIGHTS TO SKIP.",.92f,.95f,.98f);
-            hint="L LOG";
+            label(-.92f,-.74f,.009f,"ENTER START MATCH",.92f,.95f,.98f);
+            if(story_match_message[0]) label(-.92f,-.83f,.009f,story_match_message,1,.70f,.55f);
+            hint=story_debug_fights ? "DEBUG: Y WIN  N LOSE" : "ENTER START  L LOG";
         }
     } else {
         label(-.92f,-.30f,.012f,"THE END",.80f,.90f,.55f);
@@ -1198,6 +1207,103 @@ static void story_autosave(void) {
         story_notify("SAVE FAILED");
     }
 }
+// ---- real matches: run the live pipeline as a child process and wait for its result file ----
+// Windows only (the live link uses shared memory). The child runs inside a job object that is killed when
+// this window exits, so closing the story can never leave a hidden OpenOMF running.
+static char story_match_result_path[512];
+#ifdef _WIN32
+static HANDLE story_match_job;
+static HANDLE story_match_child;
+#endif
+static bool story_har_equal(const char *a,const char *b) {
+    for(;*a && *b;a++,b++) if((*a|32)!=(*b|32)) return false;
+    return *a==*b;
+}
+static void story_notify(const char *text);
+static void story_autosave(void);
+static void story_match_finish(bool win) {
+    story_record(&story_run,"MATCH",win ? "You won the match." : "You lost the match.");
+    story_fight_result(&story_run,win);
+    story_sel=0;
+    story_match_state=0;
+    story_match_message[0]=0;
+    story_autosave();
+}
+static void story_match_start(void) {
+    if(story_run.event!=STORY_EVENT_FIGHT || story_match_state==1) return;
+    const StoryCmd *c=story_event_cmd(&story_run);
+    story_match_message[0]=0;
+    if(story_har_equal(c->har[0],c->har[1])) {
+        snprintf(story_match_message,sizeof(story_match_message),"BOTH FIGHTERS USE %s: NOT SUPPORTED YET.",c->har[0]);
+        return;
+    }
+#ifdef _WIN32
+    char launcher[512],result[512];
+    if(!_fullpath(launcher,"project/scripts/run-blockout-jaguar.ps1",sizeof(launcher)) ||
+       !_fullpath(result,"project/build/story/match-result.txt",sizeof(result))) {
+        snprintf(story_match_message,sizeof(story_match_message),"CANNOT FIND THE MATCH LAUNCHER.");
+        return;
+    }
+    FILE *probe=fopen(launcher,"rb");
+    if(!probe) {
+        snprintf(story_match_message,sizeof(story_match_message),"MATCH LAUNCHER MISSING: RUN FROM THE REPO ROOT.");
+        return;
+    }
+    fclose(probe);
+    story_make_dirs();
+    remove(result);
+    snprintf(story_match_result_path,sizeof(story_match_result_path),"%s",result);
+    char cmd[1600];
+    snprintf(cmd,sizeof(cmd),"powershell.exe -NoProfile -ExecutionPolicy Bypass -File \"%s\" -Player %s -Pilot %s "
+             "-RivalPilot %s -ResultFile \"%s\"",launcher,c->har[0],c->pilot[0],c->pilot[1],result);
+    if(!story_match_job) {
+        story_match_job=CreateJobObjectA(NULL,NULL);
+        if(story_match_job) {
+            JOBOBJECT_EXTENDED_LIMIT_INFORMATION limits;
+            memset(&limits,0,sizeof(limits));
+            limits.BasicLimitInformation.LimitFlags=JOB_OBJECT_LIMIT_KILL_ON_JOB_CLOSE;
+            SetInformationJobObject(story_match_job,JobObjectExtendedLimitInformation,&limits,sizeof(limits));
+        }
+    }
+    STARTUPINFOA startup;
+    PROCESS_INFORMATION process;
+    memset(&startup,0,sizeof(startup));
+    startup.cb=sizeof(startup);
+    memset(&process,0,sizeof(process));
+    if(!CreateProcessA(NULL,cmd,NULL,NULL,FALSE,CREATE_SUSPENDED|CREATE_NO_WINDOW,NULL,NULL,&startup,&process)) {
+        snprintf(story_match_message,sizeof(story_match_message),"COULD NOT START THE MATCH.");
+        return;
+    }
+    if(story_match_job) AssignProcessToJobObject(story_match_job,process.hProcess);
+    ResumeThread(process.hThread);
+    CloseHandle(process.hThread);
+    story_match_child=process.hProcess;
+    story_match_state=1;
+#else
+    snprintf(story_match_message,sizeof(story_match_message),"REAL MATCHES NEED WINDOWS FOR NOW.");
+#endif
+}
+// Called every frame: notices when the match process has ended and reads its result.
+static void story_match_poll(void) {
+#ifdef _WIN32
+    if(story_match_state!=1 || !story_match_child) return;
+    if(WaitForSingleObject(story_match_child,0)!=WAIT_OBJECT_0) return;
+    CloseHandle(story_match_child);
+    story_match_child=NULL;
+    int winner=-1;
+    FILE *f=fopen(story_match_result_path,"r");
+    if(f) {
+        if(fscanf(f,"winner=%d",&winner)!=1) winner=-1;
+        fclose(f);
+    }
+    if(winner==0 || winner==1) {
+        story_match_finish(winner==0);
+    } else {
+        story_match_state=2;
+        snprintf(story_match_message,sizeof(story_match_message),"MATCH CLOSED WITH NO RESULT. ENTER TO RETRY.");
+    }
+#endif
+}
 static void story_restart(void) {
     story_start(&story_run,&story_data,story_start_scene);
     story_sel=0;
@@ -1214,7 +1320,9 @@ static void story_act(char action,int number) {
         case 'a':
             if(story_run.event==STORY_EVENT_SAY) story_advance(&story_run);
             else if(story_run.event==STORY_EVENT_CHOICE) { story_choose(&story_run,story_sel); story_sel=0; }
+            else if(story_run.event==STORY_EVENT_FIGHT) story_match_start();
             break;
+        case 'm': story_match_start(); break;
         case 'c': if(story_choose(&story_run,number)) story_sel=0; break;
         case 'u': if(story_run.event==STORY_EVENT_CHOICE) story_sel=(story_sel+story_run.choice_count-1)%story_run.choice_count; break;
         case 'd': if(story_run.event==STORY_EVENT_CHOICE) story_sel=(story_sel+1)%story_run.choice_count; break;
@@ -1443,12 +1551,16 @@ static void hud(void) {
                       source_live_winner==0?.67f:1.0f,
                       source_live_winner==0?.95f:.58f,
                       source_live_winner==0?.77f:.63f);
-                label(-.68f,.10f,.015f,"TRY AGAIN?",.85f,.9f,.96f);
-                label(-.40f,-.08f,.018f,"YES",try_again_choice==0?.38f:.48f,
-                      try_again_choice==0?.92f:.55f,try_again_choice==0?1.0f:.64f);
-                label(.12f,-.08f,.018f,"NO",try_again_choice==1?.38f:.48f,
-                      try_again_choice==1?.92f:.55f,try_again_choice==1?1.0f:.64f);
-                label(-.59f,-.23f,.009f,"LEFT/RIGHT SELECT  ENTER CONFIRM",.57f,.70f,.80f);
+                if(live_result_path) {
+                    label(-.42f,.06f,.015f,"BACK TO THE STORY",.85f,.9f,.96f);
+                } else {
+                    label(-.68f,.10f,.015f,"TRY AGAIN?",.85f,.9f,.96f);
+                    label(-.40f,-.08f,.018f,"YES",try_again_choice==0?.38f:.48f,
+                          try_again_choice==0?.92f:.55f,try_again_choice==0?1.0f:.64f);
+                    label(.12f,-.08f,.018f,"NO",try_again_choice==1?.38f:.48f,
+                          try_again_choice==1?.92f:.55f,try_again_choice==1?1.0f:.64f);
+                    label(-.59f,-.23f,.009f,"LEFT/RIGHT SELECT  ENTER CONFIRM",.57f,.70f,.80f);
+                }
             } else if(match_decided || round_decided || player_down || rival_down) {
                 bool player_won=match_decided ? frame->match_winner==0 :
                                 round_decided ? frame->round_winner==0 : rival_down && !player_down;
@@ -1660,6 +1772,8 @@ int main(int argc,char **argv) {
                 capture_tick_arg=argv[i+1];
             } else if(strcmp(argv[i],"--input-file")==0 && source_follow_mode && !source_input_path) {
                 source_input_path=argv[i+1];
+            } else if(strcmp(argv[i],"--result-file")==0 && source_follow_mode && !live_result_path) {
+                live_result_path=argv[i+1];
             } else {
                 bad_source_args=true;
             }
@@ -1880,6 +1994,7 @@ int main(int argc,char **argv) {
             live_impact_time=fmaxf(0,live_impact_time-visual_step);
             live_round_intro_time=fmaxf(0,live_round_intro_time-visual_step);
         }
+        if(story_mode) story_match_poll();
         if(selection_mode || story_mode) {
             // The selection and story screens wait for input and do not advance a fight.
         } else if(source_follow_mode) {
@@ -1966,6 +2081,23 @@ int main(int argc,char **argv) {
             while(accumulator>=DT) { tick(keys); accumulator-=DT; }
         }
         Uint64 profile_after_poll=SDL_GetPerformanceCounter();
+        if(source_follow_mode && live_result_path && source_live_winner>=0 && source_replay.count) {
+            if(!live_result_written) {
+                const SourceFrame *last=&source_replay.frames[source_replay_index];
+                FILE *result=fopen(live_result_path,"w");
+                if(result) {
+                    fprintf(result,"winner=%d\nhealth=%d\n",source_live_winner,(int)last->fighter[source_live_winner].health);
+                    fclose(result);
+                } else {
+                    fprintf(stderr,"Could not write the result file: %s\n",live_result_path);
+                    capture_ok=false;
+                }
+                live_result_written=true;
+                live_result_timer=3.5;
+            }
+            live_result_timer-=frame>.25 ? .25 : frame;
+            if(live_result_timer<=0) running=false;
+        }
         interpolate_live_fighters(now,source_capture && source_replay.count &&
                                   source_replay.frames[source_replay_index].tick>=capture_tick);
         if((source_replay_mode || source_follow_mode) && source_replay.count)
