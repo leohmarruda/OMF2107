@@ -74,6 +74,46 @@ text with placeholder portraits.
 - **Not yet done:** the real match handoff (step 3), review and rewrite of the draft dialogue,
   portraits, and audio.
 
+## Step 3 design: the match handoff (proposed, not built)
+
+**What exists today.** A live match is two processes joined by shared memory: OpenOMF with
+`--omf3k-live`, and the viewer in `--source-live` mode, both started by `run-blockout-jaguar.ps1`.
+OpenOMF builds the match from environment variables. Player 0 is the keyboard player and takes its
+pilot from `OMF3K_LIVE_PILOT_ID`; player 1 is an AI fixed to the other HAR with a hard-coded pilot
+(Shirro against Shadow, otherwise Crystal). The match is one round in Stadium with hazards off, and
+when it ends OpenOMF stays on the final pose while the viewer shows the winner and a retry prompt.
+
+**Proposal: the story viewer runs a match as a child pipeline and waits for a result file.** At a
+`fight` command the story viewer starts a launcher script (a variant of the existing one) and waits;
+the viewer's window stays open on a "match in progress" screen. When the match is decided, the live
+viewer writes a small result file and exits, and the story viewer reads it and continues with
+`story_fight_result`. This reuses the working live pipeline and keeps story logic out of OpenOMF.
+
+Changes it needs:
+1. **OpenOMF:** read `OMF3K_LIVE_RIVAL_PILOT_ID` so the rival can be Christian (a few lines in
+   `game_state.c`; the HARs stay Jaguar and Shadow). Optionally `OMF3K_LIVE_AI_LEVEL` later.
+2. **Live viewer:** a `--result-file path` option. When the match is decided it writes the winner
+   and the winner's remaining health, waits a few seconds on the final pose, and exits instead of
+   showing the retry prompt.
+3. **A launcher script** for story matches: pilot and HAR for each side, plus the result file path.
+4. **Story viewer:** run the launcher at a `fight`, wait while still handling window events, then
+   read the result. If the match exits without a result (window closed, a crash), keep the fight
+   event and offer to retry. Debug fights stay available as the way to skip.
+5. **Tests:** the result file format and the retry path can be tested headlessly; a full match needs
+   a playtest.
+
+**Conventions to confirm.** The first fighter in a `fight` line is the human player and the second
+is the AI, and `win` means the first fighter won, which is what the script and runner already
+assume. The match uses the live pipeline's current settings (one round, Stadium, no hazards).
+
+**Risks.** Two windows and about four seconds of viewer warmup before OpenOMF starts; the pipeline is
+Windows-only (shared memory); a rival AI at default strength may not suit the story; and this is an
+interim bridge, since the later integration should hold story and match in one program.
+
+**Alternatives considered.** Running OpenOMF and the story in one process would remove the
+two-window handoff but is a much larger change. Moving the story into OpenOMF's own scene system
+is the intended later integration. Both are better done once the story format has settled.
+
 ## Decisions that were needed before step 1 (answered above)
 
 1. **Which slice.** The specification and development plan say Crystal versus Christian
