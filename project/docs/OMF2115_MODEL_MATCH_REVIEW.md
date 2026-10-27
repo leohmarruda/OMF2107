@@ -176,6 +176,27 @@ with that change. After a rebuild the projection faces Shadow, and the live
 playtest confirmed this side is correct. Rebuild with `build.ps1 -Config Debug`
 after editing `main.c`; the `run-blockout*.ps1` launchers do not build.
 
+## Shadow close-throw trace — 2026-10-27
+
+`rectests/SHADOW-CLOSE-THROW.REC` is the measurement harness's fixture for Shadow's
+close forward-punch throw (`P6`, animation 20) at a 30-unit start gap, saved so it
+can be replayed with `replay-rec.ps1 -Rec SHADOW-CLOSE-THROW`. In the trace:
+
+- Shadow plays animation 20 on ticks 126–171 (46 ticks); Jaguar enters throw state 7
+  (animation 9) on tick 126.
+- Jaguar's health falls from 213 to 152 (61) on tick 147.
+- Jaguar is carried from x=164 across Shadow (x=217) to the right wall at x=298, enters
+  wall-damage state 15 on tick 153, and is back on his feet around tick 171–177.
+
+This throw moves the opponent about 134 source units, far more than Jaguar's close
+throw in the corner fixture. Local captures at ticks 130, 138, 144, and 153 are in
+`project/build/mesh-match-ticks/shadow-throw-*.bmp`. At tick 130 the grapple reads, with
+both meshes intertwined as the source places them. At ticks 138 and 153 the fight camera
+frames the thrown fighter high in the picture and the floor is largely out of view at
+tick 153 (Jaguar at the wall, Shadow low at the bottom). I judged this from stills only;
+whether it is a camera-follow problem during long throws, or fine at normal speed,
+needs a look at the live replay.
+
 ## Shadow Punch animation
 
 The first source-driven Shadow Punch view changed the arm joints across
