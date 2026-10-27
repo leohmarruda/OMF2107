@@ -197,6 +197,24 @@ tick 153 (Jaguar at the wall, Shadow low at the bottom). I judged this from stil
 whether it is a camera-follow problem during long throws, or fine at normal speed,
 needs a look at the live replay.
 
+Live replay review of Jaguar (the thrown fighter), 2026-10-27, checked against the trace:
+
+- **Instant move between ticks 122 and 123.** This is the fixture, not the game: the
+  harness places both fighters at their test start positions at tick 123 (Jaguar x
+  66.8 to 190.0, Shadow 248.2 to 220.0). `SHADOW-CLOSE-THROW.REC` therefore contains
+  a teleport; watch it from tick 124. A recording without one would need a real
+  approach.
+- **Fallen pose at 143, jump pose at 144, fallen again at 165.** The source changes
+  Jaguar's sprite from 11 to 15 on tick 144 and moves him from (252, 165) to
+  (265, 145) in the same tick; he is on sprite 11 again at 165 while falling. The 3D
+  view follows those source sprites, but the poses authored for them differ a lot
+  (sprite 11 is a tilted-back, dropped pose; sprite 15 is nearly upright). Whether
+  that reads as a tumble or as a glitch depends on how the original sprites look; the
+  pose for sprite 15 has not been checked against the original frame.
+- **Facing flips on the ground between ticks 183 and 184.** The source turns Jaguar
+  toward Shadow on the tick his animation changes from 9 to 2 (get-up). The viewer
+  snaps the mesh through 180 degrees with no turn.
+
 ## Shadow Punch animation
 
 The first source-driven Shadow Punch view changed the arm joints across
