@@ -229,7 +229,8 @@ build/omf_debug_z7/omf3d_prototype.exe --source-replay build/omf_trace_z7/jag-co
 ```
 
 The last command saves `project/build/omf3d_source_replay_capture.bmp`. Space pauses,
-left/right steps one source tick while paused, R restarts, and Escape quits.
+left/right steps one source tick while paused, and holding left or right seeks
+through the recording (paused or playing), speeding up the longer it is held. R restarts, and Escape quits.
 Playback currently uses 28 ms per source tick, matching the speed-5 trace
 captures. Replay mode reads a recorded match and has no input control. Live
 mode uses the same state adapter and forwards controls to the source

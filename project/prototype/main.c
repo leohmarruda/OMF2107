@@ -1204,7 +1204,7 @@ static void hud(void) {
         quad(-1,-1,2,.26f,.02f,.04f,.10f);
         label(-.94f,-.79f,.011f,source_input_enabled ? "A D MOVE  W JUMP  S DUCK" :
               (source_follow_mode ? "LIVE OPENOMF MATCH  ESC QUIT" :
-              (source_replay_mode ? "SPACE PAUSE  LEFT RIGHT STEP" : "A D MOVE  W JUMP  J PUNCH")),
+              (source_replay_mode ? "SPACE PAUSE  LEFT RIGHT SEEK" : "A D MOVE  W JUMP  J PUNCH")),
               .78f,.84f,.91f);
         if(source_replay_mode) {
             char replay_footer[64];
@@ -1519,6 +1519,7 @@ int main(int argc,char **argv) {
     double max_build_ms=0,max_upload_ms=0,max_gpu_ms=0;
     unsigned int profile_frames=0,slow_frames=0,source_gaps=0,max_tick_advance=0;
     Uint64 last_source_arrival=0;
+    double seek_hold=0,seek_ticks=0;   // how long LEFT/RIGHT has been held, and the fractional ticks owed
     while(running) {
         Uint64 profile_begin=SDL_GetPerformanceCounter();
         double profile_frequency=(double)SDL_GetPerformanceFrequency();
@@ -1660,7 +1661,29 @@ int main(int argc,char **argv) {
         } else if(model_preview_mode) {
             // A fixed inspection pose must not advance the fight simulation.
         } else if(source_replay_mode) {
-            if(!source_replay_paused) {
+            // A tap steps one tick while paused (key-down handler above). Holding LEFT or RIGHT past a short
+            // delay seeks, paused or playing, and speeds up the longer it is held.
+            const unsigned char *seek_keys=SDL_GetKeyboardState(NULL);
+            int seek_dir=(seek_keys[SDL_SCANCODE_RIGHT]?1:0)-(seek_keys[SDL_SCANCODE_LEFT]?1:0);
+            bool seeking=false;
+            if(seek_dir) {
+                seek_hold+=frame>.25 ? .25 : frame;
+                if(seek_hold>.25) {
+                    seeking=true;
+                    double ramp=(seek_hold-.25)/1.5;
+                    seek_ticks+=(frame>.25 ? .25 : frame)*(40.0+200.0*(ramp>1 ? 1 : ramp));
+                    while(seek_ticks>=1) {
+                        seek_ticks-=1;
+                        if(seek_dir>0 && source_replay_index+1<source_replay.count) apply_source_frame(source_replay_index+1);
+                        else if(seek_dir<0 && source_replay_index>0) apply_source_frame(source_replay_index-1);
+                    }
+                    accumulator=0;
+                }
+            } else {
+                seek_hold=0;
+                seek_ticks=0;
+            }
+            if(!source_replay_paused && !seeking) {
                 accumulator+=frame>.25 ? .25 : frame;
                 while(accumulator>=source_tick_seconds && !source_replay_paused) {
                     accumulator-=source_tick_seconds;
