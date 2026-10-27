@@ -38,9 +38,13 @@ foreach ($d in 'ucrt\x64', 'um\x64') { $env:LIB += ';' + (Join-Path $kits "Lib\$
 function Invoke-Build([string]$Name, [string[]]$ExtraArgs) {
     $dir = Join-Path $projectRoot "build\$Name"
     Write-Host "== $Name"
-    & cmake -S $projectRoot -B $dir -G Ninja -DCMAKE_BUILD_TYPE=Debug --toolchain $toolchain @ExtraArgs
+    # cmd merges stderr into stdout: CMake prints warnings to stderr, which Windows PowerShell 5.1
+    # would otherwise turn into a terminating error under $ErrorActionPreference = 'Stop'.
+    $configure = (@('cmake', '-S', $projectRoot, '-B', $dir, '-G', 'Ninja', '-DCMAKE_BUILD_TYPE=Debug', '--toolchain', $toolchain) + $ExtraArgs |
+        ForEach-Object { "`"$_`"" }) -join ' '
+    cmd /c "$configure 2>&1"
     if ($LASTEXITCODE -ne 0) { throw "Configure failed for $Name" }
-    & cmake --build $dir
+    cmd /c "cmake --build `"$dir`" 2>&1"
     if ($LASTEXITCODE -ne 0) { throw "Build failed for $Name" }
 
     # OpenOMF and the run-blockout scripts need the original game data next to the exe.
