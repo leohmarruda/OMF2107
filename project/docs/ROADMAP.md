@@ -127,7 +127,8 @@ stack; it would then need the same state exporter and REC parity checks.
 OpenOMF's code is MIT licensed, but the original game's artwork, audio, text,
 character designs, and name need their own distribution assessment. The local
 `OMF2097` folder is useful as a development reference; its presence is not a
-release license. Maintain an asset provenance list throughout production.
+release license. Maintain an asset provenance list throughout production; the [asset ledger](ASSET_LEDGER.md)
+holds it (started 2026-10-27 with the original pilot portraits used locally in the story prototype).
 
 ## References
 

@@ -326,6 +326,18 @@ match window cancels and leaves the story at the match to retry. The child runs 
 closing the story window also ends the match and OpenOMF. The two fighters must use different HARs
 (Jaguar and Shadow), and a match is one round in Stadium with hazards off against the default AI.
 
+A script that starts with `player <pilot> <har>` and `rival <pilot>` lines (and optional `card <pilot>: <text>`
+context lines) opens a selection screen first. The player picks their HAR with Left and Right, the rival takes the
+other, and Enter starts the story; the story's recommended HAR is marked. Each side shows a portrait, the pilot's
+OpenOMF power, agility and endurance, and its card text. A `fight` can name its HARs as `@player_har` and
+`@rival_har`, and dialogue can say `{player_har}` and `{rival_har}`, so any pairing works from one script. A saved
+story resumes without the screen; R restarts and brings it back. `--har Jaguar|Shadow` skips the screen.
+
+The portraits are the original game's pilot faces, exported locally by
+`python project/tools/export_pilot_portraits.py` into the git-ignored `project/build/portraits/` (a local
+development reference, never committed or distributed; see `project/docs/ASSET_LEDGER.md`). Without them the
+screen shows plain placeholder cards.
+
 `--debug-fights` (or `run-story.ps1 -DebugFights`) lets you skip a match by choosing the result with Y
 (win) or N (loss); the log records "Match skipped". `project/scripts/run-story.ps1` starts story mode
 (`-New`, `-DebugFights`, `-Scene id`) and warns when the viewer executable is older than its sources,

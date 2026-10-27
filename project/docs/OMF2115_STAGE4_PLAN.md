@@ -82,6 +82,14 @@ text with placeholder portraits.
   seem to change the story, because the win and lose scenes only differed by a line before merging. The draft
   now lets the result decide who receives WAR's Tier-2 offer, which recovery scene plays, and the closing.
   The first fix is from reading the code and was not reproduced by playing, so it needs a playtest.
+- **Step 5, selection screen: built** (decided 2026-10-27: the player is Crystal and picks her HAR, the
+  rival takes the other, and the portraits are the original game's art). The script format gained `player`,
+  `rival`, and `card` header lines, `@flag` HARs in `fight`, and `{flag}` text, all covered by
+  `story_check selftest`. The selection screen shows each pilot's original portrait, OpenOMF stats, and card
+  text. Tested: both HAR routes through the draft with `story_check play --har`, screenshots of the screen, and
+  a full Shadow-route match through the pipeline (`-Player Shadow -Pilot Crystal -RivalPilot Christian`). The
+  portraits are exported locally, git-ignored, and logged in `ASSET_LEDGER.md` as not distributable.
+  Not tested: choosing a HAR with the keyboard on the screen, and playing Crystal in Shadow by hand.
 - **Not yet done:** review and rewrite of the draft dialogue, portraits, audio, and the polish in
   steps 4 to 6.
 
