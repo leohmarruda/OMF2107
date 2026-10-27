@@ -503,6 +503,13 @@ int game_state_create(game_state *gs, const engine_init_flags *init_flags) {
         if(selected_pilot_id < 0 || selected_pilot_id >= NUMBER_OF_PLAYABLE_PILOT_TYPES) {
             selected_pilot_id = shadow_player ? PILOT_SHIRRO : PILOT_CRYSTAL;
         }
+        // The AI rival defaults to Shirro (against Jaguar) or Crystal (against Shadow); a story match can
+        // choose another pilot. The rival's HAR is always the one the player did not pick.
+        const char *rival_pilot = getenv("OMF3K_LIVE_RIVAL_PILOT_ID");
+        int rival_pilot_id = rival_pilot ? atoi(rival_pilot) : -1;
+        if(rival_pilot && (rival_pilot_id < 0 || rival_pilot_id >= NUMBER_OF_PLAYABLE_PILOT_TYPES)) {
+            rival_pilot_id = -1;
+        }
         _setup_keyboard(gs, 0, 0);
         nscene = SCENE_ARENA0;
         gs->this_id = nscene;
@@ -514,7 +521,7 @@ int game_state_create(game_state *gs, const engine_init_flags *init_flags) {
             game_player *player = gs->players[i];
             bool use_shadow = i == 0 ? shadow_player : !shadow_player;
             int pilot_id = i == 0 ? selected_pilot_id :
-                (use_shadow ? PILOT_SHIRRO : PILOT_CRYSTAL);
+                (rival_pilot_id >= 0 ? rival_pilot_id : (use_shadow ? PILOT_SHIRRO : PILOT_CRYSTAL));
             pilot info;
             pilot_get_info(&info, pilot_id);
             player->pilot->pilot_id = pilot_id;
