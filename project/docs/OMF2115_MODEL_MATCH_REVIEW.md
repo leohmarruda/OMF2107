@@ -209,11 +209,17 @@ Live replay review of Jaguar (the thrown fighter), 2026-10-27, checked against t
   (265, 145) in the same tick; he is on sprite 11 again at 165 while falling. The 3D
   view follows those source sprites, but the poses authored for them differ a lot
   (sprite 11 is a tilted-back, dropped pose; sprite 15 is nearly upright). Whether
-  that reads as a tumble or as a glitch depends on how the original sprites look; the
-  pose for sprite 15 has not been checked against the original frame.
+  that reads as a tumble or as a glitch depends on how the original sprites look.
+  Checked against the original `FIGHTR0.AF` frames: sprite 11 is a fall tilted back,
+  14 lies flat, 15 is upright with one knee raised, and 16 is upright with an arm
+  raised, so the authored poses match the originals and the upright mid-air frame is
+  in the source animation. No pose change was made.
 - **Facing flips on the ground between ticks 183 and 184.** The source turns Jaguar
   toward Shadow on the tick his animation changes from 9 to 2 (get-up). The viewer
-  snaps the mesh through 180 degrees with no turn.
+  snapped the mesh through 180 degrees with no turn. The viewer now eases the
+  displayed yaw over about 0.15 s (presentation only; captures and large frame jumps
+  still snap). This was built and the capture path re-checked, but the eased turn only
+  runs in the live viewer and has not been watched yet.
 
 ## Shadow Punch animation
 
