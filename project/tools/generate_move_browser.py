@@ -36,6 +36,7 @@ TRACES = paths.TRACE_DIR
 SPRITES = BUILD / "pose-reference"
 CAPTURE_FILE = BUILD / "omf3d_source_replay_capture.bmp"
 HAR_DIRS = {0: "jaguar", 1: "shadow"}
+BASE_ANIMATIONS = {1, 2, 3, 4, 5, 6, 9, 10, 11}   # as generate_pose_editor.BASE_NAMES
 
 
 def run(*args):
@@ -46,7 +47,10 @@ def load_moves():
     run(HERE / "generate_move_catalog.py")
     with (BUILD / "move-catalog.csv").open(newline="", encoding="utf-8") as f:
         rows = list(csv.DictReader(f))
-    return [r for r in rows if r["kind"] in ("basic", "special")]
+    # the base animations (jump, crouch, blocks, damage, walk, idle) are posed in the pose editor too,
+    # so they are listed with the player-triggered moves
+    return [r for r in rows if r["kind"] in ("basic", "special")
+            or int(r["animation"]) in BASE_ANIMATIONS]
 
 
 def sprite_dir(har, anim):
@@ -60,7 +64,7 @@ def export_sprites(har, anim):
 
 SYNTHETIC = OUT / "synthetic"
 HEADER = ("tick,player,har,health,max_health,x,y,vx,vy,facing,state,move,animation,sprite,animation_tick,"
-          "match_winner,hit_mask,block_mask,round_winner")
+          "match_winner,hit_mask,block_mask,round_winner,projectiles")
 
 
 def synthetic_trace(har, anim, count):
@@ -78,7 +82,7 @@ def synthetic_trace(har, anim, count):
             rows.append(",".join(str(v) for v in (
                 tick, player, h, 213 if h == 0 else 196, 213 if h == 0 else 196, f"{x:.3f}", "190.000",
                 "0.000", "0.000", facing, 1, 1 if acting else 0, anim if acting else 11,
-                tick if acting else 0, 3 if acting else 2, -1, 0, 0, -1)))
+                tick if acting else 0, 3 if acting else 2, -1, 0, 0, -1, "-")))
     path.write_text(chr(10).join(rows) + chr(10), encoding="utf-8")
     return path, {s: s for s in range(count)}
 

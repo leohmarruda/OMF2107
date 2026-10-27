@@ -48,9 +48,9 @@ prototype does not load or alter the original game's data.
 ## Play
 
 **Fights use the original-game engine.** Start a match with
-`run-live.ps1` to open the in-game fighter selection screen and choose a pilot
+`run-blockout.ps1` to open the in-game fighter selection screen and choose a pilot
 and either modeled HAR, or use
-`run-live-jaguar.ps1` and `run-live-shadow.ps1` for the original pairings
+`run-blockout-jaguar.ps1` and `run-blockout-shadow.ps1` for the original pairings
 (see *Live Jaguar–Shadow experiment* below). OpenOMF resolves all combat and the 3D window only renders
 it. Running the executable without a mode now prints these options instead of
 starting the provisional built-in fight.
@@ -117,7 +117,7 @@ To regenerate the embedded model data after editing either blockout, run
 
 ## Live Jaguar–Shadow experiment
 
-From the repository root, run `powershell -ExecutionPolicy Bypass -File project/scripts/run-live.ps1`
+From the repository root, run `powershell -ExecutionPolicy Bypass -File project/scripts/run-blockout.ps1`
 to choose Jaguar or Shadow and one of the ten playable pilots. The pilot's
 original power, agility, and endurance values are used by OpenOMF. The rival
 remains the canonical pilot of the other HAR: Shirro/Shadow or Crystal/Jaguar.
@@ -126,11 +126,11 @@ The live HUD echoes both pilot names so the chosen pilot remains visible during
 the match. The selection screen uses Up/Down for the robot, Left/Right for the
 pilot, Enter to start, and Escape to cancel.
 
-From the repository root, run `powershell -ExecutionPolicy Bypass -File project/scripts/run-live-jaguar.ps1`.
+From the repository root, run `powershell -ExecutionPolicy Bypass -File project/scripts/run-blockout-jaguar.ps1`.
 This starts an OpenOMF Stadium match with Crystal/Jaguar against Shirro/Shadow
 and opens the 3D view. OpenOMF resolves movement, attacks, guarding, damage,
 and the AI; the 3D window displays each completed source tick.
-Run `powershell -ExecutionPolicy Bypass -File project/scripts/run-live-shadow.ps1`
+Run `powershell -ExecutionPolicy Bypass -File project/scripts/run-blockout-shadow.ps1`
 to start the same match with Shirro/Shadow
 under your control against Crystal/Jaguar. Both launchers accept
 `-CaptureTick`, `-WarmupSeconds`, and `-Pilot`; the Jaguar launcher also accepts
@@ -141,7 +141,7 @@ Crystal/Jaguar and Shirro/Shadow.
 and Shadow's other shadow attacks only have a script when the pilot has
 Shadow enhancement level 3, which is a Tournament upgrade. A plain match
 (default `-ShadowEnhancement 0`) therefore never shows the purple shadow
-projection, matching the original. Add `-ShadowEnhancement 3` to either
+projection, matching the original. `run-blockout-shadow.ps1` now defaults to `-ShadowEnhancement 3`; pass `-ShadowEnhancement 0` for the original plain match. Add `-ShadowEnhancement 3` to either
 launcher to fight with the upgraded Shadow; under your control, Shadow Punch is
 down-forward, down, down-back, back + punch (`P4123`). The setting only
 changes the pilot's upgrade level; OpenOMF still decides every move and hit.
@@ -203,7 +203,7 @@ OpenOMF stops accepting input after one second.
 For a hidden-window integration capture, run:
 
 ```text
-powershell -ExecutionPolicy Bypass -File project/scripts/run-live-jaguar.ps1 -CaptureTick 160
+powershell -ExecutionPolicy Bypass -File project/scripts/run-blockout-jaguar.ps1 -CaptureTick 160
 ```
 
 The output is

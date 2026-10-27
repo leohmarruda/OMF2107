@@ -1,0 +1,135 @@
+<!doctype html>
+<html lang="en"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1">
+<title>OMF2115 mesh landmarks</title>
+<style>
+:root{--bg:#0e1319;--panel:#171e27;--line:#2a3441;--text:#dbe4ee;--dim:#8b9bad;--accent:#58b6e8;--ok:#4fbf7a;--warn:#e0b341;--bad:#e0675c}
+@media (prefers-color-scheme:light){:root{--bg:#f3f5f8;--panel:#fff;--line:#d5dce5;--text:#1b2430;--dim:#5b6b7d;--accent:#1a78b3;--ok:#1f8f4e;--warn:#a87a00;--bad:#c0392b}}
+*{box-sizing:border-box}body{margin:0;background:var(--bg);color:var(--text);font:14px/1.45 system-ui,Segoe UI,sans-serif}
+header{position:sticky;top:0;z-index:5;background:var(--bg);border-bottom:1px solid var(--line);padding:10px 16px;display:flex;flex-wrap:wrap;gap:10px;align-items:center}
+h1{font-size:16px;margin:0 8px 0 0}
+button,select{background:var(--panel);color:var(--text);border:1px solid var(--line);border-radius:6px;padding:6px 10px;font:inherit;cursor:pointer}
+button.primary{background:var(--accent);color:#fff;border-color:var(--accent)}
+label{color:var(--dim);display:inline-flex;gap:4px;align-items:center}
+#stat{color:var(--dim);margin-left:auto}
+.layout{display:grid;grid-template-columns:minmax(0,1fr) 300px;gap:14px;padding:14px 16px;max-width:1700px;margin:auto}
+.views{display:grid;grid-template-columns:1fr 1fr;gap:10px;align-items:start}
+.stage{background:#000;border:1px solid var(--line);border-radius:10px;overflow:hidden;touch-action:none;position:relative}
+.stage .cap{position:absolute;left:8px;top:6px;color:#fff;font:600 12px system-ui;text-shadow:0 0 3px #000;pointer-events:none}
+.stage svg{display:block;width:100%;height:auto;max-height:calc(100vh - 110px);user-select:none}
+circle.j{cursor:grab;stroke:#fff;stroke-width:.8}circle.j.sel{stroke:#ffd84a;stroke-width:1.8}circle.j:active{cursor:grabbing}
+text.t{fill:#fff;font:600 8px system-ui;paint-order:stroke;stroke:#000;stroke-width:2px;pointer-events:none}
+aside{display:grid;gap:12px;align-content:start}
+.card{background:var(--panel);border:1px solid var(--line);border-radius:10px;padding:10px}
+.card h2{font-size:14px;margin:0 0 6px}
+table{border-collapse:collapse;width:100%;font-size:13px}
+td,th{padding:2px 6px;text-align:right;border-bottom:1px solid var(--line)}th:first-child,td:first-child{text-align:left}
+th{color:var(--dim);font-weight:500}
+.warn{color:var(--warn)}.ok{color:var(--ok)}.help{color:var(--dim);font-size:13px;margin:0 0 6px}
+.row{display:flex;gap:8px;flex-wrap:wrap;margin-top:8px}
+@media (max-width:1100px){.layout{grid-template-columns:1fr}.views{grid-template-columns:1fr}}
+</style></head><body>
+<header><h1>OMF2115 mesh landmarks</h1>
+<label>model <select id="model"></select></label>
+<button id="reset" title="Back to the landmarks the generator currently uses">Reset model</button>
+<button id="fit" title="Zoom both views back to the whole area">Fit views</button>
+<button id="exportBtn" class="primary">Download mesh_landmarks.json</button>
+<span id="stat"></span></header>
+<div class="layout">
+<div class="views">
+<div class="stage"><div class="cap">FRONT (x, height)</div><svg id="svgF"></svg></div>
+<div class="stage"><div class="cap">SIDE (depth, height) - front faces right</div><svg id="svgS"></svg></div>
+</div>
+<aside>
+<div class="card"><h2>How to use</h2>
+<p class="help">Drag each point onto the matching joint in both views. A point's height is shared, so moving it up or down in one view moves it in the other; the front view sets its sideways position, the side view its depth.</p>
+<p class="help">Click a point, then use the arrow keys to nudge it (Shift = 5 px) in the view you last clicked. Scroll to zoom, drag the background to pan. The dark area around the picture is also draggable. "l" is the character's own left, so it is on the right of the front picture.</p>
+<p class="help"><b>Where the joints are:</b> a shoulder is where the upper arm meets the torso, not the shoulder blade or wing above it; a hip is where the thigh meets the pelvis; head_base is the underside of the helmet. The hollow rings show the generator's built-in positions: double-click a point to put it back on its ring.</p>
+<p class="help">Save the download as <b>project/data/mesh_landmarks.json</b>, then run <b>generate_meshy_meshes.py</b> (or run-meshy.ps1). With depths set, the generator assigns mesh vertices to bones in 3D.</p></div>
+<div class="card"><h2>Segment lengths (px)</h2><table id="seg"></table>
+<p class="help" id="segNote"></p></div>
+<div class="card"><h2>Selected point</h2><div id="sel" class="help">none</div>
+<div class="row"><button id="mirrorLR" title="Copy the left side's arm and leg to the right, mirrored about the spine">Mirror left → right</button>
+<button id="mirrorRL">Mirror right → left</button></div></div>
+</aside></div>
+<script>
+const DATA=__DATA__;
+const NAMES=["head_base","neck","spine_top","spine_bottom","sh_l","el_l","wr_l","sh_r","el_r","wr_r","hip_l","knee_l","ankle_l","hip_r","knee_r","ankle_r"];
+const BONES=[["head_base","neck","#b48cff"],["neck","spine_top","#b48cff"],["spine_top","spine_bottom","#ff8a5c"],
+ ["sh_l","el_l","#58b6e8"],["el_l","wr_l","#58b6e8"],["sh_r","el_r","#4fbf7a"],["el_r","wr_r","#4fbf7a"],
+ ["spine_bottom","hip_l","#e0b341"],["spine_bottom","hip_r","#e0b341"],
+ ["hip_l","knee_l","#58b6e8"],["knee_l","ankle_l","#58b6e8"],["hip_r","knee_r","#4fbf7a"],["knee_r","ankle_r","#4fbf7a"],
+ ["spine_top","sh_l","#8b9bad"],["spine_top","sh_r","#8b9bad"]];
+const SEG=[["upper arm","sh","el"],["forearm","el","wr"],["thigh","hip","knee"],["shin","knee","ankle"]];
+const NS="http://www.w3.org/2000/svg";
+let LO=-80,SPAN=760;   // each view shows the picture with a 13% margin for points outside it
+// a point is [x, z, d]: x across in the front view, z height (shared), d across in the side view
+const VIEWS={F:{svg:document.getElementById("svgF"),img:"front",h:p=>p[0],name:"front"},
+             S:{svg:document.getElementById("svgS"),img:"side",h:p=>p[2],name:"side"}};
+let cur=DATA.models[0],pts={},selected=null,dragging=null,lastView="F";
+const store=k=>{try{return JSON.parse(localStorage.getItem("meshlm2:"+k)||"null")}catch(e){return null}};
+const save=()=>{try{localStorage.setItem("meshlm2:"+cur.prefix,JSON.stringify(pts))}catch(e){}};
+function frame(m){LO=-Math.round(m.size*.13);SPAN=m.size+2*-LO;for(const k in VIEWS)VIEWS[k].view=[LO,LO,SPAN,SPAN]}
+function load(m){cur=m;frame(m);pts=JSON.parse(JSON.stringify(store(m.prefix)||m.landmarks));selected=null;drawAll()}
+function el(svg,tag,attrs){const e=document.createElementNS(NS,tag);for(const k in attrs)e.setAttribute(k,attrs[k]);svg.appendChild(e);return e}
+function drawView(key){
+ const V=VIEWS[key],svg=V.svg;svg.innerHTML="";svg.setAttribute("viewBox",V.view.join(" "));
+ el(svg,"rect",{x:0,y:0,width:cur.size,height:cur.size,fill:"#1b232d"});
+ el(svg,"image",{href:cur[V.img],x:0,y:0,width:cur.size,height:cur.size});
+ el(svg,"rect",{x:0,y:0,width:cur.size,height:cur.size,fill:"none",stroke:"#3a4757","stroke-width":1,"stroke-dasharray":"4 4"});
+ for(const [a,b,c] of BONES)el(svg,"line",{x1:V.h(pts[a]),y1:pts[a][1],x2:V.h(pts[b]),y2:pts[b][1],stroke:c,"stroke-width":Math.max(1.2,V.view[2]/400),"stroke-linecap":"round",opacity:.9});
+ const r=Math.max(2.5,V.view[2]/120);
+ for(const n of NAMES){
+  const d=cur.defaults[n];
+  if(d&&Math.hypot(V.h(d)-V.h(pts[n]),d[1]-pts[n][1])>3)el(svg,"circle",{cx:V.h(d),cy:d[1],r:r+1,fill:"none",stroke:"#ffd84a","stroke-width":1.2,"stroke-dasharray":"2 2",opacity:.8});
+  const c=el(svg,"circle",{cx:V.h(pts[n]),cy:pts[n][1],r,fill:n.endsWith("_r")?"#4fbf7a":n.endsWith("_l")?"#58b6e8":"#ffb454",class:"j"+(n===selected?" sel":"")});
+  c.addEventListener("dblclick",()=>{if(cur.defaults[n]){pts[n]=cur.defaults[n].slice();save();drawAll()}});
+  c.addEventListener("pointerdown",ev=>{ev.stopPropagation();ev.preventDefault();selected=n;dragging={n,key};lastView=key;drawAll()});
+  el(svg,"text",{x:V.h(pts[n])+r+1.5,y:pts[n][1]-r,class:"t","font-size":Math.max(6,V.view[2]/80)}).textContent=n;
+ }
+}
+function drawAll(){drawView("F");drawView("S");table();info()}
+function toSvg(svg,ev){const pt=svg.createSVGPoint();pt.x=ev.clientX;pt.y=ev.clientY;const q=pt.matrixTransform(svg.getScreenCTM().inverse());return[q.x,q.y]}
+const len=(a,b)=>Math.hypot(pts[a][0]-pts[b][0],pts[a][1]-pts[b][1],pts[a][2]-pts[b][2]);
+function table(){
+ let h="<tr><th></th><th>left</th><th>right</th><th>r/l</th></tr>",worst=0;
+ for(const [name,a,b] of SEG){const l=len(a+"_l",b+"_l"),r=len(a+"_r",b+"_r"),q=r/l;worst=Math.max(worst,Math.abs(q-1));
+  h+=`<tr><td>${name}</td><td>${l.toFixed(0)}</td><td>${r.toFixed(0)}</td><td class="${Math.abs(q-1)>.1?"warn":"ok"}">${q.toFixed(2)}</td></tr>`}
+ h+=`<tr><td>spine</td><td colspan="3">${len("spine_top","spine_bottom").toFixed(0)}</td></tr><tr><td>neck to head</td><td colspan="3">${len("head_base","neck").toFixed(0)}</td></tr>`;
+ document.getElementById("seg").innerHTML=h;
+ document.getElementById("segNote").textContent=worst>.1?"Left and right segments differ by more than 10%: the mesh arms or legs will be fitted to different lengths.":"Left and right segments agree within 10%.";
+}
+function info(){document.getElementById("sel").textContent=selected?`${selected}: x ${pts[selected][0]}, height ${pts[selected][1]}, depth ${pts[selected][2]}`:"none";
+ document.getElementById("stat").textContent=cur.label+" - "+NAMES.filter(k=>JSON.stringify(pts[k])!==JSON.stringify(cur.landmarks[k])).length+" points changed"}
+function mirror(from,to){
+ const axisX=(pts.spine_top[0]+pts.spine_bottom[0])/2,axisD=(pts.spine_top[2]+pts.spine_bottom[2])/2;
+ for(const [,a,b] of SEG)for(const n of [a,b]){const p=pts[n+"_"+from];pts[n+"_"+to]=[2*axisX-p[0],p[1],p[2]]}
+ save();drawAll()}
+document.getElementById("mirrorLR").onclick=()=>mirror("l","r");
+document.getElementById("mirrorRL").onclick=()=>mirror("r","l");
+document.getElementById("reset").onclick=()=>{try{localStorage.removeItem("meshlm2:"+cur.prefix)}catch(e){}load(cur)};
+document.getElementById("fit").onclick=()=>{frame(cur);drawAll()};
+document.getElementById("exportBtn").onclick=()=>{
+ const out={};for(const m of DATA.models)out[m.prefix]=m===cur?pts:(store(m.prefix)||m.landmarks);
+ const a=document.createElement("a");a.href=URL.createObjectURL(new Blob([JSON.stringify(out,null,1)],{type:"application/json"}));a.download="mesh_landmarks.json";a.click()};
+addEventListener("pointermove",ev=>{
+ if(!dragging)return;const V=VIEWS[dragging.key],p=toSvg(V.svg,ev),n=dragging.n,r=v=>Math.round(v*10)/10;
+ pts[n][1]=r(p[1]);if(dragging.key==="F")pts[n][0]=r(p[0]);else pts[n][2]=r(p[0]);drawAll()});
+addEventListener("pointerup",()=>{if(dragging){dragging=null;save()}});
+for(const key in VIEWS){const V=VIEWS[key],svg=V.svg;
+ svg.addEventListener("wheel",ev=>{ev.preventDefault();const p=toSvg(svg,ev),f=ev.deltaY<0?.8:1.25,w=Math.min(SPAN,Math.max(60,V.view[2]*f)),k=w/V.view[2];
+  V.view=[p[0]-(p[0]-V.view[0])*k,p[1]-(p[1]-V.view[1])*k,w,w];clampView(V);drawAll()},{passive:false});
+ let pan=null;
+ svg.addEventListener("pointerdown",ev=>{lastView=key;pan={x:ev.clientX,y:ev.clientY,v:V.view.slice()};svg.setPointerCapture(ev.pointerId)});
+ svg.addEventListener("pointermove",ev=>{if(!pan)return;const s=V.view[2]/svg.getBoundingClientRect().width;
+  V.view=[pan.v[0]-(ev.clientX-pan.x)*s,pan.v[1]-(ev.clientY-pan.y)*s,V.view[2],V.view[3]];clampView(V);drawAll()});
+ svg.addEventListener("pointerup",()=>{pan=null});
+}
+function clampView(V){V.view[0]=Math.min(Math.max(V.view[0],LO),LO+SPAN-V.view[2]);V.view[1]=Math.min(Math.max(V.view[1],LO),LO+SPAN-V.view[2])}
+addEventListener("keydown",ev=>{if(!selected)return;const d=ev.shiftKey?5:1,m={ArrowLeft:[-d,0],ArrowRight:[d,0],ArrowUp:[0,-d],ArrowDown:[0,d]}[ev.key];
+ if(!m)return;ev.preventDefault();pts[selected][1]+=m[1];pts[selected][lastView==="F"?0:2]+=m[0];save();drawAll()});
+const sel=document.getElementById("model");
+for(const m of DATA.models){const o=document.createElement("option");o.value=m.prefix;o.textContent=m.label;sel.appendChild(o)}
+sel.onchange=()=>load(DATA.models.find(m=>m.prefix===sel.value));
+{const h=location.hash.slice(1),m=DATA.models.find(x=>x.prefix===h);if(m){sel.value=h;cur=m}}
+load(cur);
+</script></body></html>

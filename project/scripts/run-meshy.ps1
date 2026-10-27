@@ -37,7 +37,7 @@ try {
         $live = @{}
         if ($Har) { $live.Har = $Har }
         if ($Pilot) { $live.Pilot = $Pilot }
-        & (Join-Path $PSScriptRoot "run-live.ps1") @live
+        & (Join-Path $PSScriptRoot "run-blockout.ps1") @live
     } elseif ($Capture) { & $exe --model-preview-capture } else { & $exe --model-preview }
 } finally {
     Pop-Location

@@ -195,7 +195,7 @@ def write_markdown(rows):
             " writes `project/build/pose-reference/<har>/N/sprite-NN.png`.",
             "- **Blockout vs Meshy, from a trace:** run the replay command above once normally and once with"
             " `OMF3K_MESHY=1`.",
-            "- **Live:** `project/scripts/run-live.ps1` for blockouts, `run-meshy-fight-jaguar.ps1` and"
+            "- **Live:** `project/scripts/run-blockout.ps1` for blockouts, `run-meshy-fight-jaguar.ps1` and"
             " `run-meshy-fight-shadow.ps1` for the Meshy models.", ""]
     DOC.write_text("\n".join(out), encoding="utf-8")
 

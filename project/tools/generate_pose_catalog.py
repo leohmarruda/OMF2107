@@ -22,8 +22,12 @@ GROUPS = paths.DATA / "pose_sprite_groups.csv"
 FIELDS = ("har", "animation", "sprite", "side", "flags", "reach", "elbow_y",
           "elbow_z", "wrist_y", "wrist_z", "knee_y", "knee_z", "ankle_y", "ankle_z",
           "knee2_y", "knee2_z", "ankle2_y", "ankle2_z", "body_z", "lean",
-          "elbow2_y", "elbow2_z", "wrist2_y", "wrist2_z", "body_y")
+          "elbow2_y", "elbow2_z", "wrist2_y", "wrist2_z", "body_y",
+          "shoulder_y", "shoulder_z", "shoulder2_y", "shoulder2_z")
+OLD_FIELDS = FIELDS[:-4]               # catalogs written before the shoulder columns
 FLAG_FIELDS = {
+    "shoulder": ("shoulder_y", "shoulder_z"),      # where the arm hangs from in this sprite (optional)
+    "shoulder2": ("shoulder2_y", "shoulder2_z"),
     "reach": ("reach",),
     "arm": ("elbow_y", "elbow_z", "wrist_y", "wrist_z"),
     "leg": ("knee_y", "knee_z", "ankle_y", "ankle_z"),
@@ -39,9 +43,10 @@ FLAG_FIELDS = {
 def read_rows(path: Path) -> list[dict[str, str]]:
     with path.open(newline="", encoding="utf-8") as stream:
         reader = csv.DictReader(stream)
-        if tuple(reader.fieldnames or ()) != FIELDS:
+        header = tuple(reader.fieldnames or ())
+        if header not in (FIELDS, OLD_FIELDS):
             raise ValueError("Pose catalog header does not match the documented schema")
-        rows = list(reader)
+        rows = [{**{name: "" for name in FIELDS}, **row} for row in reader]
     seen: set[tuple[int, int, int]] = set()
     for line, row in enumerate(rows, 2):
         if None in row:

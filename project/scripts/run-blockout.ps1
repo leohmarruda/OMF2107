@@ -35,7 +35,7 @@ if (-not $Har -and -not $Pilot) {
 } elseif (-not $Har) {
     $Har = 'Jaguar'
 }
-& (Join-Path $PSScriptRoot 'run-live-jaguar.ps1') -Player $Har -Pilot $Pilot `
+& (Join-Path $PSScriptRoot 'run-blockout-jaguar.ps1') -Player $Har -Pilot $Pilot `
     -ShadowEnhancement $ShadowEnhancement -CaptureTick $CaptureTick `
     -WarmupSeconds $WarmupSeconds
 exit $LASTEXITCODE

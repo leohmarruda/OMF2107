@@ -133,6 +133,8 @@ def content_height(path):
     """Height in pixels of the sprite's visible part."""
     from PIL import Image
     rows = np.where((np.array(Image.open(path)) > 0).any(axis=1))[0]
+    if not len(rows):                       # a fully transparent frame
+        return 0
     return int(rows.max() - rows.min() + 1)
 
 
@@ -192,7 +194,10 @@ def auto_skeleton(har, anim, sprite, rest, axis_fallback):
     found = fp.blobs(har, anim, sprite)
     if len(found) < 6:
         return None
-    skel = fp.label(found, rest)
+    try:
+        skel = fp.label(found, rest)
+    except ValueError:                      # no neck marker near the pelvis (crouched, airborne or fallen frames)
+        return None
     arm = max(skel.arms, key=lambda a: a[2][0])
     other_arm = next(a for a in skel.arms if a is not arm)
     legs = sorted(skel.legs, key=lambda l: -(l[2][0] - skel.pelvis[0]) - max(l[2][1] - rest.ymap[0][0], 0) * .5)
@@ -203,11 +208,30 @@ def auto_skeleton(har, anim, sprite, rest, axis_fallback):
                       legs=[dict(knee=r(l[1]), ankle=r(l[2])) for l in legs]), fp.confidence(skel, rest), r(skel.neck)
 
 
+BASE_NAMES = {1: "Jumping", 2: "Stand up", 3: "Stunned", 4: "Crouching", 5: "Standing block", 6: "Crouching block",
+              9: "Damage", 10: "Walking", 11: "Idle"}
+# frames that show no fighter body (oil, scrape sparks, scrap/bolt/screw debris) have nothing to pose
+NON_BODY_SPRITES = {(0, 9, 24)}
+# Shadow's shadow figures are projectile animations that show a whole Shadow body; the viewer poses them like a
+# fighter. Each is listed with the animations that reuse its sprites. A projectile spawns some source pixels above
+# the floor (P41 79, slide 0, grab 22), so its sprites are lowered by that much to stand on the floor like a fighter's.
+# The air move's shadow (34, 35) draws that move's own sprites (44), so the viewer reuses that pose and it needs no entry.
+SHADOW_PROJECTIONS = {(1, 25): ("Shadow shadow of P41 (25, 26)", 79, [26]),
+                      (1, 22): ("Shadow shadow of K41 slide (22, 53)", 0, [53]),
+                      (1, 37): ("Shadow shadow of P252 grab (37, 52)", 22, [52])}
+PROJECTION_ALIASES = {(1, a) for _, _, also in SHADOW_PROJECTIONS.values() for a in also}
+
+
 def build():
     inventory = sprite_duplicates.load_inventory()
     catalog = list(csv.DictReader((BUILD / "move-catalog.csv").open(newline="", encoding="utf-8")))
-    player = {(int(r["har"]), int(r["animation"])): r for r in catalog if r["kind"] in ("basic", "special")}
-    names = {k: (r["name"] or "unnamed special") for k, r in player.items()}
+    grouped = {(int(r["har"]), int(r["animation"])): r for r in catalog if r["kind"] in ("basic", "special")}
+    # the animations every HAR has (jump, crouch, blocks, damage, walk, idle...) are authored too, but never
+    # share poses with the moves that reuse their frames: a slide must not receive the idle pose
+    base = {(int(r["har"]), int(r["animation"])): r for r in catalog if int(r["animation"]) in BASE_NAMES
+            or (int(r["har"]), int(r["animation"])) in SHADOW_PROJECTIONS}
+    player = {**grouped, **base}
+    names = {k: (SHADOW_PROJECTIONS[k][0] if k in SHADOW_PROJECTIONS else BASE_NAMES.get(k[1]) if k in base else (r["name"] or "unnamed special")) for k, r in player.items()}
     authored = load_authored()
     rest = fp.measure_rest(0)
     ymaps = {har: ymap_for(har, rest) for har in HAR_NAMES}
@@ -222,7 +246,8 @@ def build():
     covered = set()
     for g in sprite_duplicates.groups(inventory):
         members = [m["animation"] for m in g["members"] if m["match"] == "identical"]
-        players = sorted(a for a in members if (g["har"], a) in player)
+        players = (sorted(a for a in members if (g["har"], a) in grouped)
+                   or sorted(a for a in members if (g["har"], a) in base))
         if players:
             shared[(g["har"], players[0])] = set(players[1:])
             covered.update((g["har"], a) for a in players)
@@ -231,14 +256,17 @@ def build():
     for (har, anim), r in sorted(player.items()):
         if (har, anim) in covered and (har, anim) not in shared:
             continue                                    # a non-canonical member of a group
+        if (har, anim) in PROJECTION_ALIASES:
+            continue                                    # listed with its shadow animation
         sprites = []
         for sprite in range(int(r["sprites"])):
             path = BUILD / "pose-reference" / fp.HAR_DIRS[har] / str(anim) / f"sprite-{sprite:02d}.png"
-            if not path.exists():
+            if not path.exists() or (har, anim, sprite) in NON_BODY_SPRITES:
                 continue
             from PIL import Image
             width, height = Image.open(path).size
             ox, oy = fp.sprite_offset(har, anim, sprite)
+            oy -= SHADOW_PROJECTIONS.get((har, anim), (0, 0, 0))[1]
             ymap = ymaps[har]
             auto = auto_skeleton(har, anim, sprite, rest, None) if har == 0 else None
             note = ""
@@ -279,7 +307,7 @@ def build():
                             "reach": float(row["reach"]) if row and row.get("reach") else None,
                             "fist": bool(row and "fist" in flags)})
         entries.append({"har": har, "harName": HAR_NAMES[har], "animation": anim, "name": names[(har, anim)],
-                        "input": r["input_code"], "alsoApplies": sorted(shared.get((har, anim), [])),
+                        "input": r["input_code"], "alsoApplies": sorted(set(shared.get((har, anim), [])) | set(SHADOW_PROJECTIONS.get((har, anim), (0, 0, []))[2])),
                         "sharedWithSystem": system_shared.get((har, anim), []), "sprites": sprites})
     return {"entries": entries, "ymaps": {str(k): v for k, v in ymaps.items()}, "unit": fp.SIDE_UNITS}
 

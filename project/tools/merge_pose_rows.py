@@ -29,14 +29,21 @@ CATALOG = paths.DATA / "pose_catalog.csv"
 def read(path):
     with path.open(newline="", encoding="utf-8") as f:
         reader = csv.DictReader(f)
-        return list(reader.fieldnames), list(reader)
+        fields = list(reader.fieldnames)
+        rows = list(reader)
+    if fields[-1] == "body_y":                    # written before the shoulder columns: add them, empty
+        fields += list(NEW_FIELDS)
+        rows = [{**row, **{name: "" for name in NEW_FIELDS}} for row in rows]
+    return fields, rows
 
 
-FLAG_FIELDS = {"reach": ("reach",), "arm": ("elbow_y", "elbow_z", "wrist_y", "wrist_z"),
+NEW_FIELDS = ("shoulder_y", "shoulder_z", "shoulder2_y", "shoulder2_z")     # optional, added after the first catalogs
+FLAG_FIELDS = {"shoulder": ("shoulder_y", "shoulder_z"), "shoulder2": ("shoulder2_y", "shoulder2_z"),
+               "reach": ("reach",), "arm": ("elbow_y", "elbow_z", "wrist_y", "wrist_z"),
                "leg": ("knee_y", "knee_z", "ankle_y", "ankle_z"),
                "leg2": ("knee2_y", "knee2_z", "ankle2_y", "ankle2_z"), "body": ("body_z",), "lean": ("lean",), "fist": (),
                "arm2": ("elbow2_y", "elbow2_z", "wrist2_y", "wrist2_z"), "drop": ("body_y",)}
-FLAG_ORDER = ("reach", "arm", "arm2", "leg", "leg2", "body", "drop", "lean", "fist")
+FLAG_ORDER = ("reach", "arm", "arm2", "shoulder", "shoulder2", "leg", "leg2", "body", "drop", "lean", "fist")
 
 
 def merge_row(old, new):

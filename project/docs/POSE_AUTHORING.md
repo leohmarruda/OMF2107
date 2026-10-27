@@ -101,7 +101,11 @@ helps you place the head and is not exported because the rig has no head paramet
 expects. R and L are the character's right
 (side +1, the +x side of the rig) and left (side -1), meaning anatomy, not screen position; for
 a fighter facing right in the sprite, the right limb is the one nearer the camera. *Active side*
-chooses which side the `arm` and `leg` parts override (`leg2` is the other leg). Joints and
+chooses which side the `arm` and `leg` parts override (`leg2` is the other leg). The part
+checkboxes carry that anatomical side in their labels: with active side R they read *R arm* (`arm`),
+*L arm* (`arm2`), *R leg* (`leg`) and *L leg* (`leg2`), and they swap when the active side is L. The
+labels are display only; the flags in the CSV stay `arm`, `arm2`, `leg` and `leg2`, and R/L always means
+the character's own right and left, never the screen side. Joints and
 handles can be dragged into the dark margin around the sprite, so limbs that are hidden or
 extend past the sprite stay reachable. The *reference* menu switches the picture under the skeleton between the original sprite, the
 remastered HD frame of the same pose and a blend; the HD frames come from a sibling

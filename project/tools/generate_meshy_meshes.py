@@ -8,6 +8,7 @@ vertex clustering and writes meshy_meshes.h. Use --debug <dir> for group preview
 """
 from __future__ import annotations
 
+import json
 import re
 import sys
 from dataclasses import dataclass, field
@@ -82,6 +83,7 @@ class Model:
     landmarks: dict                # name -> preview pixel (x, y), image-left is the "l" side
     rest: dict                     # blockout joint heights in main.c for this HAR
     palette: tuple                 # RGB per rig group, see GROUP_NAMES
+    depth: dict = field(default_factory=dict)   # name -> side picture pixel x (front toward image-right, FBX Y = 0 at origin x)
     front_sign: float = -1.0       # FBX front is -Y for both Meshy exports (see README)
     cell: float = 0.016            # vertex-cluster size in FBX units
     x_scale: float = 2.4           # lateral; the Meshy robots are slimmer than the blockouts
@@ -89,6 +91,17 @@ class Model:
     head_halfwidth: float = .22
     head_wedge: bool = False       # reshape the head to the blockout's wedge helmet
     head_features: tuple = ()      # blockout part-name prefixes copied onto the head (eyes, face void)
+    neck_scale: float = .7         # neck length as a fraction of the mesh's own neck, scaled up with the head
+    straighten_limbs: bool = False # undo the bow of limbs that were modelled bent
+    blend_band: float = .16        # height over which neighbouring limb parts blend at a joint
+    head_depth: float = .75        # the head's front-back size relative to its uniform scale
+    arm_girth: tuple = (1.0, 1.0, 1.0)   # widen upper arm, forearm and hand about their own axis
+    classify_3d: bool = False      # assign vertices to bones in 3D (needs side-view depths); else in the front plane
+    match_arm_widths: bool = True  # widen the thinner of the two arms of each segment to match the other
+    arm_min_depth: tuple = (0.0, 0.0)   # least front-back width of the upper arm and forearm (blockout: .40, .53)
+    wrist_cap: float = .10         # radius of the ball over the wrist seam
+    torso_max_x: float = 1.8       # cap on the lateral scale fitted at the torso (shoulder wings can inflate it)
+    torso_min_z: float = 0.0       # floor for the depth factor fitted at the torso level
     head_push: float = 0.0         # move the copied face features this far forward (-z)
     head_collar: bool = False      # ring over the helmet's ragged lower rim
     head_cull_x: float | None = None   # drop head triangles with a vertex left of this FBX x (a stray horn)
@@ -98,8 +111,12 @@ class Model:
         "torso": .30, "pelvis": .16, "upper": .10, "fore": .10, "thigh": .10, "shin": .10})
 
     def lm(self):
+        """Landmarks in FBX units. Depth (Y) comes from the side view when the model has it, else 0."""
         ox, oy = self.origin
-        return {k: np.array([(x - ox) / self.pixels_per_unit, 0.0, (oy - y) / self.pixels_per_unit])
+        return {k: np.array([(x - ox) / self.pixels_per_unit,
+                             self.front_sign * (self.depth[k] - self.origin[0]) / self.pixels_per_unit
+                             if k in self.depth else 0.0,
+                             (oy - y) / self.pixels_per_unit])
                 for k, (x, y) in self.landmarks.items()}
 
 
@@ -116,7 +133,7 @@ MODELS = [
           rest={"sh": 2.24, "el": 1.76, "wr": 1.13, "hip": 1.30, "knee": .75, "ankle": .23},
           palette=((110, 160, 215), (160, 200, 240), (70, 110, 170), (110, 160, 215), (90, 140, 200),
                    (235, 205, 95), (100, 150, 205), (82, 128, 188), (58, 88, 138)),
-          cell=0.02, head_wedge=True, head_features=("eye_",), head_push=.07, head_cull_x=-0.012),
+          cell=0.02, head_wedge=True, head_features=("eye_",), head_push=-.02, head_cull_x=-0.012),
     Model(prefix="jester", fbx="Meshy_AI_Blue_Rocket_Jester_1014011155_generate.fbx", har=1,
           origin=(400, 400), pixels_per_unit=370.0,
           landmarks={
@@ -130,10 +147,42 @@ MODELS = [
           palette=((96, 112, 200), (150, 156, 230), (62, 72, 140), (96, 112, 200), (78, 92, 176),
                    (90, 210, 235), (84, 98, 184), (70, 82, 160), (50, 58, 112)),
           cell=0.026, x_scale=1.9, z_scale=1.6,
-          head_halfwidth=.20, foot_by_z=False, align_feet=True,
-          head_features=("eye_", "face_void"), head_collar=True,
+          head_halfwidth=.20, foot_by_z=False, align_feet=True, straighten_limbs=True,
+          head_features=("eye_", "face_void"), head_push=-.08, head_collar=True,
+          arm_girth=(1.15, (1.2, 1.5), 1.1), wrist_cap=.11, match_arm_widths=False, classify_3d=True, arm_min_depth=(.34, .40), torso_min_z=1.0, blend_band=.07,
           radius={"torso": .34, "pelvis": .16, "upper": .12, "fore": .11, "thigh": .12, "shin": .11}),
 ]
+
+
+# Landmarks fitted by hand in the landmark editor (generate_mesh_landmark_editor.py) replace the ones above.
+CODE_LANDMARKS = {m.prefix: dict(m.landmarks) for m in MODELS}
+
+
+def apply_landmark_overrides():
+    path = paths.DATA / "mesh_landmarks.json"
+    if not path.is_file():
+        return
+    saved = json.loads(path.read_text(encoding="utf-8"))
+    for m in MODELS:
+        points = saved.get(m.prefix, {})
+        # Internally "l" is the limb on the image's left in the front view (the rig keys sides off it), but the
+        # landmark editor and its file use the character's own left, which is on the image's right when it faces
+        # us. Swap the names when the saved points are that way round, so the rig's sides stay as they were.
+        names = [k for k in points if k.endswith("_l")]
+        left = np.mean([points[k][0] for k in names]) if names else 0
+        right = np.mean([points[k[:-1] + "r"][0] for k in names if k[:-1] + "r" in points]) if names else 0
+        if names and left > right:
+            print(f"   {m.prefix}: saved landmarks use the character's own left and right, converting")
+            points = {(k[:-1] + ("r" if k.endswith("_l") else "l") if k[-2:] in ("_l", "_r") else k): v
+                      for k, v in points.items()}
+        for name, point in points.items():
+            if name in m.landmarks:
+                m.landmarks[name] = (float(point[0]), float(point[1]))
+                if len(point) > 2:
+                    m.depth[name] = float(point[2])
+
+
+apply_landmark_overrides()
 
 
 def seg_dist(p, a, b):
@@ -144,8 +193,11 @@ def seg_dist(p, a, b):
 
 def classify(m: Model, v):
     """Return (group, side) per vertex; side is -1/+1 for limbs by image side."""
-    p = np.stack([v[:, 0], v[:, 2]], axis=1)
-    L = {k: np.array([x[0], x[2]]) for k, x in m.lm().items()}
+    # With side-view landmarks the nearest-bone test works in 3D, else in the front plane (x, z).
+    keep = [0, 1, 2] if (m.depth and m.classify_3d) else [0, 2]
+    p = v[:, keep]
+    full = m.lm()
+    L = {k: x[keep] for k, x in full.items()}
     R = m.radius
     cands = [("torso", 0, 0, L["spine_top"], L["spine_bottom"], R["torso"]),
              ("pelvis", 2, 0, L["spine_bottom"], (L["hip_l"] + L["hip_r"]) / 2, R["pelvis"])]
@@ -159,7 +211,7 @@ def classify(m: Model, v):
     group = np.array([cands[i][1] for i in best])
     side = np.array([cands[i][2] for i in best])
     z = v[:, 2]
-    head = (z > L["head_base"][1]) & (abs(v[:, 0] - L["head_base"][0]) < m.head_halfwidth)
+    head = (z > full["head_base"][2]) & (abs(v[:, 0] - full["head_base"][0]) < m.head_halfwidth)
     group[head] = 1; side[head] = 0
     for s, n in ((-1, "l"), (1, "r")):
         # Beyond the end of a limb's last bone: wrist and below is the hand, ankle and below the foot.
@@ -171,7 +223,7 @@ def classify(m: Model, v):
             src = 4 if bone == "fore" else 7
             sel = (group == src) & (side == s)
             if bone == "shin" and m.foot_by_z:
-                sel &= z < b[1]
+                sel &= z < full[end + "_" + n][2]
             else:
                 sel &= along > np.linalg.norm(b - a) * frac
             group[sel] = to_group
@@ -251,10 +303,12 @@ def to_prototype(m: Model, v, group, side, lm):
     # (2-98 percentile, ignoring stray spikes), with its bottom where the blockout's head starts.
     hx = v[head, 0]
     head_scale = (head_hi[0] - head_lo[0]) / (np.percentile(hx, 98) - np.percentile(hx, 2))
-    head_bottom_y = head_lo[1]
+    # The blockout's chest rises into its head; the meshes' necks are short, so a head at the blockout's
+    # height would sit on a stretched pole. Lower it so the neck keeps the mesh's proportions.
+    head_bottom_y = r["sh"] + (head_z - sh_z) * head_scale * m.neck_scale
     head_top_y = head_bottom_y + (top_z - head_z) * head_scale
     if m.head_wedge:
-        head_top_y = head_hi[1]     # the mesh's cap is a thin slab; give it the blockout helmet's height
+        head_top_y = head_bottom_y + head_hi[1] - head_lo[1]   # the mesh's cap is a thin slab; give it the blockout helmet's height
     out = np.empty_like(v)
     # Facing -Y (front_sign -1) needs x flipped to stay a proper rotation.
     out[:, 0] = m.front_sign * (v[:, 0] - body_x) * m.x_scale
@@ -263,13 +317,62 @@ def to_prototype(m: Model, v, group, side, lm):
     # the head, which keeps its own proportions.
     y = np.interp(z, [floor_z, ankle_z, knee_z, hip_z, sh_z, head_z, top_z],
                   [0.0, r["ankle"], r["knee"], r["hip"], r["sh"], head_bottom_y, head_top_y])
-    # Arms hang from the shoulder with a plain scale; rig_map restretches them per pose.
+    # Arms hang from the shoulder at the torso's scale, but each segment is then fitted to the rig's own
+    # shoulder, elbow and wrist heights: rig_map restretches arms per pose about those joints, so a mesh
+    # whose forearm is shorter or longer than the rig's would otherwise be stretched about the wrong pivot.
+    # A segment stretched along its length is widened by the square root of the stretch to keep its build.
     arm = np.isin(group, (3, 4, 5))
     arm_scale = (r["sh"] - r["hip"]) / (sh_z - hip_z)
-    arm_sh_z = np.where(side == -1, lm["sh_l"][2], lm["sh_r"][2])
-    y[arm] = r["sh"] + (z[arm] - arm_sh_z[arm]) * arm_scale
+    arm_stretch = np.ones(len(y))
+    for s_, n in ((-1, "l"), (1, "r")):
+        sel = arm & (side == s_)
+        shz, elz, wrz = lm["sh_" + n][2], lm["el_" + n][2], lm["wr_" + n][2]
+        ku = (r["sh"] - r["el"]) / ((shz - elz) * arm_scale)
+        kf = (r["el"] - r["wr"]) / ((elz - wrz) * arm_scale)
+        above = z[sel] >= elz
+        hand = z[sel] < wrz                      # the hand and its claws keep the torso's scale
+        k = np.where(above, ku, np.where(hand, 1.0, kf))
+        y_wrist = r["el"] - (elz - wrz) * arm_scale * kf
+        y[sel] = np.where(above, r["el"] + (z[sel] - elz) * arm_scale * ku,
+                          np.where(hand, y_wrist - (wrz - z[sel]) * arm_scale,
+                                   r["el"] - (elz - z[sel]) * arm_scale * kf))
+        arm_stretch[sel] = k
+        print(f"   arm {n}: upper stretch x{ku:.2f}, forearm stretch x{kf:.2f}")
     out[:, 1] = y
-    fit_body_widths(out, group, boxes)
+    fit_body_widths(out, group, boxes, m.torso_min_z, m.torso_max_x)
+    for g, girth in zip((3, 4, 5), m.arm_girth):    # arms: thicken about each segment's own axis
+        for s_ in (-1, 1):
+            sel = (group == g) & (side == s_)
+            if sel.any():
+                # a (start, end) pair thickens gradually from the joint above to the one below
+                lo, hi = girth if isinstance(girth, tuple) else (girth, girth)
+                top, bottom = (r["sh"], r["el"]) if g == 3 else (r["el"], r["wr"]) if g == 4 else (r["wr"], r["wr"] - .3)
+                t = np.clip((top - out[sel, 1]) / (top - bottom), 0, 1)
+                factor = (lo + (hi - lo) * t)[:, None]
+                factor = factor * np.clip(np.sqrt(arm_stretch[sel]), .85, 1.5)[:, None]
+                for axis in (0, 2):
+                    c = np.median(out[sel, axis])
+                    out[sel, axis] = c + (out[sel, axis] - c) * factor[:, 0]
+    for g, least in zip((3, 4), m.arm_min_depth):  # seen from the side the arms were thin: give each a least depth
+        for s_ in (-1, 1):
+            sel = (group == g) & (side == s_)
+            if least and sel.any():
+                width = np.percentile(out[sel, 2], 95) - np.percentile(out[sel, 2], 5)
+                if width < least:
+                    c = np.median(out[sel, 2])
+                    out[sel, 2] = c + (out[sel, 2] - c) * min(least / width, 2.2)
+    # The two arms of a mesh can differ in thickness (the modelled pose foreshortens one), so widen the thinner
+    # side of each segment to match the other.
+    for g in (3, 4, 5) if m.match_arm_widths else ():
+        left, right = ((group == g) & (side == s_) for s_ in (-1, 1))
+        if not left.any() or not right.any():
+            continue
+        for axis in (0, 2):
+            width = [np.percentile(out[sel, axis], 95) - np.percentile(out[sel, axis], 5) for sel in (left, right)]
+            thin, thick = (left, right) if width[0] < width[1] else (right, left)
+            ratio = min(max(width) / max(min(width), 1e-6), 1.6)
+            c = np.median(out[thin, axis])
+            out[thin, axis] = c + (out[thin, axis] - c) * ratio
     # Feet: stretch the toe forward (negative z only, so the ankle end stays put) to the blockout's reach.
     foot = group == 8
     reach = np.percentile(out[foot, 2], 2)
@@ -279,7 +382,8 @@ def to_prototype(m: Model, v, group, side, lm):
     # Head x/z: uniform scale about the head's own centre, placed at the blockout head's centre.
     for axis, raw_axis, sign in ((0, 0, m.front_sign), (2, 1, -m.front_sign)):
         c = np.mean(np.percentile(v[head, raw_axis], [2, 98]))   # mid-range, robust to spikes
-        out[head, axis] = (head_lo[axis] + head_hi[axis]) / 2 + sign * (v[head, raw_axis] - c) * head_scale
+        k = head_scale * (m.head_depth if axis == 2 else 1.0)
+        out[head, axis] = (head_lo[axis] + head_hi[axis]) / 2 + sign * (v[head, raw_axis] - c) * k
     if m.head_wedge:
         # Canonical wedge: wide flat top, chin about half as wide and half as deep, centred on the
         # blockout head. h runs 0 at the chin to 1 at the crown.
@@ -290,7 +394,30 @@ def to_prototype(m: Model, v, group, side, lm):
         out[head, 0] = cx + (out[head, 0] - cx) * taper
         out[head, 2] = cz + (out[head, 2] - cz) * taper
     print(f"   head: scale x{head_scale:.2f}, y {head_bottom_y:.2f}..{head_top_y:.2f}")
-    return out, body_x
+    return out, body_x, head_bottom_y - head_lo[1]
+
+
+def straighten(v, group, side, bins=14):
+    """Straighten limbs whose centreline bows: per limb (hanging down after retarget), move each height
+    slice sideways so its centre falls on the straight line through the limb's ends."""
+    for s in (-1, 1):
+        for groups in ((3, 4), (6, 7)):
+            sel = np.isin(group, groups) & (side == s)
+            if sel.sum() < 50:
+                continue
+            z = v[sel, 2]
+            edges = np.linspace(z.min(), z.max(), bins + 1)
+            mid, cx, cy = [], [], []
+            for lo, hi in zip(edges[:-1], edges[1:]):
+                inb = (z >= lo) & (z <= hi)
+                if inb.sum() >= 5:
+                    mid.append(z[inb].mean()); cx.append(v[sel, 0][inb].mean()); cy.append(v[sel, 1][inb].mean())
+            if len(mid) < 4:
+                continue
+            for axis, c in ((0, cx), (1, cy)):
+                line = np.polyval(np.polyfit(mid, c, 1), z)
+                bow = np.interp(z, mid, c) - line
+                v[np.nonzero(sel)[0], axis] -= bow
 
 
 def robust_extent(p, axis):
@@ -298,7 +425,7 @@ def robust_extent(p, axis):
     return hi - lo
 
 
-def fit_body_widths(out, group, boxes):
+def fit_body_widths(out, group, boxes, torso_min_z=0.0, torso_max_x=np.inf):
     """Scale lateral (x) and depth (z) about the body axis as a smooth function of height.
 
     Two measured factors, blockout width / mesh width: one for the legs (thighs; the shin boxes include spikes)
@@ -316,8 +443,8 @@ def fit_body_widths(out, group, boxes):
     legs, torso = (6,), (3,)
     leg_y = float(out[np.isin(group, legs), 1].mean())
     torso_y = float(out[group == 0, 1].mean())
-    fx = (ratio(legs, 0), ratio(torso, 0))
-    fz = (ratio(legs, 2), ratio(torso, 2))
+    fx = (ratio(legs, 0), min(ratio(torso, 0), torso_max_x))
+    fz = (ratio(legs, 2), max(ratio(torso, 2), torso_min_z))
     out[:, 0] *= np.interp(out[:, 1], [leg_y, torso_y], fx)
     out[:, 2] *= np.interp(out[:, 1], [leg_y, torso_y], fz)
     print(f"   width fit: legs x{fx[0]:.2f} z{fz[0]:.2f} at y={leg_y:.2f}; torso x{fx[1]:.2f} z{fz[1]:.2f} at y={torso_y:.2f}")
@@ -343,7 +470,7 @@ def joint_caps(m: Model, moved, cg, cs):
     """
     caps = []
     for s in (-1, 1):
-        for key, group, r in (("sh", 3, .13), ("el", 4, .13), ("wr", 5, .10),
+        for key, group, r in (("sh", 3, .13), ("el", 4, .13), ("wr", 5, m.wrist_cap),
                               ("hip", 6, .17), ("knee", 7, .17), ("ankle", 8, .15)):
             near = (cg == group) & (cs == s) & (abs(moved[:, 1] - m.rest[key]) < .12)
             if near.sum() < 6:
@@ -386,7 +513,9 @@ def build(m: Model):
     corners = v[tris].reshape(-1, 3)
     cg = np.repeat(tg, 3); cs = np.repeat(ts, 3)
     moved, lm = retarget(m, corners, cg, cs)
-    moved, body_x = to_prototype(m, moved, cg, cs, lm)
+    if m.straighten_limbs:
+        straighten(moved, cg, cs)
+    moved, body_x, head_shift = to_prototype(m, moved, cg, cs, lm)
     parts = []
     for g in sorted(set(tg)):
         for s in sorted(set(ts[tg == g])):
@@ -394,7 +523,7 @@ def build(m: Model):
             idx = (sel[:, None] * 3 + np.arange(3)).ravel()
             pos, t = cluster(m, moved[idx], np.arange(len(idx)).reshape(-1, 3))
             parts.append((int(g), int(s) * int(m.front_sign), pos, t, m.palette[int(g)]))
-    features = [(1, 0, pos + [0, 0, -m.head_push], tris, color)
+    features = [(1, 0, pos + [0, head_shift, -m.head_push], tris, color)
                 for pos, tris, color in blockout_head_parts(m.har, m.head_features)]
     if m.head_collar:
         features.append((1, 0, *collar(moved[cg == 1]), FACE_COLOR))
@@ -443,7 +572,6 @@ def debug_render(parts, path, view):
     img.save(path)
 
 
-BLEND_BAND = .16
 # child group -> (joint, parent group); the parent's vertices blend toward the child below the joint.
 JOINTS = {3: ("sh", 0), 4: ("el", 3), 5: ("wr", 4), 6: ("hip", 2), 7: ("knee", 6), 8: ("ankle", 7)}
 
@@ -465,13 +593,13 @@ def blend_weights(m: Model, g, s, pos):
     y = pos[:, 1]
     if g in JOINTS:                       # toward the parent at this limb's own joint
         joint, parent = JOINTS[g]
-        t = (m.rest[joint] - y) / BLEND_BAND
+        t = (m.rest[joint] - y) / m.blend_band
         w = np.clip(.5 - .5 * t, 0, 1)
         offer(w, parent, s if parent not in (0, 2) else 0, np.ones(n, bool))
     for child, (joint, parent) in JOINTS.items():
         if parent != g or child == 3:     # nothing blends a torso vertex toward an arm
             continue
-        t = (m.rest[joint] - y) / BLEND_BAND
+        t = (m.rest[joint] - y) / m.blend_band
         w = np.clip(.5 + .5 * t, 0, 1)
         side = np.where(pos[:, 0] > 0, 1, -1) if s == 0 else np.full(n, s)
         offer(w, child, side, np.ones(n, bool))

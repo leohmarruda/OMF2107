@@ -34,6 +34,11 @@ joints and the posed joints, in the (y, z) plane only. So an imported mesh must 
    shoulder/elbow/wrist, hip/knee/ankle), plus the pixel-to-unit mapping (the pixel that
    is X=0, Z=0 and pixels per unit; the preview is fitted to the bounding box, so
    derive it from two known extremes). Render a debug view and adjust.
+   Instead of editing the numbers in code, place them in the landmark editor:
+   `python project/tools/generate_mesh_landmark_editor.py` writes
+   `project/build/mesh-landmarks/index.html`, where each landmark is a draggable point on the
+   preview image with its bones and the left and right segment lengths. Save the download as
+   `project/data/mesh_landmarks.json`; `generate_meshy_meshes.py` applies it over the landmarks in code.
    `python generate_meshy_meshes.py --debug <dir>` writes `<prefix>_front.png` and
    `_side.png` coloured by rig group.
 4. **Tune the classification.** Vertices go to the nearest bone, distance divided by a

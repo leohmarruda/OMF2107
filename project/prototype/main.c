@@ -1,5 +1,6 @@
 // Standalone, asset-free side-on 3D fighting spike for OpenOMF.
 #define SDL_MAIN_HANDLED
+#include "live_input.h" // pulls in windows.h; must precede epoxy/gl.h (APIENTRY)
 #include <SDL.h>
 #include <epoxy/gl.h>
 #include <math.h>
@@ -15,8 +16,8 @@
 #endif
 
 #include "source_replay.h"
-#include "live_input.h"
 #include "pose_catalog.h"
+#include "projection_poses.h"
 #include "model_meshes.h"
 #include "meshy_meshes.h"
 
@@ -557,16 +558,32 @@ static void robot_placeholder(Fighter *f, float r, float g, float b, float t) {
 typedef struct { float y,z; } RigPoint;
 typedef struct { RigPoint shoulder,elbow,wrist,hip,knee,ankle; } RigSide;
 
+// OMF3K_MESHY=1 swaps the blockouts for the decimated Meshy meshes: the Robot Mascot
+// for Jaguar and the Rocket Jester for Shadow.
+static bool use_meshy_model(void) {
+    static int enabled=-1;
+    if(enabled<0) {
+        const char *v=getenv("OMF3K_MESHY");
+        enabled=v && v[0] && v[0]!='0';
+    }
+    return enabled;
+}
+
+// max_stretch>0 limits how far the limb is lengthened or shortened to reach its target (the Meshy
+// arms turn long and thin when an authored pose is far longer than the rest arm).
 static RigPoint rig_map(RigPoint p,RigPoint from_a,RigPoint from_b,
-                        RigPoint to_a,RigPoint to_b) {
+                        RigPoint to_a,RigPoint to_b,float max_stretch) {
     float sy=from_b.y-from_a.y, sz=from_b.z-from_a.z;
     float ty=to_b.y-to_a.y, tz=to_b.z-to_a.z;
     float source_len=hypotf(sy,sz), target_len=hypotf(ty,tz);
     if(source_len<.0001f || target_len<.0001f) return p;
     float along=((p.y-from_a.y)*sy+(p.z-from_a.z)*sz)/source_len;
     float across=((p.y-from_a.y)*(-sz)+(p.z-from_a.z)*sy)/source_len;
-    return (RigPoint){to_a.y+along*ty/source_len+across*(-tz)/target_len,
-                      to_a.z+along*tz/source_len+across*ty/target_len};
+    float stretch=target_len/source_len;
+    if(max_stretch>0) stretch=clampf(stretch,1.0f/max_stretch,max_stretch);
+    float scaled=along*stretch/target_len;
+    return (RigPoint){to_a.y+scaled*ty+across*(-tz)/target_len,
+                      to_a.z+scaled*tz+across*ty/target_len};
 }
 
 // Tilt a rig point about the torso pivot (height 1.38, depth 0) by atan(lean): positive leans the
@@ -575,6 +592,29 @@ static RigPoint rig_map(RigPoint p,RigPoint from_a,RigPoint from_b,
 static RigPoint lean_rotate(float y,float z,float lean) {
     float theta=atanf(lean), s=sinf(theta), c=cosf(theta), h=y-1.38f;
     return (RigPoint){1.38f+h*c+z*s, z*c-h*s};
+}
+
+// The authored arm poses come from flat sprites, so their segment lengths vary by about +-0.3 from pose to pose
+// (the shoulder-to-elbow distance averages nearly twice the rig's upper arm). The Meshy arms cannot stretch like that:
+// the forearm is placed at the elbow point, so a stretched upper arm leaves it detached. Keep the arm's bones
+// near their rest lengths and take only each bone's direction from the pose, so the segments stay chained.
+// origin, when not NULL, is where the sprite's own shoulder joint lies (authored in the pose editor): the upper arm's
+// direction is then measured from it instead of from the rig's shoulder, which the pose was never drawn against.
+static void limit_arm(RigSide *r,int har,const RigPoint *origin) {
+    const float upper=har==0 ? .48f : .48f, fore=har==0 ? .63f : .66f;
+    const RigPoint from=origin ? *origin : r->shoulder;
+    float uy=r->elbow.y-from.y, uz=r->elbow.z-from.z;
+    float ul=hypotf(uy,uz);
+    if(ul>.0001f) {
+        float len=clampf(ul,upper*.90f,upper*1.10f);
+        r->elbow=(RigPoint){r->shoulder.y+uy/ul*len,r->shoulder.z+uz/ul*len};
+    }
+    float fy=r->wrist.y-r->elbow.y, fz=r->wrist.z-r->elbow.z;
+    float fl=hypotf(fy,fz);
+    if(fl>.0001f) {
+        float len=clampf(fl,fore*.85f,fore*1.10f);
+        r->wrist=(RigPoint){r->elbow.y+fy/fl*len,r->elbow.z+fz/fl*len};
+    }
 }
 
 static void model_rig_sides(const Fighter *f,int har,float t,RigSide sides[2],
@@ -665,7 +705,12 @@ static void model_rig_sides(const Fighter *f,int har,float t,RigSide sides[2],
             r->ankle=(RigPoint){.16f+bob,side==1 ? -.62f-spread : .62f+spread};
         }
         // The shoulder follows the torso lean (pivot 1.38, as in model_transform).
-        RigPoint shoulder=lean_rotate(2.38f,0,*body_lean);
+        // The blockout's arms hang from a shoulder 0.13 above the rest joint (the top of its shoulder armor). The Meshy
+        // arms are fitted to the joint itself, so a pivot up there would stretch every upper arm; use the joint.
+        float shoulder_pivot=use_meshy_model() ? (har==0 ? 2.24f : 2.25f) : 2.38f;
+        RigPoint shoulder=lean_rotate(shoulder_pivot,0,*body_lean);
+        RigPoint pose_shoulder={0,0};
+        bool have_pose_shoulder=false;
         r->shoulder=(RigPoint){shoulder.y+*body_drop,shoulder.z+*body_shift};
         r->elbow=(RigPoint){1.77f+*body_drop+guard*.27f+arm_forward*.20f,
                             -.10f-arm_forward*.37f-guard*.28f+recoil};
@@ -674,6 +719,10 @@ static void model_rig_sides(const Fighter *f,int har,float t,RigSide sides[2],
         if(pose && (pose->flags&POSE_ARM) && side==pose->side) {
             r->elbow=(RigPoint){pose->elbow_y+*body_drop,pose->elbow_z+recoil};
             r->wrist=(RigPoint){pose->wrist_y+*body_drop,pose->wrist_z+recoil};
+            if(pose->flags&POSE_SHOULDER) {
+                pose_shoulder=(RigPoint){pose->shoulder_y+*body_drop,pose->shoulder_z+recoil};
+                have_pose_shoulder=true;
+            }
             if(contact_pose && (source_standing_punch(har,f->source_animation) ||
                                 (har==0 && f->source_animation==30)) &&
                pose->reach>.5f) {
@@ -686,12 +735,17 @@ static void model_rig_sides(const Fighter *f,int har,float t,RigSide sides[2],
             // The other arm, fitted from the same source sprite.
             r->elbow=(RigPoint){pose->elbow2_y+*body_drop,pose->elbow2_z+recoil};
             r->wrist=(RigPoint){pose->wrist2_y+*body_drop,pose->wrist2_z+recoil};
+            if(pose->flags&POSE_SHOULDER2) {
+                pose_shoulder=(RigPoint){pose->shoulder2_y+*body_drop,pose->shoulder2_z+recoil};
+                have_pose_shoulder=true;
+            }
         } else if(f->stun>0 && !f->guard) {
             r->elbow.y+=side==1 ? .35f : .20f;
             r->elbow.z+=.18f;
             r->wrist.y+=side==1 ? .70f : .28f;
             r->wrist.z+=side==1 ? .31f : .42f;
         }
+        if(use_meshy_model()) limit_arm(r,har,have_pose_shoulder ? &pose_shoulder : NULL);
     }
 }
 
@@ -711,16 +765,17 @@ static void model_transform(const Fighter *f,int har,const ModelPart *part,
         float hip_y=har==0 ? 1.30f : 1.27f;
         float knee_y=har==0 ? .75f : .76f;
         float ankle_y=har==0 ? .23f : .24f;
+        float arm_cap=use_meshy_model() ? 1.08f : 0;   // near-constant arm length; poses may not reach their wrist
         switch(part->group) {
         case 3: p=rig_map(p,(RigPoint){shoulder_y,0},(RigPoint){elbow_y,-.02f},
-                          r->shoulder,r->elbow); break;
+                          r->shoulder,r->elbow,arm_cap); break;
         case 4: case 5:
             p=rig_map(p,(RigPoint){elbow_y,-.02f},(RigPoint){wrist_y,-.08f},
-                      r->elbow,r->wrist); break;
+                      r->elbow,r->wrist,arm_cap); break;
         case 6: p=rig_map(p,(RigPoint){hip_y,0},(RigPoint){knee_y,har==0 ? -.01f : 0},
-                          r->hip,r->knee); break;
+                          r->hip,r->knee,0); break;
         case 7: p=rig_map(p,(RigPoint){knee_y,har==0 ? -.01f : 0},
-                          (RigPoint){ankle_y,-.02f},r->knee,r->ankle); break;
+                          (RigPoint){ankle_y,-.02f},r->knee,r->ankle,0); break;
         case 8: p.y+=r->ankle.y-ankle_y; p.z+=r->ankle.z+.02f; break;
         }
     }
@@ -728,17 +783,6 @@ static void model_transform(const Fighter *f,int har,const ModelPart *part,
     out[0]=f->x+f->presentation_x+source.x*co+p.z*si;
     out[1]=f->y+p.y;
     out[2]=-source.x*si+p.z*co+f->pose_depth;
-}
-
-// OMF3K_MESHY=1 swaps the blockouts for the decimated Meshy meshes: the Robot Mascot
-// for Jaguar and the Rocket Jester for Shadow.
-static bool use_meshy_model(void) {
-    static int enabled=-1;
-    if(enabled<0) {
-        const char *v=getenv("OMF3K_MESHY");
-        enabled=v && v[0] && v[0]!='0';
-    }
-    return enabled;
 }
 
 static void robot_loaded_model(Fighter *f,int har,float t,bool projection) {
@@ -822,6 +866,20 @@ static void robot(Fighter *f, int har, float t) {
     }
     else robot_placeholder(f,.56f,.61f,.68f,t);
 }
+// Projectile animations that show a full Shadow figure: the shadows of P41 (25, 26), the K41 slide (22, 53), the
+// P252 grab (37, 52 rising; once it connects, 39 drops onto the opponent, then 40, 50 and 51 hold and release them)
+// and the P632 air move (34, 35), and
+// their hit frames (27, 28, 29, 38, 49).
+static bool shadow_projection_animation(int animation) {
+    return animation==25 || animation==26 || animation==22 || animation==53 || animation==34 || animation==35 ||
+           animation==37 || animation==52 || animation==39 || animation==40 || animation==50 || animation==51 ||
+           animation==27 || animation==28 || animation==29 || animation==38 || animation==49;
+}
+static const ProjectionPose *projection_pose_for(int animation,int sprite) {
+    for(size_t k=0;k<sizeof(projection_poses)/sizeof(projection_poses[0]);k++)
+        if(projection_poses[k].anim==animation && projection_poses[k].sprite==sprite) return &projection_poses[k];
+    return NULL;
+}
 static void source_projectiles(void) {
     if(!source_replay_mode || !source_replay.count) return;
     const SourceFrame *frame=&source_replay.frames[source_replay_index];
@@ -844,9 +902,48 @@ static void source_projectiles(void) {
             box(x+direction*size*.06f,y,0,size*.34f,size*.48f,size*1.30f,yaw,.20f,.74f,.96f);
             box(x+direction*size*.12f,y,0,size*.16f,size*.25f,size*1.08f,yaw,.85f,1.0f,1.0f);
         } else if(har==1 && (p->animation==54 || p->animation==60)) {
-            Fighter ghost={.x=x,.y=y,.facing=p->facing>=0 ? -1.5707963f : 1.5707963f,
-                           .pose_height=1,.pose_depth=.55f};
+            // Shadow Punch's ice blade slides along the floor (54) and bursts on contact (60).
+            float direction=p->facing>=0 ? 1.0f : -1.0f;
+            float yaw=p->facing>=0 ? -1.5707963f : 1.5707963f;
             ring(x,0,.48f,.55f,.34f,.24f,.74f);
+            if(p->animation==54) {
+                for(int k=0;k<4;k++)
+                    box(x-direction*.16f*(float)k,.10f+.03f*(float)k,0,.30f-.05f*(float)k,.16f+.04f*(float)k,
+                        .46f-.08f*(float)k,yaw,.40f,.86f,.98f);
+            } else {
+                for(int k=0;k<5;k++)
+                    box(x+direction*(.12f*(float)(k-2)),.22f+.14f*(float)(k%3),0,.14f,.40f+.16f*(float)(k%2),
+                        .22f,yaw,.60f,.94f,1.0f);
+            }
+        } else if(har==1 && shadow_projection_animation(p->animation)) {
+            // Shadow's projections are full Shadow figures, drawn with the rig. A sprite authored in the pose editor
+            // uses its own pose and stands on the floor at the height its projectile spawns at (P41 shadow 111,
+            // slide 190, grab 168, air move 153), rising or falling with it. Otherwise it borrows the pose of the
+            // authored sprite that best matches its silhouette (projection_poses.h, from match_projection_poses.py),
+            // placed so the two silhouettes coincide; the hit and return frames match Shadow's damage frames exactly.
+            const float xs=7.6f/280.0f, ys=12.0f/280.0f;
+            float dir=p->facing>=0 ? 1.0f : -1.0f;
+            // The scripts of 39, 40, 50 and 51 carry the "r" tag (flip the sprite horizontally) on every frame: the
+            // drawn figure is mirrored against the projectile's own direction.
+            if(p->animation==39 || p->animation==40 || p->animation==50 || p->animation==51) dir=-dir;
+            int pose_animation=p->animation, pose_sprite=p->sprite;
+            float spawn_y=(p->animation==25 || p->animation==26) ? 111.0f :
+                          (p->animation==37 || p->animation==52) ? 168.0f :
+                          (p->animation==34 || p->animation==35) ? 153.0f : 190.0f;
+            float ghost_y=(spawn_y-p->y)*ys;
+            if(!pose_catalog_lookup(1,p->animation,p->sprite)) {
+                const ProjectionPose *borrow=projection_pose_for(p->animation,p->sprite);
+                if(borrow) {
+                    pose_animation=borrow->from_anim; pose_sprite=borrow->from_sprite;
+                    x+=(float)borrow->dx*dir*xs;
+                    ghost_y=(190.0f-(p->y+(float)borrow->dy))*ys;
+                }
+            }
+            Fighter ghost={.x=x,.y=ghost_y,.facing=dir>=0 ? -1.5707963f : 1.5707963f,
+                           .pose_height=1,.pose_depth=.55f,
+                           .source_animation=pose_animation,.source_sprite=pose_sprite};
+            const PoseFrame *pose=pose_catalog_lookup(1,pose_animation,pose_sprite);
+            if(pose && (pose->flags&POSE_REACH)) ghost.pose_reach=pose->reach;
             robot_loaded_model(&ghost,1,source_visual_time,true);
         }
     }
@@ -1284,7 +1381,7 @@ int main(int argc,char **argv) {
         // Real fights come from OpenOMF (the original-game engine). The built-in combat
         // loop is a provisional placeholder kept only for rendering and self-tests.
         fputs("OMF2115 fights run on the OpenOMF engine. Start one with:\n"
-              "  powershell -ExecutionPolicy Bypass -File project/prototype/run-live-jaguar.ps1\n"
+              "  powershell -ExecutionPolicy Bypass -File project/scripts/run-blockout-jaguar.ps1\n"
               "Other modes: --source-live trace.csv | --source-replay trace.csv | --source-replay-check trace.csv\n"
               "             --model-preview | --select selection.txt | --self-test | --sandbox (provisional non-OMF combat)\n",stderr);
         return 1;

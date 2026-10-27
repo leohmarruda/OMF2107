@@ -10,7 +10,9 @@ enum {
     POSE_BODY = 1 << 5,   // torso shift along the fight plane (negative faces the opponent)
     POSE_LEAN = 1 << 6,   // torso lean: forward shift per unit of height above the hip (1.38); positive leans toward the opponent
     POSE_ARM2 = 1 << 7,   // the other arm, measured from the same sprite
-    POSE_DROP = 1 << 8    // body height relative to standing (negative is lower); replaces the crouch drop
+    POSE_DROP = 1 << 8,   // body height relative to standing (negative is lower); replaces the crouch drop
+    POSE_SHOULDER = 1 << 9,    // where the arm hangs from in this sprite (the joint, not the shoulder blade)
+    POSE_SHOULDER2 = 1 << 10   // the same for the other arm
 };
 
 // A catalog entry overrides only the listed parts of the shared blockout rig.
@@ -25,6 +27,7 @@ typedef struct {
     float lean;
     float elbow2_y, elbow2_z, wrist2_y, wrist2_z;
     float body_y;
+    float shoulder_y, shoulder_z, shoulder2_y, shoulder2_z;
 } PoseFrame;
 
 const PoseFrame *pose_catalog_lookup(int har, int animation, int sprite);
