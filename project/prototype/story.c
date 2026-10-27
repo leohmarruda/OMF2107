@@ -361,8 +361,9 @@ const char *story_flag(const StoryRun *run, const char *name) {
 
 static void goto_scene(StoryRun *r, int scene) { r->scene = scene; r->pc = 0; }
 
-// Runs commands that need no input until one needs the host.
-static void step(StoryRun *r) {
+// Runs commands that need no input until one needs the host. log_say is false when restoring a save,
+// whose log already holds the say line it stopped on.
+static void step_to_event(StoryRun *r, bool log_say) {
     for(int guard = 0; guard < 100000; guard++) {
         if(r->pc >= scene_of(r)->count) { r->event = STORY_EVENT_END; return; }  // not reachable once validated
         const StoryCmd *c = cmd_at(r, r->pc);
@@ -375,7 +376,7 @@ static void step(StoryRun *r) {
                 break;
             case STORY_CMD_JUMP: goto_scene(r, c->target); break;
             case STORY_CMD_SAY:
-                log_add(r, c->speaker, c->text);
+                if(log_say) log_add(r, c->speaker, c->text);
                 r->event = STORY_EVENT_SAY;
                 return;
             case STORY_CMD_CHOICE:
@@ -392,6 +393,8 @@ static void step(StoryRun *r) {
     }
     r->event = STORY_EVENT_END;  // a loop of jumps with no dialogue; stop rather than hang
 }
+
+static void step(StoryRun *r) { step_to_event(r, true); }
 
 bool story_start(StoryRun *run, const Story *story, const char *scene_id) {
     memset(run, 0, sizeof(*run));
@@ -453,4 +456,165 @@ const StoryLogEntry *story_log_at(const StoryRun *run, int index) {
     if(index < 0 || index >= count) return NULL;
     int first = run->log_total - count;
     return &run->log[(first + index) % STORY_LOG];
+}
+
+// ---- save data ----
+
+static unsigned fnv_bytes(unsigned h, const void *data, size_t n) {
+    const unsigned char *p = data;
+    for(size_t i = 0; i < n; i++) { h ^= p[i]; h *= 16777619u; }
+    return h;
+}
+
+static unsigned fnv_str(unsigned h, const char *s) { return fnv_bytes(h, s, strlen(s) + 1); }
+
+unsigned story_fingerprint(const Story *story) {
+    unsigned h = 2166136261u;
+    for(int i = 0; i < story->scene_count; i++) {
+        const StoryScene *sc = &story->scenes[i];
+        h = fnv_str(h, sc->id);
+        for(int k = 0; k < sc->count; k++) {
+            const StoryCmd *c = &story->cmds[sc->first + k];
+            int kind = (int)c->kind;
+            h = fnv_bytes(h, &kind, sizeof(kind));
+            h = fnv_str(h, c->speaker);
+            h = fnv_str(h, c->text);
+            h = fnv_str(h, c->flag);
+            h = fnv_str(h, c->value);
+            h = fnv_bytes(h, &c->has_set, sizeof(c->has_set));
+            h = fnv_str(h, c->target_name);
+            h = fnv_str(h, c->target2_name);
+            for(int p = 0; p < 2; p++) { h = fnv_str(h, c->pilot[p]); h = fnv_str(h, c->har[p]); }
+        }
+    }
+    return h;
+}
+
+bool story_save_exists(const char *path) {
+    FILE *f = fopen(path, "rb");
+    if(f) fclose(f);
+    return f != NULL;
+}
+
+// Writes s with tabs and line breaks replaced by spaces, so each save field stays on one line.
+static void put_clean(FILE *f, const char *s) {
+    for(; *s; s++) fputc(*s == '\t' || *s == '\n' || *s == '\r' ? ' ' : *s, f);
+}
+
+bool story_save(const StoryRun *run, const char *path, char *err, size_t err_size) {
+    char tmp[512];
+    if(snprintf(tmp, sizeof(tmp), "%s.tmp", path) >= (int)sizeof(tmp)) {
+        fail(err, err_size, path, 0, "the save path is too long");
+        return false;
+    }
+    FILE *f = fopen(tmp, "wb");
+    if(!f) { fail(err, err_size, path, 0, "cannot write the save file"); return false; }
+    fprintf(f, "OMF2115-STORY-SAVE %d\n", STORY_SAVE_VERSION);
+    fprintf(f, "script %08x\n", story_fingerprint(run->story));
+    fprintf(f, "scene %s\n", run->story->scenes[run->scene].id);
+    fprintf(f, "pc %d\n", run->pc);
+    fputs("bg ", f); put_clean(f, run->bg); fputc('\n', f);
+    for(int i = 0; i < run->flag_count; i++) {
+        fputs("flag ", f); put_clean(f, run->flags[i].name); fputc('=', f);
+        put_clean(f, run->flags[i].value); fputc('\n', f);
+    }
+    for(int i = 0; i < story_log_count(run); i++) {
+        const StoryLogEntry *e = story_log_at(run, i);
+        fputs("log ", f); put_clean(f, e->speaker); fputc('\t', f); put_clean(f, e->text); fputc('\n', f);
+    }
+    bool ok = fflush(f) == 0 && !ferror(f);
+    ok = fclose(f) == 0 && ok;
+    if(!ok) { remove(tmp); fail(err, err_size, path, 0, "the save file could not be written"); return false; }
+    remove(path);  // rename does not replace an existing file on Windows
+    if(rename(tmp, path) != 0) { remove(tmp); fail(err, err_size, path, 0, "the save file could not be replaced"); return false; }
+    return true;
+}
+
+bool story_load_save(StoryRun *run, const Story *story, const char *path, char *err, size_t err_size) {
+    if(err && err_size) err[0] = 0;
+    FILE *f = fopen(path, "rb");
+    if(!f) { fail(err, err_size, path, 0, "cannot open the save file"); return false; }
+    fseek(f, 0, SEEK_END);
+    long size = ftell(f);
+    fseek(f, 0, SEEK_SET);
+    if(size <= 0 || size > 1 << 20) { fclose(f); fail(err, err_size, path, 0, "the save file is empty or too large"); return false; }
+    char *text = malloc((size_t)size + 1);
+    if(!text) { fclose(f); fail(err, err_size, path, 0, "out of memory"); return false; }
+    size_t got = fread(text, 1, (size_t)size, f);
+    fclose(f);
+    text[got] = 0;
+
+    StoryRun tmp;
+    memset(&tmp, 0, sizeof(tmp));
+    tmp.story = story;
+    char scene_id[STORY_NAME] = "";
+    bool have_scene = false, have_pc = false, have_script = false;
+    unsigned script = 0;
+    int pc = 0, line = 0;
+    bool ok = true;
+    for(char *p = text; ok && *p;) {
+        char *eol = strchr(p, '\n');
+        if(eol) *eol = 0;
+        char *l = p;
+        p = eol ? eol + 1 : p + strlen(p);
+        line++;
+        size_t len = strlen(l);
+        if(len && l[len - 1] == '\r') l[--len] = 0;
+        if(!len) continue;
+        if(line == 1) {
+            const char *magic = "OMF2115-STORY-SAVE ";
+            if(strncmp(l, magic, strlen(magic)) != 0) { fail(err, err_size, path, line, "not a story save file"); ok = false; break; }
+            int version = atoi(l + strlen(magic));
+            if(version != STORY_SAVE_VERSION) {
+                fail(err, err_size, path, line, version > STORY_SAVE_VERSION ?
+                     "this save was written by a newer build (format version %d; this build reads version %d)" :
+                     "this save uses an old format (version %d) that this build (version %d) cannot read",
+                     version, STORY_SAVE_VERSION);
+                ok = false;
+            }
+            continue;
+        }
+        if(strncmp(l, "script ", 7) == 0) { script = (unsigned)strtoul(l + 7, NULL, 16); have_script = true; }
+        else if(strncmp(l, "scene ", 6) == 0) { have_scene = copy(scene_id, STORY_NAME, l + 6); ok = have_scene; }
+        else if(strncmp(l, "pc ", 3) == 0) { pc = atoi(l + 3); have_pc = true; }
+        else if(strncmp(l, "bg", 2) == 0 && (l[2] == ' ' || l[2] == 0)) { ok = copy(tmp.bg, sizeof(tmp.bg), l[2] ? l + 3 : ""); }
+        else if(strncmp(l, "flag ", 5) == 0) {
+            char *eq = strchr(l + 5, '=');
+            if(!eq || eq == l + 5 || tmp.flag_count >= STORY_MAX_FLAGS) ok = false;
+            else {
+                *eq = 0;
+                StoryFlag *fl = &tmp.flags[tmp.flag_count++];
+                ok = copy(fl->name, STORY_NAME, l + 5) && copy(fl->value, STORY_NAME, eq + 1);
+            }
+        } else if(strncmp(l, "log ", 4) == 0) {
+            char *tab = strchr(l + 4, '\t');
+            if(!tab || tmp.log_total >= STORY_LOG) ok = false;
+            else {
+                *tab = 0;
+                StoryLogEntry *e = &tmp.log[tmp.log_total++];
+                ok = copy(e->speaker, STORY_NAME, l + 4) && copy(e->text, STORY_TEXT, tab + 1);
+            }
+        } else {
+            ok = false;
+        }
+        if(!ok && (!err || !*err)) fail(err, err_size, path, line, "the save file is damaged");
+    }
+    free(text);
+    if(!ok) return false;
+    if(!have_script || !have_scene || !have_pc) { fail(err, err_size, path, 0, "the save file is missing its position"); return false; }
+    if(script != story_fingerprint(story)) {
+        fail(err, err_size, path, 0, "the script changed since this save was made, so it cannot be resumed");
+        return false;
+    }
+    int scene = story_find_scene(story, scene_id);
+    if(scene < 0 || pc < 0 || pc >= story->scenes[scene].count) {
+        fail(err, err_size, path, 0, "the save points outside the script");
+        return false;
+    }
+    tmp.scene = scene;
+    tmp.pc = pc;
+    step_to_event(&tmp, false);
+    if(tmp.pc != pc) { fail(err, err_size, path, 0, "the save is not at a stopping point"); return false; }
+    *run = tmp;
+    return true;
 }

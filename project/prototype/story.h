@@ -103,4 +103,14 @@ const char *story_flag(const StoryRun *run, const char *name);     // "" when un
 int story_log_count(const StoryRun *run);
 const StoryLogEntry *story_log_at(const StoryRun *run, int index); // 0 is the oldest kept entry
 
+// ---- save data ----
+// A save is a small versioned text file holding the stopping point (scene id and command), flags, and log.
+// It records a fingerprint of the script, so a save made against an edited script is refused, not misread.
+#define STORY_SAVE_VERSION 1
+unsigned story_fingerprint(const Story *story);
+bool story_save(const StoryRun *run, const char *path, char *err, size_t err_size);
+// Restores a saved run. On any failure returns false with a message and leaves *run untouched.
+bool story_load_save(StoryRun *run, const Story *story, const char *path, char *err, size_t err_size);
+bool story_save_exists(const char *path);
+
 #endif

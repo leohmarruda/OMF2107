@@ -116,6 +116,109 @@ static bool rejects(const char *script, const char *expect) {
     return true;
 }
 
+// Two runs are the same stopping point: same event, position, flags, background, and log.
+static bool same_run(const StoryRun *a, const StoryRun *b) {
+    if(a->event != b->event || a->scene != b->scene || a->pc != b->pc || strcmp(a->bg, b->bg) != 0 ||
+       a->flag_count != b->flag_count || story_log_count(a) != story_log_count(b)) return false;
+    for(int i = 0; i < a->flag_count; i++)
+        if(strcmp(a->flags[i].name, b->flags[i].name) != 0 || strcmp(a->flags[i].value, b->flags[i].value) != 0) return false;
+    for(int i = 0; i < story_log_count(a); i++)
+        if(strcmp(story_log_at(a, i)->speaker, story_log_at(b, i)->speaker) != 0 ||
+           strcmp(story_log_at(a, i)->text, story_log_at(b, i)->text) != 0) return false;
+    return true;
+}
+
+static void write_file(const char *path, const char *text) {
+    FILE *f = fopen(path, "wb");
+    if(f) { fputs(text, f); fclose(f); }
+}
+
+static void selftest_saves(const Story *story) {
+    const char *path = "story_selftest.save";
+    char err[256];
+    StoryRun run, loaded;
+
+    // A save taken at each kind of stopping point restores exactly, and play continues the same way.
+    CHECK(story_start(&run, story, NULL));
+    CHECK(story_save(&run, path, err, sizeof(err)));                       // at a say line
+    CHECK(story_load_save(&loaded, story, path, err, sizeof(err)) && same_run(&run, &loaded));
+    story_skip(&run);
+    CHECK(story_save(&run, path, err, sizeof(err)));                       // at a choice menu
+    CHECK(story_load_save(&loaded, story, path, err, sizeof(err)) && same_run(&run, &loaded));
+    CHECK(loaded.event == STORY_EVENT_CHOICE && loaded.choice_count == 2);
+    story_choose(&run, 0);
+    story_choose(&loaded, 0);
+    CHECK(same_run(&run, &loaded));
+    story_skip(&run);
+    CHECK(run.event == STORY_EVENT_FIGHT);
+    CHECK(story_save(&run, path, err, sizeof(err)));                       // at a match
+    CHECK(story_load_save(&loaded, story, path, err, sizeof(err)) && same_run(&run, &loaded));
+    story_fight_result(&run, true);
+    story_fight_result(&loaded, true);
+    CHECK(same_run(&run, &loaded));
+    story_skip(&run);
+    CHECK(run.event == STORY_EVENT_END);
+    CHECK(story_save(&run, path, err, sizeof(err)));                       // at the end
+    CHECK(story_load_save(&loaded, story, path, err, sizeof(err)) && same_run(&run, &loaded));
+    CHECK(loaded.event == STORY_EVENT_END && strcmp(story_flag(&loaded, "evidence"), "shared") == 0);
+
+    // The restored say line is not logged a second time.
+    CHECK(story_start(&run, story, NULL));
+    CHECK(story_save(&run, path, err, sizeof(err)));
+    CHECK(story_load_save(&loaded, story, path, err, sizeof(err)));
+    CHECK(story_log_count(&loaded) == 1);
+
+    // A failed load reports why and leaves the run untouched.
+    StoryRun keep = run;
+    CHECK(!story_load_save(&run, story, "story_selftest_missing.save", err, sizeof(err)) && strstr(err, "cannot open"));
+    CHECK(same_run(&keep, &run));
+    write_file(path, "OMF2115-STORY-SAVE 2\nscript 00000000\nscene start\npc 0\n");
+    CHECK(!story_load_save(&run, story, path, err, sizeof(err)) && strstr(err, "newer build"));
+    write_file(path, "OMF2115-STORY-SAVE 0\nscript 00000000\nscene start\npc 0\n");
+    CHECK(!story_load_save(&run, story, path, err, sizeof(err)) && strstr(err, "old format"));
+    write_file(path, "hello\n");
+    CHECK(!story_load_save(&run, story, path, err, sizeof(err)) && strstr(err, "not a story save"));
+    write_file(path, "OMF2115-STORY-SAVE 1\nscene start\npc 0\n");
+    CHECK(!story_load_save(&run, story, path, err, sizeof(err)) && strstr(err, "missing its position"));
+    write_file(path, "OMF2115-STORY-SAVE 1\nscript 12345678\nscene start\npc 0\n");
+    CHECK(!story_load_save(&run, story, path, err, sizeof(err)) && strstr(err, "script changed"));
+    CHECK(same_run(&keep, &run));
+
+    // Valid fingerprint but a damaged position: build a good save, then edit it.
+    CHECK(story_start(&run, story, NULL));
+    CHECK(story_save(&run, path, err, sizeof(err)));
+    FILE *f = fopen(path, "rb");
+    char good[4096] = "";
+    if(f) { size_t n = fread(good, 1, sizeof(good) - 1, f); good[n] = 0; fclose(f); }
+    char bad[4096];
+    char *at = strstr(good, "pc 1");   // the first say line; command 0 is the bg
+    CHECK(at != NULL);
+    if(at) {
+        snprintf(bad, sizeof(bad), "%.*spc 99%s", (int)(at - good), good, at + 4);
+        write_file(path, bad);
+        CHECK(!story_load_save(&loaded, story, path, err, sizeof(err)) && strstr(err, "outside the script"));
+        snprintf(bad, sizeof(bad), "%.*spc 0%s", (int)(at - good), good, at + 4);   // the bg command: not a stopping point
+        write_file(path, bad);
+        CHECK(!story_load_save(&loaded, story, path, err, sizeof(err)) && strstr(err, "stopping point"));
+    }
+    write_file(path, "OMF2115-STORY-SAVE 1\nscript 00000000\nbanana\n");
+    CHECK(!story_load_save(&loaded, story, path, err, sizeof(err)) && strstr(err, "damaged"));
+
+    // Editing the script changes its fingerprint.
+    Story edited;
+    char edited_text[4096];
+    snprintf(edited_text, sizeof(edited_text), "%s", good_script);
+    char *w = strstr(edited_text, "Hello there.");
+    CHECK(w != NULL);
+    if(w) {
+        memcpy(w, "Hullo there.", 12);
+        CHECK(story_parse(&edited, edited_text, "edited", err, sizeof(err)));
+        CHECK(story_fingerprint(&edited) != story_fingerprint(story));
+        story_free(&edited);
+    }
+    remove(path);
+}
+
 static int cmd_selftest(void) {
     Story story;
     char err[256];
@@ -162,6 +265,7 @@ static int cmd_selftest(void) {
     CHECK(story_start(&run, &story, "won"));
     CHECK(strcmp(story_event_cmd(&run)->text, "Won plainly.") == 0);   // flag unset: the if falls through
     CHECK(!story_start(&run, &story, "nowhere"));
+    selftest_saves(&story);
     story_free(&story);
 
     // A long run keeps only the newest log entries.

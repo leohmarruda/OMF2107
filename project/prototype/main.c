@@ -88,6 +88,12 @@ static StoryRun story_run;
 static const char *story_start_scene;
 static int story_sel;
 static bool story_log_open;
+static bool story_save_enabled;
+static char story_save_buf[512];
+static const char *story_save_path;
+static char story_notice[96];
+static Uint64 story_notice_until;
+static bool story_notice_pending;
 static const char *selection_path;
 static int selection_har;
 static int selection_pilot;
@@ -1101,9 +1107,11 @@ static void story_hud(void) {
     quad(-1,.55f,2,.45f,.03f,.07f,.14f);
     label(-.94f,.93f,.010f,"OMF2115 / STORY",.65f,.92f,1);
     char scene_label[64];
-    snprintf(scene_label,sizeof(scene_label),"SCENE %.18s",story_data.scenes[story_run.scene].id);
+    snprintf(scene_label,sizeof(scene_label),"SCENE %.10s",story_data.scenes[story_run.scene].id);
     label(.10f,.93f,.009f,scene_label,.48f,.60f,.72f);
     if(story_run.bg[0]) label(-.94f,.78f,.022f,story_run.bg,.80f,.88f,.96f);
+    if(story_notice_pending) { story_notice_until=SDL_GetTicks64()+5000; story_notice_pending=false; }
+    if(story_notice[0] && SDL_GetTicks64()<story_notice_until) label(-.94f,.60f,.009f,story_notice,.85f,1,.70f);
     quad(-.97f,-.98f,1.94f,.74f,.02f,.05f,.11f);
     char lines[8][80];
     float r,g,b;
@@ -1162,13 +1170,38 @@ static void story_hud(void) {
         label(-.90f,-.88f,.008f,"L CLOSE",.48f,.60f,.72f);
     }
 }
+static void story_notify(const char *text) {
+    snprintf(story_notice,sizeof(story_notice),"%s",text);
+    story_notice_pending=true;   // the 5 s timer starts when the notice is first drawn
+}
+static void story_make_dirs(void) {
+#ifdef _WIN32
+    _mkdir("project"); _mkdir("project/build"); _mkdir("project/build/story");
+#else
+    mkdir("project",0755); mkdir("project/build",0755); mkdir("project/build/story",0755);
+#endif
+}
+static void story_autosave(void) {
+    if(!story_save_enabled) return;
+    char error[256];
+    story_make_dirs();
+    if(!story_save(&story_run,story_save_path,error,sizeof(error))) {
+        fprintf(stderr,"%s\n",error);
+        story_notify("SAVE FAILED");
+    }
+}
 static void story_restart(void) {
     story_start(&story_run,&story_data,story_start_scene);
     story_sel=0;
     story_log_open=false;
+    if(story_save_enabled) {
+        remove(story_save_path);
+        story_notify("RESTARTED  SAVE CLEARED");
+    }
 }
 // One input, shared by the keyboard and the scripted --script option. Tokens: a, c<N>, u, d, w, l, s, g, r.
 static void story_act(char action,int number) {
+    StoryEventKind before=story_run.event;
     switch(action) {
         case 'a':
             if(story_run.event==STORY_EVENT_SAY) story_advance(&story_run);
@@ -1183,6 +1216,9 @@ static void story_act(char action,int number) {
         case 'g': story_log_open=!story_log_open; break;
         case 'r': story_restart(); break;
     }
+    // Autosave when a choice or match is decided, and whenever play stops at a choice, match, or the end.
+    bool progressed=action=='a' || action=='c' || action=='w' || action=='l' || action=='s';
+    if(progressed && (before!=STORY_EVENT_SAY || story_run.event!=STORY_EVENT_SAY)) story_autosave();
 }
 static void story_key(SDL_Scancode key) {
     switch(key) {
@@ -1551,20 +1587,34 @@ int main(int argc,char **argv) {
         return 1;
     }
     story_mode=argc>1 && strcmp(argv[1],"--story")==0;
-    const char *story_path=NULL,*story_script=NULL,*story_shot_path=NULL;
+    const char *story_path=NULL,*story_script=NULL,*story_shot_path=NULL,*story_save_file=NULL;
+    bool story_new=false;
     if(story_mode) {
-        bool good=argc>=3 && argc%2==1;
-        for(int i=3;good && i<argc;i+=2) {
+        bool good=argc>=3;
+        for(int i=3;good && i<argc;) {
+            if(strcmp(argv[i],"--new")==0) { story_new=true; i++; continue; }
+            if(i+1>=argc) { good=false; break; }
             if(strcmp(argv[i],"--scene")==0) story_start_scene=argv[i+1];
             else if(strcmp(argv[i],"--script")==0) story_script=argv[i+1];
             else if(strcmp(argv[i],"--shot")==0) story_shot_path=argv[i+1];
+            else if(strcmp(argv[i],"--save-file")==0) story_save_file=argv[i+1];
             else good=false;
+            i+=2;
         }
         if(!good) {
-            fputs("Usage: omf3d_prototype --story script.story [--scene id] [--script a,c1,w,...] [--shot out.bmp]\n",stderr);
+            fputs("Usage: omf3d_prototype --story script.story [--new] [--save-file path] [--scene id]\n"
+                  "                       [--script a,c1,w,...] [--shot out.bmp]\n",stderr);
             return 1;
         }
         story_path=argv[2];
+        if(story_save_file) {
+            snprintf(story_save_buf,sizeof(story_save_buf),"%s",story_save_file);
+        } else {
+            const char *base=story_path;
+            for(const char *c=story_path;*c;c++) if(*c=='/' || *c=='\\') base=c+1;
+            snprintf(story_save_buf,sizeof(story_save_buf),"project/build/story/%s.save",base);
+        }
+        story_save_path=story_save_buf;
     }
     bool smoke = argc>1 && strcmp(argv[1],"--smoke")==0;
     bool capture = argc>1 && strcmp(argv[1],"--capture")==0;
@@ -1631,6 +1681,19 @@ int main(int argc,char **argv) {
             fprintf(stderr,"Unknown scene: %s\n",story_start_scene);
             story_free(&story_data);
             return 1;
+        }
+        // Scripted and screenshot runs are tests: they neither resume nor overwrite the player's save,
+        // unless a save file is named explicitly.
+        story_save_enabled=story_save_file || (!story_shot_path && !story_script);
+        if(story_save_enabled && !story_new && story_save_exists(story_save_path)) {
+            StoryRun restored;
+            if(story_load_save(&restored,&story_data,story_save_path,error,sizeof(error))) {
+                story_run=restored;
+                story_notify("RESUMED FROM SAVE  R RESTARTS");
+            } else {
+                fprintf(stderr,"Save ignored: %s\n",error);
+                story_notify("SAVE IGNORED  STARTING OVER");
+            }
         }
         if(story_script) story_run_script(story_script);
     }
