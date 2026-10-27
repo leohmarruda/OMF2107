@@ -872,24 +872,9 @@ static void robot_loaded_model(Fighter *f,int har,float t,bool projection) {
     }
 }
 
-static void source_shadow_punch_effect(const Fighter *f,int har) {
-    if(!source_replay_mode || har!=1 || f->source_animation!=23 ||
-       f->source_sprite<0 || f->source_sprite>2) return;
-    float direction=(float)facing_dir(f);
-    float pulse=f->source_sprite==1 ? 1.0f : f->source_sprite==0 ? .78f : .88f;
-    float x=f->x+f->presentation_x+direction*(1.58f+.12f*(float)f->source_sprite);
-    float y=f->y+2.18f-.10f*(float)f->source_sprite;
-    float z=.35f;
-    box(x,y,z,.32f*pulse,.30f*pulse,.72f*pulse,f->facing,.04f,.48f,.70f);
-    box(x+direction*.10f,y+.02f,z,.23f*pulse,.22f*pulse,.62f*pulse,f->facing,
-        .10f,.78f,.95f);
-    box(x+direction*.20f,y+.03f,z,.12f*pulse,.13f*pulse,.43f*pulse,f->facing,
-        .76f,.98f,1.0f);
-}
 static void robot(Fighter *f, int har, float t) {
     if(har==0 || har==1) {
         robot_loaded_model(f,har,t,false);
-        source_shadow_punch_effect(f,har);
     }
     else robot_placeholder(f,.56f,.61f,.68f,t);
 }
@@ -952,9 +937,13 @@ static void source_projectiles(void) {
             float yaw=p->facing>=0 ? -1.5707963f : 1.5707963f;
             ring(x,0,.48f,.55f,.34f,.24f,.74f);
             if(p->animation==54) {
+                // The blade spawns on the floor 60 source units ahead of Shadow and moves 20 per tick, so its
+                // distance from Shadow gives a ramp-in over its first two ticks with no per-projectile state.
+                float away=fabsf(p->x-frame->fighter[p->owner].x);
+                float grow=clampf(.45f+(away-60.0f)/80.0f,.45f,1.0f);
                 for(int k=0;k<6;k++)
-                    box(x-direction*.26f*(float)k,.14f+.04f*(float)k,0,.48f-.06f*(float)k,.26f+.05f*(float)k,
-                        .72f-.09f*(float)k,yaw,.40f,.86f-.04f*(float)k,.98f);
+                    box(x-direction*.26f*grow*(float)k,(.14f+.04f*(float)k)*grow,0,(.48f-.06f*(float)k)*grow,
+                        (.26f+.05f*(float)k)*grow,(.72f-.09f*(float)k)*grow,yaw,.40f,.86f-.04f*(float)k,.98f);
             } else {
                 int frame_index=p->sprite>5 ? 5 : (p->sprite<0 ? 0 : p->sprite);
                 float grow=1.0f+.22f*(float)frame_index;
