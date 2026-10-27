@@ -1,0 +1,106 @@
+// Story scene scripts for the OMF2115 prototype: a small line-based format, a validator, and a runner.
+// Pure C with no SDL or OpenGL, so it can be tested headlessly and integrated elsewhere later.
+//
+// Script format (one command per line, '#' starts a comment line, indentation is ignored):
+//   scene <id>                          starts a scene; the first scene is where a run begins
+//   bg <name>                           names the background (for the viewer; free text)
+//   say <speaker>: <text>               one line of dialogue; an empty speaker (say : text) is narration
+//   choice <text> -> <scene> [set f=v]  a menu entry; consecutive choice lines form one menu
+//   set <flag>=<value>                  stores a flag
+//   if <flag>=<value> -> <scene>        jumps when the flag has that value, otherwise continues
+//   jump <scene>                        continues in another scene
+//   fight <pilot> <har> vs <pilot> <har> win -> <scene> lose -> <scene>
+//                                       hands off to a match; the host reports the result
+//   end                                 finishes the story
+// Every scene must finish with jump, end, fight, or a choice menu; nothing may follow those.
+#ifndef OMF2115_STORY_H
+#define OMF2115_STORY_H
+
+#include <stdbool.h>
+#include <stddef.h>
+
+#define STORY_NAME 32
+#define STORY_TEXT 256
+#define STORY_MAX_CHOICES 6
+#define STORY_MAX_FLAGS 32
+#define STORY_LOG 64
+
+typedef enum {
+    STORY_CMD_NONE = 0,       // keeps zero-initialised commands invalid
+    STORY_CMD_BG,
+    STORY_CMD_SAY,
+    STORY_CMD_CHOICE,
+    STORY_CMD_SET,
+    STORY_CMD_IF,
+    STORY_CMD_JUMP,
+    STORY_CMD_FIGHT,
+    STORY_CMD_END
+} StoryCmdKind;
+
+typedef struct {
+    StoryCmdKind kind;
+    int line;                       // line in the script, for messages
+    char speaker[STORY_NAME];       // say
+    char text[STORY_TEXT];          // say and choice text; bg name
+    char flag[STORY_NAME];          // set, if, and choice-set
+    char value[STORY_NAME];
+    bool has_set;                   // choice: also sets flag=value
+    char target_name[STORY_NAME];   // jump, if, choice, fight win
+    char target2_name[STORY_NAME];  // fight lose
+    int target, target2;            // resolved scene indices
+    char pilot[2][STORY_NAME];      // fight
+    char har[2][STORY_NAME];
+} StoryCmd;
+
+typedef struct {
+    char id[STORY_NAME];
+    int first, count;               // commands of this scene
+    int line;
+} StoryScene;
+
+typedef struct {
+    StoryScene *scenes;
+    int scene_count;
+    StoryCmd *cmds;
+    int cmd_count;
+} Story;
+
+// Parses and validates script text. On failure returns false and writes "name:line: message" to err.
+bool story_parse(Story *story, const char *text, const char *name, char *err, size_t err_size);
+bool story_load(Story *story, const char *path, char *err, size_t err_size);
+void story_free(Story *story);
+// Scenes that cannot be reached from the first scene; returns how many were written to out.
+int story_unreachable(const Story *story, int *out, int max);
+int story_find_scene(const Story *story, const char *id);
+
+typedef enum { STORY_EVENT_SAY, STORY_EVENT_CHOICE, STORY_EVENT_FIGHT, STORY_EVENT_END } StoryEventKind;
+
+typedef struct { char name[STORY_NAME]; char value[STORY_NAME]; } StoryFlag;
+typedef struct { char speaker[STORY_NAME]; char text[STORY_TEXT]; } StoryLogEntry;
+
+// The whole run state is plain data (scene, command index, flags, log) so it can be saved later.
+typedef struct {
+    const Story *story;
+    int scene, pc;                  // current scene and command index within it
+    StoryEventKind event;           // what the host should show or do now
+    int choice_first, choice_count; // for STORY_EVENT_CHOICE: commands (within the scene) of the menu
+    char bg[STORY_NAME];
+    int flag_count;
+    StoryFlag flags[STORY_MAX_FLAGS];
+    int log_total;                  // entries ever logged; the last STORY_LOG are kept
+    StoryLogEntry log[STORY_LOG];
+} StoryRun;
+
+// Starts at the given scene (NULL for the first) and runs to the first event. False if the scene is unknown.
+bool story_start(StoryRun *run, const Story *story, const char *scene_id);
+const StoryCmd *story_event_cmd(const StoryRun *run);              // the say or fight command now shown
+const StoryCmd *story_choice_cmd(const StoryRun *run, int index);  // a menu entry
+void story_advance(StoryRun *run);                                 // after a say event
+bool story_choose(StoryRun *run, int index);                       // after a choice event
+bool story_fight_result(StoryRun *run, bool win);                  // after a fight event
+int story_skip(StoryRun *run);                                     // skips say lines up to the next choice, fight, or end
+const char *story_flag(const StoryRun *run, const char *name);     // "" when unset
+int story_log_count(const StoryRun *run);
+const StoryLogEntry *story_log_at(const StoryRun *run, int index); // 0 is the oldest kept entry
+
+#endif

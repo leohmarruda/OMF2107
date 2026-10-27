@@ -17,6 +17,7 @@
 
 #include "source_replay.h"
 #include "pose_catalog.h"
+#include "story.h"
 #include "projection_poses.h"
 #include "model_meshes.h"
 #include "meshy_meshes.h"
@@ -80,6 +81,13 @@ static int model_preview_pose; // idle, punch, kick, guard, crouch, walk, jump, 
 static const char *source_live_pilot_name;
 static const char *source_live_rival_name;
 static bool selection_mode;
+// Story mode: plays a scene script (story.h) with a dialogue box, choices, skip, and a log.
+static bool story_mode;
+static Story story_data;
+static StoryRun story_run;
+static const char *story_start_scene;
+static int story_sel;
+static bool story_log_open;
 static const char *selection_path;
 static int selection_har;
 static int selection_pilot;
@@ -129,6 +137,9 @@ static const Glyph font[] = {
     {':',{0,4,4,0,4,4,0}}, {'.',{0,0,0,0,0,12,12}},
     {'-',{0,0,0,31,0,0,0}}, {'/',{1,1,2,4,8,16,16}},
     {'!',{4,4,4,4,4,0,4}}, {'?',{14,17,1,2,4,0,4}},
+    {',',{0,0,0,0,12,4,8}}, {'\'',{4,4,8,0,0,0,0}}, {'"',{10,10,0,0,0,0,0}},
+    {'(',{2,4,8,8,8,4,2}}, {')',{8,4,2,2,2,4,8}}, {';',{0,12,12,0,12,4,8}},
+    {'>',{16,8,4,2,4,8,16}}, {'_',{0,0,0,0,0,0,31}},
     {' ',{0,0,0,0,0,0,0}}
 };
 
@@ -1033,6 +1044,7 @@ static void quad(float x,float y,float w,float h,float r,float g,float b) {
     vertex(x,y,-.99f,r,g,b); vertex(x2,y2,-.99f,r,g,b); vertex(x,y2,-.99f,r,g,b);
 }
 static const unsigned char *glyph(char ch) {
+    if(ch>='a' && ch<='z') ch=(char)(ch-'a'+'A');
     for(size_t i=0;i<sizeof(font)/sizeof(font[0]);i++) if(font[i].ch==ch) return font[i].rows;
     return font[sizeof(font)/sizeof(font[0])-1].rows;
 }
@@ -1058,6 +1070,141 @@ static void selection_hud(void) {
     quad(-.78f,-.20f,.78f,.035f,.16f,.83f,.94f);
     label(-.72f,-.42f,.013f,"ENTER START MATCH",.70f,.90f,.96f);
     label(-.72f,-.54f,.011f,"ESC CANCEL",.55f,.70f,.84f);
+}
+// Word-wraps text into lines of at most width characters; returns the line count.
+static int story_wrap(const char *text,int width,char lines[][80],int max_lines) {
+    int n=0;
+    const char *p=text;
+    while(*p && n<max_lines) {
+        while(*p==' ') p++;
+        int len=0,last_space=-1;
+        while(p[len] && len<width) { if(p[len]==' ') last_space=len; len++; }
+        if(p[len] && p[len]!=' ' && last_space>0) len=last_space;
+        memcpy(lines[n],p,(size_t)len);
+        lines[n][len]=0;
+        while(len>0 && lines[n][len-1]==' ') lines[n][--len]=0;
+        n++;
+        p+=len;
+    }
+    return n;
+}
+static void story_speaker_color(const char *speaker,float *r,float *g,float *b) {
+    float c[3]={.95f,.95f,.95f};
+    if(!*speaker) { c[0]=.70f; c[1]=.78f; c[2]=.85f; }
+    else if(!strcmp(speaker,"Crystal")) { c[0]=.55f; c[1]=.90f; c[2]=1; }
+    else if(!strcmp(speaker,"Christian")) { c[0]=1; c[1]=.70f; c[2]=.62f; }
+    else if(!strcmp(speaker,"YOU")) { c[0]=.85f; c[1]=1; c[2]=.70f; }
+    *r=c[0]; *g=c[1]; *b=c[2];
+}
+static void story_hud(void) {
+    quad(-1,-1,2,2,.015f,.025f,.065f);
+    quad(-1,.55f,2,.45f,.03f,.07f,.14f);
+    label(-.94f,.93f,.010f,"OMF2115 / STORY",.65f,.92f,1);
+    char scene_label[64];
+    snprintf(scene_label,sizeof(scene_label),"SCENE %.18s",story_data.scenes[story_run.scene].id);
+    label(.10f,.93f,.009f,scene_label,.48f,.60f,.72f);
+    if(story_run.bg[0]) label(-.94f,.78f,.022f,story_run.bg,.80f,.88f,.96f);
+    quad(-.97f,-.98f,1.94f,.74f,.02f,.05f,.11f);
+    char lines[8][80];
+    float r,g,b;
+    const char *hint="";
+    if(story_run.event==STORY_EVENT_SAY) {
+        const StoryCmd *c=story_event_cmd(&story_run);
+        story_speaker_color(c->speaker,&r,&g,&b);
+        label(-.92f,-.30f,.012f,*c->speaker ? c->speaker : "-",r,g,b);
+        int n=story_wrap(c->text,34,lines,6);
+        for(int i=0;i<n;i++) label(-.92f,-.42f-.085f*(float)i,.009f,lines[i],.92f,.95f,.98f);
+        hint="ENTER NEXT  S SKIP  L LOG";
+    } else if(story_run.event==STORY_EVENT_CHOICE) {
+        label(-.92f,-.30f,.012f,"CHOOSE",.80f,.90f,.55f);
+        float y=-.42f;
+        for(int i=0;i<story_run.choice_count;i++) {
+            const StoryCmd *c=story_choice_cmd(&story_run,i);
+            int n=story_wrap(c->text,31,lines,2);
+            bool on=i==story_sel;
+            for(int k=0;k<n;k++) {
+                label(-.92f,y,.009f,k==0 ? (on ? ">" : " ") : " ",1,.85f,.40f);
+                label(-.86f,y,.009f,lines[k],on ? 1.0f : .55f,on ? .95f : .62f,on ? .75f : .70f);
+                y-=.085f;
+            }
+            y-=.03f;
+        }
+        hint="UP DOWN SELECT  ENTER CHOOSE  L LOG";
+    } else if(story_run.event==STORY_EVENT_FIGHT) {
+        const StoryCmd *c=story_event_cmd(&story_run);
+        label(-.92f,-.30f,.012f,"MATCH",1,.80f,.45f);
+        char who[2][80];
+        for(int i=0;i<2;i++) snprintf(who[i],sizeof(who[i]),"%s IN %s",c->pilot[i],c->har[i]);
+        label(-.92f,-.44f,.009f,who[0],.55f,.90f,1);
+        label(-.92f,-.53f,.009f,"VS",.70f,.78f,.85f);
+        label(-.92f,-.62f,.009f,who[1],1,.70f,.62f);
+        hint="TEST: Y WIN  N LOSE (REAL MATCH LATER)";
+    } else {
+        label(-.92f,-.30f,.012f,"THE END",.80f,.90f,.55f);
+        label(-.92f,-.44f,.009f,"R RESTART  ESC QUIT",.92f,.95f,.98f);
+        hint="L LOG";
+    }
+    if(!story_log_open) label(-.92f,-.93f,.008f,hint,.48f,.60f,.72f);
+    if(story_log_open) {
+        quad(-.95f,-.92f,1.90f,1.80f,.01f,.02f,.05f);
+        label(-.90f,.80f,.013f,"LOG",.65f,.92f,1);
+        int count=story_log_count(&story_run);
+        float y=.66f;
+        for(int i=count>7 ? count-7 : 0;i<count;i++) {
+            const StoryLogEntry *e=story_log_at(&story_run,i);
+            char text[STORY_TEXT+STORY_NAME+4];
+            snprintf(text,sizeof(text),"%s%s%s",e->speaker,*e->speaker ? ": " : "",e->text);
+            story_speaker_color(e->speaker,&r,&g,&b);
+            int n=story_wrap(text,38,lines,3);
+            for(int k=0;k<n;k++) { label(-.90f,y,.008f,lines[k],r,g,b); y-=.07f; }
+            y-=.025f;
+        }
+        label(-.90f,-.88f,.008f,"L CLOSE",.48f,.60f,.72f);
+    }
+}
+static void story_restart(void) {
+    story_start(&story_run,&story_data,story_start_scene);
+    story_sel=0;
+    story_log_open=false;
+}
+// One input, shared by the keyboard and the scripted --script option. Tokens: a, c<N>, u, d, w, l, s, g, r.
+static void story_act(char action,int number) {
+    switch(action) {
+        case 'a':
+            if(story_run.event==STORY_EVENT_SAY) story_advance(&story_run);
+            else if(story_run.event==STORY_EVENT_CHOICE) { story_choose(&story_run,story_sel); story_sel=0; }
+            break;
+        case 'c': if(story_choose(&story_run,number)) story_sel=0; break;
+        case 'u': if(story_run.event==STORY_EVENT_CHOICE) story_sel=(story_sel+story_run.choice_count-1)%story_run.choice_count; break;
+        case 'd': if(story_run.event==STORY_EVENT_CHOICE) story_sel=(story_sel+1)%story_run.choice_count; break;
+        case 'w': story_fight_result(&story_run,true); break;
+        case 'l': story_fight_result(&story_run,false); break;
+        case 's': story_skip(&story_run); story_sel=0; break;
+        case 'g': story_log_open=!story_log_open; break;
+        case 'r': story_restart(); break;
+    }
+}
+static void story_key(SDL_Scancode key) {
+    switch(key) {
+        case SDL_SCANCODE_SPACE: case SDL_SCANCODE_RETURN: story_act('a',0); break;
+        case SDL_SCANCODE_UP: story_act('u',0); break;
+        case SDL_SCANCODE_DOWN: story_act('d',0); break;
+        case SDL_SCANCODE_S: story_act('s',0); break;
+        case SDL_SCANCODE_L: story_act('g',0); break;
+        case SDL_SCANCODE_R: story_act('r',0); break;
+        case SDL_SCANCODE_Y: story_act('w',0); break;
+        case SDL_SCANCODE_N: story_act('l',0); break;
+        default: break;
+    }
+}
+static void story_run_script(const char *script) {
+    for(const char *p=script;*p;) {
+        char action=*p++;
+        int number=0;
+        if(action=='c') { char *end; number=(int)strtol(p,&end,10); p=end; }
+        story_act(action,number);
+        while(*p==',') p++;
+    }
 }
 static void world(void) {
     if(model_preview_mode) {
@@ -1403,6 +1550,22 @@ int main(int argc,char **argv) {
         fputs("Usage: omf3d_prototype --model-preview | --model-preview-capture\n",stderr);
         return 1;
     }
+    story_mode=argc>1 && strcmp(argv[1],"--story")==0;
+    const char *story_path=NULL,*story_script=NULL,*story_shot_path=NULL;
+    if(story_mode) {
+        bool good=argc>=3 && argc%2==1;
+        for(int i=3;good && i<argc;i+=2) {
+            if(strcmp(argv[i],"--scene")==0) story_start_scene=argv[i+1];
+            else if(strcmp(argv[i],"--script")==0) story_script=argv[i+1];
+            else if(strcmp(argv[i],"--shot")==0) story_shot_path=argv[i+1];
+            else good=false;
+        }
+        if(!good) {
+            fputs("Usage: omf3d_prototype --story script.story [--scene id] [--script a,c1,w,...] [--shot out.bmp]\n",stderr);
+            return 1;
+        }
+        story_path=argv[2];
+    }
     bool smoke = argc>1 && strcmp(argv[1],"--smoke")==0;
     bool capture = argc>1 && strcmp(argv[1],"--capture")==0;
     bool sandbox = argc==2 && strcmp(argv[1],"--sandbox")==0;
@@ -1413,13 +1576,13 @@ int main(int argc,char **argv) {
         source_live_rival_name = getenv("OMF3K_LIVE_RIVAL_NAME");
     }
     source_replay_mode = source_follow_mode || (argc>1 && strcmp(argv[1],"--source-replay")==0);
-    if(!selection_mode && !model_preview_mode && !smoke && !capture && !sandbox && !source_check && !source_replay_mode) {
+    if(!selection_mode && !story_mode && !model_preview_mode && !smoke && !capture && !sandbox && !source_check && !source_replay_mode) {
         // Real fights come from OpenOMF (the original-game engine). The built-in combat
         // loop is a provisional placeholder kept only for rendering and self-tests.
         fputs("OMF2115 fights run on the OpenOMF engine. Start one with:\n"
               "  powershell -ExecutionPolicy Bypass -File project/scripts/run-blockout-jaguar.ps1\n"
               "Other modes: --source-live trace.csv | --source-replay trace.csv | --source-replay-check trace.csv\n"
-              "             --model-preview | --select selection.txt | --self-test | --sandbox (provisional non-OMF combat)\n",stderr);
+              "             --model-preview | --select selection.txt | --story script.story | --self-test | --sandbox (provisional non-OMF combat)\n",stderr);
         return 1;
     }
     bool source_capture = false;
@@ -1461,6 +1624,16 @@ int main(int argc,char **argv) {
             return 0;
         }
     }
+    if(story_mode) {
+        char error[256];
+        if(!story_load(&story_data,story_path,error,sizeof(error))) { fprintf(stderr,"%s\n",error); return 1; }
+        if(!story_start(&story_run,&story_data,story_start_scene)) {
+            fprintf(stderr,"Unknown scene: %s\n",story_start_scene);
+            story_free(&story_data);
+            return 1;
+        }
+        if(story_script) story_run_script(story_script);
+    }
     uint32_t capture_tick=0;
     if(source_capture) {
         char *end;
@@ -1499,7 +1672,7 @@ int main(int argc,char **argv) {
     SDL_GL_SetAttribute(SDL_GL_MULTISAMPLESAMPLES,4);
     SDL_Window *window=SDL_CreateWindow("OMF2115 / PROTOTYPE",SDL_WINDOWPOS_CENTERED,SDL_WINDOWPOS_CENTERED,
                                        WIDTH,HEIGHT,SDL_WINDOW_OPENGL|SDL_WINDOW_RESIZABLE|
-                                       ((smoke || capture || source_capture || model_preview_capture) ? SDL_WINDOW_HIDDEN : SDL_WINDOW_SHOWN));
+                                       ((smoke || capture || source_capture || model_preview_capture || story_shot_path) ? SDL_WINDOW_HIDDEN : SDL_WINDOW_SHOWN));
     if(!window) { fprintf(stderr,"Window: %s\n",SDL_GetError()); SDL_Quit(); return 1; }
     SDL_GLContext context=SDL_GL_CreateContext(window);
     if(!context) { fprintf(stderr,"OpenGL: %s\n",SDL_GetError()); SDL_DestroyWindow(window); SDL_Quit(); return 1; }
@@ -1521,6 +1694,7 @@ int main(int argc,char **argv) {
     glUseProgram(program); glEnable(GL_DEPTH_TEST); glDepthFunc(GL_LESS);
     reset_fight();
     if(selection_mode) phase=1;
+    else if(story_mode) phase=1;
     else if(model_preview_mode) phase=1;
     else if(source_follow_mode) phase=0;
     else if(source_replay_mode) apply_source_frame(source_replay_index);
@@ -1565,6 +1739,7 @@ int main(int argc,char **argv) {
                         }
                     }
                 } else if(e.key.keysym.scancode==SDL_SCANCODE_ESCAPE) running=false;
+                else if(story_mode) story_key(e.key.keysym.scancode);
                 else if(model_preview_mode) {
                     if(e.key.keysym.scancode>=SDL_SCANCODE_1 && e.key.keysym.scancode<=SDL_SCANCODE_3)
                         model_preview_view=e.key.keysym.scancode-SDL_SCANCODE_1;
@@ -1627,8 +1802,8 @@ int main(int argc,char **argv) {
             live_impact_time=fmaxf(0,live_impact_time-visual_step);
             live_round_intro_time=fmaxf(0,live_round_intro_time-visual_step);
         }
-        if(selection_mode) {
-            // The selection screen waits for Enter and does not advance a fight.
+        if(selection_mode || story_mode) {
+            // The selection and story screens wait for input and do not advance a fight.
         } else if(source_follow_mode) {
             char error[256];
             size_t old_count=source_replay.count;
@@ -1726,6 +1901,9 @@ int main(int argc,char **argv) {
         if(selection_mode) {
             selection_hud();
             world_count=0;
+        } else if(story_mode) {
+            story_hud();
+            world_count=0;
         } else {
             world();
             world_count=vertex_count;
@@ -1740,7 +1918,7 @@ int main(int argc,char **argv) {
         glEnable(GL_DEPTH_TEST); glDrawArrays(GL_TRIANGLES,0,world_count);
         glDisable(GL_DEPTH_TEST); glDrawArrays(GL_TRIANGLES,world_count,vertex_count-world_count);
         Uint64 profile_after_gpu=SDL_GetPerformanceCounter();
-        bool capture_now=capture || (source_capture && (!source_follow_mode ||
+        bool capture_now=capture || story_shot_path || (source_capture && (!source_follow_mode ||
                          (source_replay.count && source_replay.frames[source_replay_index].tick>=capture_tick)));
         if(model_preview_capture) {
             const char *paths[]={"project/build/omf3d_model_side.bmp","project/build/omf3d_model_front.bmp",
@@ -1753,7 +1931,8 @@ int main(int argc,char **argv) {
             if(!capture_ok) fprintf(stderr,"Could not save %s: %s\n",
                                     paths[model_preview_capture_index],SDL_GetError());
         } else if(capture_now) {
-            const char *path=source_capture ? "project/build/omf3d_source_replay_capture.bmp" : "project/build/omf3d_sideon_capture.bmp";
+            const char *path=story_shot_path ? story_shot_path :
+                             source_capture ? "project/build/omf3d_source_replay_capture.bmp" : "project/build/omf3d_sideon_capture.bmp";
             capture_ok=save_frame_bmp(path);
             if(!capture_ok) fprintf(stderr,"Could not save %s: %s\n",path,SDL_GetError());
         }
@@ -1811,12 +1990,14 @@ int main(int argc,char **argv) {
 #endif
     source_replay_follow_close(&source_follow);
     source_replay_free(&source_replay);
+    story_free(&story_data);
     if(profile_live) printf("Live timing: frames=%u slow=%u max_frame=%.1fms input=%.1fms poll=%.1fms draw=%.1fms build=%.1fms upload=%.1fms gpu=%.1fms swap=%.1fms source_gaps=%u max_gap=%.1fms max_tick_advance=%u\n",
                             profile_frames,slow_frames,max_frame_ms,max_input_ms,max_poll_ms,max_draw_ms,
                             max_build_ms,max_upload_ms,max_gpu_ms,max_swap_ms,source_gaps,max_source_gap_ms,max_tick_advance);
     if(smoke) puts("3D prototype OpenGL smoke check OK");
     if(capture && capture_ok) puts("Saved project/build/omf3d_sideon_capture.bmp");
     if(source_capture && capture_ok) puts("Saved project/build/omf3d_source_replay_capture.bmp");
+    if(story_shot_path && capture_ok) printf("Saved %s\n",story_shot_path);
     if(model_preview_capture && capture_ok)
         puts("Saved project/build/omf3d_model_{side,front,back,punch,kick,guard,crouch,walk,jump,hit,special}.bmp");
     return capture_ok ? 0 : 1;

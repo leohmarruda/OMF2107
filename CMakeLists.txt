@@ -431,7 +431,9 @@ target_link_libraries(openomf PRIVATE openomf::argtable openomf::zip openomf::SD
 option(BUILD_3D_PROTOTYPE "Build the standalone 3D combat/story prototype" ON)
 if(BUILD_3D_PROTOTYPE)
     add_executable(omf3d_prototype project/prototype/main.c project/prototype/source_replay.c
-                                   project/prototype/pose_catalog.c)
+                                   project/prototype/pose_catalog.c project/prototype/story.c)
+    # Validates and plays story scripts without a window: story_check selftest | check | play.
+    add_executable(story_check project/prototype/story_check.c project/prototype/story.c)
     target_link_libraries(omf3d_prototype PRIVATE openomf::SDL2main openomf::epoxy)
     if(NOT WIN32)
         target_link_libraries(omf3d_prototype PRIVATE m)

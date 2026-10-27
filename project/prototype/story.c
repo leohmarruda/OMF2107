@@ -1,0 +1,456 @@
+#include "story.h"
+
+#include <ctype.h>
+#include <stdarg.h>
+#include <stdio.h>
+#include <stdlib.h>
+#include <string.h>
+
+// The ten playable pilots and the two HARs the prototype can render.
+static const char *const known_pilots[] = {"Crystal", "Steffan", "Milano", "Christian", "Shirro",
+                                           "JeanPaul", "Ibrahim", "Angel", "Cossette", "Raven"};
+static const char *const known_hars[] = {"Jaguar", "Shadow"};
+
+static bool ieq(const char *a, const char *b) {
+    for(; *a && *b; a++, b++)
+        if(tolower((unsigned char)*a) != tolower((unsigned char)*b)) return false;
+    return *a == *b;
+}
+
+static bool in_list(const char *s, const char *const *list, size_t count) {
+    for(size_t i = 0; i < count; i++)
+        if(ieq(s, list[i])) return true;
+    return false;
+}
+
+static void fail(char *err, size_t err_size, const char *name, int line, const char *fmt, ...) {
+    if(!err || !err_size) return;
+    int n = snprintf(err, err_size, "%s:%d: ", name, line);
+    if(n < 0 || (size_t)n >= err_size) return;
+    va_list ap;
+    va_start(ap, fmt);
+    vsnprintf(err + n, err_size - (size_t)n, fmt, ap);
+    va_end(ap);
+}
+
+static char *trim(char *s) {
+    while(*s && isspace((unsigned char)*s)) s++;
+    char *end = s + strlen(s);
+    while(end > s && isspace((unsigned char)end[-1])) *--end = 0;
+    return s;
+}
+
+// Copies src into dst; false when it does not fit.
+static bool copy(char *dst, size_t size, const char *src) {
+    size_t n = strlen(src);
+    if(n >= size) return false;
+    memcpy(dst, src, n + 1);
+    return true;
+}
+
+// Next whitespace-separated token, advancing *p. Returns NULL at the end of the line.
+static char *token(char **p) {
+    char *s = *p;
+    while(*s && isspace((unsigned char)*s)) s++;
+    if(!*s) { *p = s; return NULL; }
+    char *start = s;
+    while(*s && !isspace((unsigned char)*s)) s++;
+    if(*s) *s++ = 0;
+    *p = s;
+    return start;
+}
+
+// "flag=value" into its two parts.
+static bool split_assignment(char *text, char *flag, char *value) {
+    char *eq = strchr(text, '=');
+    if(!eq) return false;
+    *eq = 0;
+    char *f = trim(text), *v = trim(eq + 1);
+    if(!*f || !*v) return false;
+    return copy(flag, STORY_NAME, f) && copy(value, STORY_NAME, v);
+}
+
+static StoryCmd *add_cmd(Story *s, StoryCmdKind kind, int line) {
+    StoryCmd *grown = realloc(s->cmds, (size_t)(s->cmd_count + 1) * sizeof(*grown));
+    if(!grown) return NULL;
+    s->cmds = grown;
+    StoryCmd *c = &s->cmds[s->cmd_count++];
+    memset(c, 0, sizeof(*c));
+    c->kind = kind;
+    c->line = line;
+    c->target = c->target2 = -1;
+    return c;
+}
+
+void story_free(Story *story) {
+    free(story->scenes);
+    free(story->cmds);
+    memset(story, 0, sizeof(*story));
+}
+
+int story_find_scene(const Story *story, const char *id) {
+    for(int i = 0; i < story->scene_count; i++)
+        if(strcmp(story->scenes[i].id, id) == 0) return i;
+    return -1;
+}
+
+static bool resolve(const Story *s, const char *name, int line, const char *what, int *out, const char *src,
+                    char *err, size_t err_size) {
+    int index = story_find_scene(s, name);
+    if(index < 0) {
+        fail(err, err_size, src, line, "%s refers to unknown scene '%s'", what, name);
+        return false;
+    }
+    *out = index;
+    return true;
+}
+
+// Parses one command line (already trimmed, not a comment) into the story.
+static bool parse_line(Story *s, char *line_text, int line, const char *name, char *err, size_t err_size) {
+    char *rest = line_text;
+    char *word = token(&rest);
+    rest = trim(rest);
+    StoryScene *scene = s->scene_count ? &s->scenes[s->scene_count - 1] : NULL;
+
+    if(strcmp(word, "scene") == 0) {
+        if(!*rest || strchr(rest, ' ')) { fail(err, err_size, name, line, "scene needs one id"); return false; }
+        if(story_find_scene(s, rest) >= 0) { fail(err, err_size, name, line, "duplicate scene '%s'", rest); return false; }
+        StoryScene *grown = realloc(s->scenes, (size_t)(s->scene_count + 1) * sizeof(*grown));
+        if(!grown) { fail(err, err_size, name, line, "out of memory"); return false; }
+        s->scenes = grown;
+        StoryScene *n = &s->scenes[s->scene_count++];
+        memset(n, 0, sizeof(*n));
+        if(!copy(n->id, STORY_NAME, rest)) { fail(err, err_size, name, line, "scene id is too long"); return false; }
+        n->first = s->cmd_count;
+        n->line = line;
+        return true;
+    }
+    if(!scene) { fail(err, err_size, name, line, "'%s' appears before any scene", word); return false; }
+
+    StoryCmd *c = NULL;
+    if(strcmp(word, "bg") == 0) {
+        if(!*rest) { fail(err, err_size, name, line, "bg needs a name"); return false; }
+        c = add_cmd(s, STORY_CMD_BG, line);
+        if(c && !copy(c->text, STORY_NAME, rest)) { fail(err, err_size, name, line, "bg name is too long"); return false; }
+    } else if(strcmp(word, "say") == 0) {
+        char *colon = strchr(rest, ':');
+        if(!colon) { fail(err, err_size, name, line, "say needs 'speaker: text' (use 'say : text' for narration)"); return false; }
+        *colon = 0;
+        char *speaker = trim(rest), *text = trim(colon + 1);
+        if(!*text) { fail(err, err_size, name, line, "say has no text"); return false; }
+        c = add_cmd(s, STORY_CMD_SAY, line);
+        if(c && (!copy(c->speaker, STORY_NAME, speaker) || !copy(c->text, STORY_TEXT, text))) {
+            fail(err, err_size, name, line, "speaker or text is too long"); return false;
+        }
+    } else if(strcmp(word, "choice") == 0) {
+        char *arrow = strstr(rest, "->");
+        if(!arrow) { fail(err, err_size, name, line, "choice needs 'text -> scene'"); return false; }
+        *arrow = 0;
+        char *text = trim(rest), *after = arrow + 2;
+        if(!*text) { fail(err, err_size, name, line, "choice has no text"); return false; }
+        char *target = token(&after);
+        if(!target) { fail(err, err_size, name, line, "choice has no target scene"); return false; }
+        c = add_cmd(s, STORY_CMD_CHOICE, line);
+        if(!c) return false;
+        if(!copy(c->text, STORY_TEXT, text) || !copy(c->target_name, STORY_NAME, target)) {
+            fail(err, err_size, name, line, "choice text or target is too long"); return false;
+        }
+        char *kw = token(&after);
+        if(kw) {
+            after = trim(after);
+            if(strcmp(kw, "set") != 0 || !split_assignment(after, c->flag, c->value)) {
+                fail(err, err_size, name, line, "choice may end with 'set flag=value'"); return false;
+            }
+            c->has_set = true;
+        }
+    } else if(strcmp(word, "set") == 0) {
+        c = add_cmd(s, STORY_CMD_SET, line);
+        if(c && !split_assignment(rest, c->flag, c->value)) {
+            fail(err, err_size, name, line, "set needs 'flag=value'"); return false;
+        }
+    } else if(strcmp(word, "if") == 0) {
+        char *arrow = strstr(rest, "->");
+        if(!arrow) { fail(err, err_size, name, line, "if needs 'flag=value -> scene'"); return false; }
+        *arrow = 0;
+        char *target = trim(arrow + 2);
+        c = add_cmd(s, STORY_CMD_IF, line);
+        if(!c) return false;
+        if(!split_assignment(rest, c->flag, c->value) || !*target || !copy(c->target_name, STORY_NAME, target)) {
+            fail(err, err_size, name, line, "if needs 'flag=value -> scene'"); return false;
+        }
+    } else if(strcmp(word, "jump") == 0) {
+        c = add_cmd(s, STORY_CMD_JUMP, line);
+        if(c && (!*rest || !copy(c->target_name, STORY_NAME, rest))) {
+            fail(err, err_size, name, line, "jump needs a scene"); return false;
+        }
+    } else if(strcmp(word, "fight") == 0) {
+        c = add_cmd(s, STORY_CMD_FIGHT, line);
+        if(!c) return false;
+        char *a_pilot = token(&rest), *a_har = token(&rest), *vs = token(&rest), *b_pilot = token(&rest);
+        char *b_har = token(&rest), *w = token(&rest), *w_arrow = token(&rest), *w_scene = token(&rest);
+        char *l = token(&rest), *l_arrow = token(&rest), *l_scene = token(&rest), *extra = token(&rest);
+        if(!l_scene || extra || strcmp(vs, "vs") != 0 || strcmp(w, "win") != 0 || strcmp(w_arrow, "->") != 0 ||
+           strcmp(l, "lose") != 0 || strcmp(l_arrow, "->") != 0) {
+            fail(err, err_size, name, line,
+                 "fight needs '<pilot> <har> vs <pilot> <har> win -> <scene> lose -> <scene>'");
+            return false;
+        }
+        if(!copy(c->pilot[0], STORY_NAME, a_pilot) || !copy(c->har[0], STORY_NAME, a_har) ||
+           !copy(c->pilot[1], STORY_NAME, b_pilot) || !copy(c->har[1], STORY_NAME, b_har) ||
+           !copy(c->target_name, STORY_NAME, w_scene) || !copy(c->target2_name, STORY_NAME, l_scene)) {
+            fail(err, err_size, name, line, "fight has a name that is too long"); return false;
+        }
+        for(int i = 0; i < 2; i++) {
+            if(!in_list(c->pilot[i], known_pilots, sizeof(known_pilots) / sizeof(known_pilots[0]))) {
+                fail(err, err_size, name, line, "unknown pilot '%s'", c->pilot[i]); return false;
+            }
+            if(!in_list(c->har[i], known_hars, sizeof(known_hars) / sizeof(known_hars[0]))) {
+                fail(err, err_size, name, line, "unknown HAR '%s' (the prototype renders Jaguar and Shadow)",
+                     c->har[i]);
+                return false;
+            }
+        }
+    } else if(strcmp(word, "end") == 0) {
+        if(*rest) { fail(err, err_size, name, line, "end takes no arguments"); return false; }
+        c = add_cmd(s, STORY_CMD_END, line);
+    } else {
+        fail(err, err_size, name, line, "unknown command '%s'", word);
+        return false;
+    }
+    if(!c) { fail(err, err_size, name, line, "out of memory"); return false; }
+    s->scenes[s->scene_count - 1].count++;
+    return true;
+}
+
+static bool validate(Story *s, const char *name, char *err, size_t err_size) {
+    if(s->scene_count == 0) { fail(err, err_size, name, 1, "the script has no scenes"); return false; }
+    for(int i = 0; i < s->scene_count; i++) {
+        const StoryScene *sc = &s->scenes[i];
+        if(sc->count == 0) {
+            fail(err, err_size, name, sc->line, "scene '%s' is empty", sc->id); return false;
+        }
+        int menu = 0;
+        for(int k = 0; k < sc->count; k++) {
+            StoryCmd *c = &s->cmds[sc->first + k];
+            const StoryCmd *next = k + 1 < sc->count ? &s->cmds[sc->first + k + 1] : NULL;
+            if(c->kind == STORY_CMD_IF || c->kind == STORY_CMD_JUMP || c->kind == STORY_CMD_CHOICE ||
+               c->kind == STORY_CMD_FIGHT) {
+                if(!resolve(s, c->target_name, c->line, c->kind == STORY_CMD_IF ? "if" :
+                            c->kind == STORY_CMD_JUMP ? "jump" : c->kind == STORY_CMD_FIGHT ? "fight win" : "choice",
+                            &c->target, name, err, err_size)) return false;
+            }
+            if(c->kind == STORY_CMD_FIGHT &&
+               !resolve(s, c->target2_name, c->line, "fight lose", &c->target2, name, err, err_size)) return false;
+            if(c->kind == STORY_CMD_CHOICE) {
+                if(++menu > STORY_MAX_CHOICES) {
+                    fail(err, err_size, name, c->line, "a menu may have at most %d choices", STORY_MAX_CHOICES);
+                    return false;
+                }
+                if(next && next->kind != STORY_CMD_CHOICE) {
+                    fail(err, err_size, name, next->line, "commands after a choice menu are unreachable"); return false;
+                }
+            } else {
+                menu = 0;
+            }
+            if((c->kind == STORY_CMD_JUMP || c->kind == STORY_CMD_END || c->kind == STORY_CMD_FIGHT) && next) {
+                fail(err, err_size, name, next->line, "unreachable command after jump, end, or fight"); return false;
+            }
+            if(!next && c->kind != STORY_CMD_JUMP && c->kind != STORY_CMD_END && c->kind != STORY_CMD_FIGHT &&
+               c->kind != STORY_CMD_CHOICE) {
+                fail(err, err_size, name, sc->line,
+                     "scene '%s' can run off its end; finish it with jump, end, fight, or a choice menu", sc->id);
+                return false;
+            }
+        }
+    }
+    return true;
+}
+
+bool story_parse(Story *story, const char *text, const char *name, char *err, size_t err_size) {
+    memset(story, 0, sizeof(*story));
+    if(err && err_size) err[0] = 0;
+    char *copy_text = malloc(strlen(text) + 1);
+    if(!copy_text) { fail(err, err_size, name, 0, "out of memory"); return false; }
+    strcpy(copy_text, text);
+    int line = 0;
+    bool ok = true;
+    for(char *p = copy_text; ok && *p;) {
+        char *eol = strchr(p, '\n');
+        if(eol) *eol = 0;
+        line++;
+        char *t = trim(p);
+        if(*t && *t != '#') ok = parse_line(story, t, line, name, err, err_size);
+        p = eol ? eol + 1 : p + strlen(p);
+    }
+    free(copy_text);
+    if(ok) ok = validate(story, name, err, err_size);
+    if(!ok) story_free(story);
+    return ok;
+}
+
+bool story_load(Story *story, const char *path, char *err, size_t err_size) {
+    memset(story, 0, sizeof(*story));
+    FILE *f = fopen(path, "rb");
+    if(!f) { fail(err, err_size, path, 0, "cannot open the script"); return false; }
+    fseek(f, 0, SEEK_END);
+    long size = ftell(f);
+    fseek(f, 0, SEEK_SET);
+    if(size < 0 || size > 1 << 20) { fclose(f); fail(err, err_size, path, 0, "the script is empty or too large"); return false; }
+    char *text = malloc((size_t)size + 1);
+    if(!text) { fclose(f); fail(err, err_size, path, 0, "out of memory"); return false; }
+    size_t got = fread(text, 1, (size_t)size, f);
+    fclose(f);
+    text[got] = 0;
+    bool ok = story_parse(story, text, path, err, err_size);
+    free(text);
+    return ok;
+}
+
+int story_unreachable(const Story *story, int *out, int max) {
+    if(story->scene_count == 0) return 0;
+    bool *seen = calloc((size_t)story->scene_count, sizeof(bool));
+    int *queue = malloc((size_t)story->scene_count * sizeof(int));
+    if(!seen || !queue) { free(seen); free(queue); return 0; }
+    int head = 0, tail = 0;
+    seen[0] = true;
+    queue[tail++] = 0;
+    while(head < tail) {
+        const StoryScene *sc = &story->scenes[queue[head++]];
+        for(int k = 0; k < sc->count; k++) {
+            const StoryCmd *c = &story->cmds[sc->first + k];
+            int targets[2] = {c->target, c->kind == STORY_CMD_FIGHT ? c->target2 : -1};
+            for(int t = 0; t < 2; t++)
+                if(targets[t] >= 0 && !seen[targets[t]]) { seen[targets[t]] = true; queue[tail++] = targets[t]; }
+        }
+    }
+    int n = 0;
+    for(int i = 0; i < story->scene_count && n < max; i++)
+        if(!seen[i]) out[n++] = i;
+    free(seen);
+    free(queue);
+    return n;
+}
+
+// ---- runner ----
+
+static const StoryScene *scene_of(const StoryRun *r) { return &r->story->scenes[r->scene]; }
+static const StoryCmd *cmd_at(const StoryRun *r, int pc) { return &r->story->cmds[scene_of(r)->first + pc]; }
+
+static void log_add(StoryRun *r, const char *speaker, const char *text) {
+    StoryLogEntry *e = &r->log[r->log_total % STORY_LOG];
+    snprintf(e->speaker, sizeof(e->speaker), "%s", speaker);
+    snprintf(e->text, sizeof(e->text), "%s", text);
+    r->log_total++;
+}
+
+static void set_flag(StoryRun *r, const char *name, const char *value) {
+    for(int i = 0; i < r->flag_count; i++)
+        if(strcmp(r->flags[i].name, name) == 0) { snprintf(r->flags[i].value, STORY_NAME, "%s", value); return; }
+    if(r->flag_count < STORY_MAX_FLAGS) {
+        snprintf(r->flags[r->flag_count].name, STORY_NAME, "%s", name);
+        snprintf(r->flags[r->flag_count].value, STORY_NAME, "%s", value);
+        r->flag_count++;
+    }
+}
+
+const char *story_flag(const StoryRun *run, const char *name) {
+    for(int i = 0; i < run->flag_count; i++)
+        if(strcmp(run->flags[i].name, name) == 0) return run->flags[i].value;
+    return "";
+}
+
+static void goto_scene(StoryRun *r, int scene) { r->scene = scene; r->pc = 0; }
+
+// Runs commands that need no input until one needs the host.
+static void step(StoryRun *r) {
+    for(int guard = 0; guard < 100000; guard++) {
+        if(r->pc >= scene_of(r)->count) { r->event = STORY_EVENT_END; return; }  // not reachable once validated
+        const StoryCmd *c = cmd_at(r, r->pc);
+        switch(c->kind) {
+            case STORY_CMD_BG: snprintf(r->bg, sizeof(r->bg), "%s", c->text); r->pc++; break;
+            case STORY_CMD_SET: set_flag(r, c->flag, c->value); r->pc++; break;
+            case STORY_CMD_IF:
+                if(strcmp(story_flag(r, c->flag), c->value) == 0) goto_scene(r, c->target);
+                else r->pc++;
+                break;
+            case STORY_CMD_JUMP: goto_scene(r, c->target); break;
+            case STORY_CMD_SAY:
+                log_add(r, c->speaker, c->text);
+                r->event = STORY_EVENT_SAY;
+                return;
+            case STORY_CMD_CHOICE:
+                r->event = STORY_EVENT_CHOICE;
+                r->choice_first = r->pc;
+                r->choice_count = 0;
+                while(r->pc + r->choice_count < scene_of(r)->count &&
+                      cmd_at(r, r->pc + r->choice_count)->kind == STORY_CMD_CHOICE) r->choice_count++;
+                return;
+            case STORY_CMD_FIGHT: r->event = STORY_EVENT_FIGHT; return;
+            case STORY_CMD_END:
+            default: r->event = STORY_EVENT_END; return;
+        }
+    }
+    r->event = STORY_EVENT_END;  // a loop of jumps with no dialogue; stop rather than hang
+}
+
+bool story_start(StoryRun *run, const Story *story, const char *scene_id) {
+    memset(run, 0, sizeof(*run));
+    run->story = story;
+    int scene = scene_id ? story_find_scene(story, scene_id) : 0;
+    if(scene < 0) return false;
+    goto_scene(run, scene);
+    step(run);
+    return true;
+}
+
+const StoryCmd *story_event_cmd(const StoryRun *run) {
+    if(run->event != STORY_EVENT_SAY && run->event != STORY_EVENT_FIGHT) return NULL;
+    return cmd_at(run, run->pc);
+}
+
+const StoryCmd *story_choice_cmd(const StoryRun *run, int index) {
+    if(run->event != STORY_EVENT_CHOICE || index < 0 || index >= run->choice_count) return NULL;
+    return cmd_at(run, run->choice_first + index);
+}
+
+void story_advance(StoryRun *run) {
+    if(run->event != STORY_EVENT_SAY) return;
+    run->pc++;
+    step(run);
+}
+
+bool story_choose(StoryRun *run, int index) {
+    const StoryCmd *c = story_choice_cmd(run, index);
+    if(!c) return false;
+    log_add(run, "YOU", c->text);
+    if(c->has_set) set_flag(run, c->flag, c->value);
+    goto_scene(run, c->target);
+    step(run);
+    return true;
+}
+
+bool story_fight_result(StoryRun *run, bool win) {
+    if(run->event != STORY_EVENT_FIGHT) return false;
+    const StoryCmd *c = cmd_at(run, run->pc);
+    goto_scene(run, win ? c->target : c->target2);
+    step(run);
+    return true;
+}
+
+int story_skip(StoryRun *run) {
+    int skipped = 0;
+    while(run->event == STORY_EVENT_SAY && skipped < 100000) {
+        story_advance(run);
+        skipped++;
+    }
+    return skipped;
+}
+
+int story_log_count(const StoryRun *run) { return run->log_total < STORY_LOG ? run->log_total : STORY_LOG; }
+
+const StoryLogEntry *story_log_at(const StoryRun *run, int index) {
+    int count = story_log_count(run);
+    if(index < 0 || index >= count) return NULL;
+    int first = run->log_total - count;
+    return &run->log[(first + index) % STORY_LOG];
+}
