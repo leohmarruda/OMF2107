@@ -85,7 +85,20 @@ stack; it would then need the same state exporter and REC parity checks.
    playable pilots to Jaguar or Shadow, using their OpenOMF stats. The full
    Stadium match was human-tested while OpenOMF owns combat timing/results.
 4. Compare that playable match against the [recorded model match review](OMF2115_MODEL_MATCH_REVIEW.md)
-   before expanding the roster or adding story scenes. This is the next gate.
+   before expanding the roster or adding story scenes. **Compared 2026-10-27:**
+   facing, hit timing, and recovery match the OpenOMF recordings, including
+   Jaguar's close throw and Shadow Grab; the playtest found no mismatch with the
+   source apart from the items below. Body overlap during kicks, falls,
+   crossings, and throws is accepted because OpenOMF has no body collision. A
+   Shadow Grab projection facing error was a stale executable, not a code fault
+   (rebuild with `build.ps1 -Config Debug` after editing `main.c`; the
+   `run-blockout*.ps1` launchers do not build). Carried over before the gate is
+   treated as closed:
+   - Shadow's close throw (animation 20) has no recording, so it is not compared.
+   - The enlarged projectile visuals were reviewed by screenshot only; the
+     Shadow ice-blade burst is large and hides part of the opponent's legs.
+   - Shadow's purple figures have no trails (the renderer has no transparency).
+   - Skinned deformation rigs remain deferred to the finished asset pass.
 5. In parallel, pose and mesh authoring: mesh landmarks
    (`project/data/mesh_landmarks.json`, landmark editor) and projection-pose
    matching (`match_projection_poses.py`) feed the pose catalog; see
