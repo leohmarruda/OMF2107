@@ -105,7 +105,7 @@ text with placeholder portraits.
   asset ledger as not distributable. Tested: screenshots of all backdrops, the sound export checked
   byte-for-byte against the sound tool, and the audio device opening with the sounds loaded, and a full match with `-Sound` (OpenOMF started without
   the audio-disable flag and opened its SDL_mixer audio device; the result reached the story). Not tested:
-  hearing any of it, so how the battle sounds and its volume are unchecked.
+  hearing the menu sounds. The battle sound was played by the project owner and judged good (2026-10-27).
   Original music (the game's `.PSM` tracker files) was not attempted.
 - **Not yet done:** an illustrated sequence, music, and a clean end-to-end playtest by someone who has not
   seen the build (step 6).
