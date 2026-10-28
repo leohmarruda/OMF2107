@@ -338,10 +338,12 @@ git-ignored `project/build/` folder (a local development reference, never commit
 `project/docs/ASSET_LEDGER.md`): the pilot portraits (`portraits/`), the five arena backgrounds
 (`backdrops/`), and four sounds (`sounds/`). A scene's `bg` picks its backdrop: a name such as `stadium`,
 `danger room`, `power plant`, `fire pit`, or `desert` uses the matching original arena image, and other names
-(`green room`, `medical bay`, or anything else) are drawn by the viewer itself. Dialogue and choices play a
-move and a press sound, and a match ends with the original "you win" or "you lose" sound. `M` or `--mute`
-turns the sound off. Without the exported files the viewer still works: it shows placeholder cards, generated
-backdrops, and no sound.
+(`green room`, `medical bay`, or anything else) are drawn by the viewer itself. Menu movement, choices, and
+starting a match play a move or press sound; advancing dialogue is silent. Matches run with OpenOMF's own
+original sound effects and music (the launcher's `-Sound` switch, which the story viewer passes), so the
+battle has its usual sounds and its own win and lose voices. `M` or `--mute` turns off the viewer's sounds and
+starts matches silent. Without the exported files the viewer still works: it shows placeholder cards,
+generated backdrops, and no menu sounds.
 
 `--debug-fights` (or `run-story.ps1 -DebugFights`) lets you skip a match by choosing the result with Y
 (win) or N (loss); the log records "Match skipped". `project/scripts/run-story.ps1` starts story mode

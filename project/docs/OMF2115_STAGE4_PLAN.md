@@ -96,12 +96,16 @@ text with placeholder portraits.
 - **Backdrops and sounds: built** (decided 2026-10-27: generated backdrops for story scenes, the original
   arenas behind fights, original sounds). The viewer draws the original arena image when a scene's `bg` names
   an arena and an exported file exists, and generated scenes otherwise (green room, medical bay, a stand-in
-  Stadium, and a plain gradient for any other name). It plays four original sounds: a move and a press sound
-  for dialogue and choices, and the arena's "you win" and "you lose" sounds after a match. `M` or `--mute`
-  turns the sound off. The art and sounds are exported locally by `export_story_assets.py` and logged in the
+  Stadium, and a plain gradient for any other name). It plays two original menu sounds (move and press) for
+  menu movement, choices, and starting a match; advancing dialogue is silent (playtest feedback, 2026-10-27:
+  sounds matter more in the battle). The battle itself now has OpenOMF's own original sound effects and music:
+  the match launcher takes a `-Sound` switch, which the story viewer passes unless muted, instead of
+  starting OpenOMF with its audio disabled. `M` or `--mute` turns the viewer's sounds off and starts matches
+  silent. The art and sounds are exported locally by `export_story_assets.py` and logged in the
   asset ledger as not distributable. Tested: screenshots of all backdrops, the sound export checked
-  byte-for-byte against the sound tool, and the audio device opening with all four sounds loaded. Not tested:
-  hearing them, and choosing sounds by ear (the round-start and fight announcements have no sound in the data).
+  byte-for-byte against the sound tool, and the audio device opening with the sounds loaded, and a full match with `-Sound` (OpenOMF started without
+  the audio-disable flag and opened its SDL_mixer audio device; the result reached the story). Not tested:
+  hearing any of it, so how the battle sounds and its volume are unchecked.
   Original music (the game's `.PSM` tracker files) was not attempted.
 - **Not yet done:** an illustrated sequence, music, and a clean end-to-end playtest by someone who has not
   seen the build (step 6).
