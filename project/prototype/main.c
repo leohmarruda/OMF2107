@@ -1146,14 +1146,14 @@ static void story_load_portrait(StoryPortrait *portrait,const char *pilot) {
 }
 
 // ---- sounds: original effects exported by export_story_assets.py into project/build/sounds ----
-enum { SND_MOVE, SND_SELECT, SND_WIN, SND_LOSE, SND_COUNT };
+enum { SND_MOVE, SND_SELECT, SND_COUNT };
 typedef struct { Uint8 *data; Uint32 len; } StorySound;
 static StorySound story_sounds[SND_COUNT];
 static SDL_AudioDeviceID story_audio;
 static bool story_muted;
 static void story_notify(const char *text);
 static void story_audio_init(void) {
-    static const char *files[SND_COUNT]={"move","select","win","lose"};
+    static const char *files[SND_COUNT]={"move","select"};
     if(SDL_InitSubSystem(SDL_INIT_AUDIO)!=0) return;
     SDL_AudioSpec want,have;
     SDL_zero(want);
@@ -1502,7 +1502,6 @@ static bool story_har_equal(const char *a,const char *b) {
 static void story_notify(const char *text);
 static void story_autosave(void);
 static void story_match_finish(bool win) {
-    story_sound(win ? SND_WIN : SND_LOSE);
     story_record(&story_run,"MATCH",win ? "You won the match." : "You lost the match.");
     story_fight_result(&story_run,win);
     story_sel=0;
@@ -1541,7 +1540,8 @@ static void story_match_start(void) {
     snprintf(story_match_result_path,sizeof(story_match_result_path),"%s",result);
     char cmd[1600];
     snprintf(cmd,sizeof(cmd),"powershell.exe -NoProfile -ExecutionPolicy Bypass -File \"%s\" -Player %s -Pilot %s "
-             "-RivalPilot %s -ResultFile \"%s\"",launcher,har0,c->pilot[0],c->pilot[1],result);
+             "-RivalPilot %s -ResultFile \"%s\"%s",launcher,har0,c->pilot[0],c->pilot[1],result,
+             story_muted ? "" : " -Sound");
     if(!story_match_job) {
         story_match_job=CreateJobObjectA(NULL,NULL);
         if(story_match_job) {
@@ -1612,7 +1612,7 @@ static void story_act(char action,int number) {
     StoryEventKind before=story_run.event;
     switch(action) {
         case 'a':
-            if(story_run.event==STORY_EVENT_SAY) { story_advance(&story_run); story_sound(SND_MOVE); }
+            if(story_run.event==STORY_EVENT_SAY) story_advance(&story_run);
             else if(story_run.event==STORY_EVENT_CHOICE) { story_choose(&story_run,story_sel); story_sel=0; story_sound(SND_SELECT); }
             else if(story_run.event==STORY_EVENT_FIGHT) story_match_start();
             break;
@@ -1628,7 +1628,7 @@ static void story_act(char action,int number) {
             if(story_run.event==STORY_EVENT_FIGHT) story_note(&story_run,"Match skipped: loss");
             story_fight_result(&story_run,false);
             break;
-        case 's': story_skip(&story_run); story_sel=0; story_sound(SND_MOVE); break;
+        case 's': story_skip(&story_run); story_sel=0; break;
         case 'g': story_log_open=!story_log_open; break;
         case 'r': story_restart(); break;
     }

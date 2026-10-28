@@ -13,7 +13,9 @@ param(
     # (without the retry prompt). The rival always fights in the HAR the player did not pick.
     [ValidateSet('', 'Crystal', 'Steffan', 'Milano', 'Christian', 'Shirro', 'JeanPaul', 'Ibrahim', 'Angel', 'Cossette', 'Raven')]
     [string]$RivalPilot = '',
-    [string]$ResultFile = ''
+    [string]$ResultFile = '',
+    # Let OpenOMF play its own sound effects and music in the match. Off by default, as before.
+    [switch]$Sound
 )
 
 $ErrorActionPreference = 'Stop'
@@ -58,6 +60,8 @@ $viewerOut = Join-Path $sourceDir 'omf3k-live-viewer-out.txt'
 $viewerErr = Join-Path $sourceDir 'omf3k-live-viewer-err.txt'
 $sourceOut = Join-Path $sourceDir 'omf3k-live-source-out.txt'
 $sourceErr = Join-Path $sourceDir 'omf3k-live-source-err.txt'
+$sourceArgs = @('--omf3k-live', '--force-renderer=NULL', '--speed=5', '--log-level=WARN')
+if (-not $Sound) { $sourceArgs += '--force-audio-backend=NULL' }
 $source = $null
 $viewer = $null
 $viewerExit = 1
@@ -73,7 +77,7 @@ try {
         if ($viewer.HasExited) { throw "3D viewer exited during startup (code $($viewer.ExitCode))." }
     }
     $source = Start-Process -FilePath $sourceExe `
-        -ArgumentList @('--omf3k-live', '--force-audio-backend=NULL', '--force-renderer=NULL', '--speed=5', '--log-level=WARN') `
+        -ArgumentList $sourceArgs `
         -WorkingDirectory $sourceDir `
         -RedirectStandardOutput $sourceOut `
         -RedirectStandardError $sourceErr `

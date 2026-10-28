@@ -3,7 +3,7 @@
 Writes:
   project/build/portraits/<Pilot>.bmp     the ten pilot faces (see export_pilot_portraits.py)
   project/build/backdrops/<arena>.bmp     the five original arena backgrounds (ARENA0-4.BK)
-  project/build/sounds/<name>.wav         four original sounds from SOUNDS.DAT: move, select, win, lose
+  project/build/sounds/<name>.wav         two original menu sounds from SOUNDS.DAT: move and select
 
 This is original-game material, kept local as a development reference and never committed or distributed.
 It is recorded in project/docs/ASSET_LEDGER.md. The story viewer works without any of it: it draws generated
@@ -37,10 +37,9 @@ SOUNDS = ROOT / "project" / "build" / "sounds"
 # ARENA0-4.BK in order; the names follow the original game's arena list.
 ARENAS = ["stadium", "danger_room", "power_plant", "fire_pit", "desert"]
 
-# SOUNDS.DAT sample indices as the engine numbers them (0-based). 19 and 20 are the menu move and press sounds
-# OpenOMF plays; 11 and 10 are the arena's "you win" and "you lose" sounds, found through the arena BK's sound
-# table (animation tags s12 and s11, translated to table value minus one).
-SOUND_INDEX = {"move": 19, "select": 20, "win": 11, "lose": 10}
+# SOUNDS.DAT sample indices as the engine numbers them (0-based): 19 and 20 are the menu move and press sounds
+# OpenOMF plays. Battle sounds come from OpenOMF itself when a story match runs with sound.
+SOUND_INDEX = {"move": 19, "select": 20}
 
 
 def run(args: list[str]) -> str:
