@@ -1123,11 +1123,9 @@ static void story_speaker_color(const char *speaker,float *r,float *g,float *b) 
 }
 // Loads project/build/portraits/<Pilot>.bmp, exported from the original game's data by
 // project/tools/export_pilot_portraits.py. Local only: the art is never committed. Missing files fall back to a card.
-static void story_load_portrait(StoryPortrait *portrait,const char *pilot) {
+static void story_load_bmp(StoryPortrait *portrait,const char *path) {
     free(portrait->rgb);
     portrait->rgb=NULL; portrait->w=portrait->h=0;
-    char path[256];
-    snprintf(path,sizeof(path),"project/build/portraits/%s.bmp",pilot);
     SDL_Surface *loaded=SDL_LoadBMP(path);
     if(!loaded) return;
     SDL_Surface *rgb=SDL_ConvertSurfaceFormat(loaded,SDL_PIXELFORMAT_RGB24,0);
@@ -1140,6 +1138,174 @@ static void story_load_portrait(StoryPortrait *portrait,const char *pilot) {
         portrait->w=rgb->w; portrait->h=rgb->h;
     }
     SDL_FreeSurface(rgb);
+}
+static void story_load_portrait(StoryPortrait *portrait,const char *pilot) {
+    char path[256];
+    snprintf(path,sizeof(path),"project/build/portraits/%s.bmp",pilot);
+    story_load_bmp(portrait,path);
+}
+
+// ---- sounds: original effects exported by export_story_assets.py into project/build/sounds ----
+enum { SND_MOVE, SND_SELECT, SND_WIN, SND_LOSE, SND_COUNT };
+typedef struct { Uint8 *data; Uint32 len; } StorySound;
+static StorySound story_sounds[SND_COUNT];
+static SDL_AudioDeviceID story_audio;
+static bool story_muted;
+static void story_notify(const char *text);
+static void story_audio_init(void) {
+    static const char *files[SND_COUNT]={"move","select","win","lose"};
+    if(SDL_InitSubSystem(SDL_INIT_AUDIO)!=0) return;
+    SDL_AudioSpec want,have;
+    SDL_zero(want);
+    want.freq=22050; want.format=AUDIO_S16SYS; want.channels=1; want.samples=1024;
+    story_audio=SDL_OpenAudioDevice(NULL,0,&want,&have,0);
+    if(!story_audio) return;
+    int loaded=0;
+    for(int i=0;i<SND_COUNT;i++) {
+        char path[128];
+        snprintf(path,sizeof(path),"project/build/sounds/%s.wav",files[i]);
+        SDL_AudioSpec spec;
+        Uint8 *buf;
+        Uint32 len;
+        if(!SDL_LoadWAV(path,&spec,&buf,&len)) continue;
+        SDL_AudioCVT cvt;
+        if(SDL_BuildAudioCVT(&cvt,spec.format,spec.channels,spec.freq,have.format,have.channels,have.freq)>=0) {
+            cvt.len=(int)len;
+            cvt.buf=SDL_malloc((size_t)len*(size_t)cvt.len_mult);
+            if(cvt.buf) {
+                memcpy(cvt.buf,buf,len);
+                SDL_ConvertAudio(&cvt);
+                story_sounds[i].data=cvt.buf;
+                story_sounds[i].len=(Uint32)cvt.len_cvt;
+                loaded++;
+            }
+        }
+        SDL_FreeWAV(buf);
+    }
+    printf("Story sounds: %d of %d loaded\n",loaded,SND_COUNT);
+    fflush(stdout);
+    SDL_PauseAudioDevice(story_audio,0);
+}
+static void story_sound(int which) {
+    if(!story_audio || story_muted || !story_sounds[which].data) return;
+    SDL_ClearQueuedAudio(story_audio);
+    SDL_QueueAudio(story_audio,story_sounds[which].data,story_sounds[which].len);
+}
+
+// ---- backdrops: the original arena image when one is exported for the scene's bg, else a generated scene ----
+static StoryPortrait story_backdrop;
+static char story_backdrop_name[STORY_NAME];
+// The backdrop fills x -1..1 and y -.24..1, under the header band and above the dialogue box.
+static float story_u(float u) { return -1.0f+2.0f*u; }
+static float story_v(float v) { return -.24f+1.24f*v; }
+static void story_box(float u0,float v0,float u1,float v1,float r,float g,float b) {
+    quad(story_u(u0),story_v(v0),story_u(u1)-story_u(u0),story_v(v1)-story_v(v0),r,g,b);
+}
+static void story_gradient(float v0,float v1,int bands,const float *c0,const float *c1) {
+    for(int i=0;i<bands;i++) {
+        float t=((float)i+.5f)/(float)bands;
+        story_box(0,v0+(v1-v0)*(float)i/(float)bands,1,v0+(v1-v0)*(float)(i+1)/(float)bands+.002f,
+                  c0[0]+(c1[0]-c0[0])*t,c0[1]+(c1[1]-c0[1])*t,c0[2]+(c1[2]-c0[2])*t);
+    }
+}
+static void story_draw_green_room(void) {
+    static const float wall_top[3]={.03f,.09f,.08f}, wall_low[3]={.07f,.21f,.17f};
+    story_gradient(.20f,1.0f,12,wall_top,wall_low);
+    story_box(0,0,1,.20f,.05f,.05f,.07f);                               // floor
+    story_box(0,.20f,1,.215f,.02f,.05f,.04f);                           // baseboard
+    story_box(.14f,.36f,.86f,.80f,.45f,.35f,.18f);                      // mirror frame
+    story_box(.155f,.38f,.845f,.78f,.13f,.20f,.24f);                    // glass
+    story_box(.17f,.62f,.52f,.65f,.22f,.32f,.37f);                      // glass glint
+    for(int i=0;i<14;i++) { float u=.16f+.05f*(float)i; story_box(u,.805f,u+.025f,.840f,1.0f,.86f,.50f); }  // bulbs
+    story_box(.10f,.20f,.50f,.33f,.30f,.09f,.12f);                      // couch seat
+    story_box(.10f,.33f,.50f,.46f,.36f,.11f,.15f);                      // couch back
+    story_box(.08f,.20f,.12f,.38f,.24f,.07f,.10f);                      // arms
+    story_box(.48f,.20f,.52f,.38f,.24f,.07f,.10f);
+    story_box(.60f,.20f,.90f,.30f,.35f,.30f,.22f);                      // make-up table
+    story_box(.64f,.30f,.68f,.36f,.70f,.60f,.50f);
+    story_box(.74f,.30f,.77f,.40f,.50f,.70f,.60f);
+    story_box(.82f,.30f,.86f,.34f,.85f,.80f,.70f);
+}
+static void story_draw_medical_bay(void) {
+    static const float wall_top[3]={.56f,.67f,.76f}, wall_low[3]={.76f,.86f,.91f};
+    story_gradient(.20f,1.0f,12,wall_top,wall_low);
+    story_box(0,0,1,.20f,.38f,.45f,.51f);                               // floor
+    story_box(0,.20f,1,.225f,.30f,.38f,.44f);                           // baseboard
+    for(int i=0;i<4;i++) story_box(.07f+.24f*(float)i,.90f,.25f+.24f*(float)i,.97f,.96f,.98f,1.0f);  // ceiling lights
+    story_box(.05f,.28f,.16f,.84f,.42f,.58f,.74f);                      // curtain
+    for(int i=0;i<5;i++) story_box(.05f+.022f*(float)i,.28f,.056f+.022f*(float)i,.84f,.36f,.50f,.66f);
+    story_box(.24f,.24f,.64f,.30f,.62f,.67f,.72f);                      // bed frame
+    story_box(.24f,.30f,.64f,.40f,.92f,.96f,1.0f);                      // mattress
+    story_box(.24f,.40f,.33f,.45f,.86f,.92f,.98f);                      // pillow
+    story_box(.26f,.20f,.29f,.24f,.45f,.50f,.55f);
+    story_box(.59f,.20f,.62f,.24f,.45f,.50f,.55f);
+    story_box(.68f,.20f,.70f,.70f,.60f,.64f,.68f);                      // drip stand
+    story_box(.64f,.70f,.74f,.74f,.60f,.64f,.68f);
+    story_box(.72f,.30f,.94f,.34f,.30f,.36f,.42f);                      // monitor stand and screen
+    story_box(.74f,.34f,.92f,.72f,.20f,.24f,.28f);
+    story_box(.755f,.355f,.905f,.705f,.04f,.07f,.09f);
+    static const float beat[16]={0,0,0,0,.02f,-.02f,.12f,-.09f,.02f,0,0,0,.04f,0,0,0};
+    for(int k=0;k<16;k++) story_box(.765f+.0085f*(float)k,.52f+beat[k],.772f+.0085f*(float)k,.535f+beat[k],.30f,.95f,.50f);
+}
+static void story_draw_generic_backdrop(const char *name) {
+    unsigned hash=2166136261u;
+    for(const char *c=name;*c;c++) { hash^=(unsigned char)*c; hash*=16777619u; }
+    float c0[3]={.03f+.05f*(float)(hash&7)/7.0f,.05f+.06f*(float)((hash>>3)&7)/7.0f,.09f+.08f*(float)((hash>>6)&7)/7.0f};
+    float c1[3]={c0[0]+.10f,c0[1]+.10f,c0[2]+.10f};
+    story_gradient(.20f,1.0f,12,c0,c1);
+    story_box(0,0,1,.20f,.05f,.05f,.06f);
+    story_box(0,.20f,1,.215f,c1[0],c1[1],c1[2]);
+}
+static void story_draw_stadium_fallback(void) {
+    static const float top[3]={.02f,.03f,.08f}, low[3]={.10f,.14f,.24f};
+    story_gradient(.30f,1.0f,12,top,low);
+    story_box(0,0,1,.30f,.10f,.13f,.17f);
+    for(int i=0;i<9;i++) story_box(.06f+.11f*(float)i,.86f,.10f+.11f*(float)i,.92f,1.0f,.95f,.80f);   // arena lights
+    for(int row=0;row<3;row++) for(int i=0;i<30;i++) {
+        float u=.02f+.032f*(float)i, v=.34f+.07f*(float)row;
+        unsigned h=(unsigned)(i*7919+row*104729)%5;
+        story_box(u,v,u+.022f,v+.05f,.18f+.05f*(float)h,.20f+.04f*(float)h,.30f);
+    }
+}
+static void story_draw_backdrop_image(const StoryPortrait *image) {
+    // Every second pixel, filling the width, centred vertically; runs of one colour become one quad.
+    int cols=image->w/2, rows=image->h/2;
+    float dx=2.0f/(float)cols;
+    float natural=dx*(float)win_width/(float)win_height;
+    float region=story_v(1.0f)-story_v(0.0f);
+    int visible=(int)(region/natural+.5f);
+    if(visible>rows) visible=rows;
+    float dy=region/(float)visible;
+    int first=(rows-visible)/2;
+    for(int row=0;row<visible;row++) {
+        const unsigned char *line=image->rgb+(size_t)((first+row)*2)*(size_t)image->w*3;
+        float y=story_v(1.0f)-(float)(row+1)*dy;
+        for(int col=0;col<cols;) {
+            int end=col+1;
+            while(end<cols && !memcmp(line+col*2*3,line+end*2*3,3)) end++;
+            quad(-1.0f+(float)col*dx,y,(float)(end-col)*dx+.0008f,dy+.0008f,
+                 line[col*2*3]/255.0f,line[col*2*3+1]/255.0f,line[col*2*3+2]/255.0f);
+            col=end;
+        }
+    }
+}
+static void story_update_backdrop(void) {
+    if(!strcmp(story_backdrop_name,story_run.bg)) return;
+    snprintf(story_backdrop_name,sizeof(story_backdrop_name),"%s",story_run.bg);
+    char file[STORY_NAME];
+    size_t n=0;
+    for(const char *c=story_run.bg;*c && n+1<sizeof(file);c++) file[n++]=*c==' ' ? '_' : (char)((*c>='A' && *c<='Z') ? *c+32 : *c);
+    file[n]=0;
+    char path[160];
+    snprintf(path,sizeof(path),"project/build/backdrops/%s.bmp",file);
+    story_load_bmp(&story_backdrop,path);
+}
+static void story_draw_backdrop(void) {
+    if(story_backdrop.rgb) { story_draw_backdrop_image(&story_backdrop); return; }
+    if(!strcmp(story_run.bg,"green room")) story_draw_green_room();
+    else if(!strcmp(story_run.bg,"medical bay")) story_draw_medical_bay();
+    else if(!strcmp(story_run.bg,"stadium")) story_draw_stadium_fallback();
+    else story_draw_generic_backdrop(story_run.bg);
 }
 // Draws a portrait from its top-left corner, one source pixel per px screen pixels, merging runs of one colour.
 static void story_draw_portrait(const StoryPortrait *portrait,const char *pilot,float x,float y,float px) {
@@ -1212,19 +1378,25 @@ static void story_begin(int har_index) {
     story_setup=false;
     story_sel=0;
     story_log_open=false;
+    story_sound(SND_SELECT);
 }
 static void story_hud(void) {
     if(story_setup) { story_setup_hud(); return; }
     quad(-1,-1,2,2,.015f,.025f,.065f);
-    quad(-1,.55f,2,.45f,.03f,.07f,.14f);
-    label(-.94f,.93f,.010f,"OMF2115 / STORY",.65f,.92f,1);
+    story_update_backdrop();
+    story_draw_backdrop();
+    quad(-1,.86f,2,.14f,.03f,.07f,.14f);   // header band
+    label(-.94f,.985f,.008f,"OMF2115 / STORY",.65f,.92f,1);
     char scene_label[64];
     snprintf(scene_label,sizeof(scene_label),"SCENE %.10s",story_data.scenes[story_run.scene].id);
-    label(.10f,.93f,.009f,scene_label,.48f,.60f,.72f);
-    if(story_run.bg[0]) label(-.94f,.78f,.022f,story_run.bg,.80f,.88f,.96f);
-    if(story_debug_fights) label(.38f,.62f,.008f,"DEBUG: FIGHTS",1,.75f,.30f);
+    label(.10f,.985f,.008f,scene_label,.48f,.60f,.72f);
+    if(story_run.bg[0]) {   // the scene name over the backdrop, with a dark edge so it reads on any picture
+        label(-.935f,.775f,.022f,story_run.bg,.02f,.03f,.06f);
+        label(-.94f,.78f,.022f,story_run.bg,.88f,.94f,1);
+    }
+    if(story_debug_fights) label(.38f,.915f,.0065f,"DEBUG: FIGHTS",1,.75f,.30f);
     if(story_notice_pending) { story_notice_until=SDL_GetTicks64()+5000; story_notice_pending=false; }
-    if(story_notice[0] && SDL_GetTicks64()<story_notice_until) label(-.94f,.60f,.009f,story_notice,.85f,1,.70f);
+    if(story_notice[0] && SDL_GetTicks64()<story_notice_until) label(-.94f,.915f,.008f,story_notice,.85f,1,.70f);
     quad(-.97f,-.98f,1.94f,.74f,.02f,.05f,.11f);
     char lines[8][80];
     float r,g,b;
@@ -1330,6 +1502,7 @@ static bool story_har_equal(const char *a,const char *b) {
 static void story_notify(const char *text);
 static void story_autosave(void);
 static void story_match_finish(bool win) {
+    story_sound(win ? SND_WIN : SND_LOSE);
     story_record(&story_run,"MATCH",win ? "You won the match." : "You lost the match.");
     story_fight_result(&story_run,win);
     story_sel=0;
@@ -1392,6 +1565,7 @@ static void story_match_start(void) {
     CloseHandle(process.hThread);
     story_match_child=process.hProcess;
     story_match_state=1;
+    story_sound(SND_SELECT);
 #else
     snprintf(story_match_message,sizeof(story_match_message),"REAL MATCHES NEED WINDOWS FOR NOW.");
 #endif
@@ -1438,14 +1612,14 @@ static void story_act(char action,int number) {
     StoryEventKind before=story_run.event;
     switch(action) {
         case 'a':
-            if(story_run.event==STORY_EVENT_SAY) story_advance(&story_run);
-            else if(story_run.event==STORY_EVENT_CHOICE) { story_choose(&story_run,story_sel); story_sel=0; }
+            if(story_run.event==STORY_EVENT_SAY) { story_advance(&story_run); story_sound(SND_MOVE); }
+            else if(story_run.event==STORY_EVENT_CHOICE) { story_choose(&story_run,story_sel); story_sel=0; story_sound(SND_SELECT); }
             else if(story_run.event==STORY_EVENT_FIGHT) story_match_start();
             break;
         case 'm': story_match_start(); break;
-        case 'c': if(story_choose(&story_run,number)) story_sel=0; break;
-        case 'u': if(story_run.event==STORY_EVENT_CHOICE) story_sel=(story_sel+story_run.choice_count-1)%story_run.choice_count; break;
-        case 'd': if(story_run.event==STORY_EVENT_CHOICE) story_sel=(story_sel+1)%story_run.choice_count; break;
+        case 'c': if(story_choose(&story_run,number)) { story_sel=0; story_sound(SND_SELECT); } break;
+        case 'u': if(story_run.event==STORY_EVENT_CHOICE) { story_sel=(story_sel+story_run.choice_count-1)%story_run.choice_count; story_sound(SND_MOVE); } break;
+        case 'd': if(story_run.event==STORY_EVENT_CHOICE) { story_sel=(story_sel+1)%story_run.choice_count; story_sound(SND_MOVE); } break;
         case 'w':
             if(story_run.event==STORY_EVENT_FIGHT) story_note(&story_run,"Match skipped: win");
             story_fight_result(&story_run,true);
@@ -1454,7 +1628,7 @@ static void story_act(char action,int number) {
             if(story_run.event==STORY_EVENT_FIGHT) story_note(&story_run,"Match skipped: loss");
             story_fight_result(&story_run,false);
             break;
-        case 's': story_skip(&story_run); story_sel=0; break;
+        case 's': story_skip(&story_run); story_sel=0; story_sound(SND_MOVE); break;
         case 'g': story_log_open=!story_log_open; break;
         case 'r': story_restart(); break;
     }
@@ -1463,9 +1637,14 @@ static void story_act(char action,int number) {
     if(progressed && (before!=STORY_EVENT_SAY || story_run.event!=STORY_EVENT_SAY)) story_autosave();
 }
 static void story_key(SDL_Scancode key) {
+    if(key==SDL_SCANCODE_M) {
+        story_muted=!story_muted;
+        story_notify(story_muted ? "SOUND OFF" : "SOUND ON");
+        return;
+    }
     if(story_setup) {
         if(key==SDL_SCANCODE_LEFT || key==SDL_SCANCODE_RIGHT || key==SDL_SCANCODE_A || key==SDL_SCANCODE_D ||
-           key==SDL_SCANCODE_UP || key==SDL_SCANCODE_DOWN) story_setup_har^=1;
+           key==SDL_SCANCODE_UP || key==SDL_SCANCODE_DOWN) { story_setup_har^=1; story_sound(SND_MOVE); }
         else if(key==SDL_SCANCODE_RETURN || key==SDL_SCANCODE_SPACE) story_begin(story_setup_har);
         return;
     }
@@ -1846,6 +2025,7 @@ int main(int argc,char **argv) {
         for(int i=3;good && i<argc;) {
             if(strcmp(argv[i],"--new")==0) { story_new=true; i++; continue; }
             if(strcmp(argv[i],"--debug-fights")==0) { story_debug_fights=true; i++; continue; }
+            if(strcmp(argv[i],"--mute")==0) { story_muted=true; i++; continue; }
             if(i+1>=argc) { good=false; break; }
             if(strcmp(argv[i],"--scene")==0) story_start_scene=argv[i+1];
             else if(strcmp(argv[i],"--script")==0) story_script=argv[i+1];
@@ -1856,7 +2036,7 @@ int main(int argc,char **argv) {
             i+=2;
         }
         if(!good) {
-            fputs("Usage: omf3d_prototype --story script.story [--new] [--debug-fights] [--save-file path] [--scene id] [--har Jaguar|Shadow]\n"
+            fputs("Usage: omf3d_prototype --story script.story [--new] [--debug-fights] [--mute] [--save-file path] [--scene id] [--har Jaguar|Shadow]\n"
                   "                       [--script a,c1,w,...] [--shot out.bmp]\n",stderr);
             return 1;
         }
@@ -1989,6 +2169,7 @@ int main(int argc,char **argv) {
     }
     SDL_SetMainReady();
     if(SDL_Init(SDL_INIT_VIDEO|SDL_INIT_EVENTS)!=0) { fprintf(stderr,"SDL: %s\n",SDL_GetError()); return 1; }
+    if(story_mode && !story_shot_path) story_audio_init();
 #ifdef _WIN32
     if(source_input_map_name && *source_input_map_name) {
         source_input_mapping=CreateFileMappingA(INVALID_HANDLE_VALUE,NULL,PAGE_READWRITE,0,
