@@ -90,8 +90,11 @@ text with placeholder portraits.
   a full Shadow-route match through the pipeline (`-Player Shadow -Pilot Crystal -RivalPilot Christian`). The
   portraits are exported locally, git-ignored, and logged in `ASSET_LEDGER.md` as not distributable.
   Not tested: choosing a HAR with the keyboard on the screen, and playing Crystal in Shadow by hand.
-- **Not yet done:** review and rewrite of the draft dialogue, portraits, audio, and the polish in
-  steps 4 to 6.
+- **Dialogue decision (2026-10-27):** the draft dialogue in `crystal_christian.story` is kept as it is for
+  now after a playtest ("it ran fine"). A rewrite is deferred, not cancelled; the file stays placeholder
+  wording built from `OMF20115_SIMPLE_LORE.md`.
+- **Not yet done:** backgrounds and an illustrated sequence, audio cues, and a clean end-to-end playtest
+  by someone who has not seen the build (step 6).
 
 ## Step 3 design: the match handoff (built)
 
