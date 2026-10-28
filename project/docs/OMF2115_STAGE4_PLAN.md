@@ -93,8 +93,18 @@ text with placeholder portraits.
 - **Dialogue decision (2026-10-27):** the draft dialogue in `crystal_christian.story` is kept as it is for
   now after a playtest ("it ran fine"). A rewrite is deferred, not cancelled; the file stays placeholder
   wording built from `OMF20115_SIMPLE_LORE.md`.
-- **Not yet done:** backgrounds and an illustrated sequence, audio cues, and a clean end-to-end playtest
-  by someone who has not seen the build (step 6).
+- **Backdrops and sounds: built** (decided 2026-10-27: generated backdrops for story scenes, the original
+  arenas behind fights, original sounds). The viewer draws the original arena image when a scene's `bg` names
+  an arena and an exported file exists, and generated scenes otherwise (green room, medical bay, a stand-in
+  Stadium, and a plain gradient for any other name). It plays four original sounds: a move and a press sound
+  for dialogue and choices, and the arena's "you win" and "you lose" sounds after a match. `M` or `--mute`
+  turns the sound off. The art and sounds are exported locally by `export_story_assets.py` and logged in the
+  asset ledger as not distributable. Tested: screenshots of all backdrops, the sound export checked
+  byte-for-byte against the sound tool, and the audio device opening with all four sounds loaded. Not tested:
+  hearing them, and choosing sounds by ear (the round-start and fight announcements have no sound in the data).
+  Original music (the game's `.PSM` tracker files) was not attempted.
+- **Not yet done:** an illustrated sequence, music, and a clean end-to-end playtest by someone who has not
+  seen the build (step 6).
 
 ## Step 3 design: the match handoff (built)
 

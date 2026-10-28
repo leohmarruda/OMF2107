@@ -333,10 +333,15 @@ OpenOMF power, agility and endurance, and its card text. A `fight` can name its 
 `@rival_har`, and dialogue can say `{player_har}` and `{rival_har}`, so any pairing works from one script. A saved
 story resumes without the screen; R restarts and brings it back. `--har Jaguar|Shadow` skips the screen.
 
-The portraits are the original game's pilot faces, exported locally by
-`python project/tools/export_pilot_portraits.py` into the git-ignored `project/build/portraits/` (a local
-development reference, never committed or distributed; see `project/docs/ASSET_LEDGER.md`). Without them the
-screen shows plain placeholder cards.
+Original art and sounds are exported locally by `python project/tools/export_story_assets.py` into the
+git-ignored `project/build/` folder (a local development reference, never committed or distributed; see
+`project/docs/ASSET_LEDGER.md`): the pilot portraits (`portraits/`), the five arena backgrounds
+(`backdrops/`), and four sounds (`sounds/`). A scene's `bg` picks its backdrop: a name such as `stadium`,
+`danger room`, `power plant`, `fire pit`, or `desert` uses the matching original arena image, and other names
+(`green room`, `medical bay`, or anything else) are drawn by the viewer itself. Dialogue and choices play a
+move and a press sound, and a match ends with the original "you win" or "you lose" sound. `M` or `--mute`
+turns the sound off. Without the exported files the viewer still works: it shows placeholder cards, generated
+backdrops, and no sound.
 
 `--debug-fights` (or `run-story.ps1 -DebugFights`) lets you skip a match by choosing the result with Y
 (win) or N (loss); the log records "Match skipped". `project/scripts/run-story.ps1` starts story mode
