@@ -125,6 +125,15 @@ text with placeholder portraits.
   `story_check selftest`, and screenshots of the portraits, a half-typed line, narration, and the banner. Not
   tested: how the typing speed, flash, and banner feel in motion. A flash is a strobe of opaque white
   because the viewer cannot blend colours.
+- **Endings (2026-10-29), read as one ending for each sibling:** after the existing closing lines the draft plays an
+  illustrated epilogue on the Desert sunset: Crystal's ending (shaped by what she did with the telemetry: released,
+  verified, or given to Christian), Christian's ending (shaped by whether he got the files, so whether the
+  violent strike was ever on the table), a closing frame with the siblings together or apart (shaped by whether
+  she told him about the tremors), and an "END OF SLICE" title. Five new frames, nine new scenes (25 in all), lore
+  only: Crystal's weight of unverified evidence and Christian moving from control to trust and away from violence
+  against civilians. Tested: all 12 combinations of evidence, tremors, and match result reach the end with
+  distinct endings (`story_check play`), no scene is unreachable, and screenshots of each frame in the viewer.
+  Not tested: the endings played in sequence with their timing.
 - **Not yet done:** music in the story scenes, and a clean end-to-end playtest by someone who has not seen the
   build (step 6).
 
