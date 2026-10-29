@@ -123,8 +123,53 @@ jump closing_end
 scene closing_end
 if tremors=told -> closing_trust
 say : They leave the building apart. Neither has said what they are afraid of.
-end
+jump ending
 
 scene closing_trust
 say : They leave the building together. For the first time in five years Christian does not walk ahead.
+jump ending
+
+# The endings: one for each sibling, shaped by the evidence choice, then a closing frame shaped by the tremors.
+scene ending
+banner CRYSTAL
+art ending_crystal fade
+if evidence=released -> ending_crystal_released
+if evidence=verified -> ending_crystal_verified
+say : Crystal kept her brother from the facility. The files are still unverified, and what to do with them is still hers to answer for.
+jump ending_christian
+
+scene ending_crystal_released
+say : Crystal released the telemetry before she could check it. Public oversight of the tournament follows, and so does the weight of every line she never verified.
+jump ending_christian
+
+scene ending_crystal_verified
+say : Crystal waited until the files checked out, then demanded independent reform. WAR knows her name now.
+jump ending_christian
+
+scene ending_christian
+banner CHRISTIAN
+art ending_christian fade
+if evidence=christian -> ending_christian_given
+say : Christian stopped trying to control the fight and started to trust his sister. It is a start.
+jump ending_close
+
+scene ending_christian_given
+say : Christian put the facility out of his mind, for now. The anger has not gone, but he did not aim it at civilians.
+jump ending_close
+
+scene ending_close
+if tremors=told -> ending_together
+art ending_apart fade
+say : The siblings face what comes next apart, each holding a secret.
+jump ending_last
+
+scene ending_together
+art ending_together fade
+say : The siblings face what comes next together.
+jump ending_last
+
+scene ending_last
+flash
+art ending_title fade
+say : End of the first slice.
 end

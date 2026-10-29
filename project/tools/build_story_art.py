@@ -9,6 +9,11 @@ diagonal colour bars, a vignette, and name plates drawn on top.
   christian_card       Christian's portrait on orange bars
   faceoff_jaguar       Crystal in Jaguar (left) against Christian in Shadow (right)
   faceoff_shadow       Crystal in Shadow (left) against Christian in Jaguar (right)
+  ending_crystal       Crystal's ending card, on the Desert sunset
+  ending_christian     Christian's ending card
+  ending_together      the siblings side by side (they faced it together)
+  ending_apart         the siblings far apart under a dividing slash (they did not)
+  ending_title         "END OF SLICE"
 
 The result is original-game material rearranged for local development, never committed or distributed (see
 project/docs/ASSET_LEDGER.md). Normally run through export_story_assets.py.
@@ -46,9 +51,10 @@ def font(size: int) -> ImageFont.ImageFont:
         return ImageFont.load_default()
 
 
-def arena(name: str, brightness: float) -> Image.Image:
+def arena(name: str, brightness: float, shift: int = 0) -> Image.Image:
+    """The arena picture cropped to the frame; a negative shift moves the crop up the picture."""
     image = Image.open(BACKDROPS / f"{name}.bmp").convert("RGB")
-    top = (image.height - H) // 2
+    top = max(0, min(image.height - H, (image.height - H) // 2 + shift))
     image = image.crop((0, top, W, top + H))
     return ImageEnhance.Brightness(image).enhance(brightness)
 
@@ -148,8 +154,9 @@ def title_frame() -> Image.Image:
     return frame
 
 
-def card_frame(pilot: str, title: str, color: tuple[int, int, int], right: bool) -> Image.Image:
-    frame = vignette(bars(arena("stadium", .5), color, flip=right), .7)
+def card_frame(pilot: str, title: str, color: tuple[int, int, int], right: bool, backdrop: str = "stadium",
+               brightness: float = .5) -> Image.Image:
+    frame = vignette(bars(arena(backdrop, brightness, shift=-16 if backdrop == "desert" else 0), color, flip=right), .7)
     face = portrait(pilot, 1.9, color)
     x = W - face.width - 34 if right else 34
     paste_shadowed(frame, face, (x, 6))
@@ -176,6 +183,36 @@ def faceoff_frame(player_har: str, rival_har: str, tmp: Path) -> Image.Image:
     return frame
 
 
+def sunset(brightness: float = .8) -> Image.Image:
+    """The Desert arena's sky and dunes: the warm backdrop for the endings."""
+    return arena("desert", brightness, shift=-16)
+
+
+def ending_together_frame() -> Image.Image:
+    frame = vignette(bars(sunset(), (255, 170, 90)), .6)
+    crystal, christian = portrait("Crystal", 1.5, CYAN), portrait("Christian", 1.5, ORANGE)
+    paste_shadowed(frame, crystal, (W // 2 - crystal.width - 4, 14))
+    paste_shadowed(frame, christian, (W // 2 + 4, 14))
+    return frame
+
+
+def ending_apart_frame() -> Image.Image:
+    frame = vignette(sunset(.6), .75)
+    draw = ImageDraw.Draw(frame)
+    draw.polygon([(W // 2 + 6, 0), (W // 2 + 12, 0), (W // 2 - 6, H), (W // 2 - 12, H)], fill=WHITE)   # the dividing slash
+    paste_shadowed(frame, portrait("Crystal", 1.5, CYAN), (18, 14))
+    christian = portrait("Christian", 1.5, ORANGE)
+    paste_shadowed(frame, christian, (W - 18 - christian.width, 14))
+    return frame
+
+
+def ending_title_frame() -> Image.Image:
+    frame = vignette(sunset(.6), .8)
+    pixel_text(frame, "END OF SLICE", (30, 34), 20, 2)
+    pixel_text(frame, "OMF 2115", (110, 88), 10, 2, (255, 190, 90))
+    return frame
+
+
 def main() -> int:
     for needed in (AFTOOL, PORTRAITS / "Crystal.bmp", BACKDROPS / "stadium.bmp"):
         if not needed.exists():
@@ -189,6 +226,12 @@ def main() -> int:
             "christian_card": card_frame("Christian", "CHRISTIAN DEVROE", ORANGE, right=True),
             "faceoff_jaguar": faceoff_frame("jaguar", "shadow", Path(tmp)),
             "faceoff_shadow": faceoff_frame("shadow", "jaguar", Path(tmp)),
+            "ending_crystal": card_frame("Crystal", "CRYSTAL DEVROE", CYAN, right=False, backdrop="desert", brightness=.8),
+            "ending_christian": card_frame("Christian", "CHRISTIAN DEVROE", ORANGE, right=True, backdrop="desert",
+                                           brightness=.8),
+            "ending_together": ending_together_frame(),
+            "ending_apart": ending_apart_frame(),
+            "ending_title": ending_title_frame(),
         }
     for name, frame in frames.items():
         frame.save(ART / f"{name}.bmp")
