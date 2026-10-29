@@ -107,8 +107,17 @@ text with placeholder portraits.
   the audio-disable flag and opened its SDL_mixer audio device; the result reached the story). Not tested:
   hearing the menu sounds. The battle sound was played by the project owner and judged good (2026-10-27).
   Original music (the game's `.PSM` tracker files) was not attempted.
-- **Not yet done:** an illustrated sequence, music, and a clean end-to-end playtest by someone who has not
-  seen the build (step 6).
+- **Illustrated sequence: built** (chosen 2026-10-27). The script format gained `art <name> [effect]`
+  (fade, zoom, pan, or none; `art off` clears it; names may use `{flag}`), saved and restored with the story and
+  covered by `story_check selftest`. The draft opens with four frames and captions: a title over the Stadium,
+  Crystal's card, Christian's card, and a face-off showing the chosen HARs. The frames are composed locally from
+  original portraits, arena art, and HAR idle sprites by `build_story_art.py`, with bars, a vignette, name plates,
+  and text drawn by the tool; they are logged in the ledger as not distributable. Tested: screenshots of every
+  frame in the viewer and the return to the backdrop afterwards. Not tested: how the zoom, pan, and fade look in
+  motion (screenshots only show them a few seconds in). Changing the script invalidates older saves, so the first
+  run after this change starts over.
+- **Not yet done:** music in the story scenes, and a clean end-to-end playtest by someone who has not seen the
+  build (step 6).
 
 ## Step 3 design: the match handoff (built)
 

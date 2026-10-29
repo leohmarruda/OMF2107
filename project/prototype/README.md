@@ -342,7 +342,14 @@ git-ignored `project/build/` folder (a local development reference, never commit
 starting a match play a move or press sound; advancing dialogue is silent. Matches run with OpenOMF's own
 original sound effects and music (the launcher's `-Sound` switch, which the story viewer passes), so the
 battle has its usual sounds and its own win and lose voices. `M` or `--mute` turns off the viewer's sounds and
-starts matches silent. Without the exported files the viewer still works: it shows placeholder cards,
+starts matches silent.
+
+A scene can show an illustration with `art <name> [none|fade|zoom|pan]` (`art off` clears it); the name may use
+`{flag}`, so the draft's face-off frame is `faceoff_{player_har}`. Frames are 320x124 pictures in
+`project/build/art/`, composed from original portraits, arena art, and HAR sprites by
+`project/tools/build_story_art.py` (the export command above runs it). `fade` brightens from black, `zoom` pushes
+in slowly, and `pan` slides across a slightly zoomed frame. The draft story opens with a four-frame sequence this
+way. A missing frame falls back to the scene's backdrop. Without the exported files the viewer still works: it shows placeholder cards,
 generated backdrops, and no menu sounds.
 
 `--debug-fights` (or `run-story.ps1 -DebugFights`) lets you skip a match by choosing the result with Y
