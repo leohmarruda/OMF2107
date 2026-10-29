@@ -185,6 +185,13 @@ static bool parse_line(Story *s, char *line_text, int line, const char *name, ch
         if(c && (!copy(c->text, STORY_NAME, art_name) || !copy(c->value, STORY_NAME, effect ? effect : "none"))) {
             fail(err, err_size, name, line, "art name is too long"); return false;
         }
+    } else if(strcmp(word, "flash") == 0) {
+        if(*rest) { fail(err, err_size, name, line, "flash takes no arguments"); return false; }
+        c = add_cmd(s, STORY_CMD_FLASH, line);
+    } else if(strcmp(word, "banner") == 0) {
+        if(!*rest) { fail(err, err_size, name, line, "banner needs text"); return false; }
+        c = add_cmd(s, STORY_CMD_BANNER, line);
+        if(c && !copy(c->text, STORY_NAME, rest)) { fail(err, err_size, name, line, "banner text is too long"); return false; }
     } else if(strcmp(word, "say") == 0) {
         char *colon = strchr(rest, ':');
         if(!colon) { fail(err, err_size, name, line, "say needs 'speaker: text' (use 'say : text' for narration)"); return false; }
@@ -465,6 +472,13 @@ static void step_to_event(StoryRun *r, bool log_say) {
         const StoryCmd *c = cmd_at(r, r->pc);
         switch(c->kind) {
             case STORY_CMD_BG: snprintf(r->bg, sizeof(r->bg), "%s", c->text); r->pc++; break;
+            case STORY_CMD_FLASH:
+            case STORY_CMD_BANNER:
+                r->effect_serial++;
+                snprintf(r->effect_kind, sizeof(r->effect_kind), "%s", c->kind == STORY_CMD_FLASH ? "flash" : "banner");
+                snprintf(r->effect_text, sizeof(r->effect_text), "%s", c->kind == STORY_CMD_BANNER ? c->text : "");
+                r->pc++;
+                break;
             case STORY_CMD_ART:
                 if(strcmp(c->text, "off") == 0) {
                     r->art[0] = 0;

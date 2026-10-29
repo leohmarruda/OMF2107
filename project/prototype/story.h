@@ -6,6 +6,8 @@
 //   bg <name>                           names the background (for the viewer; free text)
 //   art <name> [effect]                 shows a full-width illustration; effect is none, fade, zoom, or pan;
 //                                       the name may contain {flag}; "art off" returns to the background
+//   flash                               a quick white flash over the picture (a presentation beat; does not wait)
+//   banner <text>                       a big banner across the picture for a moment (does not wait)
 //   say <speaker>: <text>               one line of dialogue; an empty speaker (say : text) is narration
 //   choice <text> -> <scene> [set f=v]  a menu entry; consecutive choice lines form one menu
 //   set <flag>=<value>                  stores a flag
@@ -37,6 +39,8 @@ typedef enum {
     STORY_CMD_NONE = 0,       // keeps zero-initialised commands invalid
     STORY_CMD_BG,
     STORY_CMD_ART,
+    STORY_CMD_FLASH,
+    STORY_CMD_BANNER,
     STORY_CMD_SAY,
     STORY_CMD_CHOICE,
     STORY_CMD_SET,
@@ -109,6 +113,9 @@ typedef struct {
     int flag_count;
     StoryFlag flags[STORY_MAX_FLAGS];
     char say_text[STORY_TEXT];      // the current say line with {flag} placeholders replaced
+    unsigned effect_serial;         // counts flash and banner beats; the host plays one when this changes
+    char effect_kind[16];           // "flash" or "banner"
+    char effect_text[STORY_NAME];   // the banner's text (not saved: effects are momentary)
     int log_total;                  // entries ever logged; the last STORY_LOG are kept
     StoryLogEntry log[STORY_LOG];
 } StoryRun;

@@ -14,6 +14,8 @@ rival Christian
 card Crystal: The Seeker. Composed and camera-ready, the pilot who handles pressure. She wants proof of her parents' fate.
 card Christian: The Shield. Aggressive and outwardly confident. He wants revenge, and he wants Crystal kept alive.
 
+# Presentation beats: flash (a quick white flash) and banner <text> (a big banner) do not wait; they sit just before
+# the line they punctuate. Banner text is shown in capitals.
 # The illustrated opening: four frames from project/build/art (built by export_story_assets.py) with captions.
 # The faceoff frame is named after the player's HAR, so it shows the pairing that was chosen.
 scene intro
@@ -23,6 +25,7 @@ art crystal_card zoom
 say : Crystal Devroe, 23. The Seeker.
 art christian_card zoom
 say : Christian Devroe, 23. The Shield.
+flash
 art faceoff_{player_har} fade
 say : Tonight the draw puts one against the other.
 art off
@@ -68,6 +71,7 @@ jump recovery
 
 scene recovery
 bg medical bay
+banner TIER-2
 if result=won -> recovery_won
 say : In the corridor Dr. Varga finds Christian and calls his readings exceptional. A Tier-2 invitation follows, framed as a promotion.
 say Christian: Exceptional. My head has been pounding all day.
@@ -82,6 +86,7 @@ say Christian: You won. They will not take no easily.
 jump evidence
 
 scene evidence
+flash
 say : Later, a second message reaches Crystal's datapad: leaked Tier-2 medical telemetry, showing what the deep-link does to pilots.
 say Crystal: This is proof. Or it is bait.
 say Christian: Release it. Burn the whole thing down.

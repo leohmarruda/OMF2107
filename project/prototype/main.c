@@ -1201,6 +1201,18 @@ static char story_art_name[STORY_NAME];
 static char story_art_effect[STORY_NAME];
 static Uint64 story_art_started;
 static bool story_capturing;      // a --shot run: show every effect as it looks a few seconds in
+static int story_shot_typed=-1;   // --typed N with --shot: freeze the typewriter after N characters
+static float story_draw_bright=1.0f;            // portraits are drawn at this brightness (1 is normal)
+static float story_typed;                       // characters of the current say line revealed so far
+static unsigned story_typed_line=0xFFFFFFFFu;   // log_total of the line being typed
+static Uint64 story_type_last;                  // time of the previous typing update
+static bool story_script_running;               // inside --script: nothing waits for the typewriter
+static unsigned story_effect_seen;              // last flash or banner beat played
+static Uint64 story_effect_start;
+static char story_effect_kind[16];
+static char story_effect_text[STORY_NAME];
+static StoryPortrait story_speakers[10];        // portraits of the ten pilots, loaded when first needed
+static bool story_speaker_tried[10];
 // The backdrop fills x -1..1 and y -.24..1, under the header band and above the dialogue box.
 static float story_u(float u) { return -1.0f+2.0f*u; }
 static float story_v(float v) { return -.24f+1.24f*v; }
@@ -1377,7 +1389,7 @@ static void story_draw_backdrop(void) {
 static void story_draw_portrait(const StoryPortrait *portrait,const char *pilot,float x,float y,float px) {
     float dx=2.0f*px/(float)win_width, dy=2.0f*px/(float)win_height;
     if(!portrait->rgb) {   // no original art exported: a plain card with the pilot's initial
-        quad(x,y-57*dy,57*dx,57*dy,.10f,.16f,.26f);
+        quad(x,y-57*dy,57*dx,57*dy,.10f*story_draw_bright,.16f*story_draw_bright,.26f*story_draw_bright);
         char initial[2]={pilot[0],0};
         label(x+17*dx,y-14*dy,.030f,initial,.55f,.70f,.84f);
         return;
@@ -1388,7 +1400,8 @@ static void story_draw_portrait(const StoryPortrait *portrait,const char *pilot,
             int end=col+1;
             while(end<portrait->w && !memcmp(line+col*3,line+end*3,3)) end++;
             quad(x+(float)col*dx,y-(float)(row+1)*dy,(float)(end-col)*dx+.0008f,dy+.0008f,
-                 line[col*3]/255.0f,line[col*3+1]/255.0f,line[col*3+2]/255.0f);
+                 line[col*3]/255.0f*story_draw_bright,line[col*3+1]/255.0f*story_draw_bright,
+                 line[col*3+2]/255.0f*story_draw_bright);
             col=end;
         }
     }
@@ -1446,12 +1459,103 @@ static void story_begin(int har_index) {
     story_log_open=false;
     story_sound(SND_SELECT);
 }
-static void story_hud(void) {
+static int story_pilot_index(const char *name) {   // 0-9 in the pilot table, or -1
+    for(int i=0;i<10;i++) {
+        const char *a=story_pilot_stats[i].name,*b=name;
+        while(*a && *b && (*a|32)==(*b|32)) { a++; b++; }
+        if(!*a && !*b) return i;
+    }
+    return -1;
+}
+// The portraits of the two fighters stand over the backdrop, the speaker lit and bobbing while the line types out.
+static void story_draw_speakers(const char *speaker,bool talking,bool all_lit) {
+    if(story_art_image.rgb) return;   // an illustration replaces the cast
+    int stand[2]={-1,-1};
+    int speaking=story_pilot_index(speaker);
+    if(story_data.has_cast) {
+        stand[0]=story_pilot_index(story_data.player_pilot);
+        stand[1]=story_pilot_index(story_data.rival_pilot);
+    } else if(speaking>=0) {
+        stand[0]=speaking;
+    }
+    if(speaking>=0 && speaking!=stand[0] && speaking!=stand[1]) stand[1]=speaking;   // a guest takes the right side
+    const float px=3.6f;
+    float dx=2.0f*px/(float)win_width, dy=2.0f*px/(float)win_height;
+    float width=57*dx, height=57*dy;
+    for(int side=0;side<2;side++) {
+        int index=stand[side];
+        if(index<0) continue;
+        if(!story_speaker_tried[index]) {
+            story_speaker_tried[index]=true;
+            story_load_portrait(&story_speakers[index],story_pilot_stats[index].name);
+        }
+        bool lit=all_lit || (*speaker && index==speaking);
+        float bright=lit ? 1.0f : .45f;
+        float x=side==0 ? -.93f : .93f-width;
+        float top=-.20f+height+(lit && talking ? sinf((float)SDL_GetTicks64()*.018f)*.008f : 0);
+        const float *accent=side==0 ? (const float[]){.24f,.78f,1.0f} : (const float[]){1.0f,.55f,.27f};
+        quad(x-.012f,top-height-.016f,width+.024f,height+.032f,accent[0]*bright,accent[1]*bright,accent[2]*bright);
+        story_draw_bright=bright;
+        story_draw_portrait(&story_speakers[index],story_pilot_stats[index].name,x,top,px);
+        story_draw_bright=1.0f;
+    }
+}
+// Advances the typewriter for the current say line; true once the whole line is showing.
+static bool story_update_typing(void) {
+    if(story_run.event!=STORY_EVENT_SAY) return true;
+    Uint64 now=SDL_GetTicks64();
+    size_t total=strlen(story_say_text(&story_run));
+    if(story_typed_line!=(unsigned)story_run.log_total) {
+        story_typed_line=(unsigned)story_run.log_total;
+        story_typed=0;
+        story_type_last=now;
+    }
+    if(story_capturing) story_typed=story_shot_typed>=0 && (size_t)story_shot_typed<total ? (float)story_shot_typed : (float)total;
+    else story_typed+=(float)(now-story_type_last)*.055f;   // about 55 characters a second
+    story_type_last=now;
+    if(story_typed>(float)total) story_typed=(float)total;
+    return (size_t)story_typed>=total;
+}
+// Flash and banner beats from the script. A flash is two quick white strobes; a banner slides in, holds, and leaves.
+static void story_update_effect(void) {
+    if(story_run.effect_serial==story_effect_seen) return;
+    story_effect_seen=story_run.effect_serial;
+    snprintf(story_effect_kind,sizeof(story_effect_kind),"%s",story_run.effect_kind);
+    snprintf(story_effect_text,sizeof(story_effect_text),"%s",story_run.effect_text);
+    story_effect_start=SDL_GetTicks64();
+}
+static float story_effect_age(void) { return (float)(SDL_GetTicks64()-story_effect_start)/1000.0f; }
+static float story_banner_left(void) {   // seconds the banner is still up; Enter waits for it
+    if(strcmp(story_effect_kind,"banner")) return 0;
+    float left=1.4f-story_effect_age();
+    return left>0 ? left : 0;
+}
+static void story_draw_effect(void) {
+    float age=story_effect_age();
+    if(!strcmp(story_effect_kind,"flash")) {
+        if(!story_capturing && (age<.07f || (age>=.12f && age<.19f))) quad(-1,-1,2,2,1,1,1);
+    } else if(!strcmp(story_effect_kind,"banner") && (age<1.4f || story_capturing)) {
+        float slide=0;
+        if(!story_capturing) slide=age<.18f ? -(1.0f-age/.18f)*2.2f : (age>1.15f ? (age-1.15f)/.25f*2.2f : 0);
+        quad(-1+slide,.16f,2,.30f,.01f,.02f,.05f);
+        quad(-1+slide,.46f,2,.02f,1,.75f,.30f);
+        quad(-1+slide,.14f,2,.02f,1,.75f,.30f);
+        float length=(float)strlen(story_effect_text);
+        float size=fminf(.034f,1.8f/(length*6.0f));
+        float left=-length*6.0f*size*.5f+slide;
+        label(left+.006f,.414f-.006f,size,story_effect_text,.02f,.03f,.06f);
+        label(left,.414f,size,story_effect_text,1,.92f,.70f);
+    }
+}
+static void story_hud_body(void) {
     if(story_setup) { story_setup_hud(); return; }
     quad(-1,-1,2,2,.015f,.025f,.065f);
     story_update_backdrop();
     story_update_art();
     story_draw_backdrop();
+    bool typed_all=story_update_typing();
+    const char *speaker_name=story_run.event==STORY_EVENT_SAY ? story_event_cmd(&story_run)->speaker : "";
+    story_draw_speakers(speaker_name,story_run.event==STORY_EVENT_SAY && !typed_all,story_run.event!=STORY_EVENT_SAY);
     quad(-1,.86f,2,.14f,.03f,.07f,.14f);   // header band
     label(-.94f,.985f,.008f,"OMF2115 / STORY",.65f,.92f,1);
     char scene_label[64];
@@ -1471,10 +1575,24 @@ static void story_hud(void) {
     if(story_run.event==STORY_EVENT_SAY) {
         const StoryCmd *c=story_event_cmd(&story_run);
         story_speaker_color(c->speaker,&r,&g,&b);
-        label(-.92f,-.30f,.012f,*c->speaker ? c->speaker : "-",r,g,b);
+        if(*c->speaker) {   // narration has no name tab
+            quad(-.97f,-.37f,.10f+.072f*(float)strlen(c->speaker),.13f,r*.30f,g*.30f,b*.30f);   // name tab
+            quad(-.97f,-.37f,.012f,.13f,r,g,b);
+            label(-.93f,-.285f,.012f,c->speaker,r,g,b);
+        }
         int n=story_wrap(story_say_text(&story_run),34,lines,6);
-        for(int i=0;i<n;i++) label(-.92f,-.42f-.085f*(float)i,.009f,lines[i],.92f,.95f,.98f);
-        hint="ENTER NEXT  S SKIP  L LOG";
+        int shown=(int)story_typed;
+        for(int i=0;i<n && shown>0;i++) {
+            int length=(int)strlen(lines[i]);
+            int take=shown<length ? shown : length;
+            char part[80];
+            memcpy(part,lines[i],(size_t)take);
+            part[take]=0;
+            label(-.92f,-.42f-.085f*(float)i,.009f,part,.92f,.95f,.98f);
+            shown-=length+1;
+        }
+        if(typed_all && ((SDL_GetTicks64()/420)&1)) label(.88f,-.90f,.012f,">",1,.85f,.40f);   // blinking "next" arrow
+        hint=typed_all ? "ENTER NEXT  S SKIP  L LOG" : "ENTER SHOW ALL  S SKIP  L LOG";
     } else if(story_run.event==STORY_EVENT_CHOICE) {
         label(-.92f,-.30f,.012f,"CHOOSE",.80f,.90f,.55f);
         float y=-.42f;
@@ -1533,6 +1651,11 @@ static void story_hud(void) {
         }
         label(-.90f,-.88f,.008f,"L CLOSE",.48f,.60f,.72f);
     }
+}
+static void story_hud(void) {
+    story_update_effect();
+    story_hud_body();
+    if(!story_setup) story_draw_effect();
 }
 static void story_notify(const char *text) {
     snprintf(story_notice,sizeof(story_notice),"%s",text);
@@ -1676,6 +1799,14 @@ static void story_restart(void) {
 // One input, shared by the keyboard and the scripted --script option. Tokens: a, c<N>, u, d, w, l, s, g, r.
 static void story_act(char action,int number) {
     if(story_setup) return;   // nothing to act on until a HAR is chosen
+    if(action=='a' && !story_script_running) {
+        if(story_banner_left()>0) return;   // let a banner finish
+        if(story_run.event==STORY_EVENT_SAY && story_typed_line==(unsigned)story_run.log_total &&
+           (size_t)story_typed<strlen(story_say_text(&story_run))) {   // the first Enter shows the whole line
+            story_typed=(float)strlen(story_say_text(&story_run));
+            return;
+        }
+    }
     StoryEventKind before=story_run.event;
     switch(action) {
         case 'a':
@@ -1728,6 +1859,7 @@ static void story_key(SDL_Scancode key) {
     }
 }
 static void story_run_script(const char *script) {
+    story_script_running=true;
     for(const char *p=script;*p;) {
         char action=*p++;
         int number=0;
@@ -1735,6 +1867,7 @@ static void story_run_script(const char *script) {
         story_act(action,number);
         while(*p==',') p++;
     }
+    story_script_running=false;
 }
 static void world(void) {
     if(model_preview_mode) {
@@ -2099,6 +2232,7 @@ int main(int argc,char **argv) {
             else if(strcmp(argv[i],"--shot")==0) story_shot_path=argv[i+1];
             else if(strcmp(argv[i],"--save-file")==0) story_save_file=argv[i+1];
             else if(strcmp(argv[i],"--har")==0) story_arg_har=argv[i+1];
+            else if(strcmp(argv[i],"--typed")==0) story_shot_typed=atoi(argv[i+1]);
             else good=false;
             i+=2;
         }

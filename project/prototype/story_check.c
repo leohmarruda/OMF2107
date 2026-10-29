@@ -74,6 +74,11 @@ static int cmd_play(int argc, char **argv) {
             printf("[art: %s%s%s]\n", run.art[0] ? run.art : "off", run.art[0] ? " " : "", run.art[0] ? run.art_effect : "");
             snprintf(shown_art, sizeof(shown_art), "%s", run.art);
         }
+        static unsigned shown_effects;
+        if(run.effect_serial != shown_effects) {
+            printf("[%s%s%s]\n", run.effect_kind, *run.effect_text ? ": " : "", run.effect_text);
+            shown_effects = run.effect_serial;
+        }
         if(run.event == STORY_EVENT_SAY) {
             c = story_event_cmd(&run);
             printf("%s%s%s\n", c->speaker, *c->speaker ? ": " : "", story_say_text(&run));
@@ -363,6 +368,28 @@ static void selftest_art(void) {
     CHECK(rejects("scene a\nart ../x fade\nend\n", "letters, digits"));
 }
 
+static void selftest_effects(void) {
+    static const char *const script =
+        "scene a\n"
+        "flash\n"
+        "say : one\n"
+        "banner Tier-2\n"
+        "say : two\n"
+        "end\n";
+    Story story;
+    StoryRun run;
+    char err[256];
+    CHECK(story_parse(&story, script, "effects", err, sizeof(err)));
+    CHECK(story_start(&run, &story, NULL));
+    CHECK(run.effect_serial == 1 && strcmp(run.effect_kind, "flash") == 0 && run.effect_text[0] == 0);
+    CHECK(run.event == STORY_EVENT_SAY);                                  // a beat does not wait
+    story_advance(&run);
+    CHECK(run.effect_serial == 2 && strcmp(run.effect_kind, "banner") == 0 && strcmp(run.effect_text, "Tier-2") == 0);
+    story_free(&story);
+    CHECK(rejects("scene a\nflash now\nend\n", "flash takes no arguments"));
+    CHECK(rejects("scene a\nbanner\nend\n", "banner needs text"));
+}
+
 static int cmd_selftest(void) {
     Story story;
     char err[256];
@@ -412,6 +439,7 @@ static int cmd_selftest(void) {
     selftest_saves(&story);
     selftest_cast();
     selftest_art();
+    selftest_effects();
     story_free(&story);
 
     // A long run keeps only the newest log entries.
