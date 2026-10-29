@@ -1195,6 +1195,12 @@ static void story_sound(int which) {
 // ---- backdrops: the original arena image when one is exported for the scene's bg, else a generated scene ----
 static StoryPortrait story_backdrop;
 static char story_backdrop_name[STORY_NAME];
+// Illustrated sequence: a 320x124 frame from project/build/art, animated by the script's art effect.
+static StoryPortrait story_art_image;
+static char story_art_name[STORY_NAME];
+static char story_art_effect[STORY_NAME];
+static Uint64 story_art_started;
+static bool story_capturing;      // a --shot run: show every effect as it looks a few seconds in
 // The backdrop fills x -1..1 and y -.24..1, under the header band and above the dialogue box.
 static float story_u(float u) { return -1.0f+2.0f*u; }
 static float story_v(float v) { return -.24f+1.24f*v; }
@@ -1289,6 +1295,65 @@ static void story_draw_backdrop_image(const StoryPortrait *image) {
         }
     }
 }
+static void story_update_art(void) {
+    if(!strcmp(story_art_name,story_run.art) && !strcmp(story_art_effect,story_run.art_effect)) return;
+    bool new_picture=strcmp(story_art_name,story_run.art)!=0;
+    snprintf(story_art_name,sizeof(story_art_name),"%s",story_run.art);
+    snprintf(story_art_effect,sizeof(story_art_effect),"%s",story_run.art_effect);
+    story_art_started=SDL_GetTicks64();
+    if(!new_picture) return;
+    free(story_art_image.rgb);
+    story_art_image.rgb=NULL; story_art_image.w=story_art_image.h=0;
+    if(!story_art_name[0]) return;
+    char file[STORY_NAME];
+    size_t n=0;
+    for(const char *c=story_art_name;*c && n+1<sizeof(file);c++) file[n++]=(char)((*c>='A' && *c<='Z') ? *c+32 : *c);
+    file[n]=0;
+    char path[160];
+    snprintf(path,sizeof(path),"project/build/art/%s.bmp",file);
+    story_load_bmp(&story_art_image,path);
+}
+// One frame of the illustration. fade brightens it from black, zoom slowly pushes in, pan slides across a slightly
+// zoomed frame; every destination pixel is a nearest-neighbour sample of the source, merged into runs.
+static void story_draw_art(void) {
+    const StoryPortrait *image=&story_art_image;
+    float seconds=story_capturing ? 3.0f : (float)(SDL_GetTicks64()-story_art_started)/1000.0f;
+    float window=1.0f, shift=0, bright=1.0f;
+    if(!strcmp(story_art_effect,"fade")) {
+        bright=clampf(seconds/.8f,0,1);
+    } else if(!strcmp(story_art_effect,"zoom")) {
+        window=1.0f/(1.0f+.14f*clampf(seconds/8.0f,0,1));
+    } else if(!strcmp(story_art_effect,"pan")) {
+        window=1.0f/1.14f;
+        shift=clampf(seconds/8.0f,0,1)*(1.0f-window);
+    }
+    float region=story_v(1.0f)-story_v(0.0f);
+    int cols=image->w, rows=image->h;
+    float dx=2.0f/(float)cols, dy=region/(float)rows;
+    float step_x=window*(float)image->w/(float)cols, step_y=window*(float)image->h/(float)rows;
+    float x0=!strcmp(story_art_effect,"pan") ? shift*(float)image->w : (1.0f-window)*(float)image->w*.5f;
+    float y0=(1.0f-window)*(float)image->h*.5f;
+    for(int row=0;row<rows;row++) {
+        int sy=(int)(y0+((float)row+.5f)*step_y);
+        if(sy>=image->h) sy=image->h-1;
+        const unsigned char *line=image->rgb+(size_t)sy*(size_t)image->w*3;
+        float y=story_v(1.0f)-(float)(row+1)*dy;
+        for(int col=0;col<cols;) {
+            int start_x=(int)(x0+((float)col+.5f)*step_x);
+            if(start_x>=image->w) start_x=image->w-1;
+            int end=col+1;
+            while(end<cols) {
+                int sx=(int)(x0+((float)end+.5f)*step_x);
+                if(sx>=image->w) sx=image->w-1;
+                if(memcmp(line+start_x*3,line+sx*3,3)) break;
+                end++;
+            }
+            quad(-1.0f+(float)col*dx,y,(float)(end-col)*dx+.0008f,dy+.0008f,
+                 line[start_x*3]/255.0f*bright,line[start_x*3+1]/255.0f*bright,line[start_x*3+2]/255.0f*bright);
+            col=end;
+        }
+    }
+}
 static void story_update_backdrop(void) {
     if(!strcmp(story_backdrop_name,story_run.bg)) return;
     snprintf(story_backdrop_name,sizeof(story_backdrop_name),"%s",story_run.bg);
@@ -1301,6 +1366,7 @@ static void story_update_backdrop(void) {
     story_load_bmp(&story_backdrop,path);
 }
 static void story_draw_backdrop(void) {
+    if(story_art_image.rgb) { story_draw_art(); return; }
     if(story_backdrop.rgb) { story_draw_backdrop_image(&story_backdrop); return; }
     if(!strcmp(story_run.bg,"green room")) story_draw_green_room();
     else if(!strcmp(story_run.bg,"medical bay")) story_draw_medical_bay();
@@ -1384,13 +1450,14 @@ static void story_hud(void) {
     if(story_setup) { story_setup_hud(); return; }
     quad(-1,-1,2,2,.015f,.025f,.065f);
     story_update_backdrop();
+    story_update_art();
     story_draw_backdrop();
     quad(-1,.86f,2,.14f,.03f,.07f,.14f);   // header band
     label(-.94f,.985f,.008f,"OMF2115 / STORY",.65f,.92f,1);
     char scene_label[64];
     snprintf(scene_label,sizeof(scene_label),"SCENE %.10s",story_data.scenes[story_run.scene].id);
     label(.10f,.985f,.008f,scene_label,.48f,.60f,.72f);
-    if(story_run.bg[0]) {   // the scene name over the backdrop, with a dark edge so it reads on any picture
+    if(story_run.bg[0] && !story_art_image.rgb) {   // the scene name over the backdrop, with a dark edge so it reads on any picture
         label(-.935f,.775f,.022f,story_run.bg,.02f,.03f,.06f);
         label(-.94f,.78f,.022f,story_run.bg,.88f,.94f,1);
     }
@@ -2049,6 +2116,7 @@ int main(int argc,char **argv) {
             snprintf(story_save_buf,sizeof(story_save_buf),"project/build/story/%s.save",base);
         }
         story_save_path=story_save_buf;
+        story_capturing=story_shot_path!=NULL;
     }
     bool smoke = argc>1 && strcmp(argv[1],"--smoke")==0;
     bool capture = argc>1 && strcmp(argv[1],"--capture")==0;

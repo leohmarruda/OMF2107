@@ -169,6 +169,22 @@ static bool parse_line(Story *s, char *line_text, int line, const char *name, ch
         if(!*rest) { fail(err, err_size, name, line, "bg needs a name"); return false; }
         c = add_cmd(s, STORY_CMD_BG, line);
         if(c && !copy(c->text, STORY_NAME, rest)) { fail(err, err_size, name, line, "bg name is too long"); return false; }
+    } else if(strcmp(word, "art") == 0) {
+        char *art_name = token(&rest), *effect = token(&rest), *extra = token(&rest);
+        if(!art_name || extra) { fail(err, err_size, name, line, "art needs '<name> [none|fade|zoom|pan]'"); return false; }
+        if(effect && strcmp(effect, "none") != 0 && strcmp(effect, "fade") != 0 && strcmp(effect, "zoom") != 0 &&
+           strcmp(effect, "pan") != 0) {
+            fail(err, err_size, name, line, "unknown art effect '%s' (use none, fade, zoom, or pan)", effect); return false;
+        }
+        for(const char *p = art_name; *p; p++) {
+            bool ok = (*p >= 'a' && *p <= 'z') || (*p >= 'A' && *p <= 'Z') || (*p >= '0' && *p <= '9') || *p == '_' ||
+                      *p == '{' || *p == '}';
+            if(!ok) { fail(err, err_size, name, line, "art names use letters, digits, '_', and {flag} only"); return false; }
+        }
+        c = add_cmd(s, STORY_CMD_ART, line);
+        if(c && (!copy(c->text, STORY_NAME, art_name) || !copy(c->value, STORY_NAME, effect ? effect : "none"))) {
+            fail(err, err_size, name, line, "art name is too long"); return false;
+        }
     } else if(strcmp(word, "say") == 0) {
         char *colon = strchr(rest, ':');
         if(!colon) { fail(err, err_size, name, line, "say needs 'speaker: text' (use 'say : text' for narration)"); return false; }
@@ -449,6 +465,16 @@ static void step_to_event(StoryRun *r, bool log_say) {
         const StoryCmd *c = cmd_at(r, r->pc);
         switch(c->kind) {
             case STORY_CMD_BG: snprintf(r->bg, sizeof(r->bg), "%s", c->text); r->pc++; break;
+            case STORY_CMD_ART:
+                if(strcmp(c->text, "off") == 0) {
+                    r->art[0] = 0;
+                    snprintf(r->art_effect, sizeof(r->art_effect), "none");
+                } else {
+                    expand(r, c->text, r->art, sizeof(r->art));
+                    snprintf(r->art_effect, sizeof(r->art_effect), "%s", c->value);
+                }
+                r->pc++;
+                break;
             case STORY_CMD_SET: set_flag(r, c->flag, c->value); r->pc++; break;
             case STORY_CMD_IF:
                 if(strcmp(story_flag(r, c->flag), c->value) == 0) goto_scene(r, c->target);
@@ -627,6 +653,8 @@ bool story_save(const StoryRun *run, const char *path, char *err, size_t err_siz
     fprintf(f, "scene %s\n", run->story->scenes[run->scene].id);
     fprintf(f, "pc %d\n", run->pc);
     fputs("bg ", f); put_clean(f, run->bg); fputc('\n', f);
+    fputs("art ", f); put_clean(f, run->art); fputc(' ', f); put_clean(f, run->art_effect[0] ? run->art_effect : "none");
+    fputc('\n', f);
     for(int i = 0; i < run->flag_count; i++) {
         fputs("flag ", f); put_clean(f, run->flags[i].name); fputc('=', f);
         put_clean(f, run->flags[i].value); fputc('\n', f);
@@ -691,6 +719,14 @@ bool story_load_save(StoryRun *run, const Story *story, const char *path, char *
         else if(strncmp(l, "scene ", 6) == 0) { have_scene = copy(scene_id, STORY_NAME, l + 6); ok = have_scene; }
         else if(strncmp(l, "pc ", 3) == 0) { pc = atoi(l + 3); have_pc = true; }
         else if(strncmp(l, "bg", 2) == 0 && (l[2] == ' ' || l[2] == 0)) { ok = copy(tmp.bg, sizeof(tmp.bg), l[2] ? l + 3 : ""); }
+        else if(strncmp(l, "art ", 4) == 0) {
+            char *space = strrchr(l + 4, ' ');
+            if(!space) ok = false;
+            else {
+                *space = 0;
+                ok = copy(tmp.art, sizeof(tmp.art), l + 4) && copy(tmp.art_effect, sizeof(tmp.art_effect), space + 1);
+            }
+        }
         else if(strncmp(l, "flag ", 5) == 0) {
             char *eq = strchr(l + 5, '=');
             if(!eq || eq == l + 5 || tmp.flag_count >= STORY_MAX_FLAGS) ok = false;

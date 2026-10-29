@@ -14,6 +14,20 @@ rival Christian
 card Crystal: The Seeker. Composed and camera-ready, the pilot who handles pressure. She wants proof of her parents' fate.
 card Christian: The Shield. Aggressive and outwardly confident. He wants revenge, and he wants Crystal kept alive.
 
+# The illustrated opening: four frames from project/build/art (built by export_story_assets.py) with captions.
+# The faceoff frame is named after the player's HAR, so it shows the pairing that was chosen.
+scene intro
+art stadium_title fade
+say : WAR presents the Ganymede tournament. Ten pilots, linked to giant HARs, in front of the cameras.
+art crystal_card zoom
+say : Crystal Devroe, 23. The Seeker.
+art christian_card zoom
+say : Christian Devroe, 23. The Shield.
+art faceoff_{player_har} fade
+say : Tonight the draw puts one against the other.
+art off
+jump start
+
 scene start
 bg green room
 say : Backstage at WAR's televised Ganymede tournament. The draw has set the Devroe siblings against each other.

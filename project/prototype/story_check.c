@@ -67,8 +67,13 @@ static int cmd_play(int argc, char **argv) {
         story_free(&story);
         return 1;
     }
+    char shown_art[STORY_NAME] = "";
     for(int guard = 0; guard < 1000; guard++) {
         const StoryCmd *c;
+        if(strcmp(run.art, shown_art) != 0) {
+            printf("[art: %s%s%s]\n", run.art[0] ? run.art : "off", run.art[0] ? " " : "", run.art[0] ? run.art_effect : "");
+            snprintf(shown_art, sizeof(shown_art), "%s", run.art);
+        }
         if(run.event == STORY_EVENT_SAY) {
             c = story_event_cmd(&run);
             printf("%s%s%s\n", c->speaker, *c->speaker ? ": " : "", story_say_text(&run));
@@ -319,6 +324,45 @@ static void selftest_cast(void) {
     CHECK(rejects("scene a\nfight Crystal @ vs Christian Shadow win -> a lose -> a\n", "'@' needs"));
 }
 
+static void selftest_art(void) {
+    static const char *const script =
+        "player Crystal Jaguar\n"
+        "rival Christian\n"
+        "scene a\n"
+        "art stadium_title fade\n"
+        "say : one\n"
+        "art faceoff_{player_har} zoom\n"
+        "say : two\n"
+        "art plain\n"
+        "say : three\n"
+        "art off\n"
+        "say : four\n"
+        "end\n";
+    Story story;
+    StoryRun run, loaded;
+    char err[256];
+    CHECK(story_parse(&story, script, "art", err, sizeof(err)));
+    StoryFlag flags[2] = {{"player_har", "Shadow"}, {"rival_har", "Jaguar"}};
+    CHECK(story_start_with_flags(&run, &story, NULL, flags, 2));
+    CHECK(strcmp(run.art, "stadium_title") == 0 && strcmp(run.art_effect, "fade") == 0);
+    story_advance(&run);
+    CHECK(strcmp(run.art, "faceoff_Shadow") == 0 && strcmp(run.art_effect, "zoom") == 0);   // {flag} expanded
+    CHECK(story_save(&run, "story_selftest_art.save", err, sizeof(err)));
+    CHECK(story_load_save(&loaded, &story, "story_selftest_art.save", err, sizeof(err)));
+    CHECK(strcmp(loaded.art, "faceoff_Shadow") == 0 && strcmp(loaded.art_effect, "zoom") == 0);   // saved and restored
+    remove("story_selftest_art.save");
+    story_advance(&run);
+    CHECK(strcmp(run.art, "plain") == 0 && strcmp(run.art_effect, "none") == 0);                  // effect defaults to none
+    story_advance(&run);
+    CHECK(run.art[0] == 0 && strcmp(run.art_effect, "none") == 0);                                // "art off"
+    story_free(&story);
+
+    CHECK(rejects("scene a\nart\nend\n", "art needs"));
+    CHECK(rejects("scene a\nart x fade extra\nend\n", "art needs"));
+    CHECK(rejects("scene a\nart x spin\nend\n", "unknown art effect"));
+    CHECK(rejects("scene a\nart ../x fade\nend\n", "letters, digits"));
+}
+
 static int cmd_selftest(void) {
     Story story;
     char err[256];
@@ -367,6 +411,7 @@ static int cmd_selftest(void) {
     CHECK(!story_start(&run, &story, "nowhere"));
     selftest_saves(&story);
     selftest_cast();
+    selftest_art();
     story_free(&story);
 
     // A long run keeps only the newest log entries.

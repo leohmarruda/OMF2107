@@ -4,6 +4,8 @@
 // Script format (one command per line, '#' starts a comment line, indentation is ignored):
 //   scene <id>                          starts a scene; the first scene is where a run begins
 //   bg <name>                           names the background (for the viewer; free text)
+//   art <name> [effect]                 shows a full-width illustration; effect is none, fade, zoom, or pan;
+//                                       the name may contain {flag}; "art off" returns to the background
 //   say <speaker>: <text>               one line of dialogue; an empty speaker (say : text) is narration
 //   choice <text> -> <scene> [set f=v]  a menu entry; consecutive choice lines form one menu
 //   set <flag>=<value>                  stores a flag
@@ -34,6 +36,7 @@
 typedef enum {
     STORY_CMD_NONE = 0,       // keeps zero-initialised commands invalid
     STORY_CMD_BG,
+    STORY_CMD_ART,
     STORY_CMD_SAY,
     STORY_CMD_CHOICE,
     STORY_CMD_SET,
@@ -47,7 +50,7 @@ typedef struct {
     StoryCmdKind kind;
     int line;                       // line in the script, for messages
     char speaker[STORY_NAME];       // say
-    char text[STORY_TEXT];          // say and choice text; bg name
+    char text[STORY_TEXT];          // say and choice text; bg name; art name
     char flag[STORY_NAME];          // set, if, and choice-set
     char value[STORY_NAME];
     bool has_set;                   // choice: also sets flag=value
@@ -101,6 +104,8 @@ typedef struct {
     StoryEventKind event;           // what the host should show or do now
     int choice_first, choice_count; // for STORY_EVENT_CHOICE: commands (within the scene) of the menu
     char bg[STORY_NAME];
+    char art[STORY_NAME];           // the current illustration with {flag} placeholders replaced; empty for none
+    char art_effect[STORY_NAME];    // none, fade, zoom, or pan
     int flag_count;
     StoryFlag flags[STORY_MAX_FLAGS];
     char say_text[STORY_TEXT];      // the current say line with {flag} placeholders replaced

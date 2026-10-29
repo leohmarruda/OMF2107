@@ -4,6 +4,7 @@ Writes:
   project/build/portraits/<Pilot>.bmp     the ten pilot faces (see export_pilot_portraits.py)
   project/build/backdrops/<arena>.bmp     the five original arena backgrounds (ARENA0-4.BK)
   project/build/sounds/<name>.wav         two original menu sounds from SOUNDS.DAT: move and select
+  project/build/art/<name>.bmp            illustrated-sequence frames composed from the above (build_story_art.py)
 
 This is original-game material, kept local as a development reference and never committed or distributed.
 It is recorded in project/docs/ASSET_LEDGER.md. The story viewer works without any of it: it draws generated
@@ -24,6 +25,7 @@ from pathlib import Path
 
 from PIL import Image
 
+import build_story_art
 import export_pilot_portraits
 
 ROOT = Path(__file__).resolve().parents[2]
@@ -103,7 +105,7 @@ def main() -> int:
         return 1
     export_arenas()
     export_sounds()
-    return 0
+    return build_story_art.main()
 
 
 if __name__ == "__main__":
