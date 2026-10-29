@@ -6,6 +6,8 @@
 //   bg <name>                           names the background (for the viewer; free text)
 //   art <name> [effect]                 shows a full-width illustration; effect is none, fade, zoom, or pan;
 //                                       the name may contain {flag}; "art off" returns to the background
+//   music <track>                       background music: menu, arena0 to arena4, end, or off (the original
+//                                       game's tracks; the viewer plays them from OMF2097/ when it can)
 //   flash                               a quick white flash over the picture (a presentation beat; does not wait)
 //   banner <text>                       a big banner across the picture for a moment (does not wait)
 //   say <speaker>: <text>               one line of dialogue; an empty speaker (say : text) is narration
@@ -39,6 +41,7 @@ typedef enum {
     STORY_CMD_NONE = 0,       // keeps zero-initialised commands invalid
     STORY_CMD_BG,
     STORY_CMD_ART,
+    STORY_CMD_MUSIC,
     STORY_CMD_FLASH,
     STORY_CMD_BANNER,
     STORY_CMD_SAY,
@@ -110,6 +113,7 @@ typedef struct {
     char bg[STORY_NAME];
     char art[STORY_NAME];           // the current illustration with {flag} placeholders replaced; empty for none
     char art_effect[STORY_NAME];    // none, fade, zoom, or pan
+    char music[STORY_NAME];         // the track now playing (menu, arena0..arena4, end); empty for none
     int flag_count;
     StoryFlag flags[STORY_MAX_FLAGS];
     char say_text[STORY_TEXT];      // the current say line with {flag} placeholders replaced

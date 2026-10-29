@@ -185,6 +185,16 @@ static bool parse_line(Story *s, char *line_text, int line, const char *name, ch
         if(c && (!copy(c->text, STORY_NAME, art_name) || !copy(c->value, STORY_NAME, effect ? effect : "none"))) {
             fail(err, err_size, name, line, "art name is too long"); return false;
         }
+    } else if(strcmp(word, "music") == 0) {
+        static const char *const tracks[] = {"menu", "arena0", "arena1", "arena2", "arena3", "arena4", "end", "off"};
+        bool known = false;
+        for(size_t i = 0; i < sizeof(tracks) / sizeof(tracks[0]); i++) known = known || strcmp(rest, tracks[i]) == 0;
+        if(!known) {
+            fail(err, err_size, name, line, "music needs menu, arena0 to arena4, end, or off");
+            return false;
+        }
+        c = add_cmd(s, STORY_CMD_MUSIC, line);
+        if(c) copy(c->text, STORY_NAME, rest);
     } else if(strcmp(word, "flash") == 0) {
         if(*rest) { fail(err, err_size, name, line, "flash takes no arguments"); return false; }
         c = add_cmd(s, STORY_CMD_FLASH, line);
@@ -472,6 +482,10 @@ static void step_to_event(StoryRun *r, bool log_say) {
         const StoryCmd *c = cmd_at(r, r->pc);
         switch(c->kind) {
             case STORY_CMD_BG: snprintf(r->bg, sizeof(r->bg), "%s", c->text); r->pc++; break;
+            case STORY_CMD_MUSIC:
+                snprintf(r->music, sizeof(r->music), "%s", strcmp(c->text, "off") == 0 ? "" : c->text);
+                r->pc++;
+                break;
             case STORY_CMD_FLASH:
             case STORY_CMD_BANNER:
                 r->effect_serial++;
@@ -667,6 +681,7 @@ bool story_save(const StoryRun *run, const char *path, char *err, size_t err_siz
     fprintf(f, "scene %s\n", run->story->scenes[run->scene].id);
     fprintf(f, "pc %d\n", run->pc);
     fputs("bg ", f); put_clean(f, run->bg); fputc('\n', f);
+    fputs("music ", f); put_clean(f, run->music); fputc('\n', f);
     fputs("art ", f); put_clean(f, run->art); fputc(' ', f); put_clean(f, run->art_effect[0] ? run->art_effect : "none");
     fputc('\n', f);
     for(int i = 0; i < run->flag_count; i++) {
@@ -733,6 +748,7 @@ bool story_load_save(StoryRun *run, const Story *story, const char *path, char *
         else if(strncmp(l, "scene ", 6) == 0) { have_scene = copy(scene_id, STORY_NAME, l + 6); ok = have_scene; }
         else if(strncmp(l, "pc ", 3) == 0) { pc = atoi(l + 3); have_pc = true; }
         else if(strncmp(l, "bg", 2) == 0 && (l[2] == ' ' || l[2] == 0)) { ok = copy(tmp.bg, sizeof(tmp.bg), l[2] ? l + 3 : ""); }
+        else if(strncmp(l, "music", 5) == 0 && (l[5] == ' ' || l[5] == 0)) { ok = copy(tmp.music, sizeof(tmp.music), l[5] ? l + 6 : ""); }
         else if(strncmp(l, "art ", 4) == 0) {
             char *space = strrchr(l + 4, ' ');
             if(!space) ok = false;

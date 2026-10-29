@@ -74,6 +74,11 @@ static int cmd_play(int argc, char **argv) {
             printf("[art: %s%s%s]\n", run.art[0] ? run.art : "off", run.art[0] ? " " : "", run.art[0] ? run.art_effect : "");
             snprintf(shown_art, sizeof(shown_art), "%s", run.art);
         }
+        static char shown_music[STORY_NAME];
+        if(strcmp(run.music, shown_music) != 0) {
+            printf("[music: %s]\n", run.music[0] ? run.music : "off");
+            snprintf(shown_music, sizeof(shown_music), "%s", run.music);
+        }
         static unsigned shown_effects;
         if(run.effect_serial != shown_effects) {
             printf("[%s%s%s]\n", run.effect_kind, *run.effect_text ? ": " : "", run.effect_text);
@@ -390,6 +395,34 @@ static void selftest_effects(void) {
     CHECK(rejects("scene a\nbanner\nend\n", "banner needs text"));
 }
 
+static void selftest_music(void) {
+    static const char *const script =
+        "scene a\n"
+        "music menu\n"
+        "say : one\n"
+        "music arena3\n"
+        "say : two\n"
+        "music off\n"
+        "say : three\n"
+        "end\n";
+    Story story;
+    StoryRun run, loaded;
+    char err[256];
+    CHECK(story_parse(&story, script, "music", err, sizeof(err)));
+    CHECK(story_start(&run, &story, NULL));
+    CHECK(strcmp(run.music, "menu") == 0);
+    story_advance(&run);
+    CHECK(strcmp(run.music, "arena3") == 0);
+    CHECK(story_save(&run, "story_selftest_music.save", err, sizeof(err)));
+    CHECK(story_load_save(&loaded, &story, "story_selftest_music.save", err, sizeof(err)) && strcmp(loaded.music, "arena3") == 0);
+    remove("story_selftest_music.save");
+    story_advance(&run);
+    CHECK(run.music[0] == 0);                                  // "music off"
+    story_free(&story);
+    CHECK(rejects("scene a\nmusic\nend\n", "music needs"));
+    CHECK(rejects("scene a\nmusic loud\nend\n", "music needs"));
+}
+
 static int cmd_selftest(void) {
     Story story;
     char err[256];
@@ -440,6 +473,7 @@ static int cmd_selftest(void) {
     selftest_cast();
     selftest_art();
     selftest_effects();
+    selftest_music();
     story_free(&story);
 
     // A long run keeps only the newest log entries.

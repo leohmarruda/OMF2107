@@ -434,7 +434,7 @@ if(BUILD_3D_PROTOTYPE)
                                    project/prototype/pose_catalog.c project/prototype/story.c)
     # Validates and plays story scripts without a window: story_check selftest | check | play.
     add_executable(story_check project/prototype/story_check.c project/prototype/story.c)
-    target_link_libraries(omf3d_prototype PRIVATE openomf::SDL2main openomf::epoxy)
+    target_link_libraries(omf3d_prototype PRIVATE openomf::SDL2main openomf::epoxy openomf::xmp)
     if(NOT WIN32)
         target_link_libraries(omf3d_prototype PRIVATE m)
     endif()

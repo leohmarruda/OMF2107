@@ -14,11 +14,14 @@ rival Christian
 card Crystal: The Seeker. Composed and camera-ready, the pilot who handles pressure. She wants proof of her parents' fate.
 card Christian: The Shield. Aggressive and outwardly confident. He wants revenge, and he wants Crystal kept alive.
 
+# Music: music <track> plays one of the original game's tracks (menu, arena0 to arena4, end) and music off stops it.
+# The viewer plays them from OMF2097/ and is silent during a match, where OpenOMF plays the arena's own music.
 # Presentation beats: flash (a quick white flash) and banner <text> (a big banner) do not wait; they sit just before
 # the line they punctuate. Banner text is shown in capitals.
 # The illustrated opening: four frames from project/build/art (built by export_story_assets.py) with captions.
 # The faceoff frame is named after the player's HAR, so it shows the pairing that was chosen.
 scene intro
+music menu
 art stadium_title fade
 say : WAR presents the Ganymede tournament. Ten pilots, linked to giant HARs, in front of the cameras.
 art crystal_card zoom
@@ -51,6 +54,7 @@ say Christian: Fine. But I am watching you.
 jump prefight
 
 scene prefight
+music arena0
 bg stadium
 say : The siblings take their HARs. Crystal in {player_har}. Christian in {rival_har}.
 say Christian: Do not hold back on my account.
@@ -70,6 +74,7 @@ say Christian: Did you let me win? Or could you not hold the stick?
 jump recovery
 
 scene recovery
+music menu
 bg medical bay
 banner TIER-2
 if result=won -> recovery_won
@@ -131,6 +136,7 @@ jump ending
 
 # The endings: one for each sibling, shaped by the evidence choice, then a closing frame shaped by the tremors.
 scene ending
+music end
 banner CRYSTAL
 art ending_crystal fade
 if evidence=released -> ending_crystal_released

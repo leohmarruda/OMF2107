@@ -3,6 +3,7 @@
 #include "live_input.h" // pulls in windows.h; must precede epoxy/gl.h (APIENTRY)
 #include <SDL.h>
 #include <epoxy/gl.h>
+#include <xmp.h>
 #include <math.h>
 #include <stdbool.h>
 #include <stdio.h>
@@ -1152,6 +1153,52 @@ static StorySound story_sounds[SND_COUNT];
 static SDL_AudioDeviceID story_audio;
 static bool story_muted;
 static void story_notify(const char *text);
+// ---- music: the original tracker modules, played from OMF2097/ with libxmp on a second audio device ----
+static SDL_AudioDeviceID story_music_dev;
+static xmp_context story_music_ctx;
+static char story_music_name[STORY_NAME];
+static void story_music_callback(void *userdata,Uint8 *stream,int len) {
+    (void)userdata;
+    // Silent while muted, and while a match runs (OpenOMF plays the arena's music there).
+    if(!story_music_ctx || story_muted || story_match_state==1 || xmp_play_buffer(story_music_ctx,stream,len,0)<0)
+        memset(stream,0,(size_t)len);
+}
+static void story_music_set(const char *name) {
+    snprintf(story_music_name,sizeof(story_music_name),"%s",name);
+    SDL_LockAudioDevice(story_music_dev);
+    if(story_music_ctx) {
+        xmp_end_player(story_music_ctx);
+        xmp_release_module(story_music_ctx);
+        xmp_free_context(story_music_ctx);
+        story_music_ctx=NULL;
+    }
+    if(name[0]) {
+        char path[96];
+        size_t n=(size_t)snprintf(path,sizeof(path),"OMF2097/");
+        for(const char *c=name;*c && n+5<sizeof(path);c++) path[n++]=(char)((*c>='a' && *c<='z') ? *c-32 : *c);
+        snprintf(path+n,sizeof(path)-n,".PSM");
+        xmp_context ctx=xmp_create_context();
+        bool loaded=false;
+        if(ctx && xmp_load_module(ctx,path)==0) {
+            loaded=true;
+            if(xmp_start_player(ctx,44100,0)==0) {
+                xmp_set_player(ctx,XMP_PLAYER_VOLUME,70);
+                xmp_set_player(ctx,XMP_PLAYER_INTERP,XMP_INTERP_LINEAR);
+                story_music_ctx=ctx;
+            }
+        }
+        if(!story_music_ctx) {
+            fprintf(stderr,"Could not play the music %s\n",path);
+            if(ctx) { if(loaded) xmp_release_module(ctx); xmp_free_context(ctx); }
+        }
+    }
+    SDL_UnlockAudioDevice(story_music_dev);
+}
+// Follows the story: plays the track the script asked for, and nothing when the script has none.
+static void story_music_sync(const char *want) {
+    if(!story_music_dev || !strcmp(want,story_music_name)) return;
+    story_music_set(want);
+}
 static void story_audio_init(void) {
     static const char *files[SND_COUNT]={"move","select"};
     if(SDL_InitSubSystem(SDL_INIT_AUDIO)!=0) return;
@@ -1182,7 +1229,13 @@ static void story_audio_init(void) {
         }
         SDL_FreeWAV(buf);
     }
-    printf("Story sounds: %d of %d loaded\n",loaded,SND_COUNT);
+    SDL_AudioSpec music_want,music_have;
+    SDL_zero(music_want);
+    music_want.freq=44100; music_want.format=AUDIO_S16SYS; music_want.channels=2; music_want.samples=2048;
+    music_want.callback=story_music_callback;
+    story_music_dev=SDL_OpenAudioDevice(NULL,0,&music_want,&music_have,0);
+    if(story_music_dev) SDL_PauseAudioDevice(story_music_dev,0);
+    printf("Story sounds: %d of %d loaded; music %s\n",loaded,SND_COUNT,story_music_dev ? "ready" : "unavailable");
     fflush(stdout);
     SDL_PauseAudioDevice(story_audio,0);
 }
@@ -1653,6 +1706,7 @@ static void story_hud_body(void) {
     }
 }
 static void story_hud(void) {
+    story_music_sync(story_setup ? "menu" : story_run.music);
     story_update_effect();
     story_hud_body();
     if(!story_setup) story_draw_effect();
