@@ -344,6 +344,14 @@ original sound effects and music (the launcher's `-Sound` switch, which the stor
 battle has its usual sounds and its own win and lose voices. `M` or `--mute` turns off the viewer's sounds and
 starts matches silent.
 
+The soundtrack is the original game's music: `music <track>` in a script plays `menu`, `arena0` to `arena4`, or
+`end` from the `.PSM` modules in `OMF2097/` (decoded with libxmp and looped; `music off` stops it), and the
+selection screen plays `menu`. The music is quiet while a match runs, because OpenOMF plays the arena's own music
+there, and it follows `M` and `--mute`. The draft uses the menu track for the opening and the scenes around the
+match, `arena0` before the match, and `end` for the endings. A saved story resumes with its track. If
+`OMF2097/` or the audio device is missing the story is simply silent. libxmp is the project's own dependency, so a
+debug build prints its loader log to the console.
+
 The dialogue is presented in a visual-novel style: the two fighters' portraits stand over the backdrop (the
 player's pilot on the left, the rival on the right), the speaker lit with a coloured frame and the other dimmed, and a name tab sits on the dialogue box. Lines type out at about 55 characters
 a second with no sound; Enter shows the rest of a line at once and a second Enter moves on, and a blinking arrow

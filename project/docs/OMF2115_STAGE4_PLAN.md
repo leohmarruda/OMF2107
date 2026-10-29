@@ -134,8 +134,16 @@ text with placeholder portraits.
   against civilians. Tested: all 12 combinations of evidence, tremors, and match result reach the end with
   distinct endings (`story_check play`), no scene is unreachable, and screenshots of each frame in the viewer.
   Not tested: the endings played in sequence with their timing.
-- **Not yet done:** music in the story scenes, and a clean end-to-end playtest by someone who has not seen the
-  build (step 6).
+- **Soundtrack (2026-10-29):** the script format gained `music <track>` (menu, arena0 to arena4, end, or off), saved
+  and restored with the story and covered by `story_check selftest`. The viewer decodes the original `.PSM` files
+  from `OMF2097/` with libxmp (now linked into the prototype) on a second audio device, loops the track, plays
+  `menu` on the selection screen, goes quiet while a match runs, and follows `M` and `--mute`. The draft uses the
+  menu track for the opening and the scenes around the match, `arena0` before the match, and `end` for the
+  endings. Tested: all seven original tracks decode to real audio with libxmp (non-zero peak and RMS over the
+  first six seconds), and the viewer loads `MENU.PSM` and reports its music device ready with no errors. Not
+  tested: hearing it, the volume balance against the effects and the battle, and the track changes in sequence.
+  Recorded in the ledger as local-only and not distributable.
+- **Not yet done:** a clean end-to-end playtest by someone who has not seen the build (step 6).
 
 ## Step 3 design: the match handoff (built)
 
