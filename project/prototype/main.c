@@ -1467,8 +1467,8 @@ static int story_pilot_index(const char *name) {   // 0-9 in the pilot table, or
     }
     return -1;
 }
-// The portraits of the two fighters stand over the backdrop, the speaker lit and bobbing while the line types out.
-static void story_draw_speakers(const char *speaker,bool talking,bool all_lit) {
+// The portraits of the two fighters stand over the backdrop, the speaker lit and the other dimmed.
+static void story_draw_speakers(const char *speaker,bool all_lit) {
     if(story_art_image.rgb) return;   // an illustration replaces the cast
     int stand[2]={-1,-1};
     int speaking=story_pilot_index(speaker);
@@ -1492,7 +1492,7 @@ static void story_draw_speakers(const char *speaker,bool talking,bool all_lit) {
         bool lit=all_lit || (*speaker && index==speaking);
         float bright=lit ? 1.0f : .45f;
         float x=side==0 ? -.93f : .93f-width;
-        float top=-.20f+height+(lit && talking ? sinf((float)SDL_GetTicks64()*.018f)*.008f : 0);
+        float top=-.20f+height;
         const float *accent=side==0 ? (const float[]){.24f,.78f,1.0f} : (const float[]){1.0f,.55f,.27f};
         quad(x-.012f,top-height-.016f,width+.024f,height+.032f,accent[0]*bright,accent[1]*bright,accent[2]*bright);
         story_draw_bright=bright;
@@ -1555,7 +1555,7 @@ static void story_hud_body(void) {
     story_draw_backdrop();
     bool typed_all=story_update_typing();
     const char *speaker_name=story_run.event==STORY_EVENT_SAY ? story_event_cmd(&story_run)->speaker : "";
-    story_draw_speakers(speaker_name,story_run.event==STORY_EVENT_SAY && !typed_all,story_run.event!=STORY_EVENT_SAY);
+    story_draw_speakers(speaker_name,story_run.event!=STORY_EVENT_SAY);
     quad(-1,.86f,2,.14f,.03f,.07f,.14f);   // header band
     label(-.94f,.985f,.008f,"OMF2115 / STORY",.65f,.92f,1);
     char scene_label[64];

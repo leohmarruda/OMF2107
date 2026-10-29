@@ -118,12 +118,12 @@ text with placeholder portraits.
   run after this change starts over.
 - **Presentation pass (2026-10-27, inspired by the visual-novel style of the Ace Attorney games; presentation
   only, no typewriter blips, no screen shakes):** speaker portraits over the backdrop with the speaker lit and
-  bobbing, typewriter text (Enter shows the whole line, then moves on), a name tab and a blinking next arrow, and
+  the other dimmed (a bob on the speaking portrait was removed after the first look), typewriter text (Enter shows the whole line, then moves on), a name tab and a blinking next arrow, and
   `flash` and `banner <text>` script commands. The draft gained three beats (a flash at the face-off, a TIER-2
   banner when the invitation arrives, and a flash when the telemetry message arrives); its dialogue is unchanged.
   Nothing from the series is used: no art, sounds, or catchphrases. Tested: the new commands in
   `story_check selftest`, and screenshots of the portraits, a half-typed line, narration, and the banner. Not
-  tested: how the typing speed, bobbing, flash, and banner feel in motion. A flash is a strobe of opaque white
+  tested: how the typing speed, flash, and banner feel in motion. A flash is a strobe of opaque white
   because the viewer cannot blend colours.
 - **Not yet done:** music in the story scenes, and a clean end-to-end playtest by someone who has not seen the
   build (step 6).
