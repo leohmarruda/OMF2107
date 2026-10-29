@@ -344,6 +344,16 @@ original sound effects and music (the launcher's `-Sound` switch, which the stor
 battle has its usual sounds and its own win and lose voices. `M` or `--mute` turns off the viewer's sounds and
 starts matches silent.
 
+The dialogue is presented in a visual-novel style: the two fighters' portraits stand over the backdrop (the
+player's pilot on the left, the rival on the right), the speaker lit with a coloured frame and bobbing while the
+line types out and the other dimmed, and a name tab sits on the dialogue box. Lines type out at about 55 characters
+a second with no sound; Enter shows the rest of a line at once and a second Enter moves on, and a blinking arrow
+marks a finished line. Narration dims both portraits and shows no tab. An illustration (below) replaces the
+portraits. `flash` and `banner <text>` are script commands for presentation beats: a flash is two quick white
+strobes and a banner sweeps across the picture for about a second, and Enter waits for a banner to finish. Neither
+holds the story up by itself; put them just before the line they punctuate. For screenshots, `--typed N` freezes
+the typewriter after N characters.
+
 A scene can show an illustration with `art <name> [none|fade|zoom|pan]` (`art off` clears it); the name may use
 `{flag}`, so the draft's face-off frame is `faceoff_{player_har}`. Frames are 320x124 pictures in
 `project/build/art/`, composed from original portraits, arena art, and HAR sprites by
