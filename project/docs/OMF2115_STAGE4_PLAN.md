@@ -197,6 +197,13 @@ text with placeholder portraits.
   captures at several ticks (a ribbon following a Shadow punch and fading, the halos and hit glow visible; the first version drew
   vertical columns where the tip changed limb, which the jump check removed). Not tested: the ribbons in real-time motion, other
   moves (specials, kicks, throws), and the other HARs, which still use the placeholder robot and leave no trail.
+- **Meshy story mode (2026-10-31, requested):** `run-story-meshy.ps1` plays the story with the Meshy robots (Robot Mascot for Jaguar,
+  Rocket Jester for Shadow) in the matches, by setting `OMF3K_MESHY=1` for the story window and the match window it starts; the saves are
+  shared with the blockout version. The playtest package ships `Play-Meshy.bat` and `Play-Meshy-NewGame.bat` beside `Play.bat`. Making
+  this found a bug from the reflection pass: the Meshy meshes (about 190000 vertices for the two robots) drawn twice overflowed the
+  vertex buffer and dropped the HUD, so the buffer is now 1,000,000 vertices and only the used part is uploaded each frame. Tested:
+  a Meshy capture with the HUD, the launcher starting the viewer with its options passed through, and a rebuilt Release package. Not
+  tested: a full Meshy match played by hand, and its frame rate (the Meshy meshes are drawn twice per frame).
 - **Not yet done:** a clean end-to-end playtest by someone who has not seen the build (step 6).
 
 ## Step 3 design: the match handoff (built)
