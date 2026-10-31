@@ -52,7 +52,10 @@ Matches drawn from OpenOMF's state (source replay and live) use a wide-angle per
 dollies in when they are close and out when they are apart, and swings at most 20 degrees either side of
 straight side-on as they move toward the ends of the arena; a hit pulls it in a touch. It only changes the
 viewpoint, never the fight. **C** switches between this camera and the old fixed side-on view while a match
-runs. The robots are lit by fixed arena lights (a warm key, a cool fill and a cyan rim light) and get soft
+runs. The mouse adjusts it within limits: **drag** with the left button turns the camera around the fight (up to 34 degrees
+either way on top of the automatic swing, never more than 42 in all, so it stays a side view from the front) and tilts it
+between a little below and well above the fight; the **wheel** zooms (0.55x to 1.6x); a **middle click** resets. For captures,
+`OMF3K_CAMERA_USER=yaw,pitch,zoom` (degrees, degrees, factor) sets the same adjustment. The robots are lit by fixed arena lights (a warm key, a cool fill and a cyan rim light) and get soft
 contact shadows; a hit shows a spark burst at the struck fighter. The story and selection screens, the
 sandbox, and the model preview keep their own views.
 

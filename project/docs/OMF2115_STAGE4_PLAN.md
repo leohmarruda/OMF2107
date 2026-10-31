@@ -180,6 +180,10 @@ text with placeholder portraits.
   real match launch that ran without errors. Not tested: how the sparks, lamps and progress bar look in motion, and the status text
   during the real warm-up (the screenshots cannot show a running match). `build.ps1 -NoConfigure` now rebuilds without
   re-running CMake's configure, whose version script fetches from GitHub and sometimes stalls.
+- **Mouse camera (2026-10-31, requested):** in the match view, dragging with the left button turns the camera and tilts it, the wheel
+  zooms, and a middle click resets, all within limits that keep it a side view from the front (at most 42 degrees of turn in all,
+  never below the floor or behind the fight plane). The footer shows the controls. Tested: captures of six combinations of turn,
+  tilt and zoom at the extremes, none showing the edge of the stadium. Not tested: the feel of dragging and the wheel step in real use.
 - **Not yet done:** a clean end-to-end playtest by someone who has not seen the build (step 6).
 
 ## Step 3 design: the match handoff (built)

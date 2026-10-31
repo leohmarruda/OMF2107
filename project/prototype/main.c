@@ -514,10 +514,19 @@ static void vertex(float x, float y, float z, float r, float g, float b) {
 // CAMERA_MAX_YAW from straight side-on, never behind the fight plane), so the match still reads as a side view.
 // C switches back to the old fixed side-on view. Nothing here touches the fight itself: it only moves the viewpoint.
 #define CAMERA_VFOV 54.0f          // degrees; wide for a fighter, but not enough to bend the fighters at the edges
-#define CAMERA_MAX_YAW 20.0f       // degrees either side of straight side-on
+#define CAMERA_MAX_YAW 20.0f       // degrees either side of straight side-on that the automatic swing reaches
+#define CAMERA_LIMIT_YAW 42.0f     // the most, with the mouse added: still a side view, never past this either way
+#define CAMERA_USER_YAW 34.0f      // how far the mouse alone can turn it
+#define CAMERA_USER_PITCH_LOW -.10f
+#define CAMERA_USER_PITCH_HIGH .45f   // radians: a little lower, or well above the fight
+#define CAMERA_ZOOM_MIN .55f
+#define CAMERA_ZOOM_MAX 1.6f
 #define CAMERA_NEAR 0.4f
 #define CAMERA_FAR 60.0f
 static bool camera_dynamic=true;
+// The viewer's own adjustments on top of the automatic framing, set with the mouse (OMF3K_CAMERA_USER=yaw,pitch,zoom
+// in degrees, degrees and a factor sets them for captures). Drag turns, the wheel zooms, a middle click resets.
+static float camera_user_yaw, camera_user_pitch, camera_user_zoom=1.0f;
 static bool camera_snap;                   // captures jump straight to the camera's target, with no easing
 static struct {
     float x, y, dist, yaw, pitch;               // smoothed state: look-at point, distance, swing, tilt
@@ -555,7 +564,9 @@ static void camera_update(float dt,bool snap) {
     float want_yaw=-clampf(mid_x/6.5f,-1.0f,1.0f)*CAMERA_MAX_YAW*3.14159265f/180.0f;
     float want_x=mid_x*.82f;                    // keeps a little of the arena's centre in view
     float want_y=1.65f+clampf(top,0,3.0f)*.30f;
-    float want_pitch=.10f+clampf(top,0,3.0f)*.015f;
+    float want_pitch=.10f+clampf(top,0,3.0f)*.015f+camera_user_pitch;
+    want_dist*=camera_user_zoom;
+    want_yaw+=camera_user_yaw;
     if(live_impact_time>0) want_dist*=1.0f-.045f*(live_impact_time/.20f);   // a hit pulls the camera in a touch
     if(snap || !cam.ready) {
         cam.x=want_x; cam.y=want_y; cam.dist=want_dist; cam.yaw=want_yaw; cam.pitch=want_pitch; cam.ready=true;
@@ -567,8 +578,10 @@ static void camera_update(float dt,bool snap) {
         cam.yaw+=(want_yaw-cam.yaw)*k_swing;
         cam.pitch+=(want_pitch-cam.pitch)*k_swing;
     }
-    float limit=CAMERA_MAX_YAW*3.14159265f/180.0f;
+    float limit=CAMERA_LIMIT_YAW*3.14159265f/180.0f;
     cam.yaw=clampf(cam.yaw,-limit,limit);
+    cam.pitch=clampf(cam.pitch,.02f,.62f);
+    cam.dist=clampf(cam.dist,4.8f,17.0f);
     camera_basis();
 }
 // World point to normalised device coordinates for the perspective camera.
@@ -2475,7 +2488,7 @@ static void hud(void) {
             label(.37f,.72f,.013f,right,1,.72f,.79f);
         }
         quad(-1,-1,2,.26f,.02f,.04f,.10f);
-        label(-.94f,-.79f,.011f,source_input_enabled ? "A D MOVE  W JUMP  S DUCK" :
+        label(-.94f,-.775f,.011f,source_input_enabled ? "A D MOVE  W JUMP  S DUCK" :
               (source_follow_mode ? "LIVE OPENOMF MATCH  ESC QUIT" :
               (source_replay_mode ? "SPACE PAUSE  LEFT RIGHT SEEK" : "A D MOVE  W JUMP  J PUNCH")),
               .78f,.84f,.91f);
@@ -2485,7 +2498,9 @@ static void hud(void) {
                      (source_follow_mode ? "SOURCE TICK %u" :
                      "R RESTART  ESC QUIT  TICK %u"),
                      source_replay.frames[source_replay_index].tick);
-            label(-.94f,-.91f,.011f,replay_footer,.78f,.84f,.91f);
+            label(-.94f,-.865f,.011f,replay_footer,.78f,.84f,.91f);
+            label(-.94f,-.955f,.0065f,camera_dynamic ? "DRAG ROTATE  WHEEL ZOOM  MIDDLE RESET  C VIEW" : "C CAMERA VIEW",
+                  .55f,.64f,.74f);
         } else {
             label(-.94f,-.91f,.011f,"K KICK  HOLD BACK TO BLOCK",.78f,.84f,.91f);
         }
@@ -2741,6 +2756,15 @@ int main(int argc,char **argv) {
     if(source_input_map_name && *source_input_map_name) source_input_enabled=true;
     source_state_map_name=source_follow_mode ? getenv("OMF3K_STATE_MAP") : NULL;
 #endif
+    const char *camera_user_env=getenv("OMF3K_CAMERA_USER");   // yaw,pitch (degrees), zoom: for captures and tests
+    if(camera_user_env) {
+        float yaw_degrees,pitch_degrees,zoom;
+        if(sscanf(camera_user_env,"%f,%f,%f",&yaw_degrees,&pitch_degrees,&zoom)==3) {
+            camera_user_yaw=clampf(yaw_degrees,-CAMERA_USER_YAW,CAMERA_USER_YAW)*3.14159265f/180.0f;
+            camera_user_pitch=clampf(pitch_degrees*3.14159265f/180.0f,CAMERA_USER_PITCH_LOW,CAMERA_USER_PITCH_HIGH);
+            camera_user_zoom=clampf(zoom,CAMERA_ZOOM_MIN,CAMERA_ZOOM_MAX);
+        }
+    }
     if(source_check || (source_replay_mode && !source_follow_mode)) {
         char error[256];
         if(!source_replay_load(argv[2],&source_replay,error,sizeof(error))) {
@@ -2891,6 +2915,19 @@ int main(int argc,char **argv) {
         SDL_Event e;
         while(SDL_PollEvent(&e)) {
             if(e.type==SDL_QUIT) running=false;
+            if(source_replay_mode && camera_dynamic) {
+                const float to_rad=3.14159265f/180.0f;
+                if(e.type==SDL_MOUSEMOTION && (e.motion.state&SDL_BUTTON_LMASK)) {   // drag: turn the camera around the fight
+                    camera_user_yaw=clampf(camera_user_yaw-(float)e.motion.xrel*.30f*to_rad,
+                                           -CAMERA_USER_YAW*to_rad,CAMERA_USER_YAW*to_rad);
+                    camera_user_pitch=clampf(camera_user_pitch+(float)e.motion.yrel*.20f*to_rad,
+                                             CAMERA_USER_PITCH_LOW,CAMERA_USER_PITCH_HIGH);
+                } else if(e.type==SDL_MOUSEWHEEL) {
+                    camera_user_zoom=clampf(camera_user_zoom*powf(.90f,(float)e.wheel.y),CAMERA_ZOOM_MIN,CAMERA_ZOOM_MAX);
+                } else if(e.type==SDL_MOUSEBUTTONDOWN && e.button.button==SDL_BUTTON_MIDDLE) {
+                    camera_user_yaw=camera_user_pitch=0; camera_user_zoom=1.0f;
+                }
+            }
             if(e.type==SDL_KEYDOWN && !e.key.repeat) {
                 if(selection_mode) {
                     if(e.key.keysym.scancode==SDL_SCANCODE_ESCAPE) {
