@@ -184,6 +184,12 @@ text with placeholder portraits.
   zooms, and a middle click resets, all within limits that keep it a side view from the front (at most 42 degrees of turn in all,
   never below the floor or behind the fight plane). The footer shows the controls. Tested: captures of six combinations of turn,
   tilt and zoom at the extremes, none showing the edge of the stadium. Not tested: the feel of dragging and the wheel step in real use.
+- **Combat graphics pass 2 (2026-10-31, requested):** a hit flashes the struck fighter white-hot for a fifth of a second and adds a
+  widening shockwave ring to the spark burst; both HARs are reflected in the floor (the robots drawn a second time, mirrored, fading
+  with height, without the depth test because the floor is in front of them); landing from a jump throws a spreading ring of dust; the
+  crowd sways and jumps when a hit lands. All presentation: the fight is untouched. Tested: captures of a hit, a knockdown and calm
+  frames (flash, reflections and the burst visible), and 15 seconds of real-time playback without errors. Not tested: the landing
+  dust and the crowd's motion (a single capture cannot show them), and the cost of drawing the robots twice on a slower machine.
 - **Not yet done:** a clean end-to-end playtest by someone who has not seen the build (step 6).
 
 ## Step 3 design: the match handoff (built)

@@ -58,6 +58,7 @@ static float source_visual_time;
 static float live_round_intro_time;
 static float live_impact_time;
 static float live_impact_x;
+static int live_impact_recipient; // 0 the player, 1 the rival
 static float live_impact_y;   // roughly chest height of the fighter that was hit
 static int live_impact_kind; // 1 hit, 2 block
 static float rival_attack_delay;
@@ -236,6 +237,7 @@ static void apply_source_frame(size_t index) {
         int recipient=hit ? (hit&1 ? 0 : 1) : (frame->block_mask&1 ? 0 : 1);
         live_impact_x=recipient==0 ? player.x : rival.x;
         live_impact_y=(recipient==0 ? player.y : rival.y)+1.9f;
+        live_impact_recipient=recipient;
         live_impact_kind=hit ? 1 : 2;
         live_impact_time=.20f;
     } else if(source_follow_mode && !frame->has_events && index>0) {
@@ -243,11 +245,13 @@ static void apply_source_frame(size_t index) {
         if(frame->fighter[0].health<previous->fighter[0].health) {
             live_impact_x=player.x;
             live_impact_y=player.y+1.9f;
+            live_impact_recipient=0;
             live_impact_kind=1;
             live_impact_time=.20f;
         } else if(frame->fighter[1].health<previous->fighter[1].health) {
             live_impact_x=rival.x;
             live_impact_y=rival.y+1.9f;
+            live_impact_recipient=1;
             live_impact_kind=1;
             live_impact_time=.20f;
         }
@@ -502,6 +506,9 @@ static void tick(const unsigned char *keys) {
 
 static float vertex_alpha=1.0f;   // 1 for everything but the translucent effects pass
 static int fx_begin=-1;            // first vertex of the translucent effects, drawn after the opaque scene
+static int fx_refl_end=-1;         // end of the floor reflections, which come first among them and ignore the depth buffer
+static bool mirror_pass;           // while set, projected() draws points mirrored in the floor, fading with height
+static float robot_flash;          // 0..1: a hit's white-hot flash on the robot being drawn
 static void vertex(float x, float y, float z, float r, float g, float b) {
     if(vertex_count < VERT_CAP) vertices[vertex_count++] = (Vertex){x,y,z,r,g,b,vertex_alpha};
     else {
@@ -528,6 +535,8 @@ static bool camera_dynamic=true;
 // in degrees, degrees and a factor sets them for captures). Drag turns, the wheel zooms, a middle click resets.
 static float camera_user_yaw, camera_user_pitch, camera_user_zoom=1.0f;
 static bool camera_snap;                   // captures jump straight to the camera's target, with no easing
+// Seconds for the animated effects (dust, the crowd); fixed in captures so they are repeatable.
+static float fx_clock(void) { return camera_snap ? 3.0f : (float)(SDL_GetTicks64()%1000000)/1000.0f; }
 static struct {
     float x, y, dist, yaw, pitch;               // smoothed state: look-at point, distance, swing, tilt
     float pos[3], right[3], up[3], fwd[3];      // the basis built from it each frame
@@ -598,6 +607,7 @@ static void camera_project(float x,float y,float z,float *sx,float *sy,float *de
     *depth=clampf(*depth*.5f,-.98f,.98f);       // the HUD quads sit at -.99, in front of all of the scene
 }
 static void projected(float x, float y, float z, float r, float g, float b) {
+    if(mirror_pass) { vertex_alpha=.30f*clampf(1.0f-y/2.6f,0,1); y=-y-.03f; }   // the floor is the mirror: fade out with height
     // Fixed side-on camera. Depth adds only a small vertical offset for 3D staging.
     float aspect = (float)win_width / (float)win_height;
     if(source_replay_mode && camera_dynamic && cam.ready) {
@@ -1030,7 +1040,8 @@ static void robot_loaded_model(Fighter *f,int har,float t,bool projection) {
             }
             for(int k=0;k<3;k++) {
                 if(projection) projected(p[k][0],p[k][1],p[k][2],red*shade,green*shade,blue*shade);
-                else projected(p[k][0],p[k][1],p[k][2],red*light[0]+glow[0],green*light[1]+glow[1],blue*light[2]+glow[2]);
+                else projected(p[k][0],p[k][1],p[k][2],red*light[0]+glow[0]+robot_flash*.42f,green*light[1]+glow[1]+robot_flash*.38f,
+                               blue*light[2]+glow[2]+robot_flash*.32f);
             }
         }
     }
@@ -1166,6 +1177,14 @@ static void stadium_background(void) {
         box(x,3.93f,-7.10f,.45f,.10f,.48f,0,.19f,.28f,.36f);
     }
 
+    // The crowd sways a little, and jumps when a hit lands.
+    static float cheer;
+    static Uint64 cheer_last;
+    Uint64 cheer_now=SDL_GetTicks64();
+    float cheer_dt=cheer_last ? clampf((float)(cheer_now-cheer_last)/1000.0f,0,.1f) : 0;
+    cheer_last=cheer_now;
+    cheer=live_impact_time>.15f ? 1.0f : fmaxf(0,cheer-cheer_dt*.8f);
+    float crowd_time=fx_clock();
     // Stepped seating tiers and abstract spectator silhouettes use only new geometry.
     for(int row=0;row<4;row++) {
         float y=1.12f+(float)row*.43f;
@@ -1176,8 +1195,10 @@ static void stadium_background(void) {
             float x=-18.2f+(float)column*.47f+(row%2 ? .23f : 0.0f);
             int color=(column*7+row*11+(column/3))%crowd_color_count;
             const float *c=crowd_colors[color];
-            box(x,y+.055f,z+.45f,.25f,.30f,.14f,0,c[0],c[1],c[2]);
-            box(x,y+.305f,z+.45f,.16f,.16f,.14f,0,
+            float bob=.010f*sinf(crowd_time*1.7f+(float)column*.5f)+
+                      cheer*.085f*fmaxf(0,sinf(crowd_time*8.0f+(float)column*.83f+(float)row*1.7f));
+            box(x,y+.055f+bob,z+.45f,.25f,.30f,.14f,0,c[0],c[1],c[2]);
+            box(x,y+.305f+bob,z+.45f,.16f,.16f,.14f,0,
                 clampf(c[0]+.12f,.10f,.52f),clampf(c[1]+.12f,.12f,.55f),clampf(c[2]+.12f,.14f,.60f));
         }
     }
@@ -2246,6 +2267,14 @@ static void story_run_script(const char *script) {
     story_script_running=false;
 }
 static void fx_pass(void);
+static void draw_robots(float pose_time,int player_har,int rival_har) {
+    bool flashing=source_replay_mode && live_impact_kind==1 && live_impact_time>0;
+    robot_flash=flashing && live_impact_recipient==0 ? live_impact_time/.20f : 0;
+    robot(&player,player_har,pose_time);
+    robot_flash=flashing && live_impact_recipient==1 ? live_impact_time/.20f : 0;
+    robot(&rival,rival_har,pose_time+1);
+    robot_flash=0;
+}
 static void world(void) {
     if(model_preview_mode) {
         const float angle=model_preview_view==0 ? -1.5707963f :
@@ -2363,10 +2392,17 @@ static void world(void) {
                    source_replay.frames[source_replay_index].fighter[0].har : 0;
     int rival_har=source_replay_mode && source_replay.count ?
                   source_replay.frames[source_replay_index].fighter[1].har : 1;
-    robot(&player,player_har,pose_time);
-    robot(&rival,rival_har,pose_time+1);
+    draw_robots(pose_time,player_har,rival_har);
     source_projectiles();
-    if(source_replay_mode) fx_pass();
+    if(source_replay_mode) {
+        fx_begin=vertex_count;   // the translucent part starts here: reflections, then shadows and effects
+        mirror_pass=true;
+        draw_robots(pose_time,player_har,rival_har);
+        mirror_pass=false;
+        vertex_alpha=1.0f;
+        fx_refl_end=vertex_count;
+        fx_pass();
+    }
 }
 // ---- translucent effects: soft contact shadows and hit sparks, drawn after the opaque scene ----
 static void fx_basis(float right[3],float up[3]) {
@@ -2427,6 +2463,24 @@ static void fx_impact_burst(void) {
         float ang=(float)k*.7853982f;
         fx_spark(c,right,up,cosf(ang),sinf(ang),-core,core,core*.30f,1.0f,1.0f,.92f,.85f*(1.0f-p));
     }
+    // The shockwave: a thin ring in the view plane, widening and fading.
+    {
+        float radius=.18f+1.15f*p, width=.07f*(1.0f-p)+.015f, a=.60f*(1.0f-p)*(1.0f-p);
+        vertex_alpha=a;
+        const int steps=28;
+        for(int i=0;i<steps;i++) {
+            float t0=(float)i*6.2831853f/(float)steps, t1=(float)(i+1)*6.2831853f/(float)steps;
+            float in0[3],out0[3],in1[3],out1[3];
+            for(int k=0;k<3;k++) {
+                float d0=right[k]*cosf(t0)+up[k]*sinf(t0), d1=right[k]*cosf(t1)+up[k]*sinf(t1);
+                in0[k]=c[k]+d0*radius; out0[k]=c[k]+d0*(radius+width);
+                in1[k]=c[k]+d1*radius; out1[k]=c[k]+d1*(radius+width);
+            }
+            projected(in0[0],in0[1],in0[2],cr,cg,cb); projected(out0[0],out0[1],out0[2],cr,cg,cb); projected(out1[0],out1[1],out1[2],cr,cg,cb);
+            projected(in0[0],in0[1],in0[2],cr,cg,cb); projected(out1[0],out1[1],out1[2],cr,cg,cb); projected(in1[0],in1[1],in1[2],cr,cg,cb);
+        }
+        vertex_alpha=1.0f;
+    }
     const int sparks=block ? 8 : 12;
     for(int i=0;i<sparks;i++) {
         unsigned h=(unsigned)(i*2654435761u)>>8;          // a fixed scatter, so every hit has the same burst
@@ -2436,8 +2490,32 @@ static void fx_impact_burst(void) {
         fx_spark(c,right,up,cosf(ang),sinf(ang),from,to,.028f*(1.0f-p)+.006f,cr,cg,cb,.95f*(1.0f-p));
     }
 }
+// Dust thrown up when a fighter lands from a jump: flat grey-blue rings that spread along the floor and fade.
+static struct { float x, born; } fx_dust[10];
+static void fx_landing_dust(void) {
+    static float previous_y[2]={0,0};
+    const Fighter *both[2]={&player,&rival};
+    float now=fx_clock();
+    for(int i=0;i<2;i++) {
+        if(previous_y[i]>.25f && both[i]->y<=.06f) {
+            int slot=0;
+            for(int k=1;k<10;k++) if(fx_dust[k].born<fx_dust[slot].born) slot=k;   // reuse the oldest
+            fx_dust[slot].x=both[i]->x+both[i]->presentation_x; fx_dust[slot].born=now;
+        }
+        previous_y[i]=both[i]->y;
+    }
+    for(int k=0;k<10;k++) {
+        float age=now-fx_dust[k].born;
+        if(fx_dust[k].born<=0 || age<0 || age>.75f) continue;
+        float u=age/.75f;
+        float spread=.35f+1.9f*u;
+        float a=.30f*(1.0f-u);
+        fx_floor_disc(fx_dust[k].x,0,spread,spread*.45f,.62f,.68f,.78f,a*.55f);
+        fx_floor_disc(fx_dust[k].x,0,spread*.72f,spread*.30f,.70f,.76f,.86f,a*.45f);
+    }
+}
 static void fx_pass(void) {
-    fx_begin=vertex_count;
+    fx_landing_dust();
     fx_contact_shadow(&player);
     fx_contact_shadow(&rival);
     fx_impact_burst();
@@ -3135,6 +3213,7 @@ int main(int argc,char **argv) {
         glClearColor(.015f,.025f,.065f,1); glClear(GL_COLOR_BUFFER_BIT|GL_DEPTH_BUFFER_BIT);
         camera_snap=source_capture;
         fx_begin=-1;
+        fx_refl_end=-1;
         vertex_count=0;
         int world_count;
         if(selection_mode) {
@@ -3159,7 +3238,13 @@ int main(int argc,char **argv) {
         glDrawArrays(GL_TRIANGLES,0,opaque_count);
         if(world_count>opaque_count) {   // translucent effects: tested against the scene, but they do not hide each other
             glDepthMask(GL_FALSE);
-            glDrawArrays(GL_TRIANGLES,opaque_count,world_count-opaque_count);
+            int reflection_end=fx_refl_end>=opaque_count && fx_refl_end<=world_count ? fx_refl_end : opaque_count;
+            if(reflection_end>opaque_count) {   // the reflections lie below the floor, so they skip the depth test
+                glDisable(GL_DEPTH_TEST);
+                glDrawArrays(GL_TRIANGLES,opaque_count,reflection_end-opaque_count);
+                glEnable(GL_DEPTH_TEST);
+            }
+            glDrawArrays(GL_TRIANGLES,reflection_end,world_count-reflection_end);
             glDepthMask(GL_TRUE);
         }
         glDisable(GL_DEPTH_TEST);
