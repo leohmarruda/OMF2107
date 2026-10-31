@@ -57,7 +57,8 @@ either way on top of the automatic swing, never more than 42 in all, so it stays
 between a little below and well above the fight; the **wheel** zooms (0.55x to 1.6x); a **middle click** resets. For captures,
 `OMF3K_CAMERA_USER=yaw,pitch,zoom` (degrees, degrees, factor) sets the same adjustment. The robots are lit by fixed arena lights (a warm key, a cool fill and a cyan rim light) and get soft
 contact shadows and a faint reflection in the floor. A hit flashes the struck fighter white-hot and shows a spark burst with a
-shockwave ring, a landing from a jump kicks up a ring of dust, and the crowd in the stands sways and jumps when a hit lands. The story and selection screens, the
+shockwave ring, a landing from a jump kicks up a ring of dust, and the crowd in the stands sways and jumps when a hit lands. Fast strikes leave a glowing ribbon behind the fighter's leading limb
+(cyan for the player, red for the rival), and soft halos, added to the picture, give the arena's lights and the hit flash a bloom-like glow. The story and selection screens, the
 sandbox, and the model preview keep their own views.
 
 ## Play

@@ -507,9 +507,12 @@ static void tick(const unsigned char *keys) {
 static float vertex_alpha=1.0f;   // 1 for everything but the translucent effects pass
 static int fx_begin=-1;            // first vertex of the translucent effects, drawn after the opaque scene
 static int fx_refl_end=-1;         // end of the floor reflections, which come first among them and ignore the depth buffer
+static int fx_glow_begin=-1;       // first vertex of the additive glow, drawn last
+static bool geometry_dry;          // while set, the robots are walked through (for their tips) but nothing is emitted
 static bool mirror_pass;           // while set, projected() draws points mirrored in the floor, fading with height
 static float robot_flash;          // 0..1: a hit's white-hot flash on the robot being drawn
 static void vertex(float x, float y, float z, float r, float g, float b) {
+    if(geometry_dry) return;
     if(vertex_count < VERT_CAP) vertices[vertex_count++] = (Vertex){x,y,z,r,g,b,vertex_alpha};
     else {
         static bool warned;
@@ -981,7 +984,12 @@ static void stage_light(const float n_in[3],const float at[3],float mul[3],float
     add[0]=.10f*rim; add[1]=.36f*rim; add[2]=.50f*rim;
     for(int i=0;i<3;i++) mul[i]=clampf(mul[i],.42f,1.30f);
 }
+static float fx_tip[2][3];       // each fighter's most forward vertex this frame
+static float fx_tip_dot[2]={-1e9f,-1e9f};
 static void robot_loaded_model(Fighter *f,int har,float t,bool projection) {
+    int tip_index=(!projection && !mirror_pass) ? (f==&player ? 0 : f==&rival ? 1 : -1) : -1;
+    float forward[2]={-sinf(f->facing),-cosf(f->facing)};
+    if(tip_index>=0) fx_tip_dot[tip_index]=-1e9f;
     RigSide sides[2];
     float body_drop,body_lean,body_shift;
     model_rig_sides(f,har,t,sides,&body_drop,&body_lean,&body_shift);
@@ -1015,6 +1023,10 @@ static void robot_loaded_model(Fighter *f,int har,float t,bool projection) {
                     model_transform(f,har,&other,sides,body_drop,body_lean,body_shift,positions[vi],q);
                     for(int a=0;a<3;a++) p[k][a]+=(q[a]-p[k][a])*w;
                 }
+            }
+            if(tip_index>=0) for(int k=0;k<3;k++) {
+                float along=p[k][0]*forward[0]+p[k][2]*forward[1];
+                if(along>fx_tip_dot[tip_index]) { fx_tip_dot[tip_index]=along; for(int a=0;a<3;a++) fx_tip[tip_index][a]=p[k][a]; }
             }
             float ux=p[1][0]-p[0][0], uy=p[1][1]-p[0][1], uz=p[1][2]-p[0][2];
             float vx=p[2][0]-p[0][0], vy=p[2][1]-p[0][1], vz=p[2][2]-p[0][2];
@@ -2267,6 +2279,7 @@ static void story_run_script(const char *script) {
     story_script_running=false;
 }
 static void fx_pass(void);
+static void fx_trail_sample(void);
 static void draw_robots(float pose_time,int player_har,int rival_har) {
     bool flashing=source_replay_mode && live_impact_kind==1 && live_impact_time>0;
     robot_flash=flashing && live_impact_recipient==0 ? live_impact_time/.20f : 0;
@@ -2392,6 +2405,25 @@ static void world(void) {
                    source_replay.frames[source_replay_index].fighter[0].har : 0;
     int rival_har=source_replay_mode && source_replay.count ?
                   source_replay.frames[source_replay_index].fighter[1].har : 1;
+    if(source_replay_mode && camera_snap && source_replay.count && source_replay_index>=8) {
+        static bool primed;   // a capture has no earlier frames to draw the ribbons from, so walk the ticks before it
+        if(!primed) {
+            primed=true;
+            size_t keep=source_replay_index;
+            float impact_time=live_impact_time, impact_x=live_impact_x, impact_y=live_impact_y;
+            int impact_kind=live_impact_kind, impact_recipient=live_impact_recipient;
+            for(size_t back=8;back>=1;back--) {
+                apply_source_frame(keep-back);
+                geometry_dry=true;
+                draw_robots(elapsed,source_replay.frames[keep-back].fighter[0].har,source_replay.frames[keep-back].fighter[1].har);
+                geometry_dry=false;
+                fx_trail_sample();
+            }
+            apply_source_frame(keep);
+            live_impact_time=impact_time; live_impact_x=impact_x; live_impact_y=impact_y;
+            live_impact_kind=impact_kind; live_impact_recipient=impact_recipient;
+        }
+    }
     draw_robots(pose_time,player_har,rival_har);
     source_projectiles();
     if(source_replay_mode) {
@@ -2490,6 +2522,109 @@ static void fx_impact_burst(void) {
         fx_spark(c,right,up,cosf(ang),sinf(ang),from,to,.028f*(1.0f-p)+.006f,cr,cg,cb,.95f*(1.0f-p));
     }
 }
+// ---- attack trails: a glowing ribbon through where each fighter's leading tip has just been ----
+#define TRAIL_POINTS 14
+#define TRAIL_LIFE .24f            // seconds of simulation time a ribbon point lasts
+typedef struct { float p[3], t, speed; } TrailPoint;
+static TrailPoint fx_trail[2][TRAIL_POINTS];
+static int fx_trail_count[2];
+// Adds this frame's tips to the ribbons. Time is the match's own (elapsed), so a pause freezes them and a seek clears them.
+static void fx_trail_sample(void) {
+    const Fighter *both[2]={&player,&rival};
+    for(int i=0;i<2;i++) {
+        if(fx_tip_dot[i]<-1e8f) { fx_trail_count[i]=0; continue; }
+        int n=fx_trail_count[i];
+        float t=elapsed;
+        if(n>0 && (t<fx_trail[i][n-1].t-.0005f || t-fx_trail[i][n-1].t>.5f)) n=fx_trail_count[i]=0;   // a seek or a long gap
+        if(n>0 && t<=fx_trail[i][n-1].t+.0005f) continue;                                             // paused: nothing new
+        float speed=0;
+        if(n>0) {
+            const TrailPoint *last=&fx_trail[i][n-1];
+            float d[3]={fx_tip[i][0]-last->p[0],fx_tip[i][1]-last->p[1],fx_tip[i][2]-last->p[2]};
+            float dist=sqrtf(d[0]*d[0]+d[1]*d[1]+d[2]*d[2]);
+            speed=dist/(t-last->t);
+            if(speed>70.0f || dist>1.2f) { n=fx_trail_count[i]=0; speed=0; }   // the tip changed limb: start a fresh ribbon
+        }
+        if(both[i]->stun>0) speed=0;                   // a fighter being thrown about does not leave an attack trail
+        if(n==TRAIL_POINTS) { memmove(&fx_trail[i][0],&fx_trail[i][1],sizeof(TrailPoint)*(TRAIL_POINTS-1)); n--; }
+        TrailPoint *point=&fx_trail[i][n];
+        for(int a=0;a<3;a++) point->p[a]=fx_tip[i][a];
+        point->t=t; point->speed=speed;
+        fx_trail_count[i]=n+1;
+    }
+}
+static void fx_trails_draw(void) {
+    float right[3],up[3];
+    fx_basis(right,up);
+    static const float color[2][3]={{.45f,.90f,1.0f},{1.0f,.45f,.62f}};   // the player's cyan, the rival's red
+    for(int i=0;i<2;i++) {
+        for(int k=0;k+1<fx_trail_count[i];k++) {
+            const TrailPoint *a=&fx_trail[i][k],*b=&fx_trail[i][k+1];
+            float age_a=elapsed-a->t, age_b=elapsed-b->t;
+            if(age_a>TRAIL_LIFE || b->speed<8.0f) continue;
+            float fade_a=1.0f-clampf(age_a/TRAIL_LIFE,0,1), fade_b=1.0f-clampf(age_b/TRAIL_LIFE,0,1);
+            float strength=clampf((b->speed-8.0f)/14.0f,0,1);
+            // The ribbon's width runs across its direction in the view plane.
+            float dx=(b->p[0]-a->p[0])*right[0]+(b->p[1]-a->p[1])*right[1]+(b->p[2]-a->p[2])*right[2];
+            float dy=(b->p[0]-a->p[0])*up[0]+(b->p[1]-a->p[1])*up[1]+(b->p[2]-a->p[2])*up[2];
+            float len=sqrtf(dx*dx+dy*dy);
+            if(len<.0001f) continue;
+            float px=-dy/len, py=dx/len;
+            float wa=.20f*fade_a*strength+.01f, wb=.20f*fade_b*strength+.01f;
+            float pa[3],pb[3],qa[3],qb[3];
+            for(int c=0;c<3;c++) {
+                float off_a=(right[c]*px+up[c]*py)*wa, off_b=(right[c]*px+up[c]*py)*wb;
+                pa[c]=a->p[c]+off_a; qa[c]=a->p[c]-off_a; pb[c]=b->p[c]+off_b; qb[c]=b->p[c]-off_b;
+            }
+            const float *col=color[i];
+            float alpha_a=.60f*fade_a*strength, alpha_b=.60f*fade_b*strength;
+            vertex_alpha=alpha_a; projected(pa[0],pa[1],pa[2],col[0],col[1],col[2]);
+            vertex_alpha=alpha_b; projected(pb[0],pb[1],pb[2],col[0],col[1],col[2]);
+            vertex_alpha=alpha_b; projected(qb[0],qb[1],qb[2],col[0],col[1],col[2]);
+            vertex_alpha=alpha_a; projected(pa[0],pa[1],pa[2],col[0],col[1],col[2]);
+            vertex_alpha=alpha_b; projected(qb[0],qb[1],qb[2],col[0],col[1],col[2]);
+            vertex_alpha=alpha_a; projected(qa[0],qa[1],qa[2],col[0],col[1],col[2]);
+        }
+    }
+    vertex_alpha=1.0f;
+}
+// ---- glow: soft halos, added to the picture, around the bright things (a cheap stand-in for bloom) ----
+static void fx_halo(const float c[3],float radius,float r,float g,float b,float a,const float right[3],const float up[3]) {
+    const int steps=14;
+    for(int i=0;i<steps;i++) {
+        float t0=(float)i*6.2831853f/(float)steps, t1=(float)(i+1)*6.2831853f/(float)steps;
+        float e0[3],e1[3];
+        for(int k=0;k<3;k++) {
+            e0[k]=c[k]+(right[k]*cosf(t0)+up[k]*sinf(t0))*radius;
+            e1[k]=c[k]+(right[k]*cosf(t1)+up[k]*sinf(t1))*radius;
+        }
+        vertex_alpha=a; projected(c[0],c[1],c[2],r,g,b);
+        vertex_alpha=0; projected(e0[0],e0[1],e0[2],r,g,b); projected(e1[0],e1[1],e1[2],r,g,b);
+    }
+    vertex_alpha=1.0f;
+}
+static void fx_glow(void) {
+    float right[3],up[3];
+    fx_basis(right,up);
+    float t=fx_clock();
+    // The lit posts around the ring and the light strip along the roof.
+    for(int side=-1;side<=1;side+=2) for(int i=-4;i<=4;i+=2) {
+        const float c[3]={8.3f*(float)side,1.30f,(float)i};
+        fx_halo(c,.50f,.50f,.91f,.99f,.20f*(.85f+.15f*sinf(t*2.0f+(float)i)),right,up);
+    }
+    for(int i=-8;i<=8;i+=2) {
+        const float c[3]={(float)i*1.0f,3.98f,-7.0f};
+        fx_halo(c,.80f,.30f,.70f,.80f,.10f*(.8f+.2f*sinf(t*1.3f+(float)i*.7f)),right,up);
+    }
+    // The hit: a hot halo that fades with the flash.
+    if(live_impact_time>0) {
+        float p=1.0f-live_impact_time/.20f;
+        const float c[3]={live_impact_x,live_impact_y,.55f};
+        bool block=live_impact_kind==2;
+        fx_halo(c,.35f+.85f*(1.0f-p),block ? .45f : 1.0f,block ? .80f : .72f,block ? 1.0f : .35f,.55f*(1.0f-p),right,up);
+    }
+    fx_trails_draw();   // the ribbons add to the picture too
+}
 // Dust thrown up when a fighter lands from a jump: flat grey-blue rings that spread along the floor and fade.
 static struct { float x, born; } fx_dust[10];
 static void fx_landing_dust(void) {
@@ -2515,10 +2650,13 @@ static void fx_landing_dust(void) {
     }
 }
 static void fx_pass(void) {
+    fx_trail_sample();
     fx_landing_dust();
     fx_contact_shadow(&player);
     fx_contact_shadow(&rival);
     fx_impact_burst();
+    fx_glow_begin=vertex_count;   // everything after this is drawn additively
+    fx_glow();
 }
 static void hud(void) {
     if(model_preview_mode) {
@@ -3214,6 +3352,7 @@ int main(int argc,char **argv) {
         camera_snap=source_capture;
         fx_begin=-1;
         fx_refl_end=-1;
+        fx_glow_begin=-1;
         vertex_count=0;
         int world_count;
         if(selection_mode) {
@@ -3244,7 +3383,13 @@ int main(int argc,char **argv) {
                 glDrawArrays(GL_TRIANGLES,opaque_count,reflection_end-opaque_count);
                 glEnable(GL_DEPTH_TEST);
             }
-            glDrawArrays(GL_TRIANGLES,reflection_end,world_count-reflection_end);
+            int glow_start=fx_glow_begin>=reflection_end && fx_glow_begin<=world_count ? fx_glow_begin : world_count;
+            glDrawArrays(GL_TRIANGLES,reflection_end,glow_start-reflection_end);
+            if(world_count>glow_start) {   // glow: added to what is behind it
+                glBlendFunc(GL_SRC_ALPHA,GL_ONE);
+                glDrawArrays(GL_TRIANGLES,glow_start,world_count-glow_start);
+                glBlendFunc(GL_SRC_ALPHA,GL_ONE_MINUS_SRC_ALPHA);
+            }
             glDepthMask(GL_TRUE);
         }
         glDisable(GL_DEPTH_TEST);

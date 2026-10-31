@@ -190,6 +190,13 @@ text with placeholder portraits.
   crowd sways and jumps when a hit lands. All presentation: the fight is untouched. Tested: captures of a hit, a knockdown and calm
   frames (flash, reflections and the burst visible), and 15 seconds of real-time playback without errors. Not tested: the landing
   dust and the crowd's motion (a single capture cannot show them), and the cost of drawing the robots twice on a slower machine.
+- **Attack trails and glow (2026-10-31, requested):** a fast strike leaves a glowing ribbon through where the fighter's leading limb
+  tip (its most forward mesh vertex) has just been: cyan for the player, red for the rival, on the match's own clock so a pause freezes
+  it and a seek clears it, and ignored while the fighter is being knocked about or when the tip jumps between limbs. Soft additive halos
+  around the ring posts, the roof lights and the hit flash stand in for bloom (a true bloom would need an off-screen pass). Tested:
+  captures at several ticks (a ribbon following a Shadow punch and fading, the halos and hit glow visible; the first version drew
+  vertical columns where the tip changed limb, which the jump check removed). Not tested: the ribbons in real-time motion, other
+  moves (specials, kicks, throws), and the other HARs, which still use the placeholder robot and leave no trail.
 - **Not yet done:** a clean end-to-end playtest by someone who has not seen the build (step 6).
 
 ## Step 3 design: the match handoff (built)
