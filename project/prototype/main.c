@@ -31,7 +31,7 @@ __declspec(dllexport) unsigned long NvOptimusEnablement = 1;
 #define WIDTH 960
 #define HEIGHT 600
 #define DT (1.0f / 60.0f)
-#define VERT_CAP 400000
+#define VERT_CAP 1000000   // the Meshy robots alone are about 190000 vertices, drawn twice with the reflection
 
 typedef struct { float x, y, vy, facing, hp, max_hp, cooldown, attack, stun; int kind; bool hit, guard;
                  int source_state, source_animation, source_sprite, source_animation_tick;
@@ -3369,8 +3369,7 @@ int main(int argc,char **argv) {
         Uint64 profile_after_build=SDL_GetPerformanceCounter();
         // Give each upload fresh storage, avoiding waits on the prior draw.
         glBindBuffer(GL_ARRAY_BUFFER,vbo);
-        glBufferData(GL_ARRAY_BUFFER,sizeof(vertices),NULL,GL_STREAM_DRAW);
-        glBufferSubData(GL_ARRAY_BUFFER,0,(size_t)vertex_count*sizeof(Vertex),vertices);
+        glBufferData(GL_ARRAY_BUFFER,(size_t)vertex_count*sizeof(Vertex),vertices,GL_STREAM_DRAW);   // fresh storage, only what is used
         Uint64 profile_after_upload=SDL_GetPerformanceCounter();
         glEnable(GL_DEPTH_TEST);
         int opaque_count=fx_begin>=0 && fx_begin<=world_count ? fx_begin : world_count;

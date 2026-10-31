@@ -9,6 +9,8 @@ HOW TO START
   1. Unzip the whole folder somewhere (not inside the zip viewer).
   2. Double-click Play.bat. It resumes where you left off.
      Play-NewGame.bat ignores the saved progress and starts over.
+     Play-Meshy.bat and Play-Meshy-NewGame.bat are the same story with a different look for the
+     robots in the match (AI-generated models instead of the plain blocky ones). The save is shared.
   Windows 10 or 11, 64-bit, with sound on. If Windows SmartScreen warns about the
   programs, choose "More info" then "Run anyway". Nothing is installed.
 

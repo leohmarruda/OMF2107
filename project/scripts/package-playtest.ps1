@@ -45,10 +45,12 @@ foreach ($d in 'portraits', 'backdrops', 'sounds', 'art') {
         -Destination (Join-Path $out "project\build\$d") -ErrorAction SilentlyContinue
 }
 
-Copy-Item -LiteralPath (Join-Path $root 'project\scripts\run-story.ps1'), (Join-Path $root 'project\scripts\run-blockout-jaguar.ps1') `
+Copy-Item -LiteralPath (Join-Path $root 'project\scripts\run-story.ps1'), (Join-Path $root 'project\scripts\run-story-meshy.ps1'), `
+    (Join-Path $root 'project\scripts\run-blockout-jaguar.ps1') `
     -Destination (Join-Path $out 'project\scripts')
 Copy-Item -LiteralPath (Join-Path $root 'project\data\story\crystal_christian.story'), (Join-Path $root 'project\data\story\christian_crystal.story') -Destination (Join-Path $out 'project\data\story')
 Copy-Item -LiteralPath (Join-Path $PSScriptRoot 'playtest\Play.bat'), (Join-Path $PSScriptRoot 'playtest\Play-NewGame.bat'), `
+    (Join-Path $PSScriptRoot 'playtest\Play-Meshy.bat'), (Join-Path $PSScriptRoot 'playtest\Play-Meshy-NewGame.bat'), `
     (Join-Path $PSScriptRoot 'playtest\README-TESTER.txt') -Destination $out
 
 if (Test-Path -LiteralPath $zip) { Remove-Item -LiteralPath $zip -Force }
