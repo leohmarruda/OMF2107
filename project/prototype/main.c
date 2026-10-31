@@ -36,7 +36,7 @@ __declspec(dllexport) unsigned long NvOptimusEnablement = 1;
 typedef struct { float x, y, vy, facing, hp, max_hp, cooldown, attack, stun; int kind; bool hit, guard;
                  int source_state, source_animation, source_sprite, source_animation_tick;
                  float pose_height, pose_stride, pose_reach, pose_lean, pose_depth, presentation_x; } Fighter;
-typedef struct { float x, y, z, r, g, b; } Vertex;
+typedef struct { float x, y, z, r, g, b, a; } Vertex;
 typedef struct { char ch; unsigned char rows[7]; } Glyph;
 
 static Vertex vertices[VERT_CAP];
@@ -58,6 +58,7 @@ static float source_visual_time;
 static float live_round_intro_time;
 static float live_impact_time;
 static float live_impact_x;
+static float live_impact_y;   // roughly chest height of the fighter that was hit
 static int live_impact_kind; // 1 hit, 2 block
 static float rival_attack_delay;
 static bool jump_was_down;
@@ -234,16 +235,19 @@ static void apply_source_frame(size_t index) {
         int hit=frame->hit_mask;
         int recipient=hit ? (hit&1 ? 0 : 1) : (frame->block_mask&1 ? 0 : 1);
         live_impact_x=recipient==0 ? player.x : rival.x;
+        live_impact_y=(recipient==0 ? player.y : rival.y)+1.9f;
         live_impact_kind=hit ? 1 : 2;
         live_impact_time=.20f;
     } else if(source_follow_mode && !frame->has_events && index>0) {
         const SourceFrame *previous=&source_replay.frames[index-1];
         if(frame->fighter[0].health<previous->fighter[0].health) {
             live_impact_x=player.x;
+            live_impact_y=player.y+1.9f;
             live_impact_kind=1;
             live_impact_time=.20f;
         } else if(frame->fighter[1].health<previous->fighter[1].health) {
             live_impact_x=rival.x;
+            live_impact_y=rival.y+1.9f;
             live_impact_kind=1;
             live_impact_time=.20f;
         }
@@ -496,16 +500,99 @@ static void tick(const unsigned char *keys) {
     if(player.hp <= 0) phase = 3;
 }
 
+static float vertex_alpha=1.0f;   // 1 for everything but the translucent effects pass
+static int fx_begin=-1;            // first vertex of the translucent effects, drawn after the opaque scene
 static void vertex(float x, float y, float z, float r, float g, float b) {
-    if(vertex_count < VERT_CAP) vertices[vertex_count++] = (Vertex){x,y,z,r,g,b};
+    if(vertex_count < VERT_CAP) vertices[vertex_count++] = (Vertex){x,y,z,r,g,b,vertex_alpha};
     else {
         static bool warned;
         if(!warned) { warned=true; fprintf(stderr,"vertex buffer full (%d); geometry is being dropped\n",VERT_CAP); }
     }
 }
+// ---- fight camera: a wide-angle perspective view that stays on the front side of the arena ----
+// It follows the fighters, dollies in when they are close, and swings a limited amount around them (never past
+// CAMERA_MAX_YAW from straight side-on, never behind the fight plane), so the match still reads as a side view.
+// C switches back to the old fixed side-on view. Nothing here touches the fight itself: it only moves the viewpoint.
+#define CAMERA_VFOV 54.0f          // degrees; wide for a fighter, but not enough to bend the fighters at the edges
+#define CAMERA_MAX_YAW 20.0f       // degrees either side of straight side-on
+#define CAMERA_NEAR 0.4f
+#define CAMERA_FAR 60.0f
+static bool camera_dynamic=true;
+static bool camera_snap;                   // captures jump straight to the camera's target, with no easing
+static struct {
+    float x, y, dist, yaw, pitch;               // smoothed state: look-at point, distance, swing, tilt
+    float pos[3], right[3], up[3], fwd[3];      // the basis built from it each frame
+    float tan_v;
+    bool ready;
+} cam;
+static void camera_basis(void) {
+    const float pi=3.14159265f;
+    float cy=cosf(cam.yaw), sy=sinf(cam.yaw), cp=cosf(cam.pitch), sp=sinf(cam.pitch);
+    cam.pos[0]=cam.x+cam.dist*sy*cp;
+    cam.pos[1]=cam.y+cam.dist*sp;
+    cam.pos[2]=cam.dist*cy*cp;                  // z > 0: the camera stays on the front side
+    float f[3]={cam.x-cam.pos[0],cam.y-cam.pos[1],-cam.pos[2]};
+    float n=sqrtf(f[0]*f[0]+f[1]*f[1]+f[2]*f[2]);
+    for(int i=0;i<3;i++) cam.fwd[i]=f[i]/n;
+    // right = fwd x worldUp (0,1,0), up = right x fwd
+    float r[3]={-cam.fwd[2],0,cam.fwd[0]};
+    float rn=sqrtf(r[0]*r[0]+r[2]*r[2]);
+    for(int i=0;i<3;i++) cam.right[i]=r[i]/rn;
+    cam.up[0]=cam.right[1]*cam.fwd[2]-cam.right[2]*cam.fwd[1];
+    cam.up[1]=cam.right[2]*cam.fwd[0]-cam.right[0]*cam.fwd[2];
+    cam.up[2]=cam.right[0]*cam.fwd[1]-cam.right[1]*cam.fwd[0];
+    cam.tan_v=tanf(CAMERA_VFOV*pi/360.0f);
+}
+// Moves the camera toward where the fighters call for it; snap jumps straight there (captures, the first frame).
+static void camera_update(float dt,bool snap) {
+    float aspect=(float)win_width/(float)win_height;
+    float mid_x=(player.x+rival.x)*.5f;
+    float apart=fabsf(player.x-rival.x);
+    float top=fmaxf(player.y,rival.y);
+    float tan_h=tanf(CAMERA_VFOV*3.14159265f/360.0f)*aspect;
+    // Far enough that both fighters fit with room at the edges, close enough to read when they are together.
+    float want_dist=clampf((apart*.5f+3.4f)/tan_h,6.4f,13.0f);
+    float want_yaw=-clampf(mid_x/6.5f,-1.0f,1.0f)*CAMERA_MAX_YAW*3.14159265f/180.0f;
+    float want_x=mid_x*.82f;                    // keeps a little of the arena's centre in view
+    float want_y=1.65f+clampf(top,0,3.0f)*.30f;
+    float want_pitch=.10f+clampf(top,0,3.0f)*.015f;
+    if(live_impact_time>0) want_dist*=1.0f-.045f*(live_impact_time/.20f);   // a hit pulls the camera in a touch
+    if(snap || !cam.ready) {
+        cam.x=want_x; cam.y=want_y; cam.dist=want_dist; cam.yaw=want_yaw; cam.pitch=want_pitch; cam.ready=true;
+    } else {
+        float k_move=1.0f-expf(-dt*7.0f), k_swing=1.0f-expf(-dt*2.6f), k_zoom=1.0f-expf(-dt*3.2f);
+        cam.x+=(want_x-cam.x)*k_move;
+        cam.y+=(want_y-cam.y)*k_move;
+        cam.dist+=(want_dist-cam.dist)*k_zoom;
+        cam.yaw+=(want_yaw-cam.yaw)*k_swing;
+        cam.pitch+=(want_pitch-cam.pitch)*k_swing;
+    }
+    float limit=CAMERA_MAX_YAW*3.14159265f/180.0f;
+    cam.yaw=clampf(cam.yaw,-limit,limit);
+    camera_basis();
+}
+// World point to normalised device coordinates for the perspective camera.
+static void camera_project(float x,float y,float z,float *sx,float *sy,float *depth) {
+    float aspect=(float)win_width/(float)win_height;
+    float d[3]={x-cam.pos[0],y-cam.pos[1],z-cam.pos[2]};
+    float cx=d[0]*cam.right[0]+d[1]*cam.right[1]+d[2]*cam.right[2];
+    float cy=d[0]*cam.up[0]+d[1]*cam.up[1]+d[2]*cam.up[2];
+    float cz=d[0]*cam.fwd[0]+d[1]*cam.fwd[1]+d[2]*cam.fwd[2];
+    if(cz<CAMERA_NEAR) cz=CAMERA_NEAR;
+    *sx=cx/(cz*cam.tan_v*aspect);
+    *sy=cy/(cz*cam.tan_v)+.02f;
+    *depth=(CAMERA_FAR+CAMERA_NEAR)/(CAMERA_FAR-CAMERA_NEAR)-2.0f*CAMERA_FAR*CAMERA_NEAR/((CAMERA_FAR-CAMERA_NEAR)*cz);
+    *depth=clampf(*depth*.5f,-.98f,.98f);       // the HUD quads sit at -.99, in front of all of the scene
+}
 static void projected(float x, float y, float z, float r, float g, float b) {
     // Fixed side-on camera. Depth adds only a small vertical offset for 3D staging.
     float aspect = (float)win_width / (float)win_height;
+    if(source_replay_mode && camera_dynamic && cam.ready) {
+        float sx,sy,depth;
+        camera_project(x,y,z,&sx,&sy,&depth);
+        vertex(sx,sy,depth,r,g,b);
+        return;
+    }
     if(model_preview_mode) {
         vertex(x*.96f/(3.5f*aspect), (y-1.61f)*.88f/2.15f,
                (.50f*(10.0f-y)+.84f*(17.0f-z))/40.0f, r,g,b);
@@ -848,6 +935,29 @@ static void model_transform(const Fighter *f,int har,const ModelPart *part,
     out[2]=-source.x*si+p.z*co+f->pose_depth;
 }
 
+// Stage lighting for a surface point with unit normal n: a multiplier for the surface colour and an additive rim, so
+// the dark HARs still separate from the dark arena. The light directions are fixed in the arena, not in the model, so
+// a fighter that turns around keeps the same lit side.
+static void stage_light(const float n_in[3],const float at[3],float mul[3],float add[3]) {
+    float view[3]={0,0,1};
+    if(source_replay_mode && camera_dynamic && cam.ready)
+        for(int i=0;i<3;i++) view[i]=cam.pos[i]-at[i];
+    float vl=sqrtf(view[0]*view[0]+view[1]*view[1]+view[2]*view[2]);
+    if(vl>.0001f) for(int i=0;i<3;i++) view[i]/=vl;
+    float n[3]={n_in[0],n_in[1],n_in[2]};
+    float facing=n[0]*view[0]+n[1]*view[1]+n[2]*view[2];
+    if(facing<0) { for(int i=0;i<3;i++) n[i]=-n[i]; facing=-facing; }   // an open mesh's back faces are lit like front faces
+    const float key[3]={-.40f,.78f,.48f}, fill[3]={.80f,.15f,-.30f};     // already close to unit length
+    float key_d=fmaxf(0,(n[0]*key[0]+n[1]*key[1]+n[2]*key[2])/.99f);
+    float fill_d=fmaxf(0,(n[0]*fill[0]+n[1]*fill[1]+n[2]*fill[2])/.87f);
+    float sky=.5f+.5f*n[1];
+    mul[0]=.30f+.15f*sky+.62f*key_d+.20f*fill_d;
+    mul[1]=.33f+.17f*sky+.58f*key_d+.32f*fill_d;
+    mul[2]=.42f+.20f*sky+.50f*key_d+.50f*fill_d;
+    float rim=powf(1.0f-clampf(facing,0,1),2.4f);
+    add[0]=.10f*rim; add[1]=.36f*rim; add[2]=.50f*rim;
+    for(int i=0;i<3;i++) mul[i]=clampf(mul[i],.42f,1.30f);
+}
 static void robot_loaded_model(Fighter *f,int har,float t,bool projection) {
     RigSide sides[2];
     float body_drop,body_lean,body_shift;
@@ -894,6 +1004,10 @@ static void robot_loaded_model(Fighter *f,int har,float t,bool projection) {
             float edge=fabsf(nx/length);
             float shade=clampf(.63f+.30f*top+.20f*side+.13f*edge,.60f,1.14f);
             float red=part->r/255.0f, green=part->g/255.0f, blue=part->b/255.0f;
+            float unit[3]={nx/length,ny/length,nz/length};
+            float centre[3]={(p[0][0]+p[1][0]+p[2][0])/3.0f,(p[0][1]+p[1][1]+p[2][1])/3.0f,(p[0][2]+p[1][2]+p[2][2])/3.0f};
+            float light[3],glow[3];
+            stage_light(unit,centre,light,glow);
             if(projection) {
                 float bright=fmaxf(red,fmaxf(green,blue));
                 if(green>red*1.5f) { red=.54f; green=.94f; blue=1.0f; }
@@ -901,9 +1015,10 @@ static void robot_loaded_model(Fighter *f,int har,float t,bool projection) {
                 else { red=.48f; green=.36f; blue=.86f; }
                 shade=clampf(shade+.12f,.72f,1.25f);
             }
-            for(int k=0;k<3;k++)
-                projected(p[k][0],p[k][1],p[k][2],
-                          red*shade,green*shade,blue*shade);
+            for(int k=0;k<3;k++) {
+                if(projection) projected(p[k][0],p[k][1],p[k][2],red*shade,green*shade,blue*shade);
+                else projected(p[k][0],p[k][1],p[k][2],red*light[0]+glow[0],green*light[1]+glow[1],blue*light[2]+glow[2]);
+            }
         }
     }
 }
@@ -1028,11 +1143,11 @@ static void stadium_background(void) {
     const int crowd_color_count=(int)(sizeof(crowd_colors)/sizeof(crowd_colors[0]));
 
     // Roof and continuous back wall enclose the arena like a large indoor bowl.
-    box(0,2.75f,-8.05f,19.0f,5.5f,.28f,0,.025f,.045f,.075f);
-    box(0,4.23f,-7.55f,18.8f,.20f,.62f,0,.12f,.18f,.28f);
-    box(0,3.98f,-7.18f,17.8f,.08f,.16f,0,.20f,.54f,.63f);
-    box(0,3.80f,-6.98f,16.6f,.045f,.08f,0,.42f,.68f,.72f);
-    for(int i=-4;i<=4;i++) {
+    box(0,2.75f,-8.05f,38.0f,5.5f,.28f,0,.025f,.045f,.075f);
+    box(0,4.23f,-7.55f,37.8f,.20f,.62f,0,.12f,.18f,.28f);
+    box(0,3.98f,-7.18f,36.8f,.08f,.16f,0,.20f,.54f,.63f);
+    box(0,3.80f,-6.98f,35.6f,.045f,.08f,0,.42f,.68f,.72f);
+    for(int i=-9;i<=9;i++) {
         float x=(float)i*2.0f;
         box(x,3.33f,-7.45f,.10f,1.22f,.16f,0,.12f,.24f,.34f);
         box(x,3.93f,-7.10f,.45f,.10f,.48f,0,.19f,.28f,.36f);
@@ -1042,10 +1157,10 @@ static void stadium_background(void) {
     for(int row=0;row<4;row++) {
         float y=1.12f+(float)row*.43f;
         float z=-6.95f-(float)row*.19f;
-        box(0,y-.15f,z,17.6f,.24f,.68f,0,.075f,.11f,.18f);
-        box(0,y-.005f,z+.63f,17.5f,.055f,.08f,0,.17f,.32f,.39f);
-        for(int column=0;column<36;column++) {
-            float x=-8.25f+(float)column*.47f+(row%2 ? .23f : 0.0f);
+        box(0,y-.15f,z,36.6f,.24f,.68f,0,.075f,.11f,.18f);
+        box(0,y-.005f,z+.63f,36.5f,.055f,.08f,0,.17f,.32f,.39f);
+        for(int column=0;column<78;column++) {
+            float x=-18.2f+(float)column*.47f+(row%2 ? .23f : 0.0f);
             int color=(column*7+row*11+(column/3))%crowd_color_count;
             const float *c=crowd_colors[color];
             box(x,y+.055f,z+.45f,.25f,.30f,.14f,0,c[0],c[1],c[2]);
@@ -2077,6 +2192,7 @@ static void story_run_script(const char *script) {
     }
     story_script_running=false;
 }
+static void fx_pass(void);
 static void world(void) {
     if(model_preview_mode) {
         const float angle=model_preview_view==0 ? -1.5707963f :
@@ -2117,6 +2233,13 @@ static void world(void) {
     }
     camera_x = source_replay_mode ? 0 : (player.x+rival.x)*.5f;
     camera_y = source_replay_mode ? clampf(fmaxf(player.y, rival.y) * .90f, 0, 2.9f) : 0;
+    if(source_replay_mode && camera_dynamic) {
+        static Uint64 camera_last;
+        Uint64 now=SDL_GetTicks64();
+        float dt=camera_last ? clampf((float)(now-camera_last)/1000.0f,0,.1f) : 0;
+        camera_last=now;
+        camera_update(dt,camera_snap || !cam.ready);
+    }
     player.presentation_x = 0;
     rival.presentation_x = 0;
     if(source_replay_mode && source_replay.count) {
@@ -2143,6 +2266,7 @@ static void world(void) {
         }
     }
     stadium_background();
+    box(0,-.62f,-1.0f,38.0f,.50f,12.0f,0,.03f,.05f,.08f);
     box(0,-.28f,0,17.0f,.42f,8.0f,0,.065f,.105f,.16f);
     box(0,-.045f,0,15.1f,.045f,6.5f,0,.10f,.16f,.24f);
     for(int i=-8;i<=8;i+=2) box((float)i,.002f,0,.027f,.012f,7.7f,0,.12f,.29f,.38f);
@@ -2189,6 +2313,81 @@ static void world(void) {
     robot(&player,player_har,pose_time);
     robot(&rival,rival_har,pose_time+1);
     source_projectiles();
+    if(source_replay_mode) fx_pass();
+}
+// ---- translucent effects: soft contact shadows and hit sparks, drawn after the opaque scene ----
+static void fx_basis(float right[3],float up[3]) {
+    if(source_replay_mode && camera_dynamic && cam.ready) {
+        for(int i=0;i<3;i++) { right[i]=cam.right[i]; up[i]=cam.up[i]; }
+    } else {
+        right[0]=1; right[1]=0; right[2]=0; up[0]=0; up[1]=1; up[2]=0;
+    }
+}
+// A flat ellipse on the floor, a fan of triangles around its centre.
+static void fx_floor_disc(float cx,float cz,float rx,float rz,float r,float g,float b,float a) {
+    const int steps=24;
+    vertex_alpha=a;
+    for(int i=0;i<steps;i++) {
+        float t0=(float)i*6.2831853f/(float)steps, t1=(float)(i+1)*6.2831853f/(float)steps;
+        projected(cx,.052f,cz,r,g,b);
+        projected(cx+cosf(t0)*rx,.052f,cz+sinf(t0)*rz,r,g,b);
+        projected(cx+cosf(t1)*rx,.052f,cz+sinf(t1)*rz,r,g,b);
+    }
+    vertex_alpha=1.0f;
+}
+// A soft shadow under a fighter: three nested discs, smaller and denser toward the middle, fading as the fighter rises.
+static void fx_contact_shadow(const Fighter *f) {
+    float lift=clampf(f->y,0,3.0f);
+    float scale=1.0f-.12f*lift, alpha=.30f*(1.0f-.22f*lift);
+    float x=f->x+f->presentation_x;
+    fx_floor_disc(x,0,1.05f*scale,.55f*scale,0,0,0,alpha);
+    fx_floor_disc(x,0,.78f*scale,.40f*scale,0,0,0,alpha);
+    fx_floor_disc(x,0,.50f*scale,.26f*scale,0,0,0,alpha);
+}
+// One spark: a thin diamond from the centre outward along (dx, dy) in the view plane.
+static void fx_spark(const float c[3],const float right[3],const float up[3],float dx,float dy,
+                     float from,float to,float width,float r,float g,float b,float a) {
+    float dir[3],side[3],tip[3],tail[3],left[3],rite[3];
+    for(int i=0;i<3;i++) {
+        dir[i]=right[i]*dx+up[i]*dy;
+        side[i]=right[i]*-dy+up[i]*dx;
+        tip[i]=c[i]+dir[i]*to; tail[i]=c[i]+dir[i]*from;
+        float mid=(from+to)*.5f;
+        left[i]=c[i]+dir[i]*mid+side[i]*width; rite[i]=c[i]+dir[i]*mid-side[i]*width;
+    }
+    vertex_alpha=a;
+    projected(tip[0],tip[1],tip[2],r,g,b); projected(left[0],left[1],left[2],r,g,b); projected(tail[0],tail[1],tail[2],r,g,b);
+    projected(tip[0],tip[1],tip[2],r,g,b); projected(tail[0],tail[1],tail[2],r,g,b); projected(rite[0],rite[1],rite[2],r,g,b);
+    vertex_alpha=1.0f;
+}
+static void fx_impact_burst(void) {
+    if(live_impact_time<=0) return;
+    float p=1.0f-live_impact_time/.20f;                 // 0 at the hit, 1 when it is over
+    float right[3],up[3];
+    fx_basis(right,up);
+    const float c[3]={live_impact_x,live_impact_y,.55f};   // a little toward the camera so the burst is not buried in the body
+    bool block=live_impact_kind==2;
+    float cr=block ? .55f : 1.0f, cg=block ? .90f : .82f, cb=block ? 1.0f : .38f;
+    // A hot core that flares and fades, then the sparks flying out of it.
+    float core=(block ? .22f : .34f)*(1.0f-p)+.06f;
+    for(int k=0;k<4;k++) {
+        float ang=(float)k*.7853982f;
+        fx_spark(c,right,up,cosf(ang),sinf(ang),-core,core,core*.30f,1.0f,1.0f,.92f,.85f*(1.0f-p));
+    }
+    const int sparks=block ? 8 : 12;
+    for(int i=0;i<sparks;i++) {
+        unsigned h=(unsigned)(i*2654435761u)>>8;          // a fixed scatter, so every hit has the same burst
+        float ang=(float)i*6.2831853f/(float)sparks+((float)(h&255)/255.0f-.5f)*.5f;
+        float reach=.45f+.55f*(float)((h>>8)&255)/255.0f;
+        float from=(.12f+.80f*p)*reach, to=from+(.34f*(1.0f-p)+.04f)*reach;
+        fx_spark(c,right,up,cosf(ang),sinf(ang),from,to,.028f*(1.0f-p)+.006f,cr,cg,cb,.95f*(1.0f-p));
+    }
+}
+static void fx_pass(void) {
+    fx_begin=vertex_count;
+    fx_contact_shadow(&player);
+    fx_contact_shadow(&rival);
+    fx_impact_burst();
 }
 static void hud(void) {
     if(model_preview_mode) {
@@ -2613,8 +2812,8 @@ int main(int argc,char **argv) {
     // Live mode has its own 60 Hz pacing below. Driver vsync can block a
     // hidden or hybrid-GPU window for hundreds of milliseconds.
     SDL_GL_SetSwapInterval(source_follow_mode || model_preview_capture ? 0 : 1);
-    const char *vs="#version 330 core\nlayout(location=0) in vec3 p;layout(location=1) in vec3 c;out vec3 color;void main(){gl_Position=vec4(p,1);color=c;}";
-    const char *fs="#version 330 core\nin vec3 color;out vec4 outColor;void main(){outColor=vec4(color,1);}";
+    const char *vs="#version 330 core\nlayout(location=0) in vec3 p;layout(location=1) in vec4 c;out vec4 color;void main(){gl_Position=vec4(p,1);color=c;}";
+    const char *fs="#version 330 core\nin vec4 color;out vec4 outColor;void main(){outColor=color;}";
     GLuint v=make_shader(GL_VERTEX_SHADER,vs), f=make_shader(GL_FRAGMENT_SHADER,fs), program=glCreateProgram();
     glAttachShader(program,v); glAttachShader(program,f); glLinkProgram(program);
     GLint linked=0; glGetProgramiv(program,GL_LINK_STATUS,&linked);
@@ -2624,9 +2823,10 @@ int main(int argc,char **argv) {
     glBindVertexArray(vao); glBindBuffer(GL_ARRAY_BUFFER,vbo);
     glBufferData(GL_ARRAY_BUFFER,sizeof(vertices),NULL,GL_STREAM_DRAW);
     glVertexAttribPointer(0,3,GL_FLOAT,GL_FALSE,sizeof(Vertex),(void*)0); glEnableVertexAttribArray(0);
-    glVertexAttribPointer(1,3,GL_FLOAT,GL_FALSE,sizeof(Vertex),(void*)(3*sizeof(float))); glEnableVertexAttribArray(1);
+    glVertexAttribPointer(1,4,GL_FLOAT,GL_FALSE,sizeof(Vertex),(void*)(3*sizeof(float))); glEnableVertexAttribArray(1);
     if(story_mode) story_tex_init(program,vao);
     glUseProgram(program); glEnable(GL_DEPTH_TEST); glDepthFunc(GL_LESS);
+    glEnable(GL_BLEND); glBlendFunc(GL_SRC_ALPHA,GL_ONE_MINUS_SRC_ALPHA);
     reset_fight();
     if(selection_mode) phase=1;
     else if(story_mode) phase=1;
@@ -2702,6 +2902,7 @@ int main(int argc,char **argv) {
                         }
                     }
                 } else if(source_replay_mode) {
+                    if(e.key.keysym.scancode==SDL_SCANCODE_C) camera_dynamic=!camera_dynamic;
                     if(e.key.keysym.scancode==SDL_SCANCODE_SPACE) {
                         source_replay_paused=!source_replay_paused;
                         accumulator=0;
@@ -2855,6 +3056,8 @@ int main(int argc,char **argv) {
         if(win_height<1) win_height=1;
         glViewport(0,0,win_width,win_height);
         glClearColor(.015f,.025f,.065f,1); glClear(GL_COLOR_BUFFER_BIT|GL_DEPTH_BUFFER_BIT);
+        camera_snap=source_capture;
+        fx_begin=-1;
         vertex_count=0;
         int world_count;
         if(selection_mode) {
@@ -2874,7 +3077,14 @@ int main(int argc,char **argv) {
         glBufferData(GL_ARRAY_BUFFER,sizeof(vertices),NULL,GL_STREAM_DRAW);
         glBufferSubData(GL_ARRAY_BUFFER,0,(size_t)vertex_count*sizeof(Vertex),vertices);
         Uint64 profile_after_upload=SDL_GetPerformanceCounter();
-        glEnable(GL_DEPTH_TEST); glDrawArrays(GL_TRIANGLES,0,world_count);
+        glEnable(GL_DEPTH_TEST);
+        int opaque_count=fx_begin>=0 && fx_begin<=world_count ? fx_begin : world_count;
+        glDrawArrays(GL_TRIANGLES,0,opaque_count);
+        if(world_count>opaque_count) {   // translucent effects: tested against the scene, but they do not hide each other
+            glDepthMask(GL_FALSE);
+            glDrawArrays(GL_TRIANGLES,opaque_count,world_count-opaque_count);
+            glDepthMask(GL_TRUE);
+        }
         glDisable(GL_DEPTH_TEST);
         int split=story_mode && story_tex_draw.active ? story_tex_draw.split : world_count;
         glDrawArrays(GL_TRIANGLES,world_count,split-world_count);

@@ -45,6 +45,17 @@ original Stadium art.
 The combat values are provisional and have not been matched to OpenOMF. The
 prototype does not load or alter the original game's data.
 
+## Fight camera and lighting
+
+Matches drawn from OpenOMF's state (source replay and live) use a wide-angle perspective camera
+(54 degree vertical field of view) that stays on the front side of the arena. It follows the fighters,
+dollies in when they are close and out when they are apart, and swings at most 20 degrees either side of
+straight side-on as they move toward the ends of the arena; a hit pulls it in a touch. It only changes the
+viewpoint, never the fight. **C** switches between this camera and the old fixed side-on view while a match
+runs. The robots are lit by fixed arena lights (a warm key, a cool fill and a cyan rim light) and get soft
+contact shadows; a hit shows a spark burst at the struck fighter. The story and selection screens, the
+sandbox, and the model preview keep their own views.
+
 ## Play
 
 **Fights use the original-game engine.** Start a match with
