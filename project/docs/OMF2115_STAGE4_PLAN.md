@@ -169,6 +169,17 @@ text with placeholder portraits.
   young man while the lore's Nadia Solis is a woman in her 40s (a placeholder mismatch, chosen by the project owner). Scripts
   changed, so older saves are refused once. Tested: `story_check` selftest, `check` and `play` on both scripts and both HARs, and
   viewer screenshots of the hangar and news scenes. Not tested: the fade-in in motion, and the full run with a match by hand.
+- **Hangar loading screen and repair bay (2026-10-31, requested after the camera and lighting pass):** the hangar picture now stays on
+  through the pre-fight lines and the match launch, so it is the loading screen. While the match starts it shows welding sparks and glow
+  on both HARs, pulsing warning lamps, a sweeping progress bar, and a status that cycles (fuelling the cells, seating the armour plates,
+  calibrating the neural link, syncing the arena feed) for the first seven seconds before it says "match in progress". After the
+  newscast a repair-bay frame shows the damaged HARs: the winner standing battered (the original hit-recoil sprite) and the loser
+  where it fell (the original defeat sprite), with scorch marks, cracks, burnt edges, smoke and sparks drawn on, in the hangar under
+  emergency lighting. Four frames (`wreck_<har>_<result>`) built by `build_story_art.py`; the scripts name them from the player's HAR and
+  the result. Tested: screenshots of the loading screen and of both wreck variants in the viewer, `story_check` on both scripts, and a
+  real match launch that ran without errors. Not tested: how the sparks, lamps and progress bar look in motion, and the status text
+  during the real warm-up (the screenshots cannot show a running match). `build.ps1 -NoConfigure` now rebuilds without
+  re-running CMake's configure, whose version script fetches from GitHub and sometimes stalls.
 - **Not yet done:** a clean end-to-end playtest by someone who has not seen the build (step 6).
 
 ## Step 3 design: the match handoff (built)

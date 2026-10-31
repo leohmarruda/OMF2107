@@ -1864,6 +1864,34 @@ static void story_draw_effect(void) {
         label(left,.414f,size,story_effect_text,1,.92f,.70f);
     }
 }
+// ---- the hangar while a match is prepared: welding sparks and warning lamps over the hangar picture ----
+static Uint64 story_match_started;   // when the match launcher was started, for the preparing status
+static float story_life_time(void) { return story_capturing ? 1.3f : (float)(SDL_GetTicks64()%100000)/1000.0f; }
+static void story_draw_hangar_life(void) {
+    float t=story_life_time();
+    float aspect=(float)win_width/(float)win_height;
+    // Hot spots on the two HARs, in picture coordinates (0..1 across and up).
+    static const float spots[][2]={{.27f,.62f},{.33f,.40f},{.31f,.20f},{.38f,.50f},{.72f,.60f},{.66f,.38f},{.69f,.18f},{.62f,.50f}};
+    for(int i=0;i<8;i++) {
+        float cycle=fmodf(t*(1.3f+.17f*(float)i)+(float)i*.37f,1.0f);
+        float flare=sinf(t*21.0f+(float)i*5.0f)>-.2f ? 1.0f : .35f;
+        float u=spots[i][0], v=spots[i][1];
+        vertex_alpha=.16f*flare;   // the glow of the weld on the armour
+        float gw=.060f;
+        quad(-1.0f+2.0f*u-gw*.5f,story_v(v)-gw*aspect*.5f,gw,gw*aspect,1.0f,.62f,.25f);
+        if(cycle>.32f) continue;
+        float k=cycle/.32f;       // a spark flies up and away, then burns out
+        float su=u+(k*.020f)*((i&1) ? 1.0f : -1.0f), sv=v+k*.10f;
+        float w=.016f*(1.0f-k)+.004f;
+        vertex_alpha=1.0f-k;
+        quad(-1.0f+2.0f*su,story_v(sv),w,w*aspect,1.0f,.82f,.36f);
+    }
+    float pulse=.45f+.45f*sinf(t*4.2f);   // the warning lamps at the top corners
+    vertex_alpha=pulse;
+    quad(-.97f,story_v(.93f),.07f,.05f*aspect*.5f,1.0f,.55f,.18f);
+    quad(.90f,story_v(.93f),.07f,.05f*aspect*.5f,1.0f,.55f,.18f);
+    vertex_alpha=1.0f;
+}
 static void story_hud_body(void) {
     if(story_setup) { story_setup_hud(); return; }
     quad(-1,-1,2,2,.015f,.025f,.065f);
@@ -1873,6 +1901,7 @@ static void story_hud_body(void) {
     bool typed_all=story_update_typing();
     const char *speaker_name=story_run.event==STORY_EVENT_SAY ? story_event_cmd(&story_run)->speaker : "";
     story_draw_speakers(speaker_name,story_run.event!=STORY_EVENT_SAY);
+    if(story_run.event==STORY_EVENT_FIGHT && story_art_tex.id) story_draw_hangar_life();
     quad(-1,.86f,2,.14f,.03f,.07f,.14f);   // header band
     label(-.94f,.985f,.008f,"OMF2115 / STORY",.65f,.92f,1);
     char scene_label[64];
@@ -1938,8 +1967,18 @@ static void story_hud_body(void) {
         label(-.92f,-.53f,.009f,"VS",.70f,.78f,.85f);
         label(-.92f,-.62f,.009f,who[1],1,.70f,.62f);
         if(story_match_state==1) {
-            label(-.92f,-.74f,.009f,"MATCH IN PROGRESS",1,.80f,.45f);
-            label(-.92f,-.83f,.009f,"PLAY IN THE MATCH WINDOW.",.92f,.95f,.98f);
+            float since=story_capturing ? 2.0f : (float)(SDL_GetTicks64()-story_match_started)/1000.0f;
+            if(since<7.0f) {   // the match window takes a few seconds to appear: say what the crews are doing
+                static const char *steps[]={"FUELLING THE CELLS","SEATING THE ARMOUR PLATES","CALIBRATING THE NEURAL LINK","SYNCING THE ARENA FEED"};
+                label(-.92f,-.74f,.009f,"PREPARING THE HARS",1,.80f,.45f);
+                label(-.92f,-.83f,.009f,steps[(int)(since/1.7f)%4],.92f,.95f,.98f);
+            } else {
+                label(-.92f,-.74f,.009f,"MATCH IN PROGRESS",1,.80f,.45f);
+                label(-.92f,-.83f,.009f,"PLAY IN THE MATCH WINDOW.",.92f,.95f,.98f);
+            }
+            quad(-.92f,-.905f,1.84f,.022f,.08f,.12f,.20f);   // an indeterminate progress bar sweeping across
+            float sweep=fmodf(story_life_time()*.8f,1.0f);
+            quad(-.92f+sweep*(1.84f-.34f),-.905f,.34f,.022f,1.0f,.62f,.25f);
             hint="CLOSE THE MATCH WINDOW TO CANCEL";
         } else {
             label(-.92f,-.74f,.009f,"ENTER START MATCH",.92f,.95f,.98f);
@@ -2074,6 +2113,7 @@ static void story_match_start(void) {
     CloseHandle(process.hThread);
     story_match_child=process.hProcess;
     story_match_state=1;
+    story_match_started=SDL_GetTicks64();
     story_sound(SND_SELECT);
 #else
     snprintf(story_match_message,sizeof(story_match_message),"REAL MATCHES NEED WINDOWS FOR NOW.");

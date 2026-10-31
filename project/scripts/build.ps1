@@ -1,7 +1,8 @@
 param(
     [ValidateSet('Debug', 'Trace', 'Release', 'All')]
     [string]$Config = 'All',
-    [string]$VcpkgRoot = $(if ($env:VCPKG_ROOT) { $env:VCPKG_ROOT } else { Join-Path $env:USERPROFILE 'vcpkg' })
+    [string]$VcpkgRoot = $(if ($env:VCPKG_ROOT) { $env:VCPKG_ROOT } else { Join-Path $env:USERPROFILE 'vcpkg' }),
+    [switch]$NoConfigure   # rebuild without re-running CMake's configure (its version script fetches tags from GitHub and can stall)
 )
 
 # Builds the dirs the run-blockout*.ps1 scripts expect:
@@ -41,10 +42,13 @@ function Invoke-Build([string]$Name, [string[]]$ExtraArgs, [string]$BuildType = 
     Write-Host "== $Name"
     # cmd merges stderr into stdout: CMake prints warnings to stderr, which Windows PowerShell 5.1
     # would otherwise turn into a terminating error under $ErrorActionPreference = 'Stop'.
+    $configured = Test-Path -LiteralPath (Join-Path $dir 'CMakeCache.txt')
     $configure = (@('cmake', '-S', $projectRoot, '-B', $dir, '-G', 'Ninja', "-DCMAKE_BUILD_TYPE=$BuildType", '--toolchain', $toolchain) + $ExtraArgs |
         ForEach-Object { "`"$_`"" }) -join ' '
-    cmd /c "$configure 2>&1"
-    if ($LASTEXITCODE -ne 0) { throw "Configure failed for $Name" }
+    if (-not ($NoConfigure -and $configured)) {
+        cmd /c "$configure 2>&1"
+        if ($LASTEXITCODE -ne 0) { throw "Configure failed for $Name" }
+    }
     cmd /c "cmake --build `"$dir`" 2>&1"
     if ($LASTEXITCODE -ne 0) { throw "Build failed for $Name" }
 

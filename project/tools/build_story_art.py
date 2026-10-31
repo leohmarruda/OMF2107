@@ -17,6 +17,8 @@ diagonal colour bars, a vignette, and name plates drawn on top.
   bay_<pilot>_<har>    the VS-screen hangar before the match: the player's pilot in that HAR (left) against the other
                        sibling in the other HAR (right); four frames (crystal or christian, jaguar or shadow)
   news_<pilot>         the newsroom after the match, with that pilot on the news screen as the winner
+  wreck_<har>_<result> the repair bay after the match: the damaged HARs, the player's (left) in that HAR, and the result
+                       (won or lost) from the player's side; four frames (jaguar or shadow, won or lost)
 
 The result is original-game material rearranged for local development, never committed or distributed (see
 project/docs/ASSET_LEDGER.md). Normally run through export_story_assets.py.
@@ -28,7 +30,9 @@ import sys
 import tempfile
 from pathlib import Path
 
+import numpy as np
 from PIL import Image, ImageChops, ImageDraw, ImageEnhance, ImageFilter, ImageFont
+from scipy import ndimage
 
 ROOT = Path(__file__).resolve().parents[2]
 BUILD = ROOT / "build" / "omf_debug_z7"
@@ -114,11 +118,11 @@ def plate(base: Image.Image, label: str, x: int, y: int, width: int, color: tupl
     text(base, label, (x + 4, y + 1), 11, fill=(10, 14, 24))
 
 
-def har_sprite(har: str, tmp: Path) -> Image.Image:
-    png = tmp / f"{har}.png"
+def har_sprite(har: str, tmp: Path, animation: int = 11, sprite: int = 0) -> Image.Image:
+    png = tmp / f"{har}-{animation}-{sprite}.png"
     result = subprocess.run(
-        [str(AFTOOL), "-f", str(GAME / f"FIGHTR{HAR_FILE[har]}.AF"), "-p", str(GAME / "ARENA0.BK"), "-m", "11", "-s", "0",
-         f"--export-png={png}"], capture_output=True, text=True)
+        [str(AFTOOL), "-f", str(GAME / f"FIGHTR{HAR_FILE[har]}.AF"), "-p", str(GAME / "ARENA0.BK"), "-m", str(animation),
+         "-s", str(sprite), f"--export-png={png}"], capture_output=True, text=True)
     if result.returncode != 0 or not png.exists():
         raise RuntimeError(f"could not export the {har} sprite: {result.stdout}{result.stderr}")
     # Palette index 0 is the transparent colour of the game's sprites.
@@ -254,6 +258,86 @@ def news_frame(winner: str) -> Image.Image:
     return frame
 
 
+# The original sprites for being hit (animation 9, sprite 5) and for lying defeated (animation 49; Jaguar's sprite 3,
+# Shadow's sprite 0, as listed in project/docs/OMF2097/poses).
+HIT_POSE = (9, 5)
+DEFEAT_POSE = {"jaguar": (49, 3), "shadow": (49, 0)}
+
+
+def damaged(sprite: Image.Image, seed: int) -> Image.Image:
+    """Scorches, dents and a burnt orange edge on a HAR sprite: dark patches in its plating and glowing seams."""
+    rng = np.random.default_rng(seed)
+    pixels = np.asarray(sprite).astype(np.float32)
+    alpha = pixels[..., 3] > 0
+    noise = ndimage.gaussian_filter(rng.random(alpha.shape).astype(np.float32), 1.6)
+    noise = (noise - noise.min()) / (noise.max() - noise.min() + 1e-6)
+    burn = np.clip((noise - .52) * 4.0, 0, 1) * alpha            # soot patches
+    crack = ndimage.gaussian_filter(rng.random(alpha.shape).astype(np.float32), .6)
+    crack = (crack > np.quantile(crack[alpha], .965)) & alpha   # a scatter of fine dark cracks
+    for c in range(3):
+        pixels[..., c] *= 1.0 - .62 * burn
+    pixels[crack, :3] *= .35
+    edge = alpha & ~ndimage.binary_erosion(alpha, iterations=1)
+    hot = edge & (noise > .50)                                  # orange glow along some of the edges
+    pixels[hot, 0] = np.minimum(255, pixels[hot, 0] * .5 + 190)
+    pixels[hot, 1] = np.minimum(255, pixels[hot, 1] * .5 + 80)
+    return Image.fromarray(np.clip(pixels, 0, 255).astype(np.uint8), "RGBA")
+
+
+def smoke(frame: Image.Image, x: int, y: int, seed: int) -> Image.Image:
+    """A few soft grey puffs rising from (x, y), blended over the frame."""
+    rng = np.random.default_rng(seed)
+    layer = Image.new("RGBA", frame.size, (0, 0, 0, 0))
+    draw = ImageDraw.Draw(layer)
+    for i in range(7):
+        r = 5 + i * 2 + int(rng.integers(0, 4))
+        cx = x + int(rng.integers(-5, 6)) + i * int(rng.integers(-2, 3))
+        cy = y - i * 9
+        shade = 150 - i * 8
+        draw.ellipse((cx - r, cy - r, cx + r, cy + r), fill=(shade, shade, shade + 6, max(50, 175 - i * 16)))
+    return Image.alpha_composite(frame.convert("RGBA"), layer.filter(ImageFilter.GaussianBlur(4))).convert("RGB")
+
+
+def sparks(frame: Image.Image, x: int, y: int, seed: int) -> None:
+    rng = np.random.default_rng(seed)
+    draw = ImageDraw.Draw(frame)
+    for _ in range(9):
+        angle = rng.uniform(-3.14, 0)
+        length = rng.uniform(4, 14)
+        x2, y2 = x + np.cos(angle) * length, y + np.sin(angle) * length
+        draw.line((x, y, x2, y2), fill=(255, int(rng.integers(150, 230)), 70), width=1)
+
+
+def wreck_frame(player_har: str, result: str, tmp: Path) -> Image.Image:
+    """The repair bay after the match. The winner stands battered; the loser lies where it fell."""
+    rival_har = "shadow" if player_har == "jaguar" else "jaguar"
+    bay = Image.open(SCENES / "vs.bmp").convert("RGB").crop((0, 12, 150, 12 + H)).resize((W // 2, H), Image.NEAREST)
+    frame = Image.new("RGB", (W, H))
+    frame.paste(bay, (0, 0))
+    frame.paste(bay.transpose(Image.FLIP_LEFT_RIGHT), (W // 2, 0))
+    frame = ImageEnhance.Brightness(frame).enhance(.5)
+    tint = Image.new("RGB", frame.size, (255, 150, 95))          # emergency lighting
+    frame = Image.blend(frame, ImageChops.multiply(frame, tint), .75)
+    frame = vignette(frame, .75)
+    winner_is_player = result == "won"
+    for index, (har, left) in enumerate(((player_har, True), (rival_har, False))):
+        standing = (har == player_har) == winner_is_player
+        animation, sprite = HIT_POSE if standing else DEFEAT_POSE[har]
+        art = damaged(har_sprite(har, tmp, animation, sprite), seed=index + 7 + (3 if standing else 0))
+        scale = 1.15
+        width = round(art.width * scale)
+        inset = 18 if not standing else 70               # the fallen one lies toward the edge, clear of the standing one
+        x = inset if left else W - inset - width
+        if not left:
+            art = art.transpose(Image.FLIP_LEFT_RIGHT)
+        paste_sprite(frame, art, scale, x, H - 6, mirror=False)
+        top = H - 6 - round(art.height * scale)
+        frame = smoke(frame, x + width // 2, max(34, top + 10), seed=11 + index)
+        sparks(frame, x + width // 2, top + round(art.height * scale * .35), seed=21 + index)
+    pixel_text(frame, "REPAIR BAY", (92, 8), 12, 2, (255, 170, 90))
+    return frame
+
+
 def main() -> int:
     for needed in (AFTOOL, PORTRAITS / "Crystal.bmp", BACKDROPS / "stadium.bmp", SCENES / "vs.bmp",
                    SCENES / "newsroom.bmp"):
@@ -277,6 +361,9 @@ def main() -> int:
             "news_crystal": news_frame("crystal"),
             "news_christian": news_frame("christian"),
         }
+        for har in ("jaguar", "shadow"):
+            for result in ("won", "lost"):
+                frames[f"wreck_{har}_{result}"] = wreck_frame(har, result, Path(tmp))
         for pilot in ("crystal", "christian"):
             for har in ("jaguar", "shadow"):
                 frames[f"bay_{pilot}_{har}"] = hangar_frame(pilot, har, Path(tmp))

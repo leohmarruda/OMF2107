@@ -59,7 +59,6 @@ jump hangar
 scene hangar
 art bay_{player_pilot}_{player_har} fade
 say : In the hangar bay the crews run the last checks. {player_har} waits on the left and {rival_har} on the right, and the deep-link cradles are warming.
-art off
 jump prefight
 
 scene prefight
@@ -72,12 +71,14 @@ fight Crystal @player_har vs Christian @rival_har win -> won lose -> lost
 
 scene won
 set result=won
+art off
 say : {player_har} stands over a fallen {rival_har}. The crowd roars. Crystal's hands will not stop shaking.
 say Christian: You did not hold back. Good.
 jump news_won
 
 scene lost
 set result=lost
+art off
 say : {rival_har} takes the match. Christian does not celebrate. He is looking at his sister's hands.
 say Christian: Did you let me win? Or could you not hold the stick?
 jump news_lost
@@ -89,6 +90,8 @@ art news_crystal fade
 banner WRDE NEWS
 say Nadia Solis: Good evening from the Ganymede tournament. Crystal Devroe takes the Stadium bout against her brother Christian.
 say Nadia Solis: Composed as ever, say the commentators. WAR reports that both pilots' readings were within tournament limits.
+art wreck_{player_har}_{result} fade
+say : In the repair bay the crews haul the battered machines in. Scorched plating, cracked ribs, a smell of burnt coolant. Neither HAR fights again without an overhaul.
 art off
 jump recovery
 
@@ -98,6 +101,8 @@ art news_christian fade
 banner WRDE NEWS
 say Nadia Solis: Good evening from the Ganymede tournament. Christian Devroe takes the Stadium bout against his sister Crystal.
 say Nadia Solis: A cautious night for Crystal, say the commentators. WAR reports that both pilots' readings were within tournament limits.
+art wreck_{player_har}_{result} fade
+say : In the repair bay the crews haul the battered machines in. Scorched plating, cracked ribs, a smell of burnt coolant. Neither HAR fights again without an overhaul.
 art off
 jump recovery
 
