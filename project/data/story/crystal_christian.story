@@ -48,11 +48,18 @@ choice Keep the nerves excuse -> tremors_hidden set tremors=hidden
 scene tremors_told
 say Crystal: My hands shake after every link. I have been covering it.
 say Christian: Then we do not ignore it. Whatever happens out there.
-jump prefight
+jump hangar
 
 scene tremors_hidden
 say Crystal: Nerves. I handle pressure. Everyone says so.
 say Christian: Fine. But I am watching you.
+jump hangar
+
+# The hangar bay before the match: the original VS-screen hangar with the two chosen HARs, named after the pilot and HAR.
+scene hangar
+art bay_{player_pilot}_{player_har} fade
+say : In the hangar bay the crews run the last checks. {player_har} waits on the left and {rival_har} on the right, and the deep-link cradles are warming.
+art off
 jump prefight
 
 scene prefight
@@ -67,12 +74,31 @@ scene won
 set result=won
 say : {player_har} stands over a fallen {rival_har}. The crowd roars. Crystal's hands will not stop shaking.
 say Christian: You did not hold back. Good.
-jump recovery
+jump news_won
 
 scene lost
 set result=lost
 say : {rival_har} takes the match. Christian does not celebrate. He is looking at his sister's hands.
 say Christian: Did you let me win? Or could you not hold the stick?
+jump news_lost
+
+# The newscast after the match: the original newsroom frame with the winner on the news screen.
+scene news_won
+music menu
+art news_crystal fade
+banner WRDE NEWS
+say Nadia Solis: Good evening from the Ganymede tournament. Crystal Devroe takes the Stadium bout against her brother Christian.
+say Nadia Solis: Composed as ever, say the commentators. WAR reports that both pilots' readings were within tournament limits.
+art off
+jump recovery
+
+scene news_lost
+music menu
+art news_christian fade
+banner WRDE NEWS
+say Nadia Solis: Good evening from the Ganymede tournament. Christian Devroe takes the Stadium bout against his sister Crystal.
+say Nadia Solis: A cautious night for Crystal, say the commentators. WAR reports that both pilots' readings were within tournament limits.
+art off
 jump recovery
 
 scene recovery

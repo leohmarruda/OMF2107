@@ -14,6 +14,9 @@ diagonal colour bars, a vignette, and name plates drawn on top.
   ending_together      the siblings side by side (they faced it together)
   ending_apart         the siblings far apart under a dividing slash (they did not)
   ending_title         "END OF SLICE"
+  bay_<pilot>_<har>    the VS-screen hangar before the match: the player's pilot in that HAR (left) against the other
+                       sibling in the other HAR (right); four frames (crystal or christian, jaguar or shadow)
+  news_<pilot>         the newsroom after the match, with that pilot on the news screen as the winner
 
 The result is original-game material rearranged for local development, never committed or distributed (see
 project/docs/ASSET_LEDGER.md). Normally run through export_story_assets.py.
@@ -33,6 +36,7 @@ AFTOOL = BUILD / "aftool.exe"
 GAME = ROOT / "OMF2097"
 PORTRAITS = ROOT / "project" / "build" / "portraits"
 BACKDROPS = ROOT / "project" / "build" / "backdrops"
+SCENES = ROOT / "project" / "build" / "scenes"   # vs.bmp and newsroom.bmp, exported by export_story_assets.py
 ART = ROOT / "project" / "build" / "art"
 
 W, H = 320, 124
@@ -213,8 +217,46 @@ def ending_title_frame() -> Image.Image:
     return frame
 
 
+PILOT_COLOR = {"crystal": CYAN, "christian": ORANGE}
+
+
+def hangar_frame(player: str, player_har: str, tmp: Path) -> Image.Image:
+    """The VS-screen hangar bay, mirrored to fill the frame, with the two HARs facing each other."""
+    rival = "christian" if player == "crystal" else "crystal"
+    rival_har = "shadow" if player_har == "jaguar" else "jaguar"
+    bay = Image.open(SCENES / "vs.bmp").convert("RGB").crop((0, 12, 150, 12 + H)).resize((W // 2, H), Image.NEAREST)
+    frame = Image.new("RGB", (W, H))
+    frame.paste(bay, (0, 0))
+    frame.paste(bay.transpose(Image.FLIP_LEFT_RIGHT), (W // 2, 0))
+    frame = vignette(ImageEnhance.Brightness(frame).enhance(.8), .6)
+    left, right = PILOT_COLOR[player], PILOT_COLOR[rival]
+    paste_sprite(frame, har_sprite(player_har, tmp), 1.1, 72, H - 4, mirror=False)
+    sprite = har_sprite(rival_har, tmp)
+    paste_sprite(frame, sprite, 1.1, W - 72 - round(sprite.width * 1.1), H - 4, mirror=True)
+    for who, color, x in ((player, left, 8), (rival, right, None)):
+        face = portrait(who.capitalize(), .75, color)
+        x = x if x is not None else W - 8 - face.width
+        paste_shadowed(frame, face, (x, 6))
+    plate(frame, player.upper(), 10, 56, 68, left)
+    plate(frame, rival.upper(), W - 78, 56, 68, right)
+    pixel_text(frame, "VS", (139, 8), 14, 2, (255, 220, 120))
+    return frame
+
+
+def news_frame(winner: str) -> Image.Image:
+    """The original newsroom, the winner's portrait on the news screen and a name plate under it."""
+    frame = Image.open(SCENES / "newsroom.bmp").convert("RGB").crop((0, 10, W, 10 + H))
+    color = PILOT_COLOR[winner]
+    face = portrait(winner.capitalize(), 1.7, color)
+    screen = (165, 5, 305, 104)   # the black screen of the original picture, in frame pixels
+    frame.paste(face, ((screen[0] + screen[2] - face.width) // 2, (screen[1] + screen[3] - face.height) // 2))
+    plate(frame, f"{winner.upper()} WINS", 172, 106, 130, color)
+    return frame
+
+
 def main() -> int:
-    for needed in (AFTOOL, PORTRAITS / "Crystal.bmp", BACKDROPS / "stadium.bmp"):
+    for needed in (AFTOOL, PORTRAITS / "Crystal.bmp", BACKDROPS / "stadium.bmp", SCENES / "vs.bmp",
+                   SCENES / "newsroom.bmp"):
         if not needed.exists():
             print(f"Missing {needed} (run export_story_assets.py first)", file=sys.stderr)
             return 1
@@ -232,7 +274,12 @@ def main() -> int:
             "ending_together": ending_together_frame(),
             "ending_apart": ending_apart_frame(),
             "ending_title": ending_title_frame(),
+            "news_crystal": news_frame("crystal"),
+            "news_christian": news_frame("christian"),
         }
+        for pilot in ("crystal", "christian"):
+            for har in ("jaguar", "shadow"):
+                frames[f"bay_{pilot}_{har}"] = hangar_frame(pilot, har, Path(tmp))
     for name, frame in frames.items():
         frame.save(ART / f"{name}.bmp")
     print(f"Wrote {len(frames)} illustration frames to {ART}")

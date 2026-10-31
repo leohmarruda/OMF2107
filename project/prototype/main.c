@@ -1646,12 +1646,16 @@ static void story_setup_hud(void) {
 // Starts the story with the chosen HAR for the player; the rival takes the other.
 static void story_begin(int har_index) {
     static const char *names[2]={"Jaguar","Shadow"};
-    StoryFlag flags[2];
+    StoryFlag flags[4];
     snprintf(flags[0].name,STORY_NAME,"player_har");
     snprintf(flags[0].value,STORY_NAME,"%s",names[har_index]);
     snprintf(flags[1].name,STORY_NAME,"rival_har");
     snprintf(flags[1].value,STORY_NAME,"%s",names[har_index^1]);
-    story_start_with_flags(&story_run,&story_data,story_start_scene,flags,2);
+    snprintf(flags[2].name,STORY_NAME,"player_pilot");
+    snprintf(flags[2].value,STORY_NAME,"%s",story_data.player_pilot);
+    snprintf(flags[3].name,STORY_NAME,"rival_pilot");
+    snprintf(flags[3].value,STORY_NAME,"%s",story_data.rival_pilot);
+    story_start_with_flags(&story_run,&story_data,story_start_scene,flags,4);
     story_setup=false;
     story_sel=0;
     story_log_open=false;

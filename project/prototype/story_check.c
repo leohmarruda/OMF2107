@@ -51,7 +51,7 @@ static int cmd_play(int argc, char **argv) {
     char err[256];
     if(!story_load(&story, path, err, sizeof(err))) { fprintf(stderr, "%s\n", err); return 1; }
     StoryRun run;
-    StoryFlag flags[2];
+    StoryFlag flags[4];
     int flag_count = 0;
     if(story.has_cast) {
         // The selection screen's job: the player's HAR (default the recommended one) and the rival's other HAR.
@@ -59,7 +59,9 @@ static int cmd_play(int argc, char **argv) {
         const char *rival_har = strcmp(player_har, "Shadow") == 0 ? "Jaguar" : "Shadow";
         snprintf(flags[0].name, STORY_NAME, "player_har"); snprintf(flags[0].value, STORY_NAME, "%s", player_har);
         snprintf(flags[1].name, STORY_NAME, "rival_har"); snprintf(flags[1].value, STORY_NAME, "%s", rival_har);
-        flag_count = 2;
+        snprintf(flags[2].name, STORY_NAME, "player_pilot"); snprintf(flags[2].value, STORY_NAME, "%s", story.player_pilot);
+        snprintf(flags[3].name, STORY_NAME, "rival_pilot"); snprintf(flags[3].value, STORY_NAME, "%s", story.rival_pilot);
+        flag_count = 4;
         printf("[%s in %s versus %s in %s]\n", story.player_pilot, player_har, story.rival_pilot, rival_har);
     }
     if(!story_start_with_flags(&run, &story, scene, flags, flag_count)) {

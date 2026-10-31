@@ -46,11 +46,18 @@ choice Wave it off with a joke -> symptoms_hidden set symptoms=hidden
 scene symptoms_told
 say Christian: Headaches since the last link. I take something to get through them.
 say Crystal: Then we stop pretending, you and I. Whatever happens out there.
-jump prefight
+jump hangar
 
 scene symptoms_hidden
 say Christian: I am the Shield. Nothing gets past me, remember?
 say Crystal: That is exactly what worries me.
+jump hangar
+
+# The hangar bay before the match: the original VS-screen hangar with the two chosen HARs, named after the pilot and HAR.
+scene hangar
+art bay_{player_pilot}_{player_har} fade
+say : In the hangar bay the crews run the last checks. {player_har} waits on the left and {rival_har} on the right, and the deep-link cradles are warming.
+art off
 jump prefight
 
 scene prefight
@@ -65,12 +72,31 @@ scene won
 set result=won
 say : {player_har} stands over a fallen {rival_har}. The crowd roars. Christian's head is pounding, and he counts it as proof that he won.
 say Crystal: You won. Now tell me you can still feel your hands.
-jump recovery
+jump news_won
 
 scene lost
 set result=lost
 say : {rival_har} takes the match. Crystal does not smile. She is watching the pulse in her brother's neck.
 say Crystal: You were slow on the last exchange. Why?
+jump news_lost
+
+# The newscast after the match: the original newsroom frame with the winner on the news screen.
+scene news_won
+music menu
+art news_christian fade
+banner WRDE NEWS
+say Nadia Solis: Good evening from the Ganymede tournament. Christian Devroe takes the Stadium bout against his sister Crystal.
+say Nadia Solis: Fierce as ever, say the commentators. WAR reports that both pilots' readings were within tournament limits.
+art off
+jump recovery
+
+scene news_lost
+music menu
+art news_crystal fade
+banner WRDE NEWS
+say Nadia Solis: Good evening from the Ganymede tournament. Crystal Devroe takes the Stadium bout against her brother Christian.
+say Nadia Solis: A measured performance, say the commentators. WAR reports that both pilots' readings were within tournament limits.
+art off
 jump recovery
 
 scene recovery

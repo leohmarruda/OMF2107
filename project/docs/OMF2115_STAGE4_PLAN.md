@@ -159,6 +159,16 @@ text with placeholder portraits.
   is missing. It removes the visible pixel steps but cannot add detail; text baked into the frames at 320 pixels is softer
   than before. Tested by screenshots, before and after, of the Stadium backdrop and two frames. The generated green room and
   medical bay are unchanged. (3) Showing the match inside the story window was postponed by the project owner.
+- **Hangar before the match and newscast after it (2026-10-31, requested after the self-playtest):** each script now plays a
+  `hangar` scene before the fight (the original VS-screen hangar bay, mirrored to fill the frame, with the two chosen HARs
+  facing off and both pilots' portraits and name plates) and a `news_won` or `news_lost` scene after it (the original newsroom
+  picture with the winner's portrait on the news screen, a banner, and two lines from the anchor, Nadia Solis, before the recovery
+  scene). The frames are composed by `build_story_art.py` (six new: `bay_<pilot>_<har>` and `news_<pilot>`); the viewer now also
+  sets `player_pilot` and `rival_pilot` flags so a script can name a frame after the pilot. These are static pictures inside the story
+  window, not OpenOMF's own VS and newsroom scenes, which run in its separate window. The anchor's picture is the original
+  young man while the lore's Nadia Solis is a woman in her 40s (a placeholder mismatch, chosen by the project owner). Scripts
+  changed, so older saves are refused once. Tested: `story_check` selftest, `check` and `play` on both scripts and both HARs, and
+  viewer screenshots of the hangar and news scenes. Not tested: the fade-in in motion, and the full run with a match by hand.
 - **Not yet done:** a clean end-to-end playtest by someone who has not seen the build (step 6).
 
 ## Step 3 design: the match handoff (built)

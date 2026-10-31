@@ -3,6 +3,7 @@
 Writes:
   project/build/portraits/<Pilot>.bmp     the ten pilot faces (see export_pilot_portraits.py)
   project/build/backdrops/<arena>.bmp     the five original arena backgrounds (ARENA0-4.BK)
+  project/build/scenes/<vs|newsroom>.bmp  the VS-screen hangar and the newsroom (VS.BK, NEWSROOM.BK), the sources of two frames
   project/build/sounds/<name>.wav         two original menu sounds from SOUNDS.DAT: move and select
   project/build/art/<name>.bmp            illustrated-sequence frames composed from the above (build_story_art.py)
   <name>_hd.bmp beside the backdrops and frames: smooth 4x upscales the viewer draws as textures (story_upscale.py)
@@ -37,6 +38,7 @@ SOUNDTOOL = BUILD / "soundtool.exe"
 GAME = ROOT / "OMF2097"
 BACKDROPS = ROOT / "project" / "build" / "backdrops"
 SOUNDS = ROOT / "project" / "build" / "sounds"
+SCENES = ROOT / "project" / "build" / "scenes"
 
 # ARENA0-4.BK in order; the names follow the original game's arena list.
 ARENAS = ["stadium", "danger_room", "power_plant", "fire_pit", "desert"]
@@ -63,6 +65,18 @@ def export_arenas() -> None:
                 image.convert("RGB").save(BACKDROPS / f"{name}.bmp")
     print(f"Wrote {len(ARENAS)} arena backdrops to {BACKDROPS}")
     print(f"Wrote {story_upscale.write_all_hd(BACKDROPS)} smooth backdrops (_hd) to {BACKDROPS}")
+
+
+def export_scenes() -> None:
+    """The VS-screen hangar (VS.BK) and the newsroom (NEWSROOM.BK), the sources of the hangar and news frames."""
+    SCENES.mkdir(parents=True, exist_ok=True)
+    with tempfile.TemporaryDirectory() as tmp:
+        for name, source in (("vs", "VS.BK"), ("newsroom", "NEWSROOM.BK")):
+            png = Path(tmp) / f"{name}.png"
+            run([str(BKTOOL), "-f", str(GAME / source), "-k", "background", f"--export={png}"])
+            with Image.open(png) as image:
+                image.convert("RGB").save(SCENES / f"{name}.bmp")
+    print(f"Wrote 2 scene pictures to {SCENES}")
 
 
 def au_to_wav(au: bytes, rate: int, wav_path: Path) -> None:
@@ -107,6 +121,7 @@ def main() -> int:
     if export_pilot_portraits.main() != 0:
         return 1
     export_arenas()
+    export_scenes()
     export_sounds()
     if build_story_art.main() != 0:
         return 1
