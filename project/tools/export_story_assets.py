@@ -3,7 +3,7 @@
 Writes:
   project/build/portraits/<Pilot>.bmp     the ten pilot faces (see export_pilot_portraits.py)
   project/build/backdrops/<arena>.bmp     the five original arena backgrounds (ARENA0-4.BK)
-  project/build/scenes/<vs|newsroom>.bmp  the VS-screen hangar and the newsroom (VS.BK, NEWSROOM.BK), the sources of two frames
+  project/build/scenes/vs.bmp             the VS-screen hangar (VS.BK), the source of the hangar and repair-bay frames
   project/build/sounds/<name>.wav         two original menu sounds from SOUNDS.DAT: move and select
   project/build/art/<name>.bmp            illustrated-sequence frames composed from the above (build_story_art.py)
   <name>_hd.bmp beside the backdrops and frames: smooth 4x upscales the viewer draws as textures (story_upscale.py)
@@ -68,15 +68,15 @@ def export_arenas() -> None:
 
 
 def export_scenes() -> None:
-    """The VS-screen hangar (VS.BK) and the newsroom (NEWSROOM.BK), the sources of the hangar and news frames."""
+    """The VS-screen hangar (VS.BK), the source of the hangar and repair-bay frames. The newsroom is drawn by build_story_art.py."""
     SCENES.mkdir(parents=True, exist_ok=True)
     with tempfile.TemporaryDirectory() as tmp:
-        for name, source in (("vs", "VS.BK"), ("newsroom", "NEWSROOM.BK")):
+        for name, source in (("vs", "VS.BK"),):
             png = Path(tmp) / f"{name}.png"
             run([str(BKTOOL), "-f", str(GAME / source), "-k", "background", f"--export={png}"])
             with Image.open(png) as image:
                 image.convert("RGB").save(SCENES / f"{name}.bmp")
-    print(f"Wrote 2 scene pictures to {SCENES}")
+    print(f"Wrote the hangar scene picture to {SCENES}")
 
 
 def au_to_wav(au: bytes, rate: int, wav_path: Path) -> None:

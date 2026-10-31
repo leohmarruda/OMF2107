@@ -188,7 +188,7 @@ complete production pass, not the required lead of every route.
 - Choices alter relationship scenes, information available, and epilogue
   details. They do not skip required HAR fights or replace pilot-specific
   endings with one generic conclusion.
-- A romance is never the sole route to critical evidence. Nadia Solis, Darius
+- A romance is never the sole route to critical evidence. Alex, Darius
   Kade, and Leena Sato are optional media allies and adult romance options;
   their reporting functions have alternatives if they are absent or opposed.
 - The hidden link's toll is primarily shown in narrative scenes. If a player

@@ -162,11 +162,11 @@ text with placeholder portraits.
 - **Hangar before the match and newscast after it (2026-10-31, requested after the self-playtest):** each script now plays a
   `hangar` scene before the fight (the original VS-screen hangar bay, mirrored to fill the frame, with the two chosen HARs
   facing off and both pilots' portraits and name plates) and a `news_won` or `news_lost` scene after it (the original newsroom
-  picture with the winner's portrait on the news screen, a banner, and two lines from the anchor, Nadia Solis, before the recovery
+  picture with the winner's portrait on the news screen, a banner, and two lines from the anchor, Alex, before the recovery
   scene). The frames are composed by `build_story_art.py` (six new: `bay_<pilot>_<har>` and `news_<pilot>`); the viewer now also
   sets `player_pilot` and `rival_pilot` flags so a script can name a frame after the pilot. These are static pictures inside the story
-  window, not OpenOMF's own VS and newsroom scenes, which run in its separate window. The anchor's picture is the original
-  young man while the lore's Nadia Solis is a woman in her 40s (a placeholder mismatch, chosen by the project owner). Scripts
+  window, not OpenOMF's own VS and newsroom scenes, which run in its separate window. The anchor was first drawn from the original
+  newsroom picture (a young man) under the name Nadia Solis; see the Alex entry below, which replaced both. Scripts
   changed, so older saves are refused once. Tested: `story_check` selftest, `check` and `play` on both scripts and both HARs, and
   viewer screenshots of the hangar and news scenes. Not tested: the fade-in in motion, and the full run with a match by hand.
 - **Hangar loading screen and repair bay (2026-10-31, requested after the camera and lighting pass):** the hangar picture now stays on
@@ -214,6 +214,14 @@ text with placeholder portraits.
   hangar and repair-bay frames, an engine trace of a live match showing Katana (HAR 5) against Jaguar (HAR 0), and a captured live match and
   a replay of that trace in the viewer. Not tested: a Katana match played by hand through the story, the face-off frame in the viewer, and
   Katana's attack timing in the viewer (its animation numbers for punch, kick and low punch are from the pose index and not measured).
+- **The anchor Alex (2026-10-31, requested):** the newscast anchor is now Alex, a nonbinary, androgynous presenter (they/them), and
+  the lore documents (`OMF2115_LORE_v2.md`, `OMF2097_3D_GAME_SPEC.md`) name Alex in place of Nadia Solis, dropping the surname. The
+  newsroom picture is now drawn by `build_story_art.py` instead of exported from `NEWSROOM.BK`: a cream wall of tilted "WRDE NEWS"
+  lettering, the news screen, and a new character drawing of Alex (a swept layered cut, a soft jaw, a tailored teal jacket with a high
+  collar and a small stud). It is project-made, so one more original-game picture is gone from the build, though the winner's portrait
+  on the screen is still an original pilot portrait. The drawing is a first pass in a flat style and is plainer than the original art.
+  Tested: the news frames for both winners in the viewer, `story_check` on both scripts. Not tested: how Alex looks next to the
+  other characters over a full play, and whether the face reads as intended to someone else.
 - **Not yet done:** a clean end-to-end playtest by someone who has not seen the build (step 6).
 
 ## Step 3 design: the match handoff (built)

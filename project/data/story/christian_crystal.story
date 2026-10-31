@@ -86,8 +86,8 @@ scene news_won
 music menu
 art news_christian fade
 banner WRDE NEWS
-say Nadia Solis: Good evening from the Ganymede tournament. Christian Devroe takes the Stadium bout against his sister Crystal.
-say Nadia Solis: Fierce as ever, say the commentators. WAR reports that both pilots' readings were within tournament limits.
+say Alex: Good evening from the Ganymede tournament. Christian Devroe takes the Stadium bout against his sister Crystal.
+say Alex: Fierce as ever, say the commentators. WAR reports that both pilots' readings were within tournament limits.
 art wreck_{player_har}_{result} fade
 say : In the repair bay the crews haul the battered machines in. Scorched plating, cracked ribs, a smell of burnt coolant. Neither HAR fights again without an overhaul.
 art off
@@ -97,8 +97,8 @@ scene news_lost
 music menu
 art news_crystal fade
 banner WRDE NEWS
-say Nadia Solis: Good evening from the Ganymede tournament. Crystal Devroe takes the Stadium bout against her brother Christian.
-say Nadia Solis: A measured performance, say the commentators. WAR reports that both pilots' readings were within tournament limits.
+say Alex: Good evening from the Ganymede tournament. Crystal Devroe takes the Stadium bout against her brother Christian.
+say Alex: A measured performance, say the commentators. WAR reports that both pilots' readings were within tournament limits.
 art wreck_{player_har}_{result} fade
 say : In the repair bay the crews haul the battered machines in. Scorched plating, cracked ribs, a smell of burnt coolant. Neither HAR fights again without an overhaul.
 art off

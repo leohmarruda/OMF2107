@@ -123,7 +123,7 @@ Used by different pilots in different ways:
 - **Commissioner Adaeze Okonkwo-Hale (new):** the lead charter official. She approved the altered reports because the colonies cannot afford to lose WAR. She is also being blackmailed by a rival consortium.
 - **Halvorsen-Tse Orbital (new):** a rival consortium. It wants the link specification and the Ganymede concession. Jean-Paul's handler works for it.
 - **Tobias Renn (new):** broadcast director and Shirro's protégé. He cuts the feed when told to and edits storylines for ratings.
-- **Nadia Solis (new, 42):** the female studio anchor who presents the newscasts and the contest's public narrative. Her default path begins as a disciplined WAR employee; discrepancies in live footage make her decide whether to protect the network or air evidence. She can challenge an interviewee, shelter a source, or be romanced by an adult player. If she is unavailable, either field reporter or a direct public upload can carry the broadcast reveal.
+- **Alex (new, 42):** the nonbinary, androgynous studio anchor who presents the newscasts and the contest's public narrative (they/them). Their default path begins as a disciplined WAR employee; discrepancies in live footage make them decide whether to protect the network or air evidence. They can challenge an interviewee, shelter a source, or be romanced by an adult player. If they are unavailable, either field reporter or a direct public upload can carry the broadcast reveal.
 - **Darius Kade (new, 34):** a male field reporter who follows equipment transfers and arena incidents. His default path starts as an ambitious scoop hunter and ends with a choice between an exclusive and protecting witnesses. He can investigate, trade information, be misled, or be romanced by an adult player. His findings also exist in transport logs and witness testimony.
 - **Leena Sato (new, 31):** a female field reporter assigned to the pilots and recovery ward. Her default path is to gather first-person accounts while resisting Renn's pressure to sensationalize them. She can expose altered medical records, refuse a leak, or be romanced by an adult player. Medical staff and patient copies provide alternate evidence if she is absent.
 - **Plug McEllis:** the pilots' prep technician from v1. He sees every pilot's hands before every match.
@@ -274,7 +274,7 @@ suggestive and skippable. Steffan's routes remain nonromantic while he is 17.
 | **Jean-Paul and Milano** | Two operators seducing each other for leverage, with real feeling arriving uninvited | Milano's covert financing; Jean-Paul's two handlers |
 | **Cossette and Ibrahim** | A slow, tender bond between two adults who understand what machines mean | Ibrahim's hidden illness and his Nova ambition |
 | **Christian and Dr. Varga** | A fraught default attraction across an abuse of power; the player may reject her influence | His trust in her; Crystal's trust in him |
-| **Nadia, Darius, and Leena** | Three independent adult romance routes; each may also remain a professional ally or adversary | Broadcast access, source protection, and what the public learns |
+| **Alex, Darius, and Leena** | Three independent adult romance routes; each may also remain a professional ally or adversary | Broadcast access, source protection, and what the public learns |
 | **Shirro and the audience** | A one-sided love affair with being watched | The feed |
 
 **Manipulation as a choice:** Jean-Paul and Varga may use attraction for leverage on their default paths, but a selected pilot can refuse or expose the tactic. Romance is never required to spy or obtain documents.
@@ -304,7 +304,7 @@ follow their default path unless player actions change it.
 | Find Nova records | Crystal or Angel | Jean-Paul's access, Darius's transfers, Leena's sources, direct Core intrusion |
 | Prove medical tampering | Cossette or Leena | Varga's staff, pilot telemetry, recovered reports, a player confession |
 | Reveal shuttle evidence | Christian or Raven | Iron Fist witness, archive copy, Darius's investigation |
-| Air the truth | Shirro or Nadia | Either reporter, hijacked feed, independent public release |
+| Air the truth | Shirro or Alex | Either reporter, hijacked feed, independent public release |
 | Keep Ganymede supplied | Milano | Charter officials, alternate contractors, a player-negotiated mandate |
 | Confront Kreissack and Nova | Tournament winner | Whoever the player chooses to play; allies can assist without replacing the selected lead |
 

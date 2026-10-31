@@ -17,7 +17,7 @@ diagonal colour bars, a vignette, and name plates drawn on top.
   ending_title         "END OF SLICE"
   bay_<pilot>_<har>    the VS-screen hangar before the match: the player's pilot in that HAR (left) against the other
                        sibling in the other HAR (right); four frames (crystal or christian, jaguar or shadow)
-  news_<pilot>         the newsroom after the match, with that pilot on the news screen as the winner
+  news_<pilot>         the newsroom after the match (drawn here, with the anchor Alex), with that pilot on the news screen as the winner
   wreck_<har>_<result> the repair bay after the match: the damaged HARs, the player's (left) in that HAR, and the result
                        (won or lost) from the player's side; four frames (jaguar or shadow, won or lost)
 
@@ -250,9 +250,95 @@ def hangar_frame(player: str, player_har: str, tmp: Path) -> Image.Image:
     return frame
 
 
+# The newsroom set, drawn for this project (no original art): a cream studio wall of tilted "WRDE NEWS" lettering, the
+# news screen where the winner appears, and the anchor Alex, a nonbinary, androgynous presenter. It is 320x200 like the
+# original picture it replaced, with the screen at the same place, so news_frame can crop it the same way.
+NEWS_SCREEN = (163, 13, 307, 116)    # left, top, right, bottom of the black news screen, in set pixels
+SKIN = (233, 190, 152)
+SKIN_SHADE = (205, 154, 120)
+HAIR = (88, 60, 58)
+HAIR_LIGHT = (140, 98, 88)
+JACKET = (40, 196, 204)
+JACKET_SHADE = (20, 140, 156)
+OUTLINE = (50, 30, 30)
+
+
+def newsroom_wall() -> Image.Image:
+    wall = np.zeros((200, 320, 3), np.float32)
+    yy, xx = np.mgrid[0:200, 0:320]
+    glow = np.clip(1.0 - np.hypot((xx - 160) / 260.0, (yy - 90) / 190.0), 0, 1)   # lighter toward the middle
+    wall[:] = (226, 220, 164)
+    wall += glow[..., None] * np.array([18, 18, 22], np.float32)
+    layer = Image.new("RGBA", (520, 520), (0, 0, 0, 0))
+    draw = ImageDraw.Draw(layer)
+    f = font(22)
+    colours = [(196, 36, 48), (40, 48, 170), (120, 40, 140)]
+    for row in range(-1, 12):
+        for column in range(-1, 6):
+            word = "WRDE" if (row + column) % 2 == 0 else "NEWS"
+            offset = 46 if row % 2 else 0
+            draw.text((column * 108 + offset, row * 44), word, font=f, fill=colours[(row + 2 * column) % 3] + (215,))
+    layer = layer.rotate(-24, resample=Image.BICUBIC).crop((100, 100, 420, 300))
+    base = Image.fromarray(np.clip(wall, 0, 255).astype(np.uint8)).convert("RGBA")
+    return Image.alpha_composite(base, layer).convert("RGB")
+
+
+def anchor_alex(image: Image.Image) -> None:
+    """Alex: a short layered cut swept to one side, a soft jaw, a tailored teal jacket with a high collar, a small stud."""
+    d = ImageDraw.Draw(image)
+    cx = 84
+    # Shoulders and jacket, with a pale shirt and a high collar.
+    d.polygon([(10, 200), (22, 150), (52, 134), (116, 134), (146, 150), (158, 200)], fill=JACKET, outline=OUTLINE)
+    d.polygon([(10, 200), (22, 150), (40, 144), (44, 200)], fill=JACKET_SHADE)
+    d.polygon([(66, 134), (102, 134), (96, 200), (72, 200)], fill=(236, 240, 244))                  # shirt
+    d.polygon([(52, 134), (68, 134), (80, 176), (62, 200), (44, 200), (40, 150)], fill=JACKET_SHADE, outline=OUTLINE)   # lapels
+    d.polygon([(116, 134), (100, 134), (88, 176), (106, 200), (124, 200), (128, 150)], fill=JACKET, outline=OUTLINE)
+    d.polygon([(62, 126), (106, 126), (102, 140), (66, 140)], fill=(246, 248, 250), outline=OUTLINE)   # collar
+    d.ellipse((112, 160, 122, 170), fill=(255, 196, 60), outline=OUTLINE)                               # a small pin
+    # Neck.
+    d.polygon([(70, 108), (98, 108), (100, 132), (68, 132)], fill=SKIN)
+    d.polygon([(70, 108), (98, 108), (98, 120), (70, 124)], fill=SKIN_SHADE)
+    # Hair behind the head, then the face.
+    d.ellipse((44, 22, 126, 108), fill=HAIR, outline=OUTLINE)
+    d.polygon([(48, 80), (120, 80), (118, 106), (50, 106)], fill=HAIR)
+    d.ellipse((52, 40, 116, 122), fill=SKIN, outline=OUTLINE)
+    d.polygon([(56, 98), (112, 98), (100, 118), (68, 118)], fill=SKIN)                               # a soft, narrow jaw
+    d.polygon([(106, 52), (114, 76), (112, 100), (100, 116), (104, 90)], fill=SKIN_SHADE)             # shade on one side of the face
+    # Ears, and a stud.
+    d.ellipse((46, 76, 56, 96), fill=SKIN, outline=OUTLINE)
+    d.ellipse((112, 76, 122, 96), fill=SKIN_SHADE, outline=OUTLINE)
+    d.ellipse((48, 94, 53, 99), fill=(255, 196, 60))
+    # The fringe: layered and swept across the forehead from one side.
+    d.pieslice((46, 24, 124, 100), 180, 330, fill=HAIR, outline=OUTLINE)
+    d.polygon([(48, 72), (54, 44), (80, 30), (112, 40), (118, 62), (100, 52), (84, 58), (66, 68), (56, 86)], fill=HAIR)
+    d.polygon([(70, 34), (96, 30), (108, 40), (90, 42), (72, 46)], fill=HAIR_LIGHT)
+    d.polygon([(52, 74), (46, 96), (54, 104), (58, 84)], fill=HAIR)
+    # Face: level brows, almond eyes, a straight nose and a calm, slight smile.
+    for ex in (68, 98):
+        d.polygon([(ex - 9, 70), (ex + 9, 68), (ex + 9, 72), (ex - 9, 74)], fill=HAIR)                  # brow
+        d.polygon([(ex - 9, 80), (ex, 75), (ex + 9, 80), (ex, 85)], fill=(250, 250, 250), outline=OUTLINE)   # eye
+        d.ellipse((ex - 4, 76, ex + 4, 84), fill=(54, 118, 96))                                            # iris
+        d.ellipse((ex - 2, 78, ex + 2, 82), fill=(18, 24, 24))
+        d.point((ex + 2, 77), fill=(255, 255, 255))
+    d.line([(cx + 2, 84), (cx - 1, 98), (cx + 4, 100)], fill=SKIN_SHADE, width=2)                       # nose
+    d.polygon([(72, 106), (cx, 109), (96, 106), (cx, 112)], fill=(206, 118, 112))                       # lips
+    d.line([(74, 106), (cx, 108), (94, 105)], fill=OUTLINE, width=1)
+
+
+def newsroom_set() -> Image.Image:
+    image = newsroom_wall()
+    layer = Image.new("RGBA", (320, 200), (0, 0, 0, 0))
+    anchor_alex(layer)                                           # drawn large, then scaled so the head and jacket both fit the frame
+    figure = layer.crop((8, 20, 162, 200)).resize((126, 147), Image.LANCZOS)
+    image.paste(figure, (16, 30), figure)
+    d = ImageDraw.Draw(image)
+    d.rectangle(NEWS_SCREEN, fill=(0, 0, 0), outline=(30, 30, 230), width=3)
+    return image
+
+
 def news_frame(winner: str) -> Image.Image:
-    """The original newsroom, the winner's portrait on the news screen and a name plate under it."""
-    frame = Image.open(SCENES / "newsroom.bmp").convert("RGB").crop((0, 10, W, 10 + H))
+    """The newsroom set, the winner's portrait on the news screen and a name plate under it."""
+    frame = newsroom_set().crop((0, 10, W, 10 + H))
     color = PILOT_COLOR[winner]
     face = portrait(winner.capitalize(), 1.7, color)
     screen = (165, 5, 305, 104)   # the black screen of the original picture, in frame pixels
@@ -342,8 +428,7 @@ def wreck_frame(player_har: str, result: str, tmp: Path) -> Image.Image:
 
 
 def main() -> int:
-    for needed in (AFTOOL, PORTRAITS / "Crystal.bmp", BACKDROPS / "stadium.bmp", SCENES / "vs.bmp",
-                   SCENES / "newsroom.bmp"):
+    for needed in (AFTOOL, PORTRAITS / "Crystal.bmp", BACKDROPS / "stadium.bmp", SCENES / "vs.bmp"):
         if not needed.exists():
             print(f"Missing {needed} (run export_story_assets.py first)", file=sys.stderr)
             return 1
