@@ -1,8 +1,11 @@
 param(
     [int]$CaptureTick = -1,
     [int]$WarmupSeconds = 4,
-    [ValidateSet('Jaguar', 'Shadow')]
+    [ValidateSet('Jaguar', 'Shadow', 'Katana')]
     [string]$Player = 'Jaguar',
+    # Story matches: the rival's HAR. Left out, it is the other of Jaguar and Shadow; it is never the player's own HAR.
+    [ValidateSet('', 'Jaguar', 'Shadow', 'Katana')]
+    [string]$RivalHar = '',
     [ValidateSet('Crystal', 'Steffan', 'Milano', 'Christian', 'Shirro', 'JeanPaul', 'Ibrahim', 'Angel', 'Cossette', 'Raven')]
     [string]$Pilot = '',
     # Original Tournament upgrade level for Shadow (0-3). Shadow's shadow attacks,
@@ -43,6 +46,7 @@ if (-not (Test-Path -LiteralPath (Join-Path $sourceDir 'resources\ARENA0.BK'))) 
 $env:OMF3K_TRACE_PATH = $null
 $env:OMF3K_INPUT_PATH = $null
 $env:OMF3K_LIVE_PLAYER = $Player
+$env:OMF3K_LIVE_RIVAL_HAR = if ($RivalHar -ne '') { $RivalHar } else { $null }
 $pilotNames = @('Crystal', 'Steffan', 'Milano', 'Christian', 'Shirro', 'JeanPaul', 'Ibrahim', 'Angel', 'Cossette', 'Raven')
 if ($Pilot -eq '') { $Pilot = if ($Player -eq 'Shadow') { 'Shirro' } else { 'Crystal' } }
 $Pilot = $pilotNames | Where-Object { $_ -ieq $Pilot } | Select-Object -First 1

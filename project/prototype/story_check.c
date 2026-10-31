@@ -56,7 +56,7 @@ static int cmd_play(int argc, char **argv) {
     if(story.has_cast) {
         // The selection screen's job: the player's HAR (default the recommended one) and the rival's other HAR.
         const char *player_har = har ? har : story.player_har;
-        const char *rival_har = strcmp(player_har, "Shadow") == 0 ? "Jaguar" : "Shadow";
+        const char *rival_har = strcmp(player_har, "Jaguar") == 0 ? "Shadow" : "Jaguar";   // Katana and Shadow face Jaguar
         snprintf(flags[0].name, STORY_NAME, "player_har"); snprintf(flags[0].value, STORY_NAME, "%s", player_har);
         snprintf(flags[1].name, STORY_NAME, "rival_har"); snprintf(flags[1].value, STORY_NAME, "%s", rival_har);
         snprintf(flags[2].name, STORY_NAME, "player_pilot"); snprintf(flags[2].value, STORY_NAME, "%s", story.player_pilot);
@@ -305,7 +305,7 @@ static void selftest_cast(void) {
     CHECK(strstr(story_say_text(&run), "{player_har}") != NULL);
     story_advance(&run);
     CHECK(!story_fight_har(&run, story_event_cmd(&run), 0, h0, sizeof(h0)));
-    StoryFlag bad[1] = {{"player_har", "Katana"}};
+    StoryFlag bad[1] = {{"player_har", "Thorn"}};
     CHECK(story_start_with_flags(&run, &story, NULL, bad, 1));
     story_advance(&run);
     CHECK(!story_fight_har(&run, story_event_cmd(&run), 0, h0, sizeof(h0)));
@@ -324,8 +324,11 @@ static void selftest_cast(void) {
     }
     story_free(&story);
 
+    CHECK(story_parse(&story, "player Crystal Katana\nrival Christian\nscene a\nend\n", "katana", err, sizeof(err)) &&
+          strcmp(story.player_har, "Katana") == 0);
+    story_free(&story);
     CHECK(rejects("player Bob Jaguar\nscene a\nend\n", "unknown pilot"));
-    CHECK(rejects("player Crystal Katana\nscene a\nend\n", "unknown HAR"));
+    CHECK(rejects("player Crystal Thorn\nscene a\nend\n", "unknown HAR"));
     CHECK(rejects("player Crystal\nscene a\nend\n", "player needs"));
     CHECK(rejects("player Crystal Jaguar\nscene a\nend\n", "needs both"));
     CHECK(rejects("rival Christian\nscene a\nend\n", "needs both"));
@@ -500,7 +503,7 @@ static int cmd_selftest(void) {
     CHECK(rejects("scene a\nchoice X a\nend\n", "needs 'text -> scene'"));
     CHECK(rejects("scene a\nset evidence\nend\n", "set needs"));
     CHECK(rejects("scene a\nfight Bob Jaguar vs Crystal Shadow win -> a lose -> a\n", "unknown pilot"));
-    CHECK(rejects("scene a\nfight Crystal Katana vs Christian Shadow win -> a lose -> a\n", "unknown HAR"));
+    CHECK(rejects("scene a\nfight Crystal Thorn vs Christian Shadow win -> a lose -> a\n", "unknown HAR"));
     CHECK(rejects("scene a\nfight Crystal Jaguar vs Christian Shadow win -> a\n", "fight needs"));
     CHECK(rejects("scene a\nchoice 1 -> a\nchoice 2 -> a\nchoice 3 -> a\nchoice 4 -> a\nchoice 5 -> a\n"
                   "choice 6 -> a\nchoice 7 -> a\n", "at most"));

@@ -106,7 +106,7 @@ static Uint64 story_notice_until;
 static bool story_notice_pending;
 // Selection screen: shown first when the script declares a player and a rival, until a HAR is confirmed.
 static bool story_setup;
-static int story_setup_har;          // 0 Jaguar, 1 Shadow
+static int story_setup_har;          // 0 Jaguar, 1 Shadow, 2 Katana
 typedef struct { int w,h; unsigned char *rgb; } StoryPortrait;
 static StoryPortrait story_portraits[2];   // the player's pilot, then the rival's
 // Power, agility and endurance of the ten playable pilots, copied from src/resources/pilots.c (OpenOMF).
@@ -174,14 +174,14 @@ static float clampf(float x, float a, float b) { return x < a ? a : (x > b ? b :
 static float distance_x(const Fighter *a, const Fighter *b) { return fabsf(a->x - b->x); }
 static int facing_dir(const Fighter *f) { return f->facing < 0 ? 1 : -1; }
 static bool source_standing_kick(int har, int animation) {
-    return (har==0 && animation==41) || (har==1 && animation==42);
+    return (har==0 && animation==41) || (har==1 && animation==42) || (har==5 && animation==41);
 }
 static bool source_standing_punch(int har, int animation) {
-    return (har==0 && animation==42) || (har==1 && animation==43);
+    return (har==0 && animation==42) || (har==1 && animation==43) || (har==5 && animation==42);
 }
 static bool source_close_contact_attack(int har, int animation) {
     return source_standing_punch(har,animation) || source_standing_kick(har,animation) ||
-           (har==0 && animation==30) || (har==1 && animation==23);
+           (har==0 && animation==30) || (har==1 && animation==23) || (har==5 && animation==16);
 }
 static void reset_fight(void) {
     player = (Fighter){.x=-3.0f, .facing=-1.5707963f, .hp=100, .max_hp=100};
@@ -1063,6 +1063,7 @@ static void robot(Fighter *f, int har, float t) {
     if(har==0 || har==1) {
         robot_loaded_model(f,har,t,false);
     }
+    else if(har==5) robot_placeholder(f,.74f,.78f,.86f,t);   // Katana: no model yet, so the generic robot in its steel colour
     else robot_placeholder(f,.56f,.61f,.68f,t);
 }
 // Projectile animations that show a full Shadow figure: the shadows of P41 (25, 26), the K41 slide (22, 53), the
@@ -1728,6 +1729,14 @@ static void story_stat_row(float x,float y,const char *name,int value) {
     quad(x+.46f,y-.040f,.40f,.040f,.08f,.12f,.20f);
     quad(x+.46f,y-.040f,.40f*(float)value/20.0f,.040f,.30f,.80f,.95f);
 }
+// The HARs the story offers, and the one each takes against it (never the player's own).
+static const char *const story_har_names[3]={"Jaguar","Shadow","Katana"};
+static const int story_rival_of[3]={1,0,0};
+static int story_har_index(const char *name) {
+    if(!name || !name[0]) return 0;
+    char c=(char)(name[0]|32);
+    return c=='s' ? 1 : c=='k' ? 2 : 0;
+}
 static void story_setup_card(int side,float x,const char *pilot,const char *har,const char *role) {
     char lines[8][80];
     story_draw_portrait(&story_portraits[side],pilot,x,.50f,3.0f);
@@ -1769,7 +1778,7 @@ static void story_route_path(const char *script,const Story *story,char *out,siz
 static void story_load_cast_portraits(void) {
     story_load_portrait(&story_portraits[0],story_data.player_pilot);
     story_load_portrait(&story_portraits[1],story_data.rival_pilot);
-    story_setup_har=story_data.player_har[0]=='S' || story_data.player_har[0]=='s';
+    story_setup_har=story_har_index(story_data.player_har);
 }
 // Replaces the loaded script with its route; false (and the old script kept) when the route cannot be loaded.
 static bool story_switch_route(void) {
@@ -1790,7 +1799,7 @@ static bool story_switch_route(void) {
     return true;
 }
 static void story_setup_hud(void) {
-    static const char *har_names[2]={"JAGUAR","SHADOW"};
+    static const char *har_names[3]={"JAGUAR","SHADOW","KATANA"};
     quad(-1,-1,2,2,.015f,.025f,.065f);
     label(-.94f,.985f,.008f,"OMF2115 / STORY",.65f,.92f,1);
     label(-.94f,.89f,.016f,story_data.has_route ? "PILOT AND HAR" : "CHOOSE YOUR HAR",.80f,.88f,.96f);
@@ -1800,18 +1809,18 @@ static void story_setup_hud(void) {
     bool recommended=story_data.player_har[0] && (story_data.player_har[0]|32)==(har_names[story_setup_har][0]|32);
     if(recommended) label(.34f,.69f,.0075f,"RECOMMENDED",1,.85f,.40f);
     story_setup_card(0,-.94f,story_data.player_pilot,har_names[story_setup_har],"YOU");
-    story_setup_card(1,.06f,story_data.rival_pilot,har_names[story_setup_har^1],"RIVAL");
+    story_setup_card(1,.06f,story_data.rival_pilot,har_names[story_rival_of[story_setup_har]],"RIVAL");
     label(-.94f,-.945f,.007f,story_data.has_route ? "UP DOWN PILOT  LEFT RIGHT HAR  ENTER START"
                                                    : "LEFT RIGHT HAR  ENTER START  ESC QUIT",.48f,.60f,.72f);
 }
 // Starts the story with the chosen HAR for the player; the rival takes the other.
 static void story_begin(int har_index) {
-    static const char *names[2]={"Jaguar","Shadow"};
+    const char *const *names=story_har_names;
     StoryFlag flags[4];
     snprintf(flags[0].name,STORY_NAME,"player_har");
     snprintf(flags[0].value,STORY_NAME,"%s",names[har_index]);
     snprintf(flags[1].name,STORY_NAME,"rival_har");
-    snprintf(flags[1].value,STORY_NAME,"%s",names[har_index^1]);
+    snprintf(flags[1].value,STORY_NAME,"%s",names[story_rival_of[har_index]]);
     snprintf(flags[2].name,STORY_NAME,"player_pilot");
     snprintf(flags[2].value,STORY_NAME,"%s",story_data.player_pilot);
     snprintf(flags[3].name,STORY_NAME,"rival_pilot");
@@ -2134,7 +2143,7 @@ static void story_match_start(void) {
     snprintf(story_match_result_path,sizeof(story_match_result_path),"%s",result);
     char cmd[1600];
     snprintf(cmd,sizeof(cmd),"powershell.exe -NoProfile -ExecutionPolicy Bypass -File \"%s\" -Player %s -Pilot %s "
-             "-RivalPilot %s -ResultFile \"%s\"%s",launcher,har0,c->pilot[0],c->pilot[1],result,
+             "-RivalPilot %s -RivalHar %s -ResultFile \"%s\"%s",launcher,har0,c->pilot[0],c->pilot[1],har1,result,
              story_muted ? "" : " -Sound");
     if(!story_match_job) {
         story_match_job=CreateJobObjectA(NULL,NULL);
@@ -2190,7 +2199,7 @@ static void story_restart(void) {
     if(story_data.has_cast) {
         memset(&story_run,0,sizeof(story_run));
         story_setup=true;
-        story_setup_har=story_data.player_har[0]=='S' || story_data.player_har[0]=='s';
+        story_setup_har=story_har_index(story_data.player_har);
     } else {
         story_start(&story_run,&story_data,story_start_scene);
     }
@@ -2248,9 +2257,11 @@ static void story_key(SDL_Scancode key) {
     if(story_setup) {
         if(key==SDL_SCANCODE_UP || key==SDL_SCANCODE_DOWN || key==SDL_SCANCODE_W || key==SDL_SCANCODE_S) {
             if(story_data.has_route) { if(story_switch_route()) { story_setup=true; story_sound(SND_MOVE); } }
-            else { story_setup_har^=1; story_sound(SND_MOVE); }
-        } else if(key==SDL_SCANCODE_LEFT || key==SDL_SCANCODE_RIGHT || key==SDL_SCANCODE_A || key==SDL_SCANCODE_D) {
-            story_setup_har^=1; story_sound(SND_MOVE);
+            else { story_setup_har=(story_setup_har+1)%3; story_sound(SND_MOVE); }
+        } else if(key==SDL_SCANCODE_LEFT || key==SDL_SCANCODE_A) {
+            story_setup_har=(story_setup_har+2)%3; story_sound(SND_MOVE);
+        } else if(key==SDL_SCANCODE_RIGHT || key==SDL_SCANCODE_D) {
+            story_setup_har=(story_setup_har+1)%3; story_sound(SND_MOVE);
         }
         else if(key==SDL_SCANCODE_RETURN || key==SDL_SCANCODE_SPACE) story_begin(story_setup_har);
         return;
@@ -2915,7 +2926,7 @@ int main(int argc,char **argv) {
             i+=2;
         }
         if(!good) {
-            fputs("Usage: omf3d_prototype --story script.story [--new] [--debug-fights] [--mute] [--save-file path] [--scene id] [--har Jaguar|Shadow]\n"
+            fputs("Usage: omf3d_prototype --story script.story [--new] [--debug-fights] [--mute] [--save-file path] [--scene id] [--har Jaguar|Shadow|Katana]\n"
                   "                       [--script a,c1,w,...] [--shot out.bmp]\n",stderr);
             return 1;
         }
@@ -3030,14 +3041,14 @@ int main(int argc,char **argv) {
         }
         if(story_data.has_cast) {
             story_load_cast_portraits();
-            if(story_arg_har && strcmp(story_arg_har,"Jaguar") && strcmp(story_arg_har,"Shadow")) {
-                fprintf(stderr,"--har must be Jaguar or Shadow\n");
+            if(story_arg_har && strcmp(story_arg_har,"Jaguar") && strcmp(story_arg_har,"Shadow") && strcmp(story_arg_har,"Katana")) {
+                fprintf(stderr,"--har must be Jaguar, Shadow or Katana\n");
                 story_free(&story_data);
                 return 1;
             }
             if(!story_resumed) {
                 if(story_arg_har || story_script) {
-                    story_begin(story_arg_har ? story_arg_har[0]=='S' : story_setup_har);
+                    story_begin(story_arg_har ? story_har_index(story_arg_har) : story_setup_har);
                 } else {
                     memset(&story_run,0,sizeof(story_run));
                     story_setup=true;

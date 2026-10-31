@@ -20,7 +20,7 @@ CONTROLS
            R  restart the story                M  mute / unmute
            Esc  quit
   Setup:   Up / Down  switch between playing Crystal and Christian (each has their own story),
-           Left / Right  choose your HAR, Enter to start.
+           Left / Right  choose your HAR (Jaguar, Shadow or Katana), Enter to start.
   Match (a second window opens after a few seconds):
            A / D  move      W / S  jump / duck      J  punch      K  kick
            Hold away from your opponent to guard.   Esc  closes the match.

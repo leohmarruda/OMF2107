@@ -9,6 +9,7 @@ diagonal colour bars, a vignette, and name plates drawn on top.
   christian_card       Christian's portrait on orange bars
   faceoff_jaguar       Crystal in Jaguar (left) against Christian in Shadow (right)
   faceoff_shadow       Crystal in Shadow (left) against Christian in Jaguar (right)
+  faceoff_katana       Crystal in Katana (left) against Christian in Jaguar (right)
   ending_crystal       Crystal's ending card, on the Desert sunset
   ending_christian     Christian's ending card
   ending_together      the siblings side by side (they faced it together)
@@ -49,7 +50,9 @@ ORANGE = (255, 140, 70)
 WHITE = (240, 245, 255)
 
 # Idle stance (animation 11, sprite 0) of each HAR's FIGHTR<id>.AF file; the HAR id is the file number.
-HAR_FILE = {"jaguar": 0, "shadow": 1}
+HAR_FILE = {"jaguar": 0, "shadow": 1, "katana": 5}
+# The HAR each takes against it in the story (never the player's own), as in the viewer's selection screen.
+RIVAL_OF = {"jaguar": "shadow", "shadow": "jaguar", "katana": "jaguar"}
 
 
 def font(size: int) -> ImageFont.ImageFont:
@@ -227,7 +230,7 @@ PILOT_COLOR = {"crystal": CYAN, "christian": ORANGE}
 def hangar_frame(player: str, player_har: str, tmp: Path) -> Image.Image:
     """The VS-screen hangar bay, mirrored to fill the frame, with the two HARs facing each other."""
     rival = "christian" if player == "crystal" else "crystal"
-    rival_har = "shadow" if player_har == "jaguar" else "jaguar"
+    rival_har = RIVAL_OF[player_har]
     bay = Image.open(SCENES / "vs.bmp").convert("RGB").crop((0, 12, 150, 12 + H)).resize((W // 2, H), Image.NEAREST)
     frame = Image.new("RGB", (W, H))
     frame.paste(bay, (0, 0))
@@ -261,7 +264,7 @@ def news_frame(winner: str) -> Image.Image:
 # The original sprites for being hit (animation 9, sprite 5) and for lying defeated (animation 49; Jaguar's sprite 3,
 # Shadow's sprite 0, as listed in project/docs/OMF2097/poses).
 HIT_POSE = (9, 5)
-DEFEAT_POSE = {"jaguar": (49, 3), "shadow": (49, 0)}
+DEFEAT_POSE = {"jaguar": (49, 3), "shadow": (49, 0), "katana": (49, 0)}
 
 
 def damaged(sprite: Image.Image, seed: int) -> Image.Image:
@@ -310,7 +313,7 @@ def sparks(frame: Image.Image, x: int, y: int, seed: int) -> None:
 
 def wreck_frame(player_har: str, result: str, tmp: Path) -> Image.Image:
     """The repair bay after the match. The winner stands battered; the loser lies where it fell."""
-    rival_har = "shadow" if player_har == "jaguar" else "jaguar"
+    rival_har = RIVAL_OF[player_har]
     bay = Image.open(SCENES / "vs.bmp").convert("RGB").crop((0, 12, 150, 12 + H)).resize((W // 2, H), Image.NEAREST)
     frame = Image.new("RGB", (W, H))
     frame.paste(bay, (0, 0))
@@ -352,6 +355,7 @@ def main() -> int:
             "christian_card": card_frame("Christian", "CHRISTIAN DEVROE", ORANGE, right=True),
             "faceoff_jaguar": faceoff_frame("jaguar", "shadow", Path(tmp)),
             "faceoff_shadow": faceoff_frame("shadow", "jaguar", Path(tmp)),
+            "faceoff_katana": faceoff_frame("katana", "jaguar", Path(tmp)),
             "ending_crystal": card_frame("Crystal", "CRYSTAL DEVROE", CYAN, right=False, backdrop="desert", brightness=.8),
             "ending_christian": card_frame("Christian", "CHRISTIAN DEVROE", ORANGE, right=True, backdrop="desert",
                                            brightness=.8),
@@ -361,11 +365,11 @@ def main() -> int:
             "news_crystal": news_frame("crystal"),
             "news_christian": news_frame("christian"),
         }
-        for har in ("jaguar", "shadow"):
+        for har in ("jaguar", "shadow", "katana"):
             for result in ("won", "lost"):
                 frames[f"wreck_{har}_{result}"] = wreck_frame(har, result, Path(tmp))
         for pilot in ("crystal", "christian"):
-            for har in ("jaguar", "shadow"):
+            for har in ("jaguar", "shadow", "katana"):
                 frames[f"bay_{pilot}_{har}"] = hangar_frame(pilot, har, Path(tmp))
     for name, frame in frames.items():
         frame.save(ART / f"{name}.bmp")

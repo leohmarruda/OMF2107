@@ -9,7 +9,7 @@
 // The ten playable pilots and the two HARs the prototype can render.
 static const char *const known_pilots[] = {"Crystal", "Steffan", "Milano", "Christian", "Shirro",
                                            "JeanPaul", "Ibrahim", "Angel", "Cossette", "Raven"};
-static const char *const known_hars[] = {"Jaguar", "Shadow"};
+static const char *const known_hars[] = {"Jaguar", "Shadow", "Katana"};
 
 static bool ieq(const char *a, const char *b) {
     for(; *a && *b; a++, b++)
@@ -147,7 +147,7 @@ static bool parse_line(Story *s, char *line_text, int line, const char *name, ch
                 fail(err, err_size, name, line, "unknown pilot '%s'", pilot); return false;
             }
             if(!in_list(har, known_hars, sizeof(known_hars) / sizeof(known_hars[0]))) {
-                fail(err, err_size, name, line, "unknown HAR '%s' (the prototype renders Jaguar and Shadow)", har); return false;
+                fail(err, err_size, name, line, "unknown HAR '%s' (the story offers Jaguar, Shadow and Katana)", har); return false;
             }
             copy(s->player_pilot, STORY_NAME, pilot);
             copy(s->player_har, STORY_NAME, har);
@@ -289,7 +289,7 @@ static bool parse_line(Story *s, char *line_text, int line, const char *name, ch
             if(c->har[i][0] == '@') {
                 if(!c->har[i][1]) { fail(err, err_size, name, line, "'@' needs a flag name"); return false; }
             } else if(!in_list(c->har[i], known_hars, sizeof(known_hars) / sizeof(known_hars[0]))) {
-                fail(err, err_size, name, line, "unknown HAR '%s' (the prototype renders Jaguar and Shadow)",
+                fail(err, err_size, name, line, "unknown HAR '%s' (the story offers Jaguar, Shadow and Katana)",
                      c->har[i]);
                 return false;
             }

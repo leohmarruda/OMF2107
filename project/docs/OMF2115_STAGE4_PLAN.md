@@ -204,6 +204,16 @@ text with placeholder portraits.
   vertex buffer and dropped the HUD, so the buffer is now 1,000,000 vertices and only the used part is uploaded each frame. Tested:
   a Meshy capture with the HUD, the launcher starting the viewer with its options passed through, and a rebuilt Release package. Not
   tested: a full Meshy match played by hand, and its frame rate (the Meshy meshes are drawn twice per frame).
+- **Katana (2026-10-31, requested):** the player can now choose Katana, the third HAR, on the selection screen (Left / Right cycles Jaguar,
+  Shadow, Katana); its rival is Jaguar, so no pairing has the same HAR on both sides. OpenOMF's live match setup now takes each side's HAR by
+  name (`OMF3K_LIVE_PLAYER`, and the new `OMF3K_LIVE_RIVAL_HAR`, which the launcher's new `-RivalHar` sets and the story viewer passes), so
+  it can field any of the original HARs; the story format, the viewer's selection and match launch, and the art frames (face-off, hangar and
+  repair-bay pictures built from Katana's own original sprites) were extended to Katana. In the match view Katana is drawn with the generic
+  placeholder robot in steel colours, and it has no model, rig, pose mapping, attack trail or hit-pose work yet, so it looks far plainer than
+  Jaguar and Shadow. Tested: `story_check` selftest and both scripts on all three HARs, screenshots of the selection screen and the Katana
+  hangar and repair-bay frames, an engine trace of a live match showing Katana (HAR 5) against Jaguar (HAR 0), and a captured live match and
+  a replay of that trace in the viewer. Not tested: a Katana match played by hand through the story, the face-off frame in the viewer, and
+  Katana's attack timing in the viewer (its animation numbers for punch, kick and low punch are from the pose index and not measured).
 - **Not yet done:** a clean end-to-end playtest by someone who has not seen the build (step 6).
 
 ## Step 3 design: the match handoff (built)

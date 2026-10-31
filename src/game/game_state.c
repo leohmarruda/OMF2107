@@ -496,8 +496,26 @@ int game_state_create(game_state *gs, const engine_init_flags *init_flags) {
     reconfigure_controller(gs);
     int nscene;
     if(init_flags->omf3k_live) {
+        // The HAR of each side, by name (OMF3K_LIVE_PLAYER, OMF3K_LIVE_RIVAL_HAR). The player defaults to Jaguar; the rival
+        // defaults to the other of Jaguar and Shadow, and is never the player's own HAR.
+        static const char *const har_names[NUMBER_OF_HAR_TYPES] = {"Jaguar", "Shadow", "Thorn",     "Pyros",
+                                                                    "Electra", "Katana", "Shredder", "Flail",
+                                                                    "Gargoyle", "Chronos", "Nova"};
         const char *live_player = getenv("OMF3K_LIVE_PLAYER");
-        bool shadow_player = live_player && strcmp(live_player, "Shadow") == 0;
+        const char *live_rival_har = getenv("OMF3K_LIVE_RIVAL_HAR");
+        int live_har[2] = {HAR_JAGUAR, HAR_SHADOW};
+        for(int h = 0; h < NUMBER_OF_HAR_TYPES; h++) {
+            if(live_player && strcmp(live_player, har_names[h]) == 0) {
+                live_har[0] = h;
+            }
+        }
+        live_har[1] = live_har[0] == HAR_JAGUAR ? HAR_SHADOW : (live_har[0] == HAR_SHADOW ? HAR_JAGUAR : HAR_JAGUAR);
+        for(int h = 0; h < NUMBER_OF_HAR_TYPES; h++) {
+            if(live_rival_har && strcmp(live_rival_har, har_names[h]) == 0 && h != live_har[0]) {
+                live_har[1] = h;
+            }
+        }
+        bool shadow_player = live_har[0] == HAR_SHADOW;
         const char *selected_pilot = getenv("OMF3K_LIVE_PILOT_ID");
         int selected_pilot_id = selected_pilot ? atoi(selected_pilot) : -1;
         if(selected_pilot_id < 0 || selected_pilot_id >= NUMBER_OF_PLAYABLE_PILOT_TYPES) {
@@ -519,13 +537,13 @@ int game_state_create(game_state *gs, const engine_init_flags *init_flags) {
         gs->match_settings.hazards = false;
         for(int i = 0; i < 2; i++) {
             game_player *player = gs->players[i];
-            bool use_shadow = i == 0 ? shadow_player : !shadow_player;
+            bool use_shadow = live_har[i] == HAR_SHADOW;
             int pilot_id = i == 0 ? selected_pilot_id :
                 (rival_pilot_id >= 0 ? rival_pilot_id : (use_shadow ? PILOT_SHIRRO : PILOT_CRYSTAL));
             pilot info;
             pilot_get_info(&info, pilot_id);
             player->pilot->pilot_id = pilot_id;
-            player->pilot->har_id = use_shadow ? HAR_SHADOW : HAR_JAGUAR;
+            player->pilot->har_id = live_har[i];
             player->pilot->power = info.power;
             player->pilot->agility = info.agility;
             player->pilot->endurance = info.endurance;
