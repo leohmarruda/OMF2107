@@ -22,6 +22,9 @@
 //   player <pilot> <har>                the pilot the player controls and the HAR the story recommends
 //   rival <pilot>                       the AI opponent's pilot
 //   card <pilot>: <text>                context shown for that pilot on the selection screen
+//   route <pilot> <script>              another script the player can pick instead, written from that pilot's
+//                                       side (a path relative to this script); at most one per script, and each
+//                                       script of a pair names the other
 // A fight's HAR may be written @flag, taking the HAR from a flag when the match is reached, and say text may
 // contain {flag}, replaced by that flag's value (left as written when the flag is unset).
 // Every scene must finish with jump, end, fight, or a choice menu; nothing may follow those.
@@ -77,6 +80,7 @@ typedef struct {
 #define STORY_MAX_CARDS 4
 
 typedef struct { char pilot[STORY_NAME]; char text[STORY_TEXT]; } StoryCard;
+typedef struct { char pilot[STORY_NAME]; char path[256]; } StoryRoute;
 
 typedef struct {
     StoryScene *scenes;
@@ -89,6 +93,8 @@ typedef struct {
     char rival_pilot[STORY_NAME];
     StoryCard cards[STORY_MAX_CARDS];
     int card_count;
+    bool has_route;                  // the script offers another pilot's script (see route)
+    StoryRoute route;
 } Story;
 
 // Parses and validates script text. On failure returns false and writes "name:line: message" to err.

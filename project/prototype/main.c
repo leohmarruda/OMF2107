@@ -10,10 +10,9 @@
 #include <stdlib.h>
 #include <string.h>
 #include <time.h>
+#include <sys/stat.h>
 #ifdef _WIN32
 #include <direct.h>
-#else
-#include <sys/stat.h>
 #endif
 
 #include "source_replay.h"
@@ -1338,6 +1337,91 @@ static void story_draw_stadium_fallback(void) {
         story_box(u,v,u+.022f,v+.05f,.18f+.05f*(float)h,.20f+.04f*(float)h,.30f);
     }
 }
+// ---- smooth pictures: the upscaled *_hd.bmp files are drawn as textures, between two runs of the quad batch ----
+typedef struct { GLuint id; int w,h; } StoryTexture;
+static StoryTexture story_backdrop_tex, story_art_tex;
+static struct { bool active; GLuint id; float x0,y0,x1,y1,u0,v0,u1,v1,bright; int split; } story_tex_draw;
+static GLuint story_gl_program, story_gl_vao;     // the quad batch's, restored after a textured draw
+static GLuint story_tex_program, story_tex_vao, story_tex_vbo;
+static GLint story_tex_bright_loc;
+static GLuint make_shader(GLenum type,const char *source);
+static void story_tex_init(GLuint main_program,GLuint main_vao) {
+    story_gl_program=main_program; story_gl_vao=main_vao;
+    const char *vs="#version 330 core\nlayout(location=0) in vec2 p;layout(location=1) in vec2 t;out vec2 uv;"
+                   "void main(){gl_Position=vec4(p,-.99,1);uv=t;}";
+    const char *fs="#version 330 core\nin vec2 uv;uniform sampler2D img;uniform float bright;out vec4 o;"
+                   "void main(){o=vec4(texture(img,uv).rgb*bright,1);}";
+    GLuint v=make_shader(GL_VERTEX_SHADER,vs), f=make_shader(GL_FRAGMENT_SHADER,fs);
+    story_tex_program=glCreateProgram();
+    glAttachShader(story_tex_program,v); glAttachShader(story_tex_program,f); glLinkProgram(story_tex_program);
+    GLint linked=0; glGetProgramiv(story_tex_program,GL_LINK_STATUS,&linked);
+    glDeleteShader(v); glDeleteShader(f);
+    if(!linked) { fprintf(stderr,"Texture program link failed; smooth pictures are off\n"); story_tex_program=0; return; }
+    story_tex_bright_loc=glGetUniformLocation(story_tex_program,"bright");
+    glUseProgram(story_tex_program);
+    glUniform1i(glGetUniformLocation(story_tex_program,"img"),0);
+    glGenVertexArrays(1,&story_tex_vao); glGenBuffers(1,&story_tex_vbo);
+    glBindVertexArray(story_tex_vao); glBindBuffer(GL_ARRAY_BUFFER,story_tex_vbo);
+    glBufferData(GL_ARRAY_BUFFER,6*4*sizeof(float),NULL,GL_STREAM_DRAW);
+    glVertexAttribPointer(0,2,GL_FLOAT,GL_FALSE,4*sizeof(float),(void*)0); glEnableVertexAttribArray(0);
+    glVertexAttribPointer(1,2,GL_FLOAT,GL_FALSE,4*sizeof(float),(void*)(2*sizeof(float))); glEnableVertexAttribArray(1);
+    glUseProgram(main_program); glBindVertexArray(main_vao);
+    glBindBuffer(GL_ARRAY_BUFFER,0);
+}
+static void story_texture_load(StoryTexture *texture,const char *path) {
+    if(texture->id) { glDeleteTextures(1,&texture->id); texture->id=0; }
+    texture->w=texture->h=0;
+    if(!story_tex_program) return;
+    StoryPortrait image={0};
+    story_load_bmp(&image,path);
+    if(!image.rgb) return;
+    glGenTextures(1,&texture->id);
+    glBindTexture(GL_TEXTURE_2D,texture->id);
+    glPixelStorei(GL_UNPACK_ALIGNMENT,1);
+    glTexImage2D(GL_TEXTURE_2D,0,GL_RGB8,image.w,image.h,0,GL_RGB,GL_UNSIGNED_BYTE,image.rgb);
+    glGenerateMipmap(GL_TEXTURE_2D);
+    glTexParameteri(GL_TEXTURE_2D,GL_TEXTURE_MIN_FILTER,GL_LINEAR_MIPMAP_LINEAR);
+    glTexParameteri(GL_TEXTURE_2D,GL_TEXTURE_MAG_FILTER,GL_LINEAR);
+    glTexParameteri(GL_TEXTURE_2D,GL_TEXTURE_WRAP_S,GL_CLAMP_TO_EDGE);
+    glTexParameteri(GL_TEXTURE_2D,GL_TEXTURE_WRAP_T,GL_CLAMP_TO_EDGE);
+    texture->w=image.w; texture->h=image.h;
+    free(image.rgb);
+}
+// Asks for a texture to be drawn over the rectangle x0..x1, y0..y1 (NDC) after the quads emitted so far.
+static void story_tex_request(const StoryTexture *texture,float x0,float y0,float x1,float y1,
+                              float u0,float v0,float u1,float v1,float bright) {
+    story_tex_draw.active=true; story_tex_draw.id=texture->id;
+    story_tex_draw.x0=x0; story_tex_draw.y0=y0; story_tex_draw.x1=x1; story_tex_draw.y1=y1;
+    story_tex_draw.u0=u0; story_tex_draw.v0=v0; story_tex_draw.u1=u1; story_tex_draw.v1=v1;
+    story_tex_draw.bright=bright;
+    story_tex_draw.split=vertex_count;
+}
+static void story_tex_flush(void) {
+    if(!story_tex_draw.active || !story_tex_program) return;
+    const float x0=story_tex_draw.x0,y0=story_tex_draw.y0,x1=story_tex_draw.x1,y1=story_tex_draw.y1;
+    const float u0=story_tex_draw.u0,v0=story_tex_draw.v0,u1=story_tex_draw.u1,v1=story_tex_draw.v1;
+    // The picture's first row is the top of the screen rectangle, so v grows downwards.
+    const float quad_data[24]={x0,y1,u0,v0, x1,y1,u1,v0, x1,y0,u1,v1,  x0,y1,u0,v0, x1,y0,u1,v1, x0,y0,u0,v1};
+    glUseProgram(story_tex_program);
+    glUniform1f(story_tex_bright_loc,story_tex_draw.bright);
+    glActiveTexture(GL_TEXTURE0);
+    glBindTexture(GL_TEXTURE_2D,story_tex_draw.id);
+    glBindVertexArray(story_tex_vao);
+    glBindBuffer(GL_ARRAY_BUFFER,story_tex_vbo);
+    glBufferData(GL_ARRAY_BUFFER,sizeof(quad_data),quad_data,GL_STREAM_DRAW);
+    glDrawArrays(GL_TRIANGLES,0,6);
+    glUseProgram(story_gl_program); glBindVertexArray(story_gl_vao);
+    glBindBuffer(GL_ARRAY_BUFFER,0);
+}
+// The backdrop fills the width; a picture taller than the area is cropped around its middle, as the pixel path does.
+static void story_draw_backdrop_texture(const StoryTexture *texture) {
+    float region=story_v(1.0f)-story_v(0.0f);
+    float aspect=(float)win_width/(float)win_height;
+    float visible=region/(2.0f*((float)texture->h/(float)texture->w)*aspect);
+    if(visible>1.0f) visible=1.0f;
+    float v0=(1.0f-visible)*.5f;
+    story_tex_request(texture,-1.0f,story_v(0.0f),1.0f,story_v(1.0f),0,v0,1,v0+visible,1.0f);
+}
 static void story_draw_backdrop_image(const StoryPortrait *image) {
     // Every second pixel, filling the width, centred vertically; runs of one colour become one quad.
     int cols=image->w/2, rows=image->h/2;
@@ -1377,6 +1461,8 @@ static void story_update_art(void) {
     char path[160];
     snprintf(path,sizeof(path),"project/build/art/%s.bmp",file);
     story_load_bmp(&story_art_image,path);
+    snprintf(path,sizeof(path),"project/build/art/%s_hd.bmp",file);
+    story_texture_load(&story_art_tex,path);
 }
 // One frame of the illustration. fade brightens it from black, zoom slowly pushes in, pan slides across a slightly
 // zoomed frame; every destination pixel is a nearest-neighbour sample of the source, merged into runs.
@@ -1419,6 +1505,17 @@ static void story_draw_art(void) {
         }
     }
 }
+static void story_draw_art_texture(const StoryTexture *texture) {
+    float seconds=story_capturing ? 3.0f : (float)(SDL_GetTicks64()-story_art_started)/1000.0f;
+    float window=1.0f, shift=0, bright=1.0f;
+    if(!strcmp(story_art_effect,"fade")) bright=clampf(seconds/.8f,0,1);
+    else if(!strcmp(story_art_effect,"zoom")) window=1.0f/(1.0f+.14f*clampf(seconds/8.0f,0,1));
+    else if(!strcmp(story_art_effect,"pan")) { window=1.0f/1.14f; shift=clampf(seconds/8.0f,0,1)*(1.0f-window); }
+    float u0=!strcmp(story_art_effect,"pan") ? shift : (1.0f-window)*.5f;
+    float v0=(1.0f-window)*.5f;
+    story_tex_request(texture,-1.0f,story_v(0.0f),1.0f,story_v(1.0f),u0,v0,u0+window,v0+window,bright);
+    (void)texture;
+}
 static void story_update_backdrop(void) {
     if(!strcmp(story_backdrop_name,story_run.bg)) return;
     snprintf(story_backdrop_name,sizeof(story_backdrop_name),"%s",story_run.bg);
@@ -1429,9 +1526,15 @@ static void story_update_backdrop(void) {
     char path[160];
     snprintf(path,sizeof(path),"project/build/backdrops/%s.bmp",file);
     story_load_bmp(&story_backdrop,path);
+    snprintf(path,sizeof(path),"project/build/backdrops/%s_hd.bmp",file);
+    story_texture_load(&story_backdrop_tex,path);
 }
 static void story_draw_backdrop(void) {
-    if(story_art_image.rgb) { story_draw_art(); return; }
+    if(story_art_image.rgb) {
+        if(story_art_tex.id) story_draw_art_texture(&story_art_tex); else story_draw_art();
+        return;
+    }
+    if(story_backdrop_tex.id) { story_draw_backdrop_texture(&story_backdrop_tex); return; }
     if(story_backdrop.rgb) { story_draw_backdrop_image(&story_backdrop); return; }
     if(!strcmp(story_run.bg,"green room")) story_draw_green_room();
     else if(!strcmp(story_run.bg,"medical bay")) story_draw_medical_bay();
@@ -1484,11 +1587,52 @@ static void story_setup_card(int side,float x,const char *pilot,const char *har,
     int n=story_wrap(story_card_text(&story_data,pilot),20,lines,7);
     for(int i=0;i<n;i++) label(x,-.48f-.065f*(float)i,.0075f,lines[i],.85f,.90f,.95f);
 }
+// ---- routes: the selection screen can switch to the script written from the rival's side ----
+static char story_script_path[512];
+static bool story_save_named;   // --save-file was given: the save path stays as named
+static void story_save_path_for(const char *script,char *out,size_t size) {
+    const char *base=script;
+    for(const char *c=script;*c;c++) if(*c=='/' || *c=='\\') base=c+1;
+    snprintf(out,size,"project/build/story/%s.save",base);
+}
+static void story_set_script_path(const char *path) {
+    snprintf(story_script_path,sizeof(story_script_path),"%s",path);
+    if(!story_save_named) story_save_path_for(path,story_save_buf,sizeof(story_save_buf));
+}
+// The route script's path: the route line is relative to the folder of the script being played.
+static void story_route_path(const char *script,const Story *story,char *out,size_t size) {
+    size_t dir=0;
+    for(size_t i=0;script[i];i++) if(script[i]=='/' || script[i]=='\\') dir=i+1;
+    snprintf(out,size,"%.*s%s",(int)dir,script,story->route.path);
+}
+static void story_load_cast_portraits(void) {
+    story_load_portrait(&story_portraits[0],story_data.player_pilot);
+    story_load_portrait(&story_portraits[1],story_data.rival_pilot);
+    story_setup_har=story_data.player_har[0]=='S' || story_data.player_har[0]=='s';
+}
+// Replaces the loaded script with its route; false (and the old script kept) when the route cannot be loaded.
+static bool story_switch_route(void) {
+    if(!story_data.has_route) return false;
+    char path[512],error[256];
+    story_route_path(story_script_path,&story_data,path,sizeof(path));
+    Story next;
+    if(!story_load(&next,path,error,sizeof(error))) {
+        fprintf(stderr,"%s\n",error);
+        story_notify("CANNOT LOAD THE OTHER PILOT'S STORY");
+        return false;
+    }
+    story_free(&story_data);
+    story_data=next;
+    story_set_script_path(path);
+    story_load_cast_portraits();
+    memset(&story_run,0,sizeof(story_run));
+    return true;
+}
 static void story_setup_hud(void) {
     static const char *har_names[2]={"JAGUAR","SHADOW"};
     quad(-1,-1,2,2,.015f,.025f,.065f);
     label(-.94f,.985f,.008f,"OMF2115 / STORY",.65f,.92f,1);
-    label(-.94f,.89f,.016f,"CHOOSE YOUR HAR",.80f,.88f,.96f);
+    label(-.94f,.89f,.016f,story_data.has_route ? "PILOT AND HAR" : "CHOOSE YOUR HAR",.80f,.88f,.96f);
     char choice[32];
     snprintf(choice,sizeof(choice),"< %s >",har_names[story_setup_har]);
     label(-.94f,.73f,.020f,choice,.30f,.90f,1);
@@ -1496,7 +1640,8 @@ static void story_setup_hud(void) {
     if(recommended) label(.34f,.69f,.0075f,"RECOMMENDED",1,.85f,.40f);
     story_setup_card(0,-.94f,story_data.player_pilot,har_names[story_setup_har],"YOU");
     story_setup_card(1,.06f,story_data.rival_pilot,har_names[story_setup_har^1],"RIVAL");
-    label(-.94f,-.945f,.007f,"LEFT RIGHT HAR  ENTER START  ESC QUIT",.48f,.60f,.72f);
+    label(-.94f,-.945f,.007f,story_data.has_route ? "UP DOWN PILOT  LEFT RIGHT HAR  ENTER START"
+                                                   : "LEFT RIGHT HAR  ENTER START  ESC QUIT",.48f,.60f,.72f);
 }
 // Starts the story with the chosen HAR for the player; the rival takes the other.
 static void story_begin(int har_index) {
@@ -1706,6 +1851,7 @@ static void story_hud_body(void) {
     }
 }
 static void story_hud(void) {
+    story_tex_draw.active=false;
     story_music_sync(story_setup ? "menu" : story_run.music);
     story_update_effect();
     story_hud_body();
@@ -1895,8 +2041,12 @@ static void story_key(SDL_Scancode key) {
         return;
     }
     if(story_setup) {
-        if(key==SDL_SCANCODE_LEFT || key==SDL_SCANCODE_RIGHT || key==SDL_SCANCODE_A || key==SDL_SCANCODE_D ||
-           key==SDL_SCANCODE_UP || key==SDL_SCANCODE_DOWN) { story_setup_har^=1; story_sound(SND_MOVE); }
+        if(key==SDL_SCANCODE_UP || key==SDL_SCANCODE_DOWN || key==SDL_SCANCODE_W || key==SDL_SCANCODE_S) {
+            if(story_data.has_route) { if(story_switch_route()) { story_setup=true; story_sound(SND_MOVE); } }
+            else { story_setup_har^=1; story_sound(SND_MOVE); }
+        } else if(key==SDL_SCANCODE_LEFT || key==SDL_SCANCODE_RIGHT || key==SDL_SCANCODE_A || key==SDL_SCANCODE_D) {
+            story_setup_har^=1; story_sound(SND_MOVE);
+        }
         else if(key==SDL_SCANCODE_RETURN || key==SDL_SCANCODE_SPACE) story_begin(story_setup_har);
         return;
     }
@@ -2296,13 +2446,9 @@ int main(int argc,char **argv) {
             return 1;
         }
         story_path=argv[2];
-        if(story_save_file) {
-            snprintf(story_save_buf,sizeof(story_save_buf),"%s",story_save_file);
-        } else {
-            const char *base=story_path;
-            for(const char *c=story_path;*c;c++) if(*c=='/' || *c=='\\') base=c+1;
-            snprintf(story_save_buf,sizeof(story_save_buf),"project/build/story/%s.save",base);
-        }
+        story_save_named=story_save_file!=NULL;
+        if(story_save_file) snprintf(story_save_buf,sizeof(story_save_buf),"%s",story_save_file);
+        story_set_script_path(story_path);
         story_save_path=story_save_buf;
         story_capturing=story_shot_path!=NULL;
     }
@@ -2377,6 +2523,16 @@ int main(int argc,char **argv) {
         // Scripted and screenshot runs are tests: they neither resume nor overwrite the player's save,
         // unless a save file is named explicitly.
         story_save_enabled=story_save_file || (!story_shot_path && !story_script);
+        // With two routes, resume the one saved most recently.
+        if(story_save_enabled && !story_new && !story_save_named && story_data.has_route) {
+            char route[512],route_save[512];
+            struct stat mine,theirs;
+            story_route_path(story_script_path,&story_data,route,sizeof(route));
+            story_save_path_for(route,route_save,sizeof(route_save));
+            if(stat(route_save,&theirs)==0 && (stat(story_save_path,&mine)!=0 || theirs.st_mtime>mine.st_mtime)) {
+                if(story_switch_route()) story_start(&story_run,&story_data,story_start_scene);
+            }
+        }
         bool story_resumed=false;
         if(story_save_enabled && !story_new && story_save_exists(story_save_path)) {
             StoryRun restored;
@@ -2390,9 +2546,7 @@ int main(int argc,char **argv) {
             }
         }
         if(story_data.has_cast) {
-            story_load_portrait(&story_portraits[0],story_data.player_pilot);
-            story_load_portrait(&story_portraits[1],story_data.rival_pilot);
-            story_setup_har=story_data.player_har[0]=='S' || story_data.player_har[0]=='s';
+            story_load_cast_portraits();
             if(story_arg_har && strcmp(story_arg_har,"Jaguar") && strcmp(story_arg_har,"Shadow")) {
                 fprintf(stderr,"--har must be Jaguar or Shadow\n");
                 story_free(&story_data);
@@ -2467,6 +2621,7 @@ int main(int argc,char **argv) {
     glBufferData(GL_ARRAY_BUFFER,sizeof(vertices),NULL,GL_STREAM_DRAW);
     glVertexAttribPointer(0,3,GL_FLOAT,GL_FALSE,sizeof(Vertex),(void*)0); glEnableVertexAttribArray(0);
     glVertexAttribPointer(1,3,GL_FLOAT,GL_FALSE,sizeof(Vertex),(void*)(3*sizeof(float))); glEnableVertexAttribArray(1);
+    if(story_mode) story_tex_init(program,vao);
     glUseProgram(program); glEnable(GL_DEPTH_TEST); glDepthFunc(GL_LESS);
     reset_fight();
     if(selection_mode) phase=1;
@@ -2716,7 +2871,11 @@ int main(int argc,char **argv) {
         glBufferSubData(GL_ARRAY_BUFFER,0,(size_t)vertex_count*sizeof(Vertex),vertices);
         Uint64 profile_after_upload=SDL_GetPerformanceCounter();
         glEnable(GL_DEPTH_TEST); glDrawArrays(GL_TRIANGLES,0,world_count);
-        glDisable(GL_DEPTH_TEST); glDrawArrays(GL_TRIANGLES,world_count,vertex_count-world_count);
+        glDisable(GL_DEPTH_TEST);
+        int split=story_mode && story_tex_draw.active ? story_tex_draw.split : world_count;
+        glDrawArrays(GL_TRIANGLES,world_count,split-world_count);
+        if(story_mode) story_tex_flush();
+        glDrawArrays(GL_TRIANGLES,split,vertex_count-split);
         Uint64 profile_after_gpu=SDL_GetPerformanceCounter();
         bool capture_now=capture || story_shot_path || (source_capture && (!source_follow_mode ||
                          (source_replay.count && source_replay.frames[source_replay_index].tick>=capture_tick)));

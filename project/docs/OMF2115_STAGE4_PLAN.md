@@ -145,6 +145,20 @@ text with placeholder portraits.
   Recorded in the ledger as local-only and not distributable.
 - **Playtest package (2026-10-29):** `project/scripts/package-playtest.ps1` zips a Release build (`build.ps1 -Config Release`), the C runtime, the story, the exported art and sounds, and the original game data into `dist/OMF2115-playtest.zip` (about 15 MB) with `Play.bat`, `Play-NewGame.bat`, and a tester README. The launchers use `bin/` when it exists. Tested: the unzipped package ran a full match through the pipeline from its own folder (result file written, no errors, sounds and music loaded). Not tested: a PC without the build tools, or SmartScreen's first-run prompt. It contains non-distributable material; see the ledger.
 - **Self-playtest (2026-10-31):** the project owner played the build and reported that it all works well. This is not the step 6 check, because the owner has seen the build.
+- **Playable Christian and smoother backdrops (2026-10-31, requested after the self-playtest):** (1) The player can now choose
+  Christian. `christian_crystal.story` is the same evening told from his side (26 scenes: he hides or admits his headaches and
+  stimulants, the match, the Tier-2 offer, then telemetry and a message from his fixer, and a choice between the fixer, the
+  broadcast, or handing it to Crystal to verify, with endings for both siblings; lore only, placeholder wording like the other
+  script). The script format gained one header line, `route <pilot> <script>`, naming the other script, and the selection
+  screen lets Up / Down switch pilot (Left / Right still choose the HAR); each script has its own save, and on start the more
+  recently saved route resumes. Tested: `story_check selftest` (route parsing and its refusals), `check` and `play` on both
+  scripts and both HARs, and a screenshot of the new selection screen. Not tested: switching pilot with the keyboard, resuming
+  the other route from its save, and a match played as Christian by hand. (2) Backdrops and illustration frames are drawn
+  smoothly: `story_upscale.py` makes 4x `_hd.bmp` versions next to each original (bicubic, a small median, a light blur and an
+  unsharp mask), and the viewer draws them as GL textures with linear filtering, falling back to the old pixel path when the file
+  is missing. It removes the visible pixel steps but cannot add detail; text baked into the frames at 320 pixels is softer
+  than before. Tested by screenshots, before and after, of the Stadium backdrop and two frames. The generated green room and
+  medical bay are unchanged. (3) Showing the match inside the story window was postponed by the project owner.
 - **Not yet done:** a clean end-to-end playtest by someone who has not seen the build (step 6).
 
 ## Step 3 design: the match handoff (built)

@@ -8,9 +8,11 @@
 # The result decides who WAR's Tier-2 offer goes to, which recovery scene plays, and how the story closes.
 # The HARs come from the selection screen: {player_har} and {rival_har} are filled in, and the fight reads them
 # with @player_har and @rival_har. The player is Crystal; the story recommends Jaguar but any pairing works.
+# The route line lets the selection screen switch to Christian's script (christian_crystal.story) and back.
 
 player Crystal Jaguar
 rival Christian
+route Christian christian_crystal.story
 card Crystal: The Seeker. Composed and camera-ready, the pilot who handles pressure. She wants proof of her parents' fate.
 card Christian: The Shield. Aggressive and outwardly confident. He wants revenge, and he wants Crystal kept alive.
 

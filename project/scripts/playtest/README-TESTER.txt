@@ -1,8 +1,8 @@
 OMF 2115 - story slice playtest
 ================================
 
-Thank you for testing. This is an early build of a one-player story slice: pick a HAR,
-read a short exchange between two siblings (Crystal and Christian), fight one match,
+Thank you for testing. This is an early build of a one-player story slice: pick a pilot
+(Crystal or Christian) and a HAR, read a short exchange between the two siblings, fight one match,
 make a choice about some evidence, and see how it plays out. It takes about 15 minutes.
 
 HOW TO START
@@ -17,7 +17,8 @@ CONTROLS
            S  skip ahead to the next choice    L  open the log of what was said
            R  restart the story                M  mute / unmute
            Esc  quit
-  Setup:   Left / Right  choose your HAR, Enter to start.
+  Setup:   Up / Down  switch between playing Crystal and Christian (each has their own story),
+           Left / Right  choose your HAR, Enter to start.
   Match (a second window opens after a few seconds):
            A / D  move      W / S  jump / duck      J  punch      K  kick
            Hold away from your opponent to guard.   Esc  closes the match.

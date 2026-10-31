@@ -112,7 +112,8 @@ static bool parse_line(Story *s, char *line_text, int line, const char *name, ch
     rest = trim(rest);
     StoryScene *scene = s->scene_count ? &s->scenes[s->scene_count - 1] : NULL;
 
-    if(strcmp(word, "player") == 0 || strcmp(word, "rival") == 0 || strcmp(word, "card") == 0) {
+    if(strcmp(word, "player") == 0 || strcmp(word, "rival") == 0 || strcmp(word, "card") == 0 ||
+       strcmp(word, "route") == 0) {
         if(scene) { fail(err, err_size, name, line, "'%s' must come before the first scene", word); return false; }
         if(strcmp(word, "card") == 0) {
             char *colon = strchr(rest, ':');
@@ -128,6 +129,17 @@ static bool parse_line(Story *s, char *line_text, int line, const char *name, ch
             if(!copy(card->pilot, STORY_NAME, pilot) || !copy(card->text, STORY_TEXT, text)) {
                 fail(err, err_size, name, line, "card text is too long"); return false;
             }
+        } else if(strcmp(word, "route") == 0) {
+            char *pilot = token(&rest), *path = trim(rest);
+            if(!pilot || !*path) { fail(err, err_size, name, line, "route needs '<pilot> <script path>'"); return false; }
+            if(!in_list(pilot, known_pilots, sizeof(known_pilots) / sizeof(known_pilots[0]))) {
+                fail(err, err_size, name, line, "unknown pilot '%s'", pilot); return false;
+            }
+            if(s->has_route) { fail(err, err_size, name, line, "a script can name only one route"); return false; }
+            if(!copy(s->route.pilot, STORY_NAME, pilot) || !copy(s->route.path, sizeof(s->route.path), path)) {
+                fail(err, err_size, name, line, "route is too long"); return false;
+            }
+            s->has_route = true;
         } else if(strcmp(word, "player") == 0) {
             char *pilot = token(&rest), *har = token(&rest), *extra = token(&rest);
             if(!pilot || !har || extra) { fail(err, err_size, name, line, "player needs '<pilot> <recommended har>'"); return false; }
@@ -306,6 +318,10 @@ static bool validate(Story *s, const char *name, char *err, size_t err_size) {
             return false;
         }
         s->has_cast = true;
+    }
+    if(s->has_route && (!s->has_cast || ieq(s->route.pilot, s->player_pilot))) {
+        fail(err, err_size, name, 1, "a route needs a cast, and must offer a pilot other than the player");
+        return false;
     }
     for(int i = 0; i < s->scene_count; i++) {
         const StoryScene *sc = &s->scenes[i];

@@ -5,6 +5,7 @@ Writes:
   project/build/backdrops/<arena>.bmp     the five original arena backgrounds (ARENA0-4.BK)
   project/build/sounds/<name>.wav         two original menu sounds from SOUNDS.DAT: move and select
   project/build/art/<name>.bmp            illustrated-sequence frames composed from the above (build_story_art.py)
+  <name>_hd.bmp beside the backdrops and frames: smooth 4x upscales the viewer draws as textures (story_upscale.py)
 
 This is original-game material, kept local as a development reference and never committed or distributed.
 It is recorded in project/docs/ASSET_LEDGER.md. The story viewer works without any of it: it draws generated
@@ -27,6 +28,7 @@ from PIL import Image
 
 import build_story_art
 import export_pilot_portraits
+import story_upscale
 
 ROOT = Path(__file__).resolve().parents[2]
 BUILD = ROOT / "build" / "omf_debug_z7"
@@ -60,6 +62,7 @@ def export_arenas() -> None:
             with Image.open(png) as image:
                 image.convert("RGB").save(BACKDROPS / f"{name}.bmp")
     print(f"Wrote {len(ARENAS)} arena backdrops to {BACKDROPS}")
+    print(f"Wrote {story_upscale.write_all_hd(BACKDROPS)} smooth backdrops (_hd) to {BACKDROPS}")
 
 
 def au_to_wav(au: bytes, rate: int, wav_path: Path) -> None:
@@ -105,7 +108,10 @@ def main() -> int:
         return 1
     export_arenas()
     export_sounds()
-    return build_story_art.main()
+    if build_story_art.main() != 0:
+        return 1
+    print(f"Wrote {story_upscale.write_all_hd(build_story_art.ART)} smooth illustration frames (_hd) to {build_story_art.ART}")
+    return 0
 
 
 if __name__ == "__main__":
