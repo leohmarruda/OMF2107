@@ -222,6 +222,14 @@ text with placeholder portraits.
   on the screen is still an original pilot portrait. The drawing is a first pass in a flat style and is plainer than the original art.
   Tested: the news frames for both winners in the viewer, `story_check` on both scripts. Not tested: how Alex looks next to the
   other characters over a full play, and whether the face reads as intended to someone else.
+- **Arena pass (2026-10-31, requested):** the Stadium blockout in the match view gained a video wall in place of the small board (an
+  animated equaliser, a title, a scrolling ticker, and both fighters' health bars read from the match), six sweeping spotlights whose cones
+  end in bright spots on the floor, two layers of haze between the ring and the stands, camera flashes in the crowd (a few at any time, many
+  after a hit), and energy barriers just past the ends of the fighting space (about 4.5 units from the centre; the fighters use about 3.8)
+  whose scan lines flare when a fighter nears one. All new geometry and effects, no original art, and presentation only. Tested: captures
+  at four camera angles including extreme turns, and 12 seconds of real-time playback with the blockout and the Meshy robots, with no
+  buffer overflow. Not tested: the wall, spotlights and flashes in motion, how it reads on a smaller or larger window, and the cost on a
+  slower machine. The other four arenas are unchanged and the story still uses the Stadium only.
 - **Not yet done:** a clean end-to-end playtest by someone who has not seen the build (step 6).
 
 ## Step 3 design: the match handoff (built)

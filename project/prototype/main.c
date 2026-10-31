@@ -1172,6 +1172,51 @@ static void source_projectiles(void) {
         }
     }
 }
+static const unsigned char *glyph(char ch);
+// Text laid out in the world, facing the front: one lit square per pixel of the viewer's own font, left-aligned at x,
+// with the top row at y. Squares outside [clip_left, clip_right] are left out, which lets a ticker scroll behind an edge.
+static void world_text(float x,float y,float z,float cell,const char *text,float r,float g,float b,
+                       float clip_left,float clip_right) {
+    for(;*text;text++,x+=cell*6.0f) {
+        if(x+cell*5.0f<clip_left || x>clip_right) continue;
+        const unsigned char *rows=glyph(*text);
+        for(int row=0;row<7;row++) for(int col=0;col<5;col++) {
+            if(!(rows[row] & (1 << (4-col)))) continue;
+            float px=x+(float)col*cell, py=y-(float)row*cell, w=cell*.9f;
+            if(px<clip_left || px+w>clip_right) continue;
+            projected(px,py,z,r,g,b); projected(px+w,py,z,r,g,b); projected(px+w,py-w,z,r,g,b);
+            projected(px,py,z,r,g,b); projected(px+w,py-w,z,r,g,b); projected(px,py-w,z,r,g,b);
+        }
+    }
+}
+// The video wall: an equaliser behind a title, a scrolling ticker, and both fighters' health along the top.
+static void arena_video_wall(void) {
+    const float cx=0, cy=3.55f, cz=-6.40f, w=8.6f, h=1.90f;
+    float t=fx_clock();
+    box(cx,cy,cz-.12f,w+.55f,h+.40f,.24f,0,.02f,.035f,.06f);               // the housing
+    box(cx,cy,cz,w,h,.06f,0,.015f,.04f,.085f);                              // the dark screen
+    for(int i=0;i<30;i++) {                                                  // the equaliser along the bottom
+        float x=-w*.5f+.17f+(float)i*(w-.34f)/29.0f;
+        float level=.5f+.5f*sinf(t*3.1f+(float)i*.72f)*sinf(t*1.3f+(float)i*.31f);
+        float height=.08f+.36f*level;
+        float mix=(float)i/29.0f;
+        box(x,cy-h*.5f+.12f+height*.5f,cz+.05f,.17f,height,.02f,0,.10f+.70f*mix,.55f-.20f*mix,.80f-.10f*mix);
+    }
+    // Health bars: the player's, cyan, from the left; the rival's, red, from the right.
+    float p1=clampf(player.hp/fmaxf(1.0f,player.max_hp),0,1), p2=clampf(rival.hp/fmaxf(1.0f,rival.max_hp),0,1);
+    float bar_y=cy+h*.5f-.20f, bar_w=w*.5f-.65f;
+    box(-.30f-bar_w*.5f,bar_y,cz+.045f,bar_w,.11f,.02f,0,.05f,.10f,.16f);
+    box(.30f+bar_w*.5f,bar_y,cz+.045f,bar_w,.11f,.02f,0,.05f,.10f,.16f);
+    if(p1>0) box(-.30f-bar_w+bar_w*p1*.5f,bar_y,cz+.06f,bar_w*p1,.09f,.02f,0,.25f,.88f,1.0f);
+    if(p2>0) box(.30f+bar_w-bar_w*p2*.5f,bar_y,cz+.06f,bar_w*p2,.09f,.02f,0,1.0f,.34f,.46f);
+    world_text(-.30f,bar_y+.06f,cz+.07f,.030f,"VS",1.0f,.86f,.50f,-w*.5f,w*.5f);
+    world_text(-1.98f,cy+.40f,cz+.07f,.055f,"WAR GANYMEDE",1.0f,.90f,.62f,-w*.5f+.1f,w*.5f-.1f);
+    static const char ticker[]="LIVE FROM THE STADIUM   WAR GANYMEDE TOURNAMENT   TWO PILOTS ONE ARENA   ";
+    float length=(float)(sizeof(ticker)-1)*.040f*6.0f;
+    float scroll=fmodf(t*.9f,length);
+    for(int copy=0;copy<2;copy++)
+        world_text(w*.5f-scroll+(float)copy*length,cy-.02f,cz+.07f,.040f,ticker,.60f,.95f,1.0f,-w*.5f+.1f,w*.5f-.1f);
+}
 static void stadium_background(void) {
     static const float crowd_colors[][3] = {
         {.11f,.21f,.31f}, {.20f,.27f,.39f}, {.32f,.18f,.24f},
@@ -1216,14 +1261,9 @@ static void stadium_background(void) {
         }
     }
 
-    // A central arena board and high perimeter lights identify the venue.
-    box(0,3.38f,-6.48f,3.35f,.76f,.20f,0,.025f,.055f,.095f);
-    box(0,3.38f,-6.35f,3.05f,.52f,.035f,0,.055f,.12f,.18f);
-    box(-1.10f,3.39f,-6.30f,.54f,.17f,.025f,0,.18f,.72f,.86f);
-    box(-.36f,3.39f,-6.30f,.54f,.17f,.025f,0,.18f,.72f,.86f);
-    box(.38f,3.39f,-6.30f,.54f,.17f,.025f,0,.92f,.30f,.44f);
-    box(1.12f,3.39f,-6.30f,.54f,.17f,.025f,0,.92f,.30f,.44f);
-    box(0,2.86f,-6.18f,8.4f,.045f,.08f,0,.26f,.60f,.64f);
+    // The video wall over the stands, and a strip of light under it, identify the venue.
+    arena_video_wall();
+    box(0,2.80f,-6.18f,8.4f,.045f,.08f,0,.26f,.60f,.64f);
 }
 static void quad(float x,float y,float w,float h,float r,float g,float b) {
     float x2=x+w,y2=y+h;
@@ -2614,10 +2654,85 @@ static void fx_halo(const float c[3],float radius,float r,float g,float b,float 
     }
     vertex_alpha=1.0f;
 }
+// A flat soft spot on the floor: bright in the middle, nothing at the rim.
+static void fx_floor_spot(float cx,float cz,float rx,float rz,float r,float g,float b,float a) {
+    const int steps=20;
+    for(int i=0;i<steps;i++) {
+        float t0=(float)i*6.2831853f/(float)steps, t1=(float)(i+1)*6.2831853f/(float)steps;
+        vertex_alpha=a; projected(cx,.058f,cz,r,g,b);
+        vertex_alpha=0; projected(cx+cosf(t0)*rx,.058f,cz+sinf(t0)*rz,r,g,b); projected(cx+cosf(t1)*rx,.058f,cz+sinf(t1)*rz,r,g,b);
+    }
+    vertex_alpha=1.0f;
+}
+// Spotlights from above the ring: soft cones that sweep across the floor, each landing in a bright spot.
+static void fx_spotlights(float t) {
+    static const float colour[6][3]={{.45f,.80f,1.0f},{1.0f,.45f,.78f},{1.0f,.95f,.80f},{.45f,.80f,1.0f},{1.0f,.45f,.78f},{1.0f,.95f,.80f}};
+    for(int i=0;i<6;i++) {
+        float apex_x=-7.0f+2.8f*(float)i;
+        float aim_x=apex_x*.45f+sinf(t*.7f+(float)i*1.3f)*1.7f, aim_z=cosf(t*.55f+(float)i*.9f)*1.3f;
+        const float apex[3]={apex_x,4.7f,-5.2f};
+        float radius=.85f;
+        const int sides=10;
+        for(int k=0;k<sides;k++) {
+            float a0=(float)k*6.2831853f/(float)sides, a1=(float)(k+1)*6.2831853f/(float)sides;
+            vertex_alpha=.11f; projected(apex[0],apex[1],apex[2],colour[i][0],colour[i][1],colour[i][2]);
+            vertex_alpha=0; projected(aim_x+cosf(a0)*radius,.05f,aim_z+sinf(a0)*radius*.8f,colour[i][0],colour[i][1],colour[i][2]);
+            projected(aim_x+cosf(a1)*radius,.05f,aim_z+sinf(a1)*radius*.8f,colour[i][0],colour[i][1],colour[i][2]);
+        }
+        fx_floor_spot(aim_x,aim_z,radius*1.15f,radius*.95f,colour[i][0],colour[i][1],colour[i][2],.17f);
+    }
+    vertex_alpha=1.0f;
+}
+// A vertical panel of light with its own alpha at the bottom and the top.
+static void fx_panel(float x0,float z0,float x1,float z1,float y0,float y1,float r,float g,float b,float a0,float a1) {
+    vertex_alpha=a0; projected(x0,y0,z0,r,g,b); projected(x1,y0,z1,r,g,b);
+    vertex_alpha=a1; projected(x1,y1,z1,r,g,b);
+    vertex_alpha=a0; projected(x0,y0,z0,r,g,b);
+    vertex_alpha=a1; projected(x1,y1,z1,r,g,b); projected(x0,y1,z0,r,g,b);
+    vertex_alpha=1.0f;
+}
+// Energy barriers just past the ends of the fighting space: faint scan lines that flare as a fighter nears one.
+static void fx_barriers(float t) {
+    for(int side=-1;side<=1;side+=2) {
+        float edge=4.55f*(float)side;
+        float near_player=clampf((fabsf(player.x)-3.0f)/1.2f,0,1)*((player.x*(float)side)>0 ? 1.0f : 0);
+        float near_rival=clampf((fabsf(rival.x)-3.0f)/1.2f,0,1)*((rival.x*(float)side)>0 ? 1.0f : 0);
+        float flare=fmaxf(near_player,near_rival);
+        float base=.05f+.38f*flare;
+        for(int band=0;band<6;band++) {
+            float y=fmodf(t*.45f+(float)band*.55f,3.3f);
+            fx_panel(edge,-3.6f,edge,3.6f,y,y+.10f+.12f*flare,.35f,.85f,1.0f,base,base*.4f);
+        }
+        fx_panel(edge,-3.6f,edge,3.6f,0,3.3f,.25f,.70f,1.0f,.07f+.25f*flare,0);
+    }
+}
+// Haze between the ring and the stands, to give the arena depth.
+static void fx_haze(float t) {
+    for(int layer=0;layer<2;layer++) {
+        float z=-4.7f-(float)layer*1.1f, drift=sinf(t*.25f+(float)layer)*.03f;
+        fx_panel(-20.0f,z,20.0f,z,0,2.6f,.30f,.55f,.80f,.10f+drift,0);
+    }
+}
+// Camera flashes in the stands: a handful at any time, many more just after a hit.
+static void fx_crowd_flashes(float t,const float right[3],const float up[3]) {
+    int count=6+(live_impact_time>0 ? 14 : 0);
+    float slot=floorf(t*6.0f), frac=t*6.0f-slot;
+    for(int k=0;k<count;k++) {
+        unsigned h=(unsigned)((int)slot*7919+k*104729+1)*2654435761u;
+        int row=(int)((h>>8)&3);
+        float x=-13.0f+26.0f*(float)((h>>12)&1023)/1023.0f;
+        const float c[3]={x,1.40f+(float)row*.43f,-6.50f-(float)row*.19f};
+        fx_halo(c,.20f,1.0f,.95f,.82f,.80f*(1.0f-frac),right,up);
+    }
+}
 static void fx_glow(void) {
     float right[3],up[3];
     fx_basis(right,up);
     float t=fx_clock();
+    fx_haze(t);
+    fx_spotlights(t);
+    fx_barriers(t);
+    fx_crowd_flashes(t,right,up);
     // The lit posts around the ring and the light strip along the roof.
     for(int side=-1;side<=1;side+=2) for(int i=-4;i<=4;i+=2) {
         const float c[3]={8.3f*(float)side,1.30f,(float)i};
