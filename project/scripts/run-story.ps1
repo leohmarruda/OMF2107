@@ -16,14 +16,19 @@ param(
 $ErrorActionPreference = 'Stop'
 $root = (Resolve-Path -LiteralPath (Join-Path $PSScriptRoot '..\..')).Path
 $exe = Join-Path $root 'build\omf_debug_z7\omf3d_prototype.exe'
+$packaged = Join-Path $root 'bin\omf3d_prototype.exe'   # a playtest package (package-playtest.ps1)
+if (Test-Path -LiteralPath $packaged) { $exe = $packaged }
 if (-not (Test-Path -LiteralPath $exe)) { throw "Build omf3d_prototype first (project/scripts/build.ps1): $exe" }
 $scriptPath = if ([System.IO.Path]::IsPathRooted($Script)) { $Script } else { Join-Path $root $Script }
 if (-not (Test-Path -LiteralPath $scriptPath)) { throw "Story script not found: $scriptPath" }
 
 # The viewer is not rebuilt by the run scripts, so say so when it is older than its sources.
 $exeTime = (Get-Item -LiteralPath $exe).LastWriteTime
-$stale = Get-ChildItem -LiteralPath (Join-Path $root 'project\prototype') -Include '*.c', '*.h' -File |
-    Where-Object { $_.LastWriteTime -gt $exeTime } | Select-Object -ExpandProperty Name
+$sources = Join-Path $root 'project\prototype'
+$stale = if (Test-Path -LiteralPath $sources) {
+    Get-ChildItem -LiteralPath $sources -Include '*.c', '*.h' -File |
+        Where-Object { $_.LastWriteTime -gt $exeTime } | Select-Object -ExpandProperty Name
+}
 if ($stale) {
     Write-Warning ("omf3d_prototype.exe is older than: " + ($stale -join ', ') +
                    ". Rebuild with project/scripts/build.ps1 -Config Debug to see those changes.")

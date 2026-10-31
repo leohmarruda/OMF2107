@@ -18,3 +18,11 @@ sprites and poses in `project/docs/OMF2097/`, the Remastered captures, and so on
 | Sound effects, continued | | | | | | `project/build/sounds/<name>.wav`, git-ignored; never committed. | Replace with new sounds before release. Without the files the viewer is silent. | **Local development only. Not distributable.** No rights assessment has been made. |
 | Illustrated-sequence frames (opening: title, Crystal and Christian cards, two face-offs; ending: two cards, together, apart, title) | Composed by `project/tools/build_story_art.py` from original game material (the pilot portraits and the Stadium and Desert backgrounds above, plus the idle sprites of `OMF2097/FIGHTR0.AF` and `FIGHTR1.AF`) with diagonal bars, a vignette, name plates, and text drawn by the tool. | The scripted opening and endings of the draft story, by the project owner's decision (2026-10-27). | `project/build/art/<name>.bmp`, git-ignored; never committed. | Replace with new artwork before release. Without the files the viewer shows the scene's backdrop instead. | **Local development only. Not distributable** (the composition is project-made, but it is built from original material). |
 | Scene backdrops: green room, medical bay, and a stand-in Stadium | Drawn by the viewer's own code in `project/prototype/main.c` as flat coloured shapes; no original material. | Story scenes without an exported original arena image. | In the source code. | Placeholder art; improve or replace as the visual direction develops. | Project-made, so distributable with the code. |
+
+## Private playtest packages
+
+On 2026-10-29 the project owner decided to send a playtest package to a tester that includes the original game data
+(`OMF2097/`), the exported portraits, backdrops, sounds and illustrated frames above, and the music, so the build runs
+out of the box. `project/scripts/package-playtest.ps1` builds it into the git-ignored `dist/` folder. This does not make
+any asset distributable: the package is for the named tester only, its README says not to share it, and it must not
+be published, uploaded, or attached to a release. Record the recipient and date here when it is sent.

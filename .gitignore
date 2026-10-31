@@ -28,3 +28,6 @@ test.bk
 test.trn
 test.rec
 
+
+# Private playtest packages (contain original game material)
+dist/

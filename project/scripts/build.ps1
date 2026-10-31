@@ -1,5 +1,5 @@
 param(
-    [ValidateSet('Debug', 'Trace', 'All')]
+    [ValidateSet('Debug', 'Trace', 'Release', 'All')]
     [string]$Config = 'All',
     [string]$VcpkgRoot = $(if ($env:VCPKG_ROOT) { $env:VCPKG_ROOT } else { Join-Path $env:USERPROFILE 'vcpkg' })
 )
@@ -7,6 +7,7 @@ param(
 # Builds the dirs the run-blockout*.ps1 scripts expect:
 #   build\omf_debug_z7  openomf + omf3d_prototype
 #   build\omf_trace_z7  openomf with OMF3K_SOURCE_TRACE=ON
+#   build\omf_release_z7  optimized openomf (trace on) + omf3d_prototype, for package-playtest.ps1; not part of 'All'
 # Sets up the MSVC environment by hand because vcvars64.bat/VsDevCmd.bat need
 # vswhere.exe, which is missing when the Visual Studio Installer is not present.
 
@@ -35,12 +36,12 @@ foreach ($d in 'ucrt', 'um', 'shared') { $env:INCLUDE += ';' + (Join-Path $kits 
 $env:LIB = (Join-Path $msvc.FullName 'lib\x64')
 foreach ($d in 'ucrt\x64', 'um\x64') { $env:LIB += ';' + (Join-Path $kits "Lib\$($sdk.Name)\$d") }
 
-function Invoke-Build([string]$Name, [string[]]$ExtraArgs) {
+function Invoke-Build([string]$Name, [string[]]$ExtraArgs, [string]$BuildType = 'Debug') {
     $dir = Join-Path $projectRoot "build\$Name"
     Write-Host "== $Name"
     # cmd merges stderr into stdout: CMake prints warnings to stderr, which Windows PowerShell 5.1
     # would otherwise turn into a terminating error under $ErrorActionPreference = 'Stop'.
-    $configure = (@('cmake', '-S', $projectRoot, '-B', $dir, '-G', 'Ninja', '-DCMAKE_BUILD_TYPE=Debug', '--toolchain', $toolchain) + $ExtraArgs |
+    $configure = (@('cmake', '-S', $projectRoot, '-B', $dir, '-G', 'Ninja', "-DCMAKE_BUILD_TYPE=$BuildType", '--toolchain', $toolchain) + $ExtraArgs |
         ForEach-Object { "`"$_`"" }) -join ' '
     cmd /c "$configure 2>&1"
     if ($LASTEXITCODE -ne 0) { throw "Configure failed for $Name" }
@@ -60,3 +61,4 @@ function Invoke-Build([string]$Name, [string[]]$ExtraArgs) {
 
 if ($Config -in 'Debug', 'All') { Invoke-Build 'omf_debug_z7' @('-DUSE_TOOLS=ON') }
 if ($Config -in 'Trace', 'All') { Invoke-Build 'omf_trace_z7' @('-DOMF3K_SOURCE_TRACE=ON') }
+if ($Config -eq 'Release') { Invoke-Build 'omf_release_z7' @('-DUSE_TOOLS=ON', '-DOMF3K_SOURCE_TRACE=ON') 'Release' }

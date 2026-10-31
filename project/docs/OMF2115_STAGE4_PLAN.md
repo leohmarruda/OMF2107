@@ -143,6 +143,7 @@ text with placeholder portraits.
   first six seconds), and the viewer loads `MENU.PSM` and reports its music device ready with no errors. Not
   tested: hearing it, the volume balance against the effects and the battle, and the track changes in sequence.
   Recorded in the ledger as local-only and not distributable.
+- **Playtest package (2026-10-29):** `project/scripts/package-playtest.ps1` zips a Release build (`build.ps1 -Config Release`), the C runtime, the story, the exported art and sounds, and the original game data into `dist/OMF2115-playtest.zip` (about 15 MB) with `Play.bat`, `Play-NewGame.bat`, and a tester README. The launchers use `bin/` when it exists. Tested: the unzipped package ran a full match through the pipeline from its own folder (result file written, no errors, sounds and music loaded). Not tested: a PC without the build tools, or SmartScreen's first-run prompt. It contains non-distributable material; see the ledger.
 - **Not yet done:** a clean end-to-end playtest by someone who has not seen the build (step 6).
 
 ## Step 3 design: the match handoff (built)

@@ -24,8 +24,14 @@ if ($WarmupSeconds -lt 0 -or $WarmupSeconds -gt 8) { throw 'WarmupSeconds must b
 $projectRoot = (Resolve-Path -LiteralPath (Join-Path $PSScriptRoot '..\..')).Path
 New-Item -ItemType Directory -Force (Join-Path $projectRoot 'project\build') | Out-Null   # where the viewer writes its captures
 $sourceDir = Join-Path $projectRoot 'build\omf_trace_z7'
-$sourceExe = Join-Path $sourceDir 'openomf.exe'
 $viewerExe = Join-Path $projectRoot 'build\omf_debug_z7\omf3d_prototype.exe'
+# A playtest package (package-playtest.ps1) has both programs together in bin\ instead.
+$binDir = Join-Path $projectRoot 'bin'
+if (Test-Path -LiteralPath (Join-Path $binDir 'openomf.exe')) {
+    $sourceDir = $binDir
+    $viewerExe = Join-Path $binDir 'omf3d_prototype.exe'
+}
+$sourceExe = Join-Path $sourceDir 'openomf.exe'
 $tracePath = Join-Path $sourceDir 'omf3k-live.csv'
 
 if (-not (Test-Path -LiteralPath $sourceExe)) { throw "Build OpenOMF with OMF3K_SOURCE_TRACE=ON first: $sourceExe" }
