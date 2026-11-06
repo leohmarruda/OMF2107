@@ -1,5 +1,7 @@
 # Selene Vale campaign — Story Pack v2.4
 
+> **Current versions (see `../00_README/CURRENT_FILES.md`):** `Selene_Playable_Screenplay_v0.5.md` with `Selene_Route_Spec_v0.1.md` (the v0.1 screenplay named below is superseded).
+
 - **Active draft:** `Selene_Playable_Screenplay_v0.1.md` — *The Art of Deception*, six chapters and optional adult romance/fanservice.
 - **Narrative/engineering contract:** `Selene_Route_Spec_v0.1.md`.
 - **Executable route adapter:** `selene_route_validator.py`, matching the global 12-pilot decisive-fight tournament.

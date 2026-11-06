@@ -50,7 +50,7 @@
 
 - User has **not explicitly approved** many technical details added by assistant (one-way retention latch, exact relay constraints, NII 3 levels, time limits); these are proposals.
 - Full character routes for 11 non-Ari pilots remain to be written.
-- Original user-supplied lore `OMF2115_LORE_v2.md` is ideation, not automatically canon for 2107. `OMF2097_LORE.md` attempts baseline fact distinction; treat original 2097 canon carefully.
+- The earlier ensemble treatment (an "OMF2115" draft, a superseded name, since removed) was ideation, not canon for 2107; `OMF2107_LORE_v2.md` in `project/docs` is its successor. `OMF2097_LORE.md` attempts baseline fact distinction; treat original 2097 canon carefully.
 - Earlier drafts contained inconsistent Group D seeding and finale opponents; the revised Lyra bracket overrides them.
 - Some screenplay dialogue choices were cosmetic despite mentions of nonromantic branches; Story Repair Pack v0.2 adds an explicit romance choice, but screenplay has not yet been rewritten accordingly.
 

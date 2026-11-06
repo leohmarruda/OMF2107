@@ -1,5 +1,7 @@
 # Devroe case — v1.7 active working sequel canon
 
+> **Current versions (see `../00_README/CURRENT_FILES.md`):** Current POV drafts are Raven v0.9 and Crystal v0.10 (not the versions named below). Christian's companion is `18_Christian_Subplot/OMF_2107_Christian_Independent_Storyline_v0.6.md`.
+
 - Active history: `../02_Story_Bibles/Devroe_Shuttle_Case_Canon_v1.7.md` and `../02_Story_Bibles/Kreissack_Devroe_Order_Addendum_v1.7.md`. Kreissack personally ordered the 2092 murders; the contractor implemented the fatal sabotage; Raven's distinct relay and concealment acts stay fixed. All of this is new sequel story canon, not original-game facts.
 - Active shared dramatic scene packet: `Devroe_Scene_Packet_v1.7.md` (D1–D8, including E5 on Day 30). Previous v1.5 remains for provenance.
 - Active immutable model: `devroe_case_state.py`; tests `test_devroe_case_state.py` and `test_kreissack_order_v17.py`.

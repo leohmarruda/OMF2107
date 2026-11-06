@@ -1,5 +1,7 @@
 # Raven playable campaign — v1.4
 
+> **Current versions (see `../00_README/CURRENT_FILES.md`):** screenplay `OMF_2107_Raven_Playable_Screenplay_v0.9.md`, route spec `OMF_2107_Raven_Route_Spec_v0.2.md`. Older versions are in `_archive/`. The Crystal screenplay named below is now v0.10.
+
 - **Active screenplay:** `OMF_2107_Raven_Playable_Screenplay_v0.1.md` (six chapters, ~6,300 words).
 - **Route logic:** `OMF_2107_Raven_Route_Spec_v0.1.md` and `raven_route_validator.py`.
 - **Tests:** `python -m unittest discover -s 16_Raven_Campaign -v` from archive root, 15 Raven-specific tests.

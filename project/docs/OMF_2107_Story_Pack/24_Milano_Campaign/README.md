@@ -1,5 +1,7 @@
 # Milano Angston campaign — Story Pack v2.5
 
+> **Current versions (see `../00_README/CURRENT_FILES.md`):** `Milano_Playable_Screenplay_v0.5.md` with `Milano_Route_Spec_v0.1.md` (the v0.1 screenplay named below is superseded and kept in place because a validator test reads it).
+
 - **Active draft:** `Milano_Playable_Screenplay_v0.1.md` — *The Price of Control*, six chapters and optional romantic/fanservice scenes.
 - **Route contract:** `Milano_Route_Spec_v0.1.md`.
 - **Simulator adapter:** `milano_route_validator.py`, with actual fight results sourced exclusively from the global 12-pilot model.

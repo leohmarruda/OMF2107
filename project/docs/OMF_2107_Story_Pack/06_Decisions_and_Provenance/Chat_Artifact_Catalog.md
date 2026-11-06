@@ -23,7 +23,7 @@ All files above are in the folders listed in the top README.
 ## Verbatim user-provided sources
 
 - `01_Original_Sources/OMF2097_LORE.md` (originally `OMF2097_LORE.md`): baseline original 2097 plot and characters, separating well-established manual facts from uncertain claims.
-- `01_Original_Sources/OMF2115_LORE_v2.md`: earlier ensemble treatment/ideation, not binding 2107 canon.
+- The earlier "OMF2115" ensemble treatment (superseded name) was removed on 2026-11-06; `project/docs/OMF2107_LORE_v2.md` replaces it.
 
 ## Additional prose exchanges
 

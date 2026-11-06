@@ -1,5 +1,7 @@
 # One Must Fall 2107 — Story Repair Archive
 
+> **Superseded notice:** the release is now v5.8; see [`CURRENT_FILES.md`](CURRENT_FILES.md) for the live file in each family.
+>
 > **CURRENT RELEASE NOTICE — v2.6 (November 2, 2026):** Begin at [`CURRENT_RELEASE.md`](CURRENT_RELEASE.md), not this historical archive chronology. v2.6 audits all twelve campaigns and fixes a duplicated/misordered Dante scene ID. No new romance or story canon was approved by the audit. Baseline 268 + four new structural tests = **272 passing methods across 19 test directories**. The historical material below remains preserved for provenance.
 
 **Current editorial update: v2.3 (November 2, 2026).** Dante defaults to **nonromantic** feelings toward Steffan, while player choices can develop a later mutual romance. Current authority: `00_README/Integration_Overview_v2.3.md`, `02_Story_Bibles/Dante_Character_Addendum_v2.3.md`, active Dante v0.2 and Steffan v0.3 screenplays. Historic file/version descriptions below are retained for provenance.

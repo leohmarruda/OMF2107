@@ -1,5 +1,7 @@
 # Jean-Paul: The Observer Effect — playable pilot campaign v0.1
 
+> **Current versions (see `../00_README/CURRENT_FILES.md`):** `Jean_Paul_Playable_Screenplay_v0.5.md` with `Jean_Paul_Route_Spec_v0.1.md` (the v0.1 screenplay named below is superseded and kept in place because a validator test reads it).
+
 - **Active narrative:** `Jean_Paul_Playable_Screenplay_v0.1.md` — six chapters / approximately 5,500 words, plus Day-30 epilogue.
 - **Branch design:** `Jean_Paul_Route_Spec_v0.1.md` — relationship gates, knowledge chronology, consent, evidence, tournament progression.
 - **Executable selected-pilot route:** `jean_paul_route_validator.py` — standard-library Python dispatcher using the shared group and knockout bracket.

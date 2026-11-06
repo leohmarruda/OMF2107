@@ -1,5 +1,7 @@
 # Relationship route model — design validation v0.1
 
+> **Current versions (see `../00_README/CURRENT_FILES.md`):** Current Ari chapters are Chapter 1 v0.6, Chapters 2 to 5 v0.7 and Chapter 6 v0.8 (not the v0.2 versions named below).
+
 **Scope:** Optional social/romance slots and ending selection in Chapters 1–6 **v0.2**. This is an auditable proof-of-concept, not an in-game quest engine and not approval of new couples.
 
 ## Separation of concerns

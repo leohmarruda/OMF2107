@@ -1,5 +1,7 @@
 # Kreissack arc module (v1.8)
 
+> **Current versions (see `../00_README/CURRENT_FILES.md`):** Current Ari Chapter 6 is `04_Screenplay_Reconstructions/Chapter_06_One_Must_Fall_v0.8.md` (not v0.4 as named below).
+
 Read `../02_Story_Bibles/Kreissack_Character_and_Nova_Arc_v1.8.md` for his psychology and factual vs proposed character decisions. `Kreissack_Scene_Packet_v1.8.md` holds eight screenplay modules K0–K7, including post-E5-only K0. `kreissack_arc_state.py` provides the small cinematic event-gate contract; `test_kreissack_arc_state.py` checks it. It is not a production story engine.
 
 **Current direct screenplay integration:** Shared cutaways K4/K5 are embedded in `../04_Screenplay_Reconstructions/Chapter_06_One_Must_Fall_v0.4.md` (Ari-selected route), immediately before existing Scene 5 and Scene 7. Other scenes are **optional, not directly integrated**, and must not duplicate existing Chapter 5 rescue / Chapter 6 sacrifice / Christian's Day-30 evidence hearing.

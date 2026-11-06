@@ -78,7 +78,46 @@ Create a full-body render of **Ren Akiyama**, a **25-year-old idealistic ace pil
 
 ### CHR-MAR — Mara Voss
 **Prompt:**
-Create a full-body render of **Mara Voss**, a **34-year-old underground champion and hard-lived fighter**. She is **athletic, rugged, practical, and visibly tougher-edged than the glamorous competitors**, with **short dark hair**, a battle-worn style, and signs of a difficult working life. Dress her in **worn leather, practical gear, patched or modified equipment**, and details suggesting a pilot who repairs and repurposes her own tools. Her posture should feel grounded, irreverent, and formidable. Convey both hardness and buried warmth.
+Create a **full-body character render** of **Mara Voss**, a **34-year-old underground champion, experienced pilot-mechanic, and hard-lived fighter**, for a futuristic fighting-game story mode set in **2107**.
+
+Use a **polished semi-realistic anime / high-end game illustration style**, with clean linework, cinematic shading, detailed textures, strong silhouette readability, and realistic anatomy. Maintain visual consistency with the rest of the character cast.
+
+**Physical appearance:**
+- **Athletic but relatively slender build**, with natural feminine curves and moderate muscle definition. She should look physically capable and conditioned, but **not excessively muscular or bulky**.
+- **Moderately full breasts**, slightly larger than average, with natural proportions and a subtly emphasized bust beneath her fitted clothing.
+- **Short, tousled dark brown hair**, slightly messy and practical.
+- Attractive but rugged facial features, with a confident, slightly irreverent smirk.
+- Lightly tanned skin with subtle freckles, a small facial scar, minor scratches, and signs of a demanding working life.
+- A few understated tattoos, particularly on her forearms.
+
+**Clothing and equipment:**
+- A **weathered brown leather pilot jacket**, partially open, with rolled-up sleeves, worn stitching, patches, and a raised collar.
+- A **fitted, slightly dirty grey tank top** that follows her natural figure and bust without looking excessively revealing.
+- **Tight-fitting dark tactical pants**, closely following the hips, thighs, and legs while remaining practical for combat and mechanical work. Include reinforced knees, subtle wear, repaired seams, and restrained red accents.
+- Heavy, worn leather combat boots with practical straps and buckles.
+- Fingerless mechanic gloves, utility belts, a compact tool pouch, and a thigh-mounted repair kit.
+- Pilot goggles resting around her neck.
+- Small improvised technological accessories suggesting she maintains, repairs, and modifies her own equipment.
+
+**Personality and pose:**
+
+Mara should project **toughness, independence, resilience, and irreverent confidence**. She is an experienced underground fighter who has survived difficult circumstances through resourcefulness and determination.
+
+Her posture should feel **grounded, relaxed, and formidable**, with her weight shifted slightly onto one leg and her hands resting casually near or inside her pockets.
+
+Her expression should combine a subtle, challenging smirk with observant eyes, conveying both **hard-earned cynicism and buried warmth**.
+
+She should look distinctly less glamorous than celebrity competitors, but possess a rugged, natural attractiveness.
+
+**Composition and background:**
+- Full body visible, including both boots and hands.
+- Front three-quarter standing pose.
+- Centered composition with a clean, readable silhouette.
+- **Transparent background (PNG with alpha channel)**, appearing white when displayed against a white surface.
+- No scenery, text, logos, watermarks, or decorative borders.
+- Suitable for use as a **game dialogue sprite, character selection portrait, or promotional character render**.
+
+**Overall visual identity:** A rugged, attractive, self-reliant underground champion with a feminine but functional silhouette, fitted tactical clothing, weathered pilot equipment, and the unmistakable attitude of someone who has fought and repaired her way through life.
 
 ---
 
@@ -122,11 +161,11 @@ Create a full-body render of **Alex**, a **42-year-old nonbinary, androgynous br
 
 ### CHR-LEE — Leena Sato
 **Prompt:**
-Create a full-body render of **Leena Sato**, an **investigative reporter**. She should appear **perceptive, empathetic, professionally skeptical, and persistent**, with a practical but stylish journalistic look suitable for moving between public events, backstage access, and sensitive investigations. Her design should convey intelligence and trustworthiness rather than glamour-first presentation. She should feel grounded, observant, and emotionally present.
+Create a full-body render of **Leena Sato**, a **31-year-old investigative reporter**. She should appear **perceptive, empathetic, professionally skeptical, and persistent**, with a practical but stylish journalistic look suitable for moving between public events, backstage access, and sensitive investigations. Her design should convey intelligence and trustworthiness rather than glamour-first presentation. She should feel grounded, observant, and emotionally present.
 
 ### CHR-PLG — Plug McEllis
 **Prompt:**
-Create a full-body render of **Plug McEllis**, a **veteran HAR preparation technician**. He should look **practical, talkative, technically skilled, and warmly familiar**, like someone the pilots trust in the workshop. Dress him in hands-on technical attire with tools, gloves, or diagnostic equipment integrated naturally into the design. He should bring everyday warmth to the cast and contrast with the polished executives and celebrities.
+Create a full-body render of **Plug McEllis**, a **provisional 52-year-old veteran HAR preparation technician**. He should look **practical, talkative, technically skilled, and warmly familiar**, like someone the pilots trust in the workshop. Dress him in hands-on technical attire with tools, gloves, or diagnostic equipment integrated naturally into the design. He should bring everyday warmth to the cast and contrast with the polished executives and celebrities.
 
 ### CHR-TES — Tessa Kade *(added v1.1 — previously missing from the render set despite an active relationship branch; see Ren's campaign)*
 **Prompt:**

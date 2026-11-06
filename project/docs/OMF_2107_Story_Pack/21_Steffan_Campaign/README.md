@@ -1,5 +1,7 @@
 # Steffan selected-pilot campaign — v2.1
 
+> **Current versions (see `../00_README/CURRENT_FILES.md`):** `Steffan_Playable_Screenplay_v0.7.md`, `Steffan_Route_Spec_v0.2.md` and `02_Story_Bibles/Steffan_Character_Addendum_v2.3.md` (higher versions than the v0.3 script and v2.1 addendum named below).
+
 - `Steffan_Playable_Screenplay_v0.1.md`: six-chapter draft including alternate fight, relationship, evidence and finale scenes.
 - `Steffan_Route_Spec_v0.1.md`: branch conditions and unresolved approvals.
 - `steffan_route_validator.py`: selected-pilot routing over unchanged tournament simulator.

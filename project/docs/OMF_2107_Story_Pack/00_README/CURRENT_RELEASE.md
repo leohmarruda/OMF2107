@@ -63,7 +63,7 @@ The authoritative active-script manifest is the twelve-pilot table below. Read t
 | Selene | `23_Selene_Campaign/Selene_Playable_Screenplay_v0.5.md` | `23_Selene_Campaign/Selene_Route_Spec_v0.1.md` |
 | Milano | `24_Milano_Campaign/Milano_Playable_Screenplay_v0.5.md` | `24_Milano_Campaign/Milano_Route_Spec_v0.1.md` |
 
-**Ari exception:** Ari is a six-file script in `04_Screenplay_Reconstructions`. Chapter 1 remains at its v2.8 active revision; the other five chapters have new fanservice-tagged revisions. The original background and performance annotated versions remain intact.
+**Ari exception:** Ari is a six-file script in `04_Screenplay_Reconstructions`. Chapter 1 stays at its v0.6 revision (the v2.8 active one); Chapters 2 to 5 are v0.7 and Chapter 6 is v0.8, and the other five chapters have new fanservice-tagged revisions. The original background and performance annotated versions remain intact.
 
 ## Canon and proposed scene precedence
 
@@ -129,7 +129,7 @@ These files were the baseline for the v2.9 reversible tag edits and remain refer
 
 ## Gesture performance cues — v3.1
 
-Current scripts above now contain editorial `[GESTURE: GST-*]` cues tied to non-neutral dialogue turns. These are separate from `EXP-*` facial expression codes; existing prose and performance annotations remain unchanged. See `29_Gesture_Registry/` for the character gesture prompts, cue list and QA summary. Historical scripts remain unchanged.
+Current scripts above now contain editorial `[GESTURE: GST-*]` cues tied to non-neutral dialogue turns. These are separate from `EXP-*` facial expression codes; existing prose and performance annotations remain unchanged. See `33_Gesture_Registry/` for the character gesture prompts, cue list and QA summary. Historical scripts remain unchanged.
 
 
 ### Retained v2.9 fanservice-index source filenames (historical, not active)
