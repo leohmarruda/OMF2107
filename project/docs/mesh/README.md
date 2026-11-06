@@ -24,7 +24,7 @@ do not establish the generator's intent or approve either FBX for production.
 Record Meshy asset terms/provenance before moving an adapted version into a
 distributable game package. The [original pose gallery](../OMF2097/poses/index.md) and
 [higher-resolution Remastered captures](../Remastered/README.md) remain motion
-and silhouette references alongside the approved OMF2115 model views.
+and silhouette references alongside the approved OMF2107 model views.
 
 ![Blue Robot Mascot neutral geometry preview](previews/robot-mascot-front.png)
 

@@ -1,0 +1,36 @@
+{
+  "status": "heuristic candidates only; none verified",
+  "anchor_patterns": {
+    "K_BIO": "kreissack.{0,80}(alive|surviv|biolog)|biological survival",
+    "VARGA_EVIDENCE": "varga.{0,90}(evidence|proof|unauthorized)|protected.{0,40}(proof|evidence)",
+    "DANTE_STEFFAN_PRIVATE": "(dante.{0,50}steffan|steffan.{0,50}dante).{0,100}(confront|truth|private)",
+    "SF_AB": "(a/b|ab|first).{0,40}semifinal|semifinal.{0,40}(a/b|ab|first)",
+    "RESCUE": "nova.{0,90}rescu|rescu.{0,90}nova",
+    "SF_CD": "(c/d|cd|second).{0,40}semifinal|semifinal.{0,40}(c/d|cd|second)",
+    "FINAL": "(official|championship|tournament).{0,25}final|final.{0,30}(championship|match)",
+    "NOVA_CORE": "(nova.{0,90}(core|destruct|boss|sacrif)|core.{0,90}nova)",
+    "DEVROE_ORDER_E5": "devroe.{0,80}(e5|order|authenticat)|e5.{0,80}(order|devroe)"
+  },
+  "candidate_counts": {
+    "K_BIO": 47,
+    "VARGA_EVIDENCE": 27,
+    "DANTE_STEFFAN_PRIVATE": 8,
+    "SF_AB": 17,
+    "RESCUE": 32,
+    "SF_CD": 9,
+    "FINAL": 43,
+    "NOVA_CORE": 29,
+    "DEVROE_ORDER_E5": 10
+  },
+  "canonical_order": [
+    "K_BIO",
+    "VARGA_EVIDENCE",
+    "DANTE_STEFFAN_PRIVATE",
+    "SF_AB",
+    "RESCUE",
+    "SF_CD",
+    "FINAL",
+    "NOVA_CORE",
+    "DEVROE_ORDER_E5"
+  ]
+}

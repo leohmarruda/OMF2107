@@ -1,11 +1,11 @@
 # Assembles a Windows playtest package of the story slice and zips it.
-#   project/scripts/package-playtest.ps1            # -> dist/OMF2115-playtest.zip
+#   project/scripts/package-playtest.ps1            # -> dist/OMF2107-playtest.zip
 # Needs a Release build (project/scripts/build.ps1 -Config Release) and the exported story assets
 # (python project/tools/export_story_assets.py).
 # The package contains the original game's data, art and music for a PRIVATE playtest. The asset
 # ledger marks them as not distributable: send the zip only to the tester, never publish it.
 param(
-    [string]$Name = 'OMF2115-playtest'
+    [string]$Name = 'OMF2107-playtest'
 )
 
 $ErrorActionPreference = 'Stop'

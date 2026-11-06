@@ -8,7 +8,7 @@
 
 // The ten playable pilots and the two HARs the prototype can render.
 static const char *const known_pilots[] = {"Crystal", "Steffan", "Milano", "Christian", "Shirro",
-                                           "JeanPaul", "Ibrahim", "Angel", "Cossette", "Raven"};
+                                           "JeanPaul", "Ibrahim", "Angel", "Cossette", "Raven", "Ari", "Selene", "Mara", "Ren", "Lyra", "Nova"};
 static const char *const known_hars[] = {"Jaguar", "Shadow", "Katana"};
 
 static bool ieq(const char *a, const char *b) {
@@ -214,6 +214,26 @@ static bool parse_line(Story *s, char *line_text, int line, const char *name, ch
         if(!*rest) { fail(err, err_size, name, line, "banner needs text"); return false; }
         c = add_cmd(s, STORY_CMD_BANNER, line);
         if(c && !copy(c->text, STORY_NAME, rest)) { fail(err, err_size, name, line, "banner text is too long"); return false; }
+    } else if(strcmp(word, "present") == 0) {
+        char *image = token(&rest);
+        if(!image) { fail(err, err_size, name, line, "present needs '<image> <left|right> [name]' or 'off'"); return false; }
+        c = add_cmd(s, STORY_CMD_PRESENT, line);
+        if(strcmp(image, "off") == 0) {
+            if(*rest) { fail(err, err_size, name, line, "present off takes no arguments"); return false; }
+            if(c) copy(c->flag, STORY_NAME, "off");
+        } else {
+            char *side = token(&rest);
+            if(!side || (strcmp(side, "left") != 0 && strcmp(side, "right") != 0)) {
+                fail(err, err_size, name, line, "present needs '<image> <left|right> [name]' or 'off'"); return false;
+            }
+            for(const char *p = image; *p; p++) {
+                bool ok = (*p >= 'a' && *p <= 'z') || (*p >= 'A' && *p <= 'Z') || (*p >= '0' && *p <= '9') || *p == '_';
+                if(!ok) { fail(err, err_size, name, line, "present image names use letters, digits, and '_' only"); return false; }
+            }
+            if(c && (!copy(c->flag, STORY_NAME, image) || !copy(c->value, STORY_NAME, side) || !copy(c->text, STORY_NAME, trim(rest)))) {
+                fail(err, err_size, name, line, "present image or name is too long"); return false;
+            }
+        }
     } else if(strcmp(word, "say") == 0) {
         char *colon = strchr(rest, ':');
         if(!colon) { fail(err, err_size, name, line, "say needs 'speaker: text' (use 'say : text' for narration)"); return false; }
@@ -509,6 +529,17 @@ static void step_to_event(StoryRun *r, bool log_say) {
                 snprintf(r->effect_text, sizeof(r->effect_text), "%s", c->kind == STORY_CMD_BANNER ? c->text : "");
                 r->pc++;
                 break;
+            case STORY_CMD_PRESENT:
+                if(strcmp(c->flag, "off") == 0) {
+                    r->present[0] = 0; r->present_side[0] = 0; r->present_name[0] = 0; r->present_stage = 0;
+                } else {
+                    snprintf(r->present, sizeof(r->present), "%s", c->flag);
+                    snprintf(r->present_side, sizeof(r->present_side), "%s", c->value);
+                    snprintf(r->present_name, sizeof(r->present_name), "%s", c->text);
+                    r->present_stage = c->text[0] ? 1 : 3;
+                }
+                r->pc++;
+                break;
             case STORY_CMD_ART:
                 if(strcmp(c->text, "off") == 0) {
                     r->art[0] = 0;
@@ -527,7 +558,11 @@ static void step_to_event(StoryRun *r, bool log_say) {
             case STORY_CMD_JUMP: goto_scene(r, c->target); break;
             case STORY_CMD_SAY:
                 expand(r, c->text, r->say_text, sizeof(r->say_text));
-                if(log_say) log_add(r, c->speaker, r->say_text);
+                if(log_say) {
+                    log_add(r, c->speaker, r->say_text);
+                    if(r->present_stage == 1) r->present_stage = 2;        // the name arrives with its first line
+                    else if(r->present_stage == 2) r->present_stage = 3;   // and leaves with the next
+                }
                 r->event = STORY_EVENT_SAY;
                 return;
             case STORY_CMD_CHOICE:
@@ -692,7 +727,7 @@ bool story_save(const StoryRun *run, const char *path, char *err, size_t err_siz
     }
     FILE *f = fopen(tmp, "wb");
     if(!f) { fail(err, err_size, path, 0, "cannot write the save file"); return false; }
-    fprintf(f, "OMF2115-STORY-SAVE %d\n", STORY_SAVE_VERSION);
+    fprintf(f, "OMF2107-STORY-SAVE %d\n", STORY_SAVE_VERSION);
     fprintf(f, "script %08x\n", story_fingerprint(run->story));
     fprintf(f, "scene %s\n", run->story->scenes[run->scene].id);
     fprintf(f, "pc %d\n", run->pc);
@@ -748,7 +783,7 @@ bool story_load_save(StoryRun *run, const Story *story, const char *path, char *
         if(len && l[len - 1] == '\r') l[--len] = 0;
         if(!len) continue;
         if(line == 1) {
-            const char *magic = "OMF2115-STORY-SAVE ";
+            const char *magic = "OMF2107-STORY-SAVE ";
             if(strncmp(l, magic, strlen(magic)) != 0) { fail(err, err_size, path, line, "not a story save file"); ok = false; break; }
             int version = atoi(l + strlen(magic));
             if(version != STORY_SAVE_VERSION) {
@@ -771,6 +806,19 @@ bool story_load_save(StoryRun *run, const Story *story, const char *path, char *
             else {
                 *space = 0;
                 ok = copy(tmp.art, sizeof(tmp.art), l + 4) && copy(tmp.art_effect, sizeof(tmp.art_effect), space + 1);
+            }
+        }
+        else if(strncmp(l, "present ", 8) == 0) {
+            char *image = l + 8, *side = strchr(image, ' ');
+            char *stage = side ? strchr(side + 1, ' ') : NULL;
+            char *name = stage ? strchr(stage + 1, ' ') : NULL;   // the stage is a single digit; the name follows a space
+            if(!stage) ok = false;   // a portrait without a name ends after its stage
+            else {
+                *side = 0; *stage = 0;
+                if(name) *name = 0;
+                ok = copy(tmp.present, sizeof(tmp.present), image) && copy(tmp.present_side, sizeof(tmp.present_side), side + 1) &&
+                     copy(tmp.present_name, sizeof(tmp.present_name), name ? name + 1 : "");
+                tmp.present_stage = atoi(stage + 1);
             }
         }
         else if(strncmp(l, "flag ", 5) == 0) {

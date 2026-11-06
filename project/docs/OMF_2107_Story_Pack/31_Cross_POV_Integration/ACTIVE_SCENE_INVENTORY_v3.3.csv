@@ -1,0 +1,406 @@
+pilot,scene_id,title,source,line,phase_candidate,event_candidates,event_verified,physical_access_verified,knowledge_verified,branch_predicates_verified,review_status
+Ari,SCENE1,THE LEGEND,04_Screenplay_Reconstructions/Chapter_01_Anniversary_v0.6.md,29,unverified,,,,,,UNREVIEWED
+Ari,SCENE2,THE ANNIVERSARY GALA,04_Screenplay_Reconstructions/Chapter_01_Anniversary_v0.6.md,104,unverified,,,,,,UNREVIEWED
+Ari,SCENE2E,THE PROPER QUESTION (OPTIONAL: LEENA),04_Screenplay_Reconstructions/Chapter_01_Anniversary_v0.6.md,458,unverified,,,,,,UNREVIEWED
+Ari,SCENE3,THE WRONG KIND OF GUEST,04_Screenplay_Reconstructions/Chapter_01_Anniversary_v0.6.md,486,unverified,,,,,,UNREVIEWED
+Ari,SCENE4,A VERY OLD GHOST,04_Screenplay_Reconstructions/Chapter_01_Anniversary_v0.6.md,735,unverified,,,,,,UNREVIEWED
+Ari,SCENE5,LET THE FIGHTING BEGIN,04_Screenplay_Reconstructions/Chapter_01_Anniversary_v0.6.md,827,unverified,,,,,,UNREVIEWED
+Ari,SCENE5A,PRE-FIGHT,04_Screenplay_Reconstructions/Chapter_01_Anniversary_v0.6.md,891,unverified,,,,,,UNREVIEWED
+Ari,SCENE5B,POST-FIGHT,04_Screenplay_Reconstructions/Chapter_01_Anniversary_v0.6.md,940,unverified,,,,,,UNREVIEWED
+Ari,SCENE6,A BETTER KIND OF ENTERTAINMENT,04_Screenplay_Reconstructions/Chapter_01_Anniversary_v0.6.md,1047,unverified,,,,,,UNREVIEWED
+Ari,SCENE7,A LESSON IN BAD HABITS,04_Screenplay_Reconstructions/Chapter_01_Anniversary_v0.6.md,1106,unverified,,,,,,UNREVIEWED
+Ari,SCENE8,PRIVATE OBSERVATIONS,04_Screenplay_Reconstructions/Chapter_01_Anniversary_v0.6.md,1339,unverified,K_BIO;VARGA_EVIDENCE,,,,,UNREVIEWED
+Ari,SCENE1,ELECTRIC CELEBRITY,04_Screenplay_Reconstructions/Chapter_02_Champions_Shadow_v0.7.md,26,unverified,,,,,,UNREVIEWED
+Ari,SCENE1B,OFF AIR (OPTIONAL: LYRA / ALEX),04_Screenplay_Reconstructions/Chapter_02_Champions_Shadow_v0.7.md,244,unverified,,,,,,UNREVIEWED
+Ari,SCENE2,BREAKFAST WITH THE ENEMY,04_Screenplay_Reconstructions/Chapter_02_Champions_Shadow_v0.7.md,273,unverified,,,,,,UNREVIEWED
+Ari,SCENE3,THE PRICE OF A LEGEND,04_Screenplay_Reconstructions/Chapter_02_Champions_Shadow_v0.7.md,466,unverified,,,,,,UNREVIEWED
+Ari,SCENE4,A MATTER OF COMPATIBILITY,04_Screenplay_Reconstructions/Chapter_02_Champions_Shadow_v0.7.md,715,unverified,,,,,,UNREVIEWED
+Ari,SCENE4B,NEON RESPITE (OPTIONAL PUBLIC FAN EVENT),04_Screenplay_Reconstructions/Chapter_02_Champions_Shadow_v0.7.md,849,unverified,,,,,,UNREVIEWED
+Ari,SCENE5,THE WRONG WAY TO BEAT A CHAMPION,04_Screenplay_Reconstructions/Chapter_02_Champions_Shadow_v0.7.md,880,unverified,,,,,,UNREVIEWED
+Ari,SCENE6,ARI VS. CRYSTAL,04_Screenplay_Reconstructions/Chapter_02_Champions_Shadow_v0.7.md,1041,unverified,,,,,,UNREVIEWED
+Ari,SCENE7A,IF CRYSTAL WINS,04_Screenplay_Reconstructions/Chapter_02_Champions_Shadow_v0.7.md,1120,unverified,,,,,,UNREVIEWED
+Ari,SCENE7B,IF ARI WINS,04_Screenplay_Reconstructions/Chapter_02_Champions_Shadow_v0.7.md,1223,unverified,,,,,,UNREVIEWED
+Ari,SCENE7C,ARI BEATS CRYSTAL AFTER LOSING TO SELENE (`GA_CYCLE`),04_Screenplay_Reconstructions/Chapter_02_Champions_Shadow_v0.7.md,1327,unverified,,,,,,UNREVIEWED
+Ari,SCENE7D,ARI LOSES BOTH QUALIFYING MATCHES (`GA_OUT`),04_Screenplay_Reconstructions/Chapter_02_Champions_Shadow_v0.7.md,1345,unverified,,,,,,UNREVIEWED
+Ari,SCENE8,THE PERSON WAITING OUTSIDE,04_Screenplay_Reconstructions/Chapter_02_Champions_Shadow_v0.7.md,1363,unverified,,,,,,UNREVIEWED
+Ari,SCENE9,THE THINGS THE COMPUTER DIDN'T SAY,04_Screenplay_Reconstructions/Chapter_02_Champions_Shadow_v0.7.md,1597,unverified,,,,,,UNREVIEWED
+Ari,SCENE10,THE EMPTY PLACE,04_Screenplay_Reconstructions/Chapter_02_Champions_Shadow_v0.7.md,1705,unverified,K_BIO;VARGA_EVIDENCE,,,,,UNREVIEWED
+Ari,SCENE1,A SMALL MISTAKE,04_Screenplay_Reconstructions/Chapter_03_Trouble_With_Attraction_v0.7.md,29,unverified,,,,,,UNREVIEWED
+Ari,SCENE2,A MATCH WORTH WATCHING,04_Screenplay_Reconstructions/Chapter_03_Trouble_With_Attraction_v0.7.md,137,unverified,,,,,,UNREVIEWED
+Ari,SCENE3,THE MAN IN THE OTHER CORNER,04_Screenplay_Reconstructions/Chapter_03_Trouble_With_Attraction_v0.7.md,345,unverified,,,,,,UNREVIEWED
+Ari,SCENE3B,THE VELVET PROBLEM (OPTIONAL: JEAN-PAUL),04_Screenplay_Reconstructions/Chapter_03_Trouble_With_Attraction_v0.7.md,441,unverified,,,,,,UNREVIEWED
+Ari,SCENE4,THE HOLD ORDER,04_Screenplay_Reconstructions/Chapter_03_Trouble_With_Attraction_v0.7.md,468,unverified,,,,,,UNREVIEWED
+Ari,SCENE5,NOT AN EXHIBITION,04_Screenplay_Reconstructions/Chapter_03_Trouble_With_Attraction_v0.7.md,643,unverified,FINAL,,,,,UNREVIEWED
+Ari,SCENE5B,FIVE MORE SECONDS (OPTIONAL: ARI / MARA),04_Screenplay_Reconstructions/Chapter_03_Trouble_With_Attraction_v0.7.md,894,unverified,,,,,,UNREVIEWED
+Ari,SCENE6,THE QUIETEST VICTORY,04_Screenplay_Reconstructions/Chapter_03_Trouble_With_Attraction_v0.7.md,923,unverified,,,,,,UNREVIEWED
+Ari,SCENE7,AN UNFORTUNATE COINCIDENCE,04_Screenplay_Reconstructions/Chapter_03_Trouble_With_Attraction_v0.7.md,1027,unverified,,,,,,UNREVIEWED
+Ari,SCENE8,THE BREAKUP,04_Screenplay_Reconstructions/Chapter_03_Trouble_With_Attraction_v0.7.md,1282,unverified,,,,,,UNREVIEWED
+Ari,SCENE9,THE DOCTOR'S APPOINTMENT,04_Screenplay_Reconstructions/Chapter_03_Trouble_With_Attraction_v0.7.md,1481,unverified,,,,,,UNREVIEWED
+Ari,SCENE10,EVERYBODY'S BUSINESS,04_Screenplay_Reconstructions/Chapter_03_Trouble_With_Attraction_v0.7.md,1605,unverified,,,,,,UNREVIEWED
+Ari,SCENE10B,"TWO INVENTORS, ONE DANCE (OPTIONAL SUPPORTING CAST)",04_Screenplay_Reconstructions/Chapter_03_Trouble_With_Attraction_v0.7.md,1764,unverified,,,,,,UNREVIEWED
+Ari,SCENE11,SOMETHING WORTH WINNING FOR,04_Screenplay_Reconstructions/Chapter_03_Trouble_With_Attraction_v0.7.md,1795,unverified,,,,,,UNREVIEWED
+Ari,SCENE12,THE OFFER,04_Screenplay_Reconstructions/Chapter_03_Trouble_With_Attraction_v0.7.md,2138,unverified,,,,,,UNREVIEWED
+Ari,SCENE13,THE DRAW (ALL GROUP A OUTCOMES),04_Screenplay_Reconstructions/Chapter_03_Trouble_With_Attraction_v0.7.md,2194,unverified,,,,,,UNREVIEWED
+Ari,SCENE13A,"Ari beat Selene, lost to Crystal (`GA_DEFAULT`)",04_Screenplay_Reconstructions/Chapter_03_Trouble_With_Attraction_v0.7.md,2208,unverified,,,,,,UNREVIEWED
+Ari,SCENE13B,Ari beat both opponents (`GA_ARI_WINNER`),04_Screenplay_Reconstructions/Chapter_03_Trouble_With_Attraction_v0.7.md,2231,unverified,,,,,,UNREVIEWED
+Ari,SCENE13C,"Ari lost to Selene, beat Crystal (`GA_CYCLE`)",04_Screenplay_Reconstructions/Chapter_03_Trouble_With_Attraction_v0.7.md,2250,unverified,,,,,,UNREVIEWED
+Ari,SCENE13D,Ari lost both matches (`GA_OUT`),04_Screenplay_Reconstructions/Chapter_03_Trouble_With_Attraction_v0.7.md,2275,unverified,K_BIO;VARGA_EVIDENCE;SF_AB;FINAL,,,,,UNREVIEWED
+Ari,SCENE1,THE MORNING AFTER,04_Screenplay_Reconstructions/Chapter_04_No_Holding_Back_v0.7.md,18,unverified,,,,,,UNREVIEWED
+Ari,SCENE2,A BETTER PILOT,04_Screenplay_Reconstructions/Chapter_04_No_Holding_Back_v0.7.md,268,unverified,,,,,,UNREVIEWED
+Ari,SCENE3,THE PRICE OF PRECISION,04_Screenplay_Reconstructions/Chapter_04_No_Holding_Back_v0.7.md,402,unverified,,,,,,UNREVIEWED
+Ari,SCENE3B,COOLING SYSTEM (OPTIONAL: MARA / PLUG),04_Screenplay_Reconstructions/Chapter_04_No_Holding_Back_v0.7.md,712,unverified,,,,,,UNREVIEWED
+Ari,SCENE4,THE ARGUMENT,04_Screenplay_Reconstructions/Chapter_04_No_Holding_Back_v0.7.md,739,unverified,,,,,,UNREVIEWED
+Ari,SCENE4B,THE BLUE HOUR (OPTIONAL: ARI / MARA),04_Screenplay_Reconstructions/Chapter_04_No_Holding_Back_v0.7.md,962,unverified,,,,,,UNREVIEWED
+Ari,SCENE5,THE FIRST QUARTERFINAL,04_Screenplay_Reconstructions/Chapter_04_No_Holding_Back_v0.7.md,996,unverified,FINAL,,,,,UNREVIEWED
+Ari,SCENE5C,NEW PLAYABLE INVESTIGATION: THE SECOND COPY (`GA_OUT`),04_Screenplay_Reconstructions/Chapter_04_No_Holding_Back_v0.7.md,1135,unverified,FINAL,,,,,UNREVIEWED
+Ari,SCENE6,ARI VS. MARA,04_Screenplay_Reconstructions/Chapter_04_No_Holding_Back_v0.7.md,1155,unverified,,,,,,UNREVIEWED
+Ari,SCENE7,TWO OLD ENEMIES,04_Screenplay_Reconstructions/Chapter_04_No_Holding_Back_v0.7.md,1438,unverified,FINAL,,,,,UNREVIEWED
+Ari,SCENE8,A STAR WHO CAN FIGHT,04_Screenplay_Reconstructions/Chapter_04_No_Holding_Back_v0.7.md,1541,unverified,,,,,,UNREVIEWED
+Ari,SCENE9,THE EMPTY CHAIR,04_Screenplay_Reconstructions/Chapter_04_No_Holding_Back_v0.7.md,1645,unverified,,,,,,UNREVIEWED
+Ari,SCENE10,THE WRONG EXPERIMENT,04_Screenplay_Reconstructions/Chapter_04_No_Holding_Back_v0.7.md,1767,unverified,,,,,,UNREVIEWED
+Ari,SCENE11,THE MEDICAL SIGNATURE,04_Screenplay_Reconstructions/Chapter_04_No_Holding_Back_v0.7.md,1856,unverified,,,,,,UNREVIEWED
+Ari,SCENE12,A DIFFERENT KIND OF VICTORY,04_Screenplay_Reconstructions/Chapter_04_No_Holding_Back_v0.7.md,2051,unverified,K_BIO;NOVA_CORE,,,,,UNREVIEWED
+Ari,SCENE13,THE OLD COMMANDER,04_Screenplay_Reconstructions/Chapter_04_No_Holding_Back_v0.7.md,2218,unverified,K_BIO;VARGA_EVIDENCE;RESCUE;FINAL,,,,,UNREVIEWED
+Ari,SCENE1,THE COST OF WINNING,04_Screenplay_Reconstructions/Chapter_05_Fractures_v0.7.md,19,unverified,SF_AB,,,,,UNREVIEWED
+Ari,SCENE2,THE SIGNATURE,04_Screenplay_Reconstructions/Chapter_05_Fractures_v0.7.md,226,unverified,,,,,,UNREVIEWED
+Ari,SCENE2B,A CLEAN CHAIN OF CUSTODY (OPTIONAL: ARI / LEENA),04_Screenplay_Reconstructions/Chapter_05_Fractures_v0.7.md,408,unverified,,,,,,UNREVIEWED
+Ari,SCENE3,A VERY EXPENSIVE SECRET,04_Screenplay_Reconstructions/Chapter_05_Fractures_v0.7.md,432,unverified,K_BIO,,,,,UNREVIEWED
+Ari,SCENE4,THE FIRST SEMIFINAL,04_Screenplay_Reconstructions/Chapter_05_Fractures_v0.7.md,601,unverified,SF_AB;FINAL,,,,,UNREVIEWED
+Ari,SCENE5,THE EXPERIMENTAL SUBJECT,04_Screenplay_Reconstructions/Chapter_05_Fractures_v0.7.md,847,unverified,VARGA_EVIDENCE,,,,,UNREVIEWED
+Ari,SCENE5B,THE DOCUMENT YOU DIDN'T BURN (OPTIONAL: CRYSTAL / RAVEN),04_Screenplay_Reconstructions/Chapter_05_Fractures_v0.7.md,1014,unverified,,,,,,UNREVIEWED
+Ari,SCENE6,THE DIFFERENCE BETWEEN WANTING AND WINNING,04_Screenplay_Reconstructions/Chapter_05_Fractures_v0.7.md,1043,unverified,,,,,,UNREVIEWED
+Ari,SCENE7,LYRA TAKES THE MICROPHONE,04_Screenplay_Reconstructions/Chapter_05_Fractures_v0.7.md,1337,unverified,,,,,,UNREVIEWED
+Ari,SCENE7B,OWN THE SPOTLIGHT (OPTIONAL: LYRA),04_Screenplay_Reconstructions/Chapter_05_Fractures_v0.7.md,1429,unverified,SF_AB,,,,,UNREVIEWED
+Ari,SCENE8,THE FAILURE,04_Screenplay_Reconstructions/Chapter_05_Fractures_v0.7.md,1456,unverified,,,,,,UNREVIEWED
+Ari,SCENE9,THE MACHINE THAT SAVED THEM,04_Screenplay_Reconstructions/Chapter_05_Fractures_v0.7.md,1593,unverified,,,,,,UNREVIEWED
+Ari,SCENE10,THE WRONG THEORY,04_Screenplay_Reconstructions/Chapter_05_Fractures_v0.7.md,1786,unverified,,,,,,UNREVIEWED
+Ari,SCENE11,THE SECOND SEMIFINAL,04_Screenplay_Reconstructions/Chapter_05_Fractures_v0.7.md,1922,unverified,SF_AB;SF_CD;FINAL,,,,,UNREVIEWED
+Ari,SCENE12,THE FINALISTS,04_Screenplay_Reconstructions/Chapter_05_Fractures_v0.7.md,2211,unverified,SF_AB;SF_CD;FINAL,,,,,UNREVIEWED
+Ari,SCENE13,NOT HIS DECISION,04_Screenplay_Reconstructions/Chapter_05_Fractures_v0.7.md,2312,unverified,K_BIO;VARGA_EVIDENCE;SF_AB;RESCUE;SF_CD;FINAL;NOVA_CORE,,,,,UNREVIEWED
+Ari,SCENE1,SOMETHING TO LOOK FORWARD TO,04_Screenplay_Reconstructions/Chapter_06_One_Must_Fall_v0.8.md,19,unverified,FINAL,,,,,UNREVIEWED
+Ari,SCENE2,NOT JUST A PRETTY FACE,04_Screenplay_Reconstructions/Chapter_06_One_Must_Fall_v0.8.md,261,unverified,FINAL,,,,,UNREVIEWED
+Ari,SCENE3,THE CHAMPIONSHIP (AUTHORITATIVE BRACKET DISPATCH),04_Screenplay_Reconstructions/Chapter_06_One_Must_Fall_v0.8.md,446,unverified,SF_AB;SF_CD;FINAL,,,,,UNREVIEWED
+Ari,SCENE3A,IF ARI REACHED THE FINAL (`ARI_FINALIST`),04_Screenplay_Reconstructions/Chapter_06_One_Must_Fall_v0.8.md,464,unverified,SF_AB;FINAL,,,,,UNREVIEWED
+Ari,SCENE3A-W,Ari wins the final,04_Screenplay_Reconstructions/Chapter_06_One_Must_Fall_v0.8.md,510,unverified,,,,,,UNREVIEWED
+Ari,SCENE3A-L,Ari loses the final,04_Screenplay_Reconstructions/Chapter_06_One_Must_Fall_v0.8.md,531,unverified,,,,,,UNREVIEWED
+Ari,SCENE3B,IF ARI DID NOT REACH THE FINAL (`ARI_NOT_FINALIST`),04_Screenplay_Reconstructions/Chapter_06_One_Must_Fall_v0.8.md,549,unverified,FINAL,,,,,UNREVIEWED
+Ari,SCENE4,THE CHAMPION'S CEREMONY (WINNER-EXCLUSIVE),04_Screenplay_Reconstructions/Chapter_06_One_Must_Fall_v0.8.md,579,unverified,,,,,,UNREVIEWED
+Ari,SCENE4W,ARI ACTUALLY WON THE FINAL,04_Screenplay_Reconstructions/Chapter_06_One_Must_Fall_v0.8.md,583,unverified,,,,,,UNREVIEWED
+Ari,SCENE4L,SOMEONE ELSE WON THE FINAL,04_Screenplay_Reconstructions/Chapter_06_One_Must_Fall_v0.8.md,605,unverified,,,,,,UNREVIEWED
+Ari,SCENE4K,"WHAT HE CALLED AN AGREEMENT [NEW v1.8, SHARED CUTAWAY]",04_Screenplay_Reconstructions/Chapter_06_One_Must_Fall_v0.8.md,631,unverified,RESCUE,,,,,UNREVIEWED
+Ari,SCENE5,A DEMONSTRATION TOO FAR,04_Screenplay_Reconstructions/Chapter_06_One_Must_Fall_v0.8.md,669,unverified,RESCUE,,,,,UNREVIEWED
+Ari,SCENE6,THE OLD MAN'S PLAN,04_Screenplay_Reconstructions/Chapter_06_One_Must_Fall_v0.8.md,777,unverified,K_BIO;NOVA_CORE,,,,,UNREVIEWED
+Ari,SCENE6K,"AN ORDER THAT NEVER EXISTED [NEW v1.8, SHARED CUTAWAY]",04_Screenplay_Reconstructions/Chapter_06_One_Must_Fall_v0.8.md,893,unverified,K_BIO,,,,,UNREVIEWED
+Ari,SCENE7,THE WRONG MASTER,04_Screenplay_Reconstructions/Chapter_06_One_Must_Fall_v0.8.md,925,unverified,RESCUE,,,,,UNREVIEWED
+Ari,SCENE8,NOVA SPEAKS,04_Screenplay_Reconstructions/Chapter_06_One_Must_Fall_v0.8.md,1063,unverified,RESCUE,,,,,UNREVIEWED
+Ari,SCENE8B,THE UNREQUESTED HANDSHAKE,04_Screenplay_Reconstructions/Chapter_06_One_Must_Fall_v0.8.md,1234,unverified,RESCUE,,,,,UNREVIEWED
+Ari,SCENE9,THE LAST ARENA,04_Screenplay_Reconstructions/Chapter_06_One_Must_Fall_v0.8.md,1254,unverified,FINAL;NOVA_CORE,,,,,UNREVIEWED
+Ari,SCENE10,FINAL BOSS: NOVA,04_Screenplay_Reconstructions/Chapter_06_One_Must_Fall_v0.8.md,1372,unverified,RESCUE;NOVA_CORE,,,,,UNREVIEWED
+Ari,SCENE11,THE EJECTION,04_Screenplay_Reconstructions/Chapter_06_One_Must_Fall_v0.8.md,1582,unverified,K_BIO;NOVA_CORE,,,,,UNREVIEWED
+Ari,SCENE12,AFTER THE FALL,04_Screenplay_Reconstructions/Chapter_06_One_Must_Fall_v0.8.md,1801,unverified,,,,,,UNREVIEWED
+Ari,SCENE13,THE OTHER EVIDENCE,04_Screenplay_Reconstructions/Chapter_06_One_Must_Fall_v0.8.md,1881,unverified,,,,,,UNREVIEWED
+Ari,SCENE14,VARGA'S RECKONING,04_Screenplay_Reconstructions/Chapter_06_One_Must_Fall_v0.8.md,1935,unverified,VARGA_EVIDENCE,,,,,UNREVIEWED
+Ari,SCENE15,THE PEOPLE WHO REMAIN,04_Screenplay_Reconstructions/Chapter_06_One_Must_Fall_v0.8.md,2044,unverified,,,,,,UNREVIEWED
+Ari,SCENE15B,NO INTERVIEW TONIGHT (OPTIONAL: LYRA / ALEX),04_Screenplay_Reconstructions/Chapter_06_One_Must_Fall_v0.8.md,2222,unverified,,,,,,UNREVIEWED
+Ari,SCENE16,SOMETHING OTHER THAN SURVIVAL,04_Screenplay_Reconstructions/Chapter_06_One_Must_Fall_v0.8.md,2251,unverified,,,,,,UNREVIEWED
+Ari,SCENE16B,ALTERNATIVE RELATIONSHIP EPILOGUES (OPTIONAL),04_Screenplay_Reconstructions/Chapter_06_One_Must_Fall_v0.8.md,2396,unverified,NOVA_CORE,,,,,UNREVIEWED
+Ari,SCENE17,FINAL IMAGE,04_Screenplay_Reconstructions/Chapter_06_One_Must_Fall_v0.8.md,2469,unverified,K_BIO;VARGA_EVIDENCE;FINAL;NOVA_CORE,,,,,UNREVIEWED
+Lyra,L1.1,A champion arrives [MANDATORY],09_Lyra_Campaign/Lyra_Playable_Screenplay_v0.8.md,22,unverified,,,,,,UNREVIEWED
+Lyra,L1.2,"Two men, one very tired joke [MANDATORY]",09_Lyra_Campaign/Lyra_Playable_Screenplay_v0.8.md,55,unverified,FINAL,,,,,UNREVIEWED
+Lyra,L1.3,"Off-script [OPTIONAL; ALEX, LEENA]",09_Lyra_Campaign/Lyra_Playable_Screenplay_v0.8.md,85,unverified,,,,,,UNREVIEWED
+Lyra,L1.4,The signature [MANDATORY],09_Lyra_Campaign/Lyra_Playable_Screenplay_v0.8.md,113,unverified,,,,,,UNREVIEWED
+Lyra,L2.1,Electra versus Gargoyle [MANDATORY MATCH],09_Lyra_Campaign/Lyra_Playable_Screenplay_v0.8.md,137,unverified,,,,,,UNREVIEWED
+Lyra,L2.2,The contract with a face [MANDATORY; SHIRRO],09_Lyra_Campaign/Lyra_Playable_Screenplay_v0.8.md,155,unverified,,,,,,UNREVIEWED
+Lyra,L2.3,Neon Respite [OPTIONAL ENSEMBLE / FANSERVICE],09_Lyra_Campaign/Lyra_Playable_Screenplay_v0.8.md,174,unverified,,,,,,UNREVIEWED
+Lyra,L2.4,An unusual invitation [MANDATORY],09_Lyra_Campaign/Lyra_Playable_Screenplay_v0.8.md,194,unverified,,,,,,UNREVIEWED
+Lyra,L3.1,Fighting the charming liar [MANDATORY MATCH],09_Lyra_Campaign/Lyra_Playable_Screenplay_v0.8.md,217,unverified,,,,,,UNREVIEWED
+Lyra,L3.2,Before the kiss [MANDATORY RELATIONSHIP DECISION],09_Lyra_Campaign/Lyra_Playable_Screenplay_v0.8.md,235,unverified,DANTE_STEFFAN_PRIVATE,,,,,UNREVIEWED
+Lyra,L3.3,The leak [MANDATORY; VARGA'S WRONGDOING],09_Lyra_Campaign/Lyra_Playable_Screenplay_v0.8.md,265,unverified,,,,,,UNREVIEWED
+Lyra,L3.4,Body language [MANDATORY; NEURAL PATH MIRRORS ARI],09_Lyra_Campaign/Lyra_Playable_Screenplay_v0.8.md,282,unverified,,,,,,UNREVIEWED
+Lyra,L4.1,Reading the draw [MANDATORY CONDITIONAL],09_Lyra_Campaign/Lyra_Playable_Screenplay_v0.8.md,301,unverified,,,,,,UNREVIEWED
+Lyra,L4.2,"Quarterfinal: earned, not engineered [CONDITIONAL MATCH]",09_Lyra_Campaign/Lyra_Playable_Screenplay_v0.8.md,316,unverified,,,,,,UNREVIEWED
+Lyra,L4.3,"A technician's warning [MANDATORY, INCLUDING ELIMINATED ROUTE]",09_Lyra_Campaign/Lyra_Playable_Screenplay_v0.8.md,328,unverified,,,,,,UNREVIEWED
+Lyra,L4.4,Two versions of a rival [OPTIONAL; DANTE / STEFFAN],09_Lyra_Campaign/Lyra_Playable_Screenplay_v0.8.md,345,unverified,DANTE_STEFFAN_PRIVATE,,,,,UNREVIEWED
+Lyra,L4.5,The man in the machine [MANDATORY MIDPOINT REVEAL],09_Lyra_Campaign/Lyra_Playable_Screenplay_v0.8.md,379,unverified,K_BIO;VARGA_EVIDENCE;SF_AB,,,,,UNREVIEWED
+Lyra,L5.1,An invoice for coincidence [MANDATORY; JEAN-PAUL / LEENA],09_Lyra_Campaign/Lyra_Playable_Screenplay_v0.8.md,403,unverified,VARGA_EVIDENCE,,,,,UNREVIEWED
+Lyra,L5.2,"Asking the question twice [MANDATORY, VARIANT BY ROMANCE]",09_Lyra_Campaign/Lyra_Playable_Screenplay_v0.8.md,437,unverified,DANTE_STEFFAN_PRIVATE,,,,,UNREVIEWED
+Lyra,L5.3,Own the Spotlight [OPTIONAL GLAMOUR / SECONDARY AGENCY],09_Lyra_Campaign/Lyra_Playable_Screenplay_v0.8.md,482,unverified,,,,,,UNREVIEWED
+Lyra,L5.0,The emergency nobody could choreograph [MANDATORY NOVA RESCUE],09_Lyra_Campaign/Lyra_Playable_Screenplay_v0.8.md,502,unverified,K_BIO;RESCUE,,,,,UNREVIEWED
+Lyra,L5.4,The semifinal belongs to the fighter [CONDITIONAL MATCH],09_Lyra_Campaign/Lyra_Playable_Screenplay_v0.8.md,545,day12_candidate,,,,,,UNREVIEWED
+Lyra,L5.5,The cost of speaking publicly [MANDATORY],09_Lyra_Campaign/Lyra_Playable_Screenplay_v0.8.md,562,unverified,K_BIO;NOVA_CORE,,,,,UNREVIEWED
+Lyra,L6.1,Final preparations [MANDATORY],09_Lyra_Campaign/Lyra_Playable_Screenplay_v0.8.md,578,day13_candidate,,,,,,UNREVIEWED
+Lyra,L6.2,The championship / the other winner [CONDITIONAL MATCH OR BROADCAST],09_Lyra_Campaign/Lyra_Playable_Screenplay_v0.8.md,593,unverified,FINAL,,,,,UNREVIEWED
+Lyra,L6.3,An act of intelligence [MANDATORY MYSTERY REVEAL],09_Lyra_Campaign/Lyra_Playable_Screenplay_v0.8.md,623,unverified,K_BIO,,,,,UNREVIEWED
+Lyra,L6.4,Why she can intervene [MANDATORY; NOVA ACCESS INDEPENDENT OF TOURNAMENT],09_Lyra_Campaign/Lyra_Playable_Screenplay_v0.8.md,653,unverified,,,,,,UNREVIEWED
+Lyra,L6.5,"Final boss: Nova [MANDATORY SPECIAL MATCH, NOT OFFICIAL BRACKET]",09_Lyra_Campaign/Lyra_Playable_Screenplay_v0.8.md,664,unverified,K_BIO;NOVA_CORE,,,,,UNREVIEWED
+Lyra,L6.6,"A statement, not a confession [MANDATORY PUBLIC AFTERMATH]",09_Lyra_Campaign/Lyra_Playable_Screenplay_v0.8.md,704,unverified,VARGA_EVIDENCE,,,,,UNREVIEWED
+Lyra,L6.7,After the broadcast [OPTIONAL; ROMANTIC / FRIENDSHIP / SOLO EPILOGUE],09_Lyra_Campaign/Lyra_Playable_Screenplay_v0.8.md,718,unverified,FINAL,,,,,UNREVIEWED
+Mara,M1.1,A message between spotlights [MANDATORY],10_Mara_Campaign/Mara_Playable_Screenplay_v0.6.md,20,unverified,,,,,,UNREVIEWED
+Mara,M1.2,Ari: a difficult first impression [MANDATORY],10_Mara_Campaign/Mara_Playable_Screenplay_v0.6.md,47,unverified,,,,,,UNREVIEWED
+Mara,M1.3,A professional's repair [OPTIONAL; nonromantic alternative always available],10_Mara_Campaign/Mara_Playable_Screenplay_v0.6.md,65,unverified,,,,,,UNREVIEWED
+Mara,M1.4,Fighting is not a cure [MANDATORY],10_Mara_Campaign/Mara_Playable_Screenplay_v0.6.md,88,unverified,,,,,,UNREVIEWED
+Mara,M2.1,The first group fight: Raven [MATCH GB2; MANDATORY],10_Mara_Campaign/Mara_Playable_Screenplay_v0.6.md,113,unverified,,,,,,UNREVIEWED
+Mara,M2.2,The financial ledger [MANDATORY; varying disclosure],10_Mara_Campaign/Mara_Playable_Screenplay_v0.6.md,130,unverified,,,,,,UNREVIEWED
+Mara,M2.3,"Ren: win or lose, no apology [MATCH GB1; MANDATORY]",10_Mara_Campaign/Mara_Playable_Screenplay_v0.6.md,150,unverified,,,,,,UNREVIEWED
+Mara,M2.4,Rooftop: everybody gets one night [OPTIONAL FAN SERVICE / COMEDY],10_Mara_Campaign/Mara_Playable_Screenplay_v0.6.md,165,unverified,,,,,,UNREVIEWED
+Mara,M2.5,Who owns the inspection log? [MANDATORY],10_Mara_Campaign/Mara_Playable_Screenplay_v0.6.md,182,unverified,,,,,,UNREVIEWED
+Mara,M3.1,Training with Ari [MANDATORY; optional intimacy],10_Mara_Campaign/Mara_Playable_Screenplay_v0.6.md,200,unverified,,,,,,UNREVIEWED
+Mara,M3.2,Two other kinds of chemistry [OPTIONAL; separate scenes],10_Mara_Campaign/Mara_Playable_Screenplay_v0.6.md,222,unverified,,,,,,UNREVIEWED
+Mara,M3.3,The wager nobody makes [MANDATORY],10_Mara_Campaign/Mara_Playable_Screenplay_v0.6.md,251,unverified,,,,,,UNREVIEWED
+Mara,M4.1,"Quarterfinal or outside the ropes [DYNAMIC, MANDATORY]",10_Mara_Campaign/Mara_Playable_Screenplay_v0.6.md,283,unverified,,,,,,UNREVIEWED
+Mara,M4.2,The mother who has a name [MANDATORY],10_Mara_Campaign/Mara_Playable_Screenplay_v0.6.md,303,unverified,,,,,,UNREVIEWED
+Mara,M4.3,Why a read-only switch moved [MANDATORY / SAFE CLUE],10_Mara_Campaign/Mara_Playable_Screenplay_v0.6.md,320,unverified,,,,,,UNREVIEWED
+Mara,M4.4,Kreissack's living signal [MANDATORY / SAFE CLUE],10_Mara_Campaign/Mara_Playable_Screenplay_v0.6.md,337,unverified,K_BIO,,,,,UNREVIEWED
+Mara,M4.5,"Second chance, not a second bracket [OPTIONAL COMPANION]",10_Mara_Campaign/Mara_Playable_Screenplay_v0.6.md,349,unverified,SF_AB;RESCUE,,,,,UNREVIEWED
+Mara,M5.3,A semifinal only if earned [DYNAMIC — DAY 11],10_Mara_Campaign/Mara_Playable_Screenplay_v0.6.md,363,day11_candidate,FINAL,,,,,UNREVIEWED
+Mara,M5.0,A rescue without a command [MANDATORY / SAFE CLUE],10_Mara_Campaign/Mara_Playable_Screenplay_v0.6.md,371,day11_candidate,,,,,,UNREVIEWED
+Mara,M5.1,Financial offers have strings [MANDATORY],10_Mara_Campaign/Mara_Playable_Screenplay_v0.6.md,399,unverified,,,,,,UNREVIEWED
+Mara,M5.2,A confession is not a clearance [OPTIONAL RELATIONSHIP BRANCH],10_Mara_Campaign/Mara_Playable_Screenplay_v0.6.md,413,unverified,,,,,,UNREVIEWED
+Mara,M5.4,Other people get to choose [MANDATORY],10_Mara_Campaign/Mara_Playable_Screenplay_v0.6.md,428,unverified,VARGA_EVIDENCE,,,,,UNREVIEWED
+Mara,M6.1,"The final, if she earned it [DYNAMIC]",10_Mara_Campaign/Mara_Playable_Screenplay_v0.6.md,443,day13_candidate,K_BIO,,,,,UNREVIEWED
+Mara,M6.2,Two voices inside Nova [MANDATORY],10_Mara_Campaign/Mara_Playable_Screenplay_v0.6.md,471,unverified,K_BIO,,,,,UNREVIEWED
+Mara,M6.3,A worker can stop a machine without owning it [MANDATORY / NOVA ENCOUNTER],10_Mara_Campaign/Mara_Playable_Screenplay_v0.6.md,493,unverified,K_BIO;RESCUE;NOVA_CORE,,,,,UNREVIEWED
+Mara,M6.4,After the machines stop cheering [MANDATORY],10_Mara_Campaign/Mara_Playable_Screenplay_v0.6.md,524,unverified,,,,,,UNREVIEWED
+Mara,M6.5,What we keep [OPTIONAL ENDINGS; eligibility guarded],10_Mara_Campaign/Mara_Playable_Screenplay_v0.6.md,542,unverified,,,,,,UNREVIEWED
+Ren,R1.1,Not a demonstration model [MANDATORY],11_Ren_Campaign/Ren_Playable_Screenplay_v0.6.md,22,unverified,,,,,,UNREVIEWED
+Ren,R1.2,The third page [MANDATORY / SAFE CLUE],11_Ren_Campaign/Ren_Playable_Screenplay_v0.6.md,56,unverified,,,,,,UNREVIEWED
+Ren,R1.3,Somebody who can dance badly [OPTIONAL / NEW CIVILIAN],11_Ren_Campaign/Ren_Playable_Screenplay_v0.6.md,97,unverified,,,,,,UNREVIEWED
+Ren,R1.4,A very old voice [MANDATORY],11_Ren_Campaign/Ren_Playable_Screenplay_v0.6.md,123,unverified,,,,,,UNREVIEWED
+Ren,R2.1,First official fight: Ren versus Raven [MANDATORY MATCH GB3],11_Ren_Campaign/Ren_Playable_Screenplay_v0.6.md,143,unverified,,,,,,UNREVIEWED
+Ren,R2.2,The symptom report [MANDATORY],11_Ren_Campaign/Ren_Playable_Screenplay_v0.6.md,161,unverified,,,,,,UNREVIEWED
+Ren,R2.3,Dinner for people who aren't algorithms [OPTIONAL / WARMTH],11_Ren_Campaign/Ren_Playable_Screenplay_v0.6.md,178,unverified,,,,,,UNREVIEWED
+Ren,R2.4,The rooftop experiment [OPTIONAL / FAN SERVICE / ANGEL OR TESSA FRIENDSHIP],11_Ren_Campaign/Ren_Playable_Screenplay_v0.6.md,197,unverified,,,,,,UNREVIEWED
+Ren,R2.5,"A new result, an old question [MANDATORY]",11_Ren_Campaign/Ren_Playable_Screenplay_v0.6.md,225,unverified,,,,,,UNREVIEWED
+Ren,R3.1,Second official fight: Ren versus Mara [MANDATORY MATCH GB1],11_Ren_Campaign/Ren_Playable_Screenplay_v0.6.md,241,unverified,,,,,,UNREVIEWED
+Ren,R3.2,A contract is not a conscience [MANDATORY],11_Ren_Campaign/Ren_Playable_Screenplay_v0.6.md,261,unverified,,,,,,UNREVIEWED
+Ren,R3.3,An honest small betrayal [MANDATORY / LYRA],11_Ren_Campaign/Ren_Playable_Screenplay_v0.6.md,286,unverified,,,,,,UNREVIEWED
+Ren,R3.4,A quiet question [OPTIONAL / ANGEL],11_Ren_Campaign/Ren_Playable_Screenplay_v0.6.md,306,unverified,,,,,,UNREVIEWED
+Ren,R3.5,Not a laboratory [OPTIONAL / TESSA],11_Ren_Campaign/Ren_Playable_Screenplay_v0.6.md,334,unverified,,,,,,UNREVIEWED
+Ren,R3.6,The group board [MANDATORY],11_Ren_Campaign/Ren_Playable_Screenplay_v0.6.md,353,unverified,,,,,,UNREVIEWED
+Ren,R4.1,The quarterfinal you earned [CONDITIONAL MATCH],11_Ren_Campaign/Ren_Playable_Screenplay_v0.6.md,372,unverified,SF_AB;FINAL,,,,,UNREVIEWED
+Ren,R4.2,"Two clocks, one person [MANDATORY / SAFE CLUE]",11_Ren_Campaign/Ren_Playable_Screenplay_v0.6.md,398,unverified,,,,,,UNREVIEWED
+Ren,R4.3,The thing that survived [MANDATORY / MIDPOINT REVEAL],11_Ren_Campaign/Ren_Playable_Screenplay_v0.6.md,423,unverified,K_BIO;NOVA_CORE,,,,,UNREVIEWED
+Ren,R4.4,Unobserved [OPTIONAL / ROMANTIC TENSION],11_Ren_Campaign/Ren_Playable_Screenplay_v0.6.md,448,unverified,,,,,,UNREVIEWED
+Ren,R4.5,The call outside the lab [OPTIONAL / TESSA],11_Ren_Campaign/Ren_Playable_Screenplay_v0.6.md,470,unverified,SF_AB;RESCUE,,,,,UNREVIEWED
+Ren,R5.3,The semifinal that happened [CONDITIONAL MATCH / S_AB],11_Ren_Campaign/Ren_Playable_Screenplay_v0.6.md,495,day11_candidate,SF_AB;FINAL,,,,,UNREVIEWED
+Ren,R5.1,A rescue nobody ordered [MANDATORY / SAFE CLUE],11_Ren_Campaign/Ren_Playable_Screenplay_v0.6.md,508,unverified,RESCUE,,,,,UNREVIEWED
+Ren,R5.2,Three versions of courage [MANDATORY / RESEARCH PATH PAYOFF],11_Ren_Campaign/Ren_Playable_Screenplay_v0.6.md,550,unverified,,,,,,UNREVIEWED
+Ren,R5.4,The scientist who mistook people for variables [MANDATORY],11_Ren_Campaign/Ren_Playable_Screenplay_v0.6.md,569,unverified,,,,,,UNREVIEWED
+Ren,R5.5,After the cameras [OPTIONAL / ROMANCE WITH CONSEQUENCES],11_Ren_Campaign/Ren_Playable_Screenplay_v0.6.md,588,unverified,FINAL,,,,,UNREVIEWED
+Ren,R6.1,The real final [CONDITIONAL MATCH],11_Ren_Campaign/Ren_Playable_Screenplay_v0.6.md,628,unverified,FINAL,,,,,UNREVIEWED
+Ren,R6.2,Kreissack is not the highest authority [MANDATORY / FINAL REVEAL],11_Ren_Campaign/Ren_Playable_Screenplay_v0.6.md,657,unverified,,,,,,UNREVIEWED
+Ren,R6.3,A real physical battle [MANDATORY / SPECIAL BOSS],11_Ren_Campaign/Ren_Playable_Screenplay_v0.6.md,710,unverified,K_BIO;RESCUE;NOVA_CORE,,,,,UNREVIEWED
+Ren,R6.4,The world that remains [MANDATORY],11_Ren_Campaign/Ren_Playable_Screenplay_v0.6.md,760,unverified,VARGA_EVIDENCE,,,,,UNREVIEWED
+Ren,R6.5,"Five endings, none a cure [MANDATORY EPILOGUE]",11_Ren_Campaign/Ren_Playable_Screenplay_v0.6.md,776,unverified,K_BIO;SF_AB;RESCUE;NOVA_CORE,,,,,UNREVIEWED
+Angel,A1.1,The anonymous guest [MANDATORY],12_Angel_Campaign/Angel_Playable_Screenplay_v0.6.md,24,unverified,,,,,,UNREVIEWED
+Angel,A1.2,The other copy [MANDATORY / SAFE CLUE],12_Angel_Campaign/Angel_Playable_Screenplay_v0.6.md,59,unverified,,,,,,UNREVIEWED
+Angel,A1.3,Someone else sees the hole [OPTIONAL],12_Angel_Campaign/Angel_Playable_Screenplay_v0.6.md,80,unverified,,,,,,UNREVIEWED
+Angel,A1.4,An inconvenient public hero [MANDATORY],12_Angel_Campaign/Angel_Playable_Screenplay_v0.6.md,100,unverified,,,,,,UNREVIEWED
+Angel,A2.1,"Jean-Paul, first contact [MANDATORY / MATCH `GD2`]",12_Angel_Campaign/Angel_Playable_Screenplay_v0.6.md,129,unverified,,,,,,UNREVIEWED
+Angel,A2.2,Three missing seconds [MANDATORY / SAFE CLUE],12_Angel_Campaign/Angel_Playable_Screenplay_v0.6.md,154,unverified,,,,,,UNREVIEWED
+Angel,A2.3,Photogenic anonymity [OPTIONAL / FANSERVICE],12_Angel_Campaign/Angel_Playable_Screenplay_v0.6.md,179,unverified,,,,,,UNREVIEWED
+Angel,A2.4,The journalist who won't take it [OPTIONAL / LEENA],12_Angel_Campaign/Angel_Playable_Screenplay_v0.6.md,200,unverified,,,,,,UNREVIEWED
+Angel,A3.1,"Dante, the second decisive fight [MANDATORY / MATCH `GD1`]",12_Angel_Campaign/Angel_Playable_Screenplay_v0.6.md,225,unverified,,,,,,UNREVIEWED
+Angel,A3.2,Ren's withheld sentence [MANDATORY / SAFE CLUE],12_Angel_Campaign/Angel_Playable_Screenplay_v0.6.md,248,unverified,,,,,,UNREVIEWED
+Angel,A3.3,The edges of trust [OPTIONAL / RELATIONSHIPS],12_Angel_Campaign/Angel_Playable_Screenplay_v0.6.md,267,unverified,,,,,,UNREVIEWED
+Angel,A3.4,The problem with every witness [MANDATORY],12_Angel_Campaign/Angel_Playable_Screenplay_v0.6.md,299,unverified,,,,,,UNREVIEWED
+Angel,A4.1,Quarterfinal or honest elimination [CONDITIONAL / MATCH],12_Angel_Campaign/Angel_Playable_Screenplay_v0.6.md,315,unverified,,,,,,UNREVIEWED
+Angel,A4.2,Four copies [MANDATORY / SAFE CLUE],12_Angel_Campaign/Angel_Playable_Screenplay_v0.6.md,328,unverified,K_BIO,,,,,UNREVIEWED
+Angel,A4.3,The witness's price [MANDATORY / CHOICE],12_Angel_Campaign/Angel_Playable_Screenplay_v0.6.md,347,unverified,,,,,,UNREVIEWED
+Angel,A4.4,"Rooftop, no cameras [OPTIONAL / FAN SERVICE / FRIENDSHIP]",12_Angel_Campaign/Angel_Playable_Screenplay_v0.6.md,367,unverified,,,,,,UNREVIEWED
+Angel,A5.1,"The coolant-wing rescue [MANDATORY / SAFE CLUE — DAY 12, MIDDAY]",12_Angel_Campaign/Angel_Playable_Screenplay_v0.6.md,390,day12_candidate,RESCUE,,,,,UNREVIEWED
+Angel,A5.2,Separate sins [MANDATORY / SAFE CLUE],12_Angel_Campaign/Angel_Playable_Screenplay_v0.6.md,425,unverified,VARGA_EVIDENCE;NOVA_CORE,,,,,UNREVIEWED
+Angel,A5.3,"Semifinal or the relay route [CONDITIONAL / MATCH — DAY 12, EVENING]",12_Angel_Campaign/Angel_Playable_Screenplay_v0.6.md,440,day12_candidate,SF_CD,,,,,UNREVIEWED
+Angel,A5.4,Unobserved [OPTIONAL / ROMANCE],12_Angel_Campaign/Angel_Playable_Screenplay_v0.6.md,451,unverified,,,,,,UNREVIEWED
+Angel,A5.5,The signature without a hand [MANDATORY],12_Angel_Campaign/Angel_Playable_Screenplay_v0.6.md,487,unverified,K_BIO,,,,,UNREVIEWED
+Angel,A6.1,The title and the truth [CONDITIONAL / MATCH],12_Angel_Campaign/Angel_Playable_Screenplay_v0.6.md,505,day13_candidate,FINAL,,,,,UNREVIEWED
+Angel,A6.2,The counterfeit consent [MANDATORY / SAFE CLUE / FINAL REVEAL],12_Angel_Campaign/Angel_Playable_Screenplay_v0.6.md,526,unverified,K_BIO,,,,,UNREVIEWED
+Angel,A6.3,Chronos against Nova [MANDATORY / SPECIAL BOSS],12_Angel_Campaign/Angel_Playable_Screenplay_v0.6.md,580,unverified,K_BIO;NOVA_CORE,,,,,UNREVIEWED
+Angel,A6.4,Neither a secret nor a blueprint [MANDATORY / CHOICE],12_Angel_Campaign/Angel_Playable_Screenplay_v0.6.md,610,unverified,,,,,,UNREVIEWED
+Angel,A6.5,Optional human futures [EPILOGUE / RELATIONSHIP AND IDENTITY],12_Angel_Campaign/Angel_Playable_Screenplay_v0.6.md,629,unverified,,,,,,UNREVIEWED
+Crystal,C1.1,The champion under glass [MANDATORY],15_Crystal_Campaign/OMF_2107_Crystal_Playable_Screenplay_v0.10.md,30,day11_candidate,,,,,,UNREVIEWED
+Crystal,C1.2,Raven in the doorway [MANDATORY],15_Crystal_Campaign/OMF_2107_Crystal_Playable_Screenplay_v0.10.md,49,unverified,,,,,,UNREVIEWED
+Crystal,C1.3,Christian's objection [MANDATORY],15_Crystal_Campaign/OMF_2107_Crystal_Playable_Screenplay_v0.10.md,79,unverified,,,,,,UNREVIEWED
+Crystal,C1.4,The anniversary's second image [MANDATORY],15_Crystal_Campaign/OMF_2107_Crystal_Playable_Screenplay_v0.10.md,103,unverified,,,,,,UNREVIEWED
+Crystal,C2.1,Selene: a champion against a strategist [GA2; MANDATORY],15_Crystal_Campaign/OMF_2107_Crystal_Playable_Screenplay_v0.10.md,121,unverified,,,,,,UNREVIEWED
+Crystal,C2.2,The sound of a command [OPTIONAL RAVEN INTERACTION; PLATONIC FALLBACK],15_Crystal_Campaign/OMF_2107_Crystal_Playable_Screenplay_v0.10.md,141,unverified,,,,,,UNREVIEWED
+Crystal,C2.3,Ari: the collision of two kinds of justice [GA1; MANDATORY],15_Crystal_Campaign/OMF_2107_Crystal_Playable_Screenplay_v0.10.md,170,unverified,,,,,,UNREVIEWED
+Crystal,C2.4,"Red carpet, unguarded [OPTIONAL GLAMOUR / FAN SERVICE]",15_Crystal_Campaign/OMF_2107_Crystal_Playable_Screenplay_v0.10.md,188,unverified,,,,,,UNREVIEWED
+Crystal,C3.1,Rooftop without armor [OPTIONAL ENSEMBLE FAN SERVICE / COMEDY],15_Crystal_Campaign/OMF_2107_Crystal_Playable_Screenplay_v0.10.md,211,unverified,,,,,,UNREVIEWED
+Crystal,C3.2,The words neither has said [OPTIONAL RAVEN PATH; CHOICE IS NOT RECIPROCITY],15_Crystal_Campaign/OMF_2107_Crystal_Playable_Screenplay_v0.10.md,227,unverified,,,,,,UNREVIEWED
+Crystal,C3.3,Angel and the cost of evidence [MANDATORY],15_Crystal_Campaign/OMF_2107_Crystal_Playable_Screenplay_v0.10.md,277,unverified,,,,,,UNREVIEWED
+Crystal,C3.4,Milano's offer [MANDATORY],15_Crystal_Campaign/OMF_2107_Crystal_Playable_Screenplay_v0.10.md,292,unverified,,,,,,UNREVIEWED
+Crystal,C4.1,A quarterfinal or an honest absence [CONDITIONAL],15_Crystal_Campaign/OMF_2107_Crystal_Playable_Screenplay_v0.10.md,310,unverified,,,,,,UNREVIEWED
+Crystal,C4.2,A heartbeat beneath the archive [MANDATORY],15_Crystal_Campaign/OMF_2107_Crystal_Playable_Screenplay_v0.10.md,326,day11_candidate,K_BIO;NOVA_CORE,,,,,UNREVIEWED
+Crystal,C4.3,Raven's deposition [MANDATORY; ACCOUNTABILITY INDEPENDENT OF ROMANCE],15_Crystal_Campaign/OMF_2107_Crystal_Playable_Screenplay_v0.10.md,343,unverified,,,,,,UNREVIEWED
+Crystal,C4.4,The alternative invitation [OPTIONAL ANGEL PATH],15_Crystal_Campaign/OMF_2107_Crystal_Playable_Screenplay_v0.10.md,376,unverified,,,,,,UNREVIEWED
+Crystal,C5.1,"The semifinal, if earned [S_AB DAY 11; CONDITIONAL]",15_Crystal_Campaign/OMF_2107_Crystal_Playable_Screenplay_v0.10.md,398,day11_candidate,SF_AB,,,,,UNREVIEWED
+Crystal,C5.1B,The emergency call Christian kept [MANDATORY; DAY 11; NO FIGHT],15_Crystal_Campaign/OMF_2107_Crystal_Playable_Screenplay_v0.10.md,411,day13_candidate,VARGA_EVIDENCE,,,,,UNREVIEWED
+Crystal,C5.2,"Disaster, rescue, and the signature that does not fit [DAY 12 MIDDAY; MANDATORY]",15_Crystal_Campaign/OMF_2107_Crystal_Playable_Screenplay_v0.10.md,429,day12_candidate,K_BIO;RESCUE,,,,,UNREVIEWED
+Crystal,C5.3,The private line [OPTIONAL; DAY 12; NO PRIVATE INTIMACY],15_Crystal_Campaign/OMF_2107_Crystal_Playable_Screenplay_v0.10.md,461,day12_candidate,,,,,,UNREVIEWED
+Crystal,C5.4,The temptation to become a symbol again [MANDATORY],15_Crystal_Campaign/OMF_2107_Crystal_Playable_Screenplay_v0.10.md,491,unverified,SF_CD,,,,,UNREVIEWED
+Crystal,C6.1,The actual final [FINAL; CONDITIONAL],15_Crystal_Campaign/OMF_2107_Crystal_Playable_Screenplay_v0.10.md,509,day13_candidate,RESCUE;FINAL,,,,,UNREVIEWED
+Crystal,C6.2,"A living prisoner, an invisible hand [MANDATORY, AFTER FINAL]",15_Crystal_Campaign/OMF_2107_Crystal_Playable_Screenplay_v0.10.md,536,unverified,,,,,,UNREVIEWED
+Crystal,C6.3,The one who must fall [SPECIAL_NOVA; MANDATORY],15_Crystal_Campaign/OMF_2107_Crystal_Playable_Screenplay_v0.10.md,562,unverified,NOVA_CORE;DEVROE_ORDER_E5,,,,,UNREVIEWED
+Crystal,C6.4,A statement without a statue [MANDATORY],15_Crystal_Campaign/OMF_2107_Crystal_Playable_Screenplay_v0.10.md,590,day30_candidate,VARGA_EVIDENCE;DEVROE_ORDER_E5,,,,,UNREVIEWED
+Crystal,C6.4B,"The ghost of the man she defeated [AFTER E5, optional personal beat]",15_Crystal_Campaign/OMF_2107_Crystal_Playable_Screenplay_v0.10.md,603,unverified,,,,,,UNREVIEWED
+Crystal,C6.5,Private endings [EXCLUSIVE ELIGIBLE VARIANTS],15_Crystal_Campaign/OMF_2107_Crystal_Playable_Screenplay_v0.10.md,609,day30_candidate,FINAL;NOVA_CORE,,,,,UNREVIEWED
+Raven,R1.1,The last invitation [MANDATORY],16_Raven_Campaign/OMF_2107_Raven_Playable_Screenplay_v0.9.md,30,unverified,,,,,,UNREVIEWED
+Raven,R1.2,An unpleasant discovery [MANDATORY],16_Raven_Campaign/OMF_2107_Raven_Playable_Screenplay_v0.9.md,50,unverified,,,,,,UNREVIEWED
+Raven,R1.3,Brother and witness [MANDATORY],16_Raven_Campaign/OMF_2107_Raven_Playable_Screenplay_v0.9.md,96,unverified,,,,,,UNREVIEWED
+Raven,R1.4,A woman who will not yield [OPTIONAL SECONDARY CHARACTER],16_Raven_Campaign/OMF_2107_Raven_Playable_Screenplay_v0.9.md,122,unverified,,,,,,UNREVIEWED
+Raven,R2.1,Mara: the refusal [MANDATORY; `GB2`],16_Raven_Campaign/OMF_2107_Raven_Playable_Screenplay_v0.9.md,153,unverified,,,,,,UNREVIEWED
+Raven,R2.2,The price of silence [MANDATORY],16_Raven_Campaign/OMF_2107_Raven_Playable_Screenplay_v0.9.md,171,unverified,,,,,,UNREVIEWED
+Raven,R2.3,Ren: the machine that listens [MANDATORY; `GB3`],16_Raven_Campaign/OMF_2107_Raven_Playable_Screenplay_v0.9.md,186,unverified,,,,,,UNREVIEWED
+Raven,R2.4,Standings without a draw [MANDATORY],16_Raven_Campaign/OMF_2107_Raven_Playable_Screenplay_v0.9.md,204,unverified,,,,,,UNREVIEWED
+Raven,R3.1,The interview he cannot control [MANDATORY],16_Raven_Campaign/OMF_2107_Raven_Playable_Screenplay_v0.9.md,230,unverified,,,,,,UNREVIEWED
+Raven,R3.2,Crystal's reflex and Raven's choice [OPTIONAL; NOT A CONTRACT],16_Raven_Campaign/OMF_2107_Raven_Playable_Screenplay_v0.9.md,259,unverified,,,,,,UNREVIEWED
+Raven,R3.3,A rooftop full of people who have nothing to hide [OPTIONAL ENSEMBLE / FAN SERVICE],16_Raven_Campaign/OMF_2107_Raven_Playable_Screenplay_v0.9.md,299,unverified,,,,,,UNREVIEWED
+Raven,R3.4,The argument from a dead institution [MANDATORY],16_Raven_Campaign/OMF_2107_Raven_Playable_Screenplay_v0.9.md,319,unverified,,,,,,UNREVIEWED
+Raven,R4.1,"A quarterfinal, if earned [CONDITIONAL]",16_Raven_Campaign/OMF_2107_Raven_Playable_Screenplay_v0.9.md,341,unverified,,,,,,UNREVIEWED
+Raven,R4.2,The man behind the defeat of 2097 [MANDATORY],16_Raven_Campaign/OMF_2107_Raven_Playable_Screenplay_v0.9.md,359,day11_candidate,K_BIO;NOVA_CORE,,,,,UNREVIEWED
+Raven,R4.3,The shuttle index is not a pardon [MANDATORY],16_Raven_Campaign/OMF_2107_Raven_Playable_Screenplay_v0.9.md,376,unverified,,,,,,UNREVIEWED
+Raven,R4.4,Mara will not be an exit strategy [OPTIONAL ALTERNATIVE ATTRACTION],16_Raven_Campaign/OMF_2107_Raven_Playable_Screenplay_v0.9.md,399,unverified,,,,,,UNREVIEWED
+Raven,R5.1,The semifinal is not optional if earned [CONDITIONAL; DAY 11],16_Raven_Campaign/OMF_2107_Raven_Playable_Screenplay_v0.9.md,428,day9_candidate,,,,,,UNREVIEWED
+Raven,R5.1B,The request he refused [MANDATORY; DAYS 9–11; BEFORE THE NOVA RESCUE],16_Raven_Campaign/OMF_2107_Raven_Playable_Screenplay_v0.9.md,443,day13_candidate,RESCUE,,,,,UNREVIEWED
+Raven,R5.2,The machine saves a life [MANDATORY; DAY 12 MIDDAY],16_Raven_Campaign/OMF_2107_Raven_Playable_Screenplay_v0.9.md,450,day11_candidate,RESCUE,,,,,UNREVIEWED
+Raven,R5.3,"The private boundary [OPTIONAL; DAY 12, BEFORE HEARING; NO INTIMACY]",16_Raven_Campaign/OMF_2107_Raven_Playable_Screenplay_v0.9.md,481,day12_candidate,,,,,,UNREVIEWED
+Raven,R5.4,The offer of one last paycheck [MANDATORY],16_Raven_Campaign/OMF_2107_Raven_Playable_Screenplay_v0.9.md,513,unverified,RESCUE;FINAL,,,,,UNREVIEWED
+Raven,R6.1,The championship belongs to whoever wins [CONDITIONAL; DAY 13],16_Raven_Campaign/OMF_2107_Raven_Playable_Screenplay_v0.9.md,533,day13_candidate,FINAL,,,,,UNREVIEWED
+Raven,R6.2,The lie with a human face [MANDATORY; AFTER THE FINAL],16_Raven_Campaign/OMF_2107_Raven_Playable_Screenplay_v0.9.md,558,unverified,,,,,,UNREVIEWED
+Raven,R6.3,A fighter with no title to this battle [MANDATORY; SPECIAL ENCOUNTER],16_Raven_Campaign/OMF_2107_Raven_Playable_Screenplay_v0.9.md,592,unverified,K_BIO;RESCUE;NOVA_CORE;DEVROE_ORDER_E5,,,,,UNREVIEWED
+Raven,R6.4,Consequences cannot be negotiated away [MANDATORY; WEEKS LATER],16_Raven_Campaign/OMF_2107_Raven_Playable_Screenplay_v0.9.md,616,unverified,DEVROE_ORDER_E5,,,,,UNREVIEWED
+Raven,R6.4B,A signature too late [AFTER E5; conditional private perspective],16_Raven_Campaign/OMF_2107_Raven_Playable_Screenplay_v0.9.md,636,unverified,,,,,,UNREVIEWED
+Raven,R6.5,The ends he cannot choose alone [ENDING DISPATCH],16_Raven_Campaign/OMF_2107_Raven_Playable_Screenplay_v0.9.md,642,unverified,RESCUE;FINAL;NOVA_CORE,,,,,UNREVIEWED
+Jean-Paul,JP-C1.1,First impressions [MANDATORY],20_Jean_Paul_Campaign/Jean_Paul_Playable_Screenplay_v0.5.md,19,unverified,,,,,,UNREVIEWED
+Jean-Paul,JP-C1.2,A hall of mirrors [MANDATORY / SAFE CLUE],20_Jean_Paul_Campaign/Jean_Paul_Playable_Screenplay_v0.5.md,53,unverified,K_BIO,,,,,UNREVIEWED
+Jean-Paul,JP-C1.3,The demonstration [OPTIONAL / FLIRTATION OR PROFESSIONAL],20_Jean_Paul_Campaign/Jean_Paul_Playable_Screenplay_v0.5.md,74,unverified,,,,,,UNREVIEWED
+Jean-Paul,JP-C1.4,Two offers [MANDATORY],20_Jean_Paul_Campaign/Jean_Paul_Playable_Screenplay_v0.5.md,90,unverified,,,,,,UNREVIEWED
+Jean-Paul,JP-C2.1,Chronos sees Shadow [MANDATORY / PLAYER MATCH `GD2`],20_Jean_Paul_Campaign/Jean_Paul_Playable_Screenplay_v0.5.md,110,unverified,,,,,,UNREVIEWED
+Jean-Paul,JP-C2.2,A little experiment [MANDATORY],20_Jean_Paul_Campaign/Jean_Paul_Playable_Screenplay_v0.5.md,130,unverified,,,,,,UNREVIEWED
+Jean-Paul,JP-C2.3,Velvet and steel [OPTIONAL / FAN SERVICE],20_Jean_Paul_Campaign/Jean_Paul_Playable_Screenplay_v0.5.md,147,unverified,,,,,,UNREVIEWED
+Jean-Paul,JP-C2.4,A rival's warning [OPTIONAL],20_Jean_Paul_Campaign/Jean_Paul_Playable_Screenplay_v0.5.md,164,unverified,,,,,,UNREVIEWED
+Jean-Paul,JP-C3.1,Shredder vs Shadow [MANDATORY / PLAYER MATCH `GD3`],20_Jean_Paul_Campaign/Jean_Paul_Playable_Screenplay_v0.5.md,185,unverified,,,,,,UNREVIEWED
+Jean-Paul,JP-C3.2,The empty locker [MANDATORY / CONDITIONAL],20_Jean_Paul_Campaign/Jean_Paul_Playable_Screenplay_v0.5.md,204,unverified,,,,,,UNREVIEWED
+Jean-Paul,JP-C3.3,The false random meeting [MANDATORY / INVESTIGATIVE TURN],20_Jean_Paul_Campaign/Jean_Paul_Playable_Screenplay_v0.5.md,214,unverified,VARGA_EVIDENCE;DANTE_STEFFAN_PRIVATE,,,,,UNREVIEWED
+Jean-Paul,JP-C3.4,The room without mirrors [OPTIONAL / ROMANTIC TENSION],20_Jean_Paul_Campaign/Jean_Paul_Playable_Screenplay_v0.5.md,236,unverified,,,,,,UNREVIEWED
+Jean-Paul,JP-C4.1,The quarterfinal that may not exist [MANDATORY / BRACKET],20_Jean_Paul_Campaign/Jean_Paul_Playable_Screenplay_v0.5.md,263,unverified,FINAL,,,,,UNREVIEWED
+Jean-Paul,JP-C4.2,The original protocol [MANDATORY / DISCOVERY: VARGA],20_Jean_Paul_Campaign/Jean_Paul_Playable_Screenplay_v0.5.md,273,unverified,VARGA_EVIDENCE,,,,,UNREVIEWED
+Jean-Paul,JP-C4.3,The notification queue [MANDATORY / PARTICIPANT PROTECTION],20_Jean_Paul_Campaign/Jean_Paul_Playable_Screenplay_v0.5.md,294,unverified,,,,,,UNREVIEWED
+Jean-Paul,JP-C4.4,Something worse than a scandal [MANDATORY / KREISSACK BIOLOGICAL PROOF],20_Jean_Paul_Campaign/Jean_Paul_Playable_Screenplay_v0.5.md,307,unverified,K_BIO,,,,,UNREVIEWED
+Jean-Paul,JP-C5.0,The face behind the protocol [MANDATORY / CONFRONTATION AND LYRA NOTICE],20_Jean_Paul_Campaign/Jean_Paul_Playable_Screenplay_v0.5.md,327,unverified,,,,,,UNREVIEWED
+Jean-Paul,JP-C5.0B,A choice without an audience [OPTIONAL / VARGA],20_Jean_Paul_Campaign/Jean_Paul_Playable_Screenplay_v0.5.md,358,unverified,,,,,,UNREVIEWED
+Jean-Paul,JP-C5.1,The helpful machine [MANDATORY / DAY-12 RESCUE],20_Jean_Paul_Campaign/Jean_Paul_Playable_Screenplay_v0.5.md,372,unverified,,,,,,UNREVIEWED
+Jean-Paul,JP-C5.2,Semifinal or spectator [MANDATORY / BRACKET],20_Jean_Paul_Campaign/Jean_Paul_Playable_Screenplay_v0.5.md,391,day12_candidate,SF_CD,,,,,UNREVIEWED
+Jean-Paul,JP-C5.3,The terms of protection [MANDATORY / MORAL CONSEQUENCES],20_Jean_Paul_Campaign/Jean_Paul_Playable_Screenplay_v0.5.md,400,day12_candidate,VARGA_EVIDENCE,,,,,UNREVIEWED
+Jean-Paul,JP-C5.4,"Selene, if invited [OPTIONAL / PROPOSED ALTERNATIVE ROMANCE]",20_Jean_Paul_Campaign/Jean_Paul_Playable_Screenplay_v0.5.md,416,unverified,,,,,,UNREVIEWED
+Jean-Paul,JP-C5.5,Honesty is not rehabilitation [OPTIONAL / VARGA],20_Jean_Paul_Campaign/Jean_Paul_Playable_Screenplay_v0.5.md,431,unverified,VARGA_EVIDENCE,,,,,UNREVIEWED
+Jean-Paul,JP-C6.1,The official champion [MANDATORY / BRACKET],20_Jean_Paul_Campaign/Jean_Paul_Playable_Screenplay_v0.5.md,455,day13_candidate,FINAL,,,,,UNREVIEWED
+Jean-Paul,JP-C6.2,The command that never happened [MANDATORY / FINALE STAGING / K4–K5 AUDIENCE-ONLY CUTAWAYS],20_Jean_Paul_Campaign/Jean_Paul_Playable_Screenplay_v0.5.md,467,unverified,FINAL,,,,,UNREVIEWED
+Jean-Paul,JP-C6.3,One must fall [MANDATORY / SPECIAL NOVA ENCOUNTER],20_Jean_Paul_Campaign/Jean_Paul_Playable_Screenplay_v0.5.md,484,unverified,K_BIO;NOVA_CORE,,,,,UNREVIEWED
+Jean-Paul,JP-C6.4,The cost of observation [MANDATORY / ENDING CHOICE],20_Jean_Paul_Campaign/Jean_Paul_Playable_Screenplay_v0.5.md,503,unverified,VARGA_EVIDENCE,,,,,UNREVIEWED
+Jean-Paul,JP-C6.5,Day 30: an order in a dead man's name [MANDATORY WORLD CLOCK / OPTIONAL JEAN-PAUL EPILOGUE],20_Jean_Paul_Campaign/Jean_Paul_Playable_Screenplay_v0.5.md,522,day30_candidate,K_BIO;VARGA_EVIDENCE;RESCUE;FINAL;NOVA_CORE;DEVROE_ORDER_E5,,,,,UNREVIEWED
+Steffan,ST1.1,A very precise entrance [MANDATORY],21_Steffan_Campaign/Steffan_Playable_Screenplay_v0.7.md,19,unverified,,,,,,UNREVIEWED
+Steffan,ST1.2,"The wrong arithmetic [MANDATORY, AUDIENCE SUBTEXT]",21_Steffan_Campaign/Steffan_Playable_Screenplay_v0.7.md,52,unverified,,,,,,UNREVIEWED
+Steffan,ST1.3,Control rehearsal [OPTIONAL; GLAMOUR / FANSERVICE],21_Steffan_Campaign/Steffan_Playable_Screenplay_v0.7.md,77,unverified,,,,,,UNREVIEWED
+Steffan,ST2.1,Pyros versus Gargoyle [MANDATORY MATCH GC2],21_Steffan_Campaign/Steffan_Playable_Screenplay_v0.7.md,104,unverified,,,,,,UNREVIEWED
+Steffan,ST2.2,Why he came [MANDATORY; LYRA HAS AGENCY],21_Steffan_Campaign/Steffan_Playable_Screenplay_v0.7.md,118,unverified,,,,,,UNREVIEWED
+Steffan,ST2.3,Shirro sees the flaw [OPTIONAL; MENTOR],21_Steffan_Campaign/Steffan_Playable_Screenplay_v0.7.md,147,unverified,,,,,,UNREVIEWED
+Steffan,ST2.4,The afterparty [OPTIONAL; ENSEMBLE/FANSERVICE],21_Steffan_Campaign/Steffan_Playable_Screenplay_v0.7.md,165,unverified,,,,,,UNREVIEWED
+Steffan,ST3.1,Pyros versus Electra [MANDATORY MATCH GC1],21_Steffan_Campaign/Steffan_Playable_Screenplay_v0.7.md,185,unverified,,,,,,UNREVIEWED
+Steffan,ST3.2,"The triangle, not the prize [MANDATORY PERSONAL CHOICE]",21_Steffan_Campaign/Steffan_Playable_Screenplay_v0.7.md,195,unverified,,,,,,UNREVIEWED
+Steffan,ST3.3,The broadcast leak [MANDATORY; VARIANT],21_Steffan_Campaign/Steffan_Playable_Screenplay_v0.7.md,229,unverified,,,,,,UNREVIEWED
+Steffan,ST3.4,"Dante at the door [OPTIONAL; TENSE, NONROMANTIC BY DEFAULT]",21_Steffan_Campaign/Steffan_Playable_Screenplay_v0.7.md,242,unverified,,,,,,UNREVIEWED
+Steffan,ST4.1,"Real bracket, real opponent [MANDATORY CONDITIONAL]",21_Steffan_Campaign/Steffan_Playable_Screenplay_v0.7.md,267,unverified,,,,,,UNREVIEWED
+Steffan,ST4.2,Quarterfinal: an honest contest [IF QUALIFIED],21_Steffan_Campaign/Steffan_Playable_Screenplay_v0.7.md,275,unverified,,,,,,UNREVIEWED
+Steffan,ST4.3,The impossible medical record [MANDATORY],21_Steffan_Campaign/Steffan_Playable_Screenplay_v0.7.md,295,unverified,K_BIO,,,,,UNREVIEWED
+Steffan,ST4.4,No victory on credit [OPTIONAL; LYRA/DANTE],21_Steffan_Campaign/Steffan_Playable_Screenplay_v0.7.md,307,unverified,,,,,,UNREVIEWED
+Steffan,ST5.1,Evidence with a pulse [MANDATORY; DAY 11],21_Steffan_Campaign/Steffan_Playable_Screenplay_v0.7.md,333,day11_candidate,VARGA_EVIDENCE,,,,,UNREVIEWED
+Steffan,ST5.1B,He has seen through me [MANDATORY DAY-11 CONFRONTATION; DANTE POV SYNC],21_Steffan_Campaign/Steffan_Playable_Screenplay_v0.7.md,352,unverified,DANTE_STEFFAN_PRIVATE,,,,,UNREVIEWED
+Steffan,ST5.2,The real rescue [MANDATORY; DAY 12 BEFORE S_CD],21_Steffan_Campaign/Steffan_Playable_Screenplay_v0.7.md,376,day12_candidate,RESCUE,,,,,UNREVIEWED
+Steffan,ST5.3,The semifinal [IF ADVANCED; AFTER RESCUE],21_Steffan_Campaign/Steffan_Playable_Screenplay_v0.7.md,389,unverified,FINAL,,,,,UNREVIEWED
+Steffan,ST5.4,The confession he can postpone [OPTIONAL; DANTE],21_Steffan_Campaign/Steffan_Playable_Screenplay_v0.7.md,403,unverified,,,,,,UNREVIEWED
+Steffan,ST5.5,The applause after the applause [OPTIONAL; COMEDY/SHIRRO],21_Steffan_Campaign/Steffan_Playable_Screenplay_v0.7.md,421,unverified,,,,,,UNREVIEWED
+Steffan,ST6.1,The actual final [CONDITIONAL],21_Steffan_Campaign/Steffan_Playable_Screenplay_v0.7.md,441,day13_candidate,,,,,,UNREVIEWED
+Steffan,ST6.2,"The dead man's live order [MANDATORY, AFTER OFFICIAL FINAL]",21_Steffan_Campaign/Steffan_Playable_Screenplay_v0.7.md,449,unverified,RESCUE;FINAL,,,,,UNREVIEWED
+Steffan,ST6.3,One must fall [MANDATORY NOVA SAFETY BOSS; NOT TOURNAMENT],21_Steffan_Campaign/Steffan_Playable_Screenplay_v0.7.md,461,unverified,NOVA_CORE,,,,,UNREVIEWED
+Steffan,ST6.4,The confession that changes no verdict [MANDATORY EPILOGUE],21_Steffan_Campaign/Steffan_Playable_Screenplay_v0.7.md,473,unverified,DEVROE_ORDER_E5,,,,,UNREVIEWED
+Steffan,ST6.5,"Endings [MUTUALLY EXCLUSIVE, POST-TOURNAMENT]",21_Steffan_Campaign/Steffan_Playable_Screenplay_v0.7.md,481,day30_candidate,,,,,,UNREVIEWED
+Steffan,ST6.6,"Day 30, distant echo [OPTIONAL AUDIENCE CODA]",21_Steffan_Campaign/Steffan_Playable_Screenplay_v0.7.md,495,day30_candidate,RESCUE,,,,,UNREVIEWED
+Dante,DV1.1,The anniversary walkway [MANDATORY],22_Dante_Campaign/Dante_Playable_Screenplay_v0.7.md,20,unverified,,,,,,UNREVIEWED
+Dante,DV1.2,Private laughter [OPTIONAL ROMANCE / WARM FANFARE],22_Dante_Campaign/Dante_Playable_Screenplay_v0.7.md,50,unverified,,,,,,UNREVIEWED
+Dante,DV1.3,The mirror without a reflection [MANDATORY],22_Dante_Campaign/Dante_Playable_Screenplay_v0.7.md,76,unverified,,,,,,UNREVIEWED
+Dante,DV2.1,Shredder versus Shadow [MANDATORY MATCH GD3],22_Dante_Campaign/Dante_Playable_Screenplay_v0.7.md,104,unverified,,,,,,UNREVIEWED
+Dante,DV2.2,The people behind the armor [MANDATORY; SECONDARY CHARACTER],22_Dante_Campaign/Dante_Playable_Screenplay_v0.7.md,123,unverified,,,,,,UNREVIEWED
+Dante,DV2.2B,The audience is not a relationship [OPTIONAL ENSEMBLE / FANFARE],22_Dante_Campaign/Dante_Playable_Screenplay_v0.7.md,131,unverified,,,,,,UNREVIEWED
+Dante,DV2.3,A precise opponent [OPTIONAL BRANCH SEED; DAYS 2–4],22_Dante_Campaign/Dante_Playable_Screenplay_v0.7.md,148,unverified,,,,,,UNREVIEWED
+Dante,DV3.1,The fight that wasn't about them [MANDATORY MATCH GD1],22_Dante_Campaign/Dante_Playable_Screenplay_v0.7.md,178,unverified,,,,,,UNREVIEWED
+Dante,DV3.2,Lyra chooses [MANDATORY; CONDITIONAL],22_Dante_Campaign/Dante_Playable_Screenplay_v0.7.md,195,unverified,DANTE_STEFFAN_PRIVATE,,,,,UNREVIEWED
+Dante,DV3.3,A cruel little triumph [MANDATORY; PERSONAL FLAW],22_Dante_Campaign/Dante_Playable_Screenplay_v0.7.md,223,unverified,,,,,,UNREVIEWED
+Dante,DV3.4,Someone says no [OPTIONAL; SECONDARY-CHARACTER CHEMISTRY],22_Dante_Campaign/Dante_Playable_Screenplay_v0.7.md,247,unverified,,,,,,UNREVIEWED
+Dante,DV4.1,Official standings [MANDATORY],22_Dante_Campaign/Dante_Playable_Screenplay_v0.7.md,267,unverified,,,,,,UNREVIEWED
+Dante,DV4.2,Quarterfinal or honest elimination [CONDITIONAL],22_Dante_Campaign/Dante_Playable_Screenplay_v0.7.md,273,unverified,,,,,,UNREVIEWED
+Dante,DV4.3,A different kind of evidence [MANDATORY],22_Dante_Campaign/Dante_Playable_Screenplay_v0.7.md,291,unverified,K_BIO,,,,,UNREVIEWED
+Dante,DV4.4,The worst part of winning [OPTIONAL; DEPENDS ON BRACKET],22_Dante_Campaign/Dante_Playable_Screenplay_v0.7.md,303,unverified,,,,,,UNREVIEWED
+Dante,DV5.1,"A document, not a conspiracy theory [MANDATORY DAY 11]",22_Dante_Campaign/Dante_Playable_Screenplay_v0.7.md,319,day11_candidate,VARGA_EVIDENCE,,,,,UNREVIEWED
+Dante,DV5.2,The truth he wanted to hurt Steffan with [MANDATORY CONFRONTATION DAY 11],22_Dante_Campaign/Dante_Playable_Screenplay_v0.7.md,337,day11_candidate,DANTE_STEFFAN_PRIVATE,,,,,UNREVIEWED
+Dante,DV5.3,"The rescue nobody ordered [MANDATORY DAY 12, BEFORE SEMIFINAL]",22_Dante_Campaign/Dante_Playable_Screenplay_v0.7.md,399,day12_candidate,,,,,,UNREVIEWED
+Dante,DV5.4,"A semifinal, if earned [CONDITIONAL DAY 12]",22_Dante_Campaign/Dante_Playable_Screenplay_v0.7.md,407,day12_candidate,,,,,,UNREVIEWED
+Dante,DV6.1,The real championship [MANDATORY; CONDITIONAL MATCH],22_Dante_Campaign/Dante_Playable_Screenplay_v0.7.md,425,day13_candidate,FINAL,,,,,UNREVIEWED
+Dante,DV6.2,"Nova's veto [MANDATORY, AFTER OFFICIAL FINAL]",22_Dante_Campaign/Dante_Playable_Screenplay_v0.7.md,433,unverified,K_BIO;FINAL;DEVROE_ORDER_E5,,,,,UNREVIEWED
+Dante,DV6.3,A relationship is not a trophy [MANDATORY AFTERMATH],22_Dante_Campaign/Dante_Playable_Screenplay_v0.7.md,449,unverified,,,,,,UNREVIEWED
+Dante,DV6.4,Optional Steffan reckoning [AFTER FINALE; ADULTS; ROMANCE NOT DEFAULT],22_Dante_Campaign/Dante_Playable_Screenplay_v0.7.md,466,unverified,,,,,,UNREVIEWED
+Dante,DV6.5,Alternate personal endings [AFTER FINALE],22_Dante_Campaign/Dante_Playable_Screenplay_v0.7.md,497,unverified,DANTE_STEFFAN_PRIVATE,,,,,UNREVIEWED
+Dante,DV6.6,The evidence that arrives late [DAY 30; OPTIONAL EPILOGUE],22_Dante_Campaign/Dante_Playable_Screenplay_v0.7.md,511,day30_candidate,RESCUE;NOVA_CORE;DEVROE_ORDER_E5,,,,,UNREVIEWED
+Selene,SV1.1,The woman who bought her own invitation [MANDATORY],23_Selene_Campaign/Selene_Playable_Screenplay_v0.5.md,19,day12_candidate,,,,,,UNREVIEWED
+Selene,SV1.2,Two kinds of inheritance [MANDATORY],23_Selene_Campaign/Selene_Playable_Screenplay_v0.5.md,49,unverified,,,,,,UNREVIEWED
+Selene,SV1.3,Mirage isn't an illusion [MANDATORY; SECONDARY CAST],23_Selene_Campaign/Selene_Playable_Screenplay_v0.5.md,67,unverified,,,,,,UNREVIEWED
+Selene,SV1.4,"A dance with a balance sheet [OPTIONAL, ADULT FANFARE]",23_Selene_Campaign/Selene_Playable_Screenplay_v0.5.md,85,unverified,,,,,,UNREVIEWED
+Selene,SV2.1,Mirage versus Thorn [MANDATORY MATCH GA3; DISPLAYED FIRST],23_Selene_Campaign/Selene_Playable_Screenplay_v0.5.md,113,unverified,,,,,,UNREVIEWED
+Selene,SV2.2,The impossible vendor [MANDATORY INVESTIGATION],23_Selene_Campaign/Selene_Playable_Screenplay_v0.5.md,137,unverified,K_BIO,,,,,UNREVIEWED
+Selene,SV2.3,Jean-Paul and the locked cabinet [OPTIONAL SECONDARY / FLIRT],23_Selene_Campaign/Selene_Playable_Screenplay_v0.5.md,156,unverified,,,,,,UNREVIEWED
+Selene,SV2.4,Mirage without the costume [OPTIONAL FANFARE / CHARACTER],23_Selene_Campaign/Selene_Playable_Screenplay_v0.5.md,179,unverified,,,,,,UNREVIEWED
+Selene,SV3.1,Mirage versus Crystal [MANDATORY MATCH GA2; DISPLAYED SECOND],23_Selene_Campaign/Selene_Playable_Screenplay_v0.5.md,203,unverified,,,,,,UNREVIEWED
+Selene,SV3.2,Ranking is not entitlement [MANDATORY BRANCH],23_Selene_Campaign/Selene_Playable_Screenplay_v0.5.md,218,unverified,FINAL,,,,,UNREVIEWED
+Selene,SV3.3,The name behind the corporate veil [MANDATORY EXPOSURE],23_Selene_Campaign/Selene_Playable_Screenplay_v0.5.md,230,unverified,,,,,,UNREVIEWED
+Selene,SV3.4,"The rooftop almost-kiss [OPTIONAL, ADULT SUGGESTIVE]",23_Selene_Campaign/Selene_Playable_Screenplay_v0.5.md,256,unverified,,,,,,UNREVIEWED
+Selene,SV3.5,Price of admission [MANDATORY],23_Selene_Campaign/Selene_Playable_Screenplay_v0.5.md,273,unverified,,,,,,UNREVIEWED
+Selene,SV4.1,The contract with a missing counterparty [MANDATORY],23_Selene_Campaign/Selene_Playable_Screenplay_v0.5.md,288,unverified,K_BIO,,,,,UNREVIEWED
+Selene,SV4.2,Quarterfinal or a different battlefield [MANDATORY BRANCH],23_Selene_Campaign/Selene_Playable_Screenplay_v0.5.md,306,unverified,,,,,,UNREVIEWED
+Selene,SV4.3,"The price of naming a living man [MANDATORY, DAY 9]",23_Selene_Campaign/Selene_Playable_Screenplay_v0.5.md,318,day9_candidate,K_BIO,,,,,UNREVIEWED
+Selene,SV4.4,The secret between competitors [OPTIONAL; JEAN-PAUL],23_Selene_Campaign/Selene_Playable_Screenplay_v0.5.md,336,unverified,VARGA_EVIDENCE,,,,,UNREVIEWED
+Selene,SV5.1,"The offer [MANDATORY, DAY 11]",23_Selene_Campaign/Selene_Playable_Screenplay_v0.5.md,362,day11_candidate,,,,,,UNREVIEWED
+Selene,SV5.3,"Mirage's semifinal [CONDITIONAL, DAY 11]",23_Selene_Campaign/Selene_Playable_Screenplay_v0.5.md,386,day11_candidate,SF_AB;FINAL,,,,,UNREVIEWED
+Selene,SV5.2,"A genuine rescue [MANDATORY, DAY 12]",23_Selene_Campaign/Selene_Playable_Screenplay_v0.5.md,396,day11_candidate,,,,,,UNREVIEWED
+Selene,SV5.4,An invitation not written as an invoice [OPTIONAL MILANO ROMANCE],23_Selene_Campaign/Selene_Playable_Screenplay_v0.5.md,414,unverified,,,,,,UNREVIEWED
+Selene,SV5.5,The honest deception [OPTIONAL JEAN-PAUL ROMANCE],23_Selene_Campaign/Selene_Playable_Screenplay_v0.5.md,433,unverified,VARGA_EVIDENCE,,,,,UNREVIEWED
+Selene,SV6.1,"The championship, earned or witnessed [MANDATORY BRANCH, DAY 13]",23_Selene_Campaign/Selene_Playable_Screenplay_v0.5.md,458,day13_candidate,FINAL,,,,,UNREVIEWED
+Selene,SV6.2,"Not an acquisition target [MANDATORY, DAY 13]",23_Selene_Campaign/Selene_Playable_Screenplay_v0.5.md,470,day13_candidate,K_BIO,,,,,UNREVIEWED
+Selene,SV6.3,"The asset that doesn't appear in the books [MANDATORY, AFTER EMERGENCY]",23_Selene_Campaign/Selene_Playable_Screenplay_v0.5.md,492,unverified,,,,,,UNREVIEWED
+Selene,SV6.4,Alternative personal epilogues [CONDITIONAL],23_Selene_Campaign/Selene_Playable_Screenplay_v0.5.md,502,unverified,,,,,,UNREVIEWED
+Selene,SV6.5,"The signature [MANDATORY POST-CREDITS, DAY 30]",23_Selene_Campaign/Selene_Playable_Screenplay_v0.5.md,518,day30_candidate,,,,,,UNREVIEWED
+Milano,MA1.1,The man who knows every door [MANDATORY],24_Milano_Campaign/Milano_Playable_Screenplay_v0.5.md,19,day9_candidate,,,,,,UNREVIEWED
+Milano,MA1.2,The woman who sees through the smile [OPTIONAL SELENE / PROFESSIONAL],24_Milano_Campaign/Milano_Playable_Screenplay_v0.5.md,53,unverified,,,,,,UNREVIEWED
+Milano,MA1.3,What a safeguard buys [MANDATORY],24_Milano_Campaign/Milano_Playable_Screenplay_v0.5.md,81,unverified,K_BIO,,,,,UNREVIEWED
+Milano,MA1.4,Gargoyle on the dark side [OPTIONAL FANFARE / ENGINEERING],24_Milano_Campaign/Milano_Playable_Screenplay_v0.5.md,101,unverified,,,,,,UNREVIEWED
+Milano,MA2.1,Electra versus Gargoyle [MANDATORY MATCH GC3; DISPLAYED FIRST],24_Milano_Campaign/Milano_Playable_Screenplay_v0.5.md,129,unverified,,,,,,UNREVIEWED
+Milano,MA2.2,The invoice behind the invoice [MANDATORY INVESTIGATION],24_Milano_Campaign/Milano_Playable_Screenplay_v0.5.md,160,unverified,,,,,,UNREVIEWED
+Milano,MA2.3,Crystal will not be his poster [OPTIONAL SECONDARY],24_Milano_Campaign/Milano_Playable_Screenplay_v0.5.md,178,unverified,,,,,,UNREVIEWED
+Milano,MA2.4,Unscheduled attention [OPTIONAL ADULT FLIRT],24_Milano_Campaign/Milano_Playable_Screenplay_v0.5.md,196,unverified,,,,,,UNREVIEWED
+Milano,MA3.1,Pyros versus Gargoyle [MANDATORY MATCH GC2; DISPLAYED SECOND],24_Milano_Campaign/Milano_Playable_Screenplay_v0.5.md,219,unverified,,,,,,UNREVIEWED
+Milano,MA3.2,The standings are not a negotiation [MANDATORY BRANCH],24_Milano_Campaign/Milano_Playable_Screenplay_v0.5.md,243,unverified,,,,,,UNREVIEWED
+Milano,MA3.3,The room without observers [MANDATORY],24_Milano_Campaign/Milano_Playable_Screenplay_v0.5.md,265,unverified,K_BIO,,,,,UNREVIEWED
+Milano,MA3.4,The mask slips in the service lift [OPTIONAL SELENE OR FRIENDSHIP],24_Milano_Campaign/Milano_Playable_Screenplay_v0.5.md,286,unverified,,,,,,UNREVIEWED
+Milano,MA4.1,Quarterfinal or hearings [MANDATORY BRANCH],24_Milano_Campaign/Milano_Playable_Screenplay_v0.5.md,313,unverified,SF_CD,,,,,UNREVIEWED
+Milano,MA4.2,The board that could have stopped it [MANDATORY],24_Milano_Campaign/Milano_Playable_Screenplay_v0.5.md,325,day12_candidate,,,,,,UNREVIEWED
+Milano,MA4.3,"A man who should be dead [MANDATORY, DAY 9]",24_Milano_Campaign/Milano_Playable_Screenplay_v0.5.md,347,day9_candidate,K_BIO;RESCUE;DEVROE_ORDER_E5,,,,,UNREVIEWED
+Milano,MA4.4,A conversation without a price [OPTIONAL SELENE ROMANCE / NEGOTIATION],24_Milano_Campaign/Milano_Playable_Screenplay_v0.5.md,363,unverified,,,,,,UNREVIEWED
+Milano,MA5.1,"Before the board vote [MANDATORY, DAY 11]",24_Milano_Campaign/Milano_Playable_Screenplay_v0.5.md,388,day11_candidate,VARGA_EVIDENCE,,,,,UNREVIEWED
+Milano,MA5.2,"The rescue nobody authorized [MANDATORY, DAY 12]",24_Milano_Campaign/Milano_Playable_Screenplay_v0.5.md,402,day12_candidate,K_BIO;RESCUE,,,,,UNREVIEWED
+Milano,MA5.3,"The Group C/D semifinal [CONDITIONAL, DAY 12 — AFTER THE RESCUE]",24_Milano_Campaign/Milano_Playable_Screenplay_v0.5.md,420,day12_candidate,SF_CD,,,,,UNREVIEWED
+Milano,MA5.4,The first honest terms [OPTIONAL POST-CONFLICT SELENE; ADULT],24_Milano_Campaign/Milano_Playable_Screenplay_v0.5.md,432,day12_candidate,,,,,,UNREVIEWED
+Milano,MA6.1,"Gargoyle's last official flight [MANDATORY BRANCH, DAY 13]",24_Milano_Campaign/Milano_Playable_Screenplay_v0.5.md,455,day13_candidate,FINAL,,,,,UNREVIEWED
+Milano,MA6.2,"The order Kreissack cannot give [MANDATORY, DAY 13]",24_Milano_Campaign/Milano_Playable_Screenplay_v0.5.md,467,day13_candidate,RESCUE;NOVA_CORE,,,,,UNREVIEWED
+Milano,MA6.3,"The first meeting without him [MANDATORY, AFTER EMERGENCY]",24_Milano_Campaign/Milano_Playable_Screenplay_v0.5.md,493,unverified,NOVA_CORE,,,,,UNREVIEWED
+Milano,MA6.4,Three ways to be seen [CONDITIONAL EPILOGUES],24_Milano_Campaign/Milano_Playable_Screenplay_v0.5.md,517,unverified,,,,,,UNREVIEWED
+Milano,MA6.5,"An old signature [MANDATORY POST-CREDITS, DAY 30]",24_Milano_Campaign/Milano_Playable_Screenplay_v0.5.md,535,day30_candidate,K_BIO;RESCUE;NOVA_CORE;DEVROE_ORDER_E5,,,,,UNREVIEWED

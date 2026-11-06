@@ -1,12 +1,12 @@
-# OMF2115 — side-on 3D fidelity spike
+# OMF2107 — side-on 3D fidelity spike
 
 ## Shadow visual references
 
-The approved [Shadow front, back, and side modeling references](../robots/shadow/canonical/README.md) are the visual source of truth for OMF2115's Shadow mesh. They define the featureless dark face opening with only green eyes, triangular shoulder/chest armor, ribbed limbs, and hand, elbow, and knee spikes. The [earlier concepts](../robots/shadow/front/README.md) remain available for comparison.
+The approved [Shadow front, back, and side modeling references](../robots/shadow/canonical/README.md) are the visual source of truth for OMF2107's Shadow mesh. They define the featureless dark face opening with only green eyes, triangular shoulder/chest armor, ribbed limbs, and hand, elbow, and knee spikes. The [earlier concepts](../robots/shadow/front/README.md) remain available for comparison.
 
 ## Jaguar visual references
 
-The approved [Jaguar front, back, and side modeling references](../robots/jaguar/canonical/README.md) are the visual source of truth for OMF2115's Jaguar mesh. They define the selected helmet, eyes, chest emblem, three-digit hands, armor proportions, materials, and two-panel rear head. The pose gallery below remains a reference for the original robot's movement and identity.
+The approved [Jaguar front, back, and side modeling references](../robots/jaguar/canonical/README.md) are the visual source of truth for OMF2107's Jaguar mesh. They define the selected helmet, eyes, chest emblem, three-digit hands, armor proportions, materials, and two-panel rear head. The pose gallery below remains a reference for the original robot's movement and identity.
 
 Run `powershell -ExecutionPolicy Bypass -File project/scripts/export-jaguar-poses.ps1`
 from the repository root to extract 16 original Jaguar poses from the local
@@ -28,7 +28,7 @@ atlas and writes `project/docs/Remastered/poses/index.md`, 16 HD poses for each 
 robots (Glacier, Tempest, Helix, and Spectre) come from Remastered's optional
 *New robots and arenas* mod and have no original-game counterparts. The original
 gallery stays available for comparison. The HD images are visual references;
-the approved OMF2115 three-view sheets still define the robot designs.
+the approved OMF2107 three-view sheets still define the robot designs.
 
 This is a standalone, asset-free prototype beside OpenOMF. It now tests a
 side-on camera, one gameplay plane, discrete facing, a basic jump, punch,
@@ -127,7 +127,7 @@ Crouching lowers the torso and bends the hips and knees while the feet stay
 planted, instead of shrinking the whole model.
 The signature poses use Jaguar animation 21 and Shadow animation 23 sprite
 keys. They were compared with exactly matched Remastered frames. The
-[source trace](../docs/OMF2115_SIGNATURE_MOVE_TRACE.md) now records their timing,
+[source trace](../docs/OMF2107_SIGNATURE_MOVE_TRACE.md) now records their timing,
 near/far health changes, and active projectile positions. The 3D replay
 displays a cyan shot and a purple Shadow duplicate as visual blockouts.
 
@@ -238,7 +238,7 @@ it never runs the prototype's combat rules while the replay is playing. The
 robot blockouts are accepted for this prototype milestone; the stage remains
 provisional. Record a CSV using the optional
 `OMF3K_SOURCE_TRACE` build and `OMF3K_TRACE_PATH` described in the
-[Jaguar baseline](../docs/OMF2115_JAGUAR_BASELINE.md), then run from the
+[Jaguar baseline](../docs/OMF2107_JAGUAR_BASELINE.md), then run from the
 repository root:
 
 ```text
@@ -258,7 +258,7 @@ to source move frames and playtest event readability.
 
 Normal OpenOMF builds can opt into the `omf3d_prototype` CMake target via
 `BUILD_3D_PROTOTYPE=ON` (the default). A fresh CMake/Ninja build succeeds with
-MSVC `/Z7`; see the [source baseline](../docs/OMF2115_BASELINE.md) for the
+MSVC `/Z7`; see the [source baseline](../docs/OMF2107_BASELINE.md) for the
 Windows toolchain and dependency setup.
 
 ## What the source inspection showed
@@ -281,7 +281,7 @@ target remains a faithful 3D rendition of OMF 2097 with its pilots, HARs,
 side-on fighting, WAR/Ganymede story, and Tournament progression. Compare
 source match timing and moves with this spike before choosing the production
 engine. See the [original-game reference](../docs/OMF2097/OMF2097_REFERENCE.md) and
-[Jaguar data baseline](../docs/OMF2115_JAGUAR_BASELINE.md).
+[Jaguar data baseline](../docs/OMF2107_JAGUAR_BASELINE.md).
 
 ## Roadmap
 
@@ -316,7 +316,7 @@ original sprites.
 window system as the viewer. The format, validator, and runner live in `story.h` and `story.c` with
 no graphics code, so they can move into the full game later. The draft Crystal versus Christian
 slice is `project/data/story/crystal_christian.story`, written from
-`project/docs/OMF20115_SIMPLE_LORE.md`; its wording is placeholder dialogue.
+`project/docs/OMF2107_SIMPLE_LORE.md`; its wording is placeholder dialogue.
 
 ```text
 build/omf_debug_z7/omf3d_prototype.exe --story project/data/story/crystal_christian.story
@@ -334,7 +334,14 @@ s skip, g log, r restart), and `--shot out.bmp` saves one frame headlessly and e
 build/omf_debug_z7/story_check.exe selftest
 build/omf_debug_z7/story_check.exe check project/data/story/crystal_christian.story
 build/omf_debug_z7/story_check.exe play project/data/story/crystal_christian.story --choices 0,1 --results 1
+build/omf_debug_z7/story_check.exe walk project/data/story/ari.story --runs 300 --seed 7 --har Katana
 ```
+
+`walk` plays a script many times with random choices and random fight results. Every run must reach an
+`end` (a stuck run or a fight with no usable HAR makes it exit 1). It also lists the scenes where play never
+stopped (pass-through scenes that only set, jump or banner show up here too) and tallies a flag at the end
+(`--tally flag`, default `champion`). `--runs N` (default 300), `--seed S` and `--har Jaguar|Shadow|Katana`
+are optional; a given seed repeats the same walks.
 
 At a `fight` line, Enter starts a real match: the first fighter is you and the second is the AI. The
 story viewer runs `project/scripts/run-blockout-jaguar.ps1` as a child process (Windows only) and waits;

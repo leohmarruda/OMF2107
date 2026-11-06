@@ -1,11 +1,11 @@
-# OMF2115 pose authoring workflow
+# OMF2107 pose authoring workflow
 
 The blockout renderer uses one shared joint rig. OpenOMF chooses each HAR's
 animation, sprite, and completed tick. A catalog entry only overrides a pose
 when a robot and source sprite need a distinct shape. Unauthored frames keep
 the shared rough pose; they are not counted as finished animation fits.
 
-The [move catalog](OMF2115_MOVE_CATALOG.md) lists every Jaguar and Shadow
+The [move catalog](OMF2107_MOVE_CATALOG.md) lists every Jaguar and Shadow
 animation with its input, authored status and a trace to check it against; regenerate it with
 `python project/tools/generate_move_catalog.py` after editing `pose_catalog.csv` or
 `move_names.csv`.
@@ -52,10 +52,10 @@ visible pixels (so a different canvas offset does not hide a match) and prints t
 also saved to `project/build/duplicate-sprites.json`. `~` marks animations that share only some
 sprites. To cover a new HAR, add it to `HAR_DIRS` in `sprite_duplicates.py`.
 
-Then regenerate the [move catalog](OMF2115_MOVE_CATALOG.md), whose "Animations that
+Then regenerate the [move catalog](OMF2107_MOVE_CATALOG.md), whose "Animations that
 share sprites" section lists each group with its members' status and a note: *author once*,
 *free win* (a member is authored, so the others receive its poses), or *all authored*. The
-[move browser](OMF2115_MOVE_CATALOG.md#seeing-a-move) shows a "same sprites as" badge
+[move browser](OMF2107_MOVE_CATALOG.md#seeing-a-move) shows a "same sprites as" badge
 and a "hide duplicates" filter. Match animations by **sprite content**, not by number or
 input: do not assume that animations with similar inputs or neighbouring ids share frames,
 and do not assume that unrelated ones do not. Two animations that share sprites may still
@@ -181,14 +181,14 @@ Build `omf3d_prototype`, use `--model-preview-capture` for close views, then
 capture selected ticks from a source replay with `--source-replay ...
 --capture-tick N`. Compare the blockout with the exported source sprites and
 record the observed sequence in the robot baseline. Jaguar's standing punch
-is the first completed example in the [Jaguar baseline](OMF2115_JAGUAR_BASELINE.md).
+is the first completed example in the [Jaguar baseline](OMF2107_JAGUAR_BASELINE.md).
 
 Use the higher-resolution robot and character sprites in
 [OMF 2097 Remastered](https://github.com/Jared-woodruff/OMF-2097-Remastered)
 for visual pose and detail comparisons when they are available. Match frames
 by robot and move before comparing;
 do not assume its frame numbering or timing matches OpenOMF. The approved
-three-view sheets still define the OMF2115 mesh, and the source trace still
+three-view sheets still define the OMF2107 mesh, and the source trace still
 defines combat timing. Record which remastered image informed a pose or detail
 and check its asset terms before copying it into a shareable artifact. If the
 matching Remastered frame is unavailable, label the pose fit provisional.
@@ -203,7 +203,7 @@ The sibling `OMF-2097-Remastered` project is the local HD source. Its atlas
 index and the Jaguar and Shadow atlas pages used in this pass were checked
 against the earlier reference checkout and are byte-identical. Extracted
 crops belong in the ignored `project/build/` folder. The HD artwork has different
-colors and armor styling; use its pose and joint visibility, while the approved OMF2115 three-view sheets
+colors and armor styling; use its pose and joint visibility, while the approved OMF2107 three-view sheets
 continue to define the robot design.
 
 Sprite order and holds can be extracted automatically. The 2D sprites do not

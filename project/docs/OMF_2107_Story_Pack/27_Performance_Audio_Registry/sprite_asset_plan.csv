@@ -1,0 +1,33 @@
+expression,sprite_family,acting_overlay,purpose
+EXP-BITTER,SPR-SKEPTICAL,resentful,"asymmetric eyebrow and controlled mouth, adaptable to irony and menace"
+EXP-BRIGHT,SPR-SMILE,excited,positive expression and mouth-corner animation
+EXP-CALCULATING,SPR-SKEPTICAL,manipulative,"asymmetric eyebrow and controlled mouth, adaptable to irony and menace"
+EXP-COMPOSED,SPR-NEUTRAL,confident,"relaxed brows and mouth, baseline for the character"
+EXP-CONCERN,SPR-CONCERN,concerned,"eyes and brows raised or furrowed, adaptable to anxiety and conflict"
+EXP-CONFLICTED,SPR-CONCERN,conflicted,"eyes and brows raised or furrowed, adaptable to anxiety and conflict"
+EXP-DEFIANT,SPR-INTENSE,defiant,"concentrated brows and jaw, adaptable from resolve to anger"
+EXP-DISDAIN,SPR-SKEPTICAL,contemptuous,"asymmetric eyebrow and controlled mouth, adaptable to irony and menace"
+EXP-DOWNCAST,SPR-SAD,ashamed,"tension around eyes and lowered mouth, adaptable to grief and remorse"
+EXP-DRY,SPR-SKEPTICAL,sarcastic,"asymmetric eyebrow and controlled mouth, adaptable to irony and menace"
+EXP-FEAR,SPR-CONCERN,afraid,"eyes and brows raised or furrowed, adaptable to anxiety and conflict"
+EXP-FLIRT,SPR-WARM,flirtatious,"softened eyes and mouth, optional blush overlay only when scene supports it"
+EXP-FOCUSED,SPR-INTENSE,determined,"concentrated brows and jaw, adaptable from resolve to anger"
+EXP-GLARE,SPR-INTENSE,angry; accusatory,"concentrated brows and jaw, adaptable from resolve to anger"
+EXP-GRIEF,SPR-SAD,grieving,"tension around eyes and lowered mouth, adaptable to grief and remorse"
+EXP-HOPE,SPR-WARM,hopeful,"softened eyes and mouth, optional blush overlay only when scene supports it"
+EXP-HURT,SPR-SAD,hurt,"tension around eyes and lowered mouth, adaptable to grief and remorse"
+EXP-INTENSE,SPR-INTENSE,commanding; possessive,"concentrated brows and jaw, adaptable from resolve to anger"
+EXP-MENACE,SPR-INTENSE,threatening,"concentrated brows and jaw, adaptable from resolve to anger"
+EXP-PROUD,SPR-INTENSE,proud,"concentrated brows and jaw, adaptable from resolve to anger"
+EXP-RELIEF,SPR-WARM,relieved,"softened eyes and mouth, optional blush overlay only when scene supports it"
+EXP-REMORSE,SPR-SAD,regretful,"tension around eyes and lowered mouth, adaptable to grief and remorse"
+EXP-RESERVED,SPR-NEUTRAL,guarded,"relaxed brows and mouth, baseline for the character"
+EXP-SAD,SPR-SAD,sad,"tension around eyes and lowered mouth, adaptable to grief and remorse"
+EXP-SKEPTICAL,SPR-SKEPTICAL,suspicious,"asymmetric eyebrow and controlled mouth, adaptable to irony and menace"
+EXP-SMILE,SPR-SMILE,amused; grateful,positive expression and mouth-corner animation
+EXP-SMIRK,SPR-SMILE,teasing,positive expression and mouth-corner animation
+EXP-SURPRISED,SPR-SURPRISE,surprised,raised brows and widened eyes; short-duration transitional expression
+EXP-TENDER,SPR-WARM,affectionate; sympathetic,"softened eyes and mouth, optional blush overlay only when scene supports it"
+EXP-TRIUMPH,SPR-SMILE,triumphant,positive expression and mouth-corner animation
+EXP-VULNERABLE,SPR-WARM,vulnerable,"softened eyes and mouth, optional blush overlay only when scene supports it"
+EXP-WORRIED,SPR-CONCERN,anxious,"eyes and brows raised or furrowed, adaptable to anxiety and conflict"

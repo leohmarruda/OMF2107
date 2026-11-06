@@ -1,0 +1,50 @@
+{
+  "release": "3.4",
+  "status": "audited_invariant_spec_not_full_implementation",
+  "required": [
+    "FINAL_COMPLETE",
+    "G_DAMAGED",
+    "R_ISOLATED",
+    "D_IRREVERSIBLE",
+    "E_EJECTION_STARTED",
+    "B_L_ENGAGED",
+    "CORE_DESTROYED"
+  ],
+  "required_precedence": [
+    [
+      "FINAL_COMPLETE",
+      "G_DAMAGED"
+    ],
+    [
+      "FINAL_COMPLETE",
+      "R_ISOLATED"
+    ],
+    [
+      "G_DAMAGED",
+      "B_L_ENGAGED"
+    ],
+    [
+      "R_ISOLATED",
+      "B_L_ENGAGED"
+    ],
+    [
+      "D_IRREVERSIBLE",
+      "CORE_DESTROYED"
+    ],
+    [
+      "E_EJECTION_STARTED",
+      "B_L_ENGAGED"
+    ],
+    [
+      "B_L_ENGAGED",
+      "CORE_DESTROYED"
+    ]
+  ],
+  "constraints": [
+    "single unique core",
+    "no offsite full backup",
+    "no official tournament override",
+    "E5 knowledge no earlier than day 30",
+    "other-player histories are alternatives, not simultaneous"
+  ]
+}

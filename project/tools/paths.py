@@ -1,4 +1,4 @@
-"""Where everything lives, for the OMF2115 tools.
+"""Where everything lives, for the OMF2107 tools.
 
     project/prototype   C sources of the 3D viewer, with the tables generated for it next to them
     project/tools       Python tools (this folder)

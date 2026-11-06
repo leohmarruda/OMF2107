@@ -1,0 +1,22 @@
+{
+  "total_input_tuples": 384,
+  "canonical_input_paths_after_ignored_bits": 144,
+  "routes_using_unapproved_seed": 96,
+  "routes_using_provisional_npc_result": 220,
+  "canon_ready_input_tuples": 92,
+  "provisional_match_frequency": {
+    "FINAL": 92,
+    "Q1": 48,
+    "Q2": 48,
+    "Q3": 48,
+    "Q4": 48,
+    "S_AB": 28,
+    "S_CD": 28
+  },
+  "circular_group_frequency": {
+    "A": 24,
+    "B": 24,
+    "C": 24,
+    "D": 24
+  }
+}

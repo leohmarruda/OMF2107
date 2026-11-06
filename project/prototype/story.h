@@ -1,4 +1,4 @@
-// Story scene scripts for the OMF2115 prototype: a small line-based format, a validator, and a runner.
+// Story scene scripts for the OMF2107 prototype: a small line-based format, a validator, and a runner.
 // Pure C with no SDL or OpenGL, so it can be tested headlessly and integrated elsewhere later.
 //
 // Script format (one command per line, '#' starts a comment line, indentation is ignored):
@@ -8,6 +8,11 @@
 //                                       the name may contain {flag}; "art off" returns to the background
 //   music <track>                       background music: menu, arena0 to arena4, end, or off (the original
 //                                       game's tracks; the viewer plays them from OMF2097/ when it can)
+//   present <image> <left|right> [name] a character portrait slides in from that side over the current picture, which
+//                                       is blurred a little; the name slides in from the other side and slides out
+//                                       again when the line after the first one appears, leaving only the portrait.
+//                                       <image> is project/build/art/<image>_cut.bmp (a 32-bit cut-out). Leave the
+//                                       name out to show the portrait alone; "present off" removes it
 //   flash                               a quick white flash over the picture (a presentation beat; does not wait)
 //   banner <text>                       a big banner across the picture for a moment (does not wait)
 //   say <speaker>: <text>               one line of dialogue; an empty speaker (say : text) is narration
@@ -28,8 +33,8 @@
 // A fight's HAR may be written @flag, taking the HAR from a flag when the match is reached, and say text may
 // contain {flag}, replaced by that flag's value (left as written when the flag is unset).
 // Every scene must finish with jump, end, fight, or a choice menu; nothing may follow those.
-#ifndef OMF2115_STORY_H
-#define OMF2115_STORY_H
+#ifndef OMF2107_STORY_H
+#define OMF2107_STORY_H
 
 #include <stdbool.h>
 #include <stddef.h>
@@ -47,6 +52,7 @@ typedef enum {
     STORY_CMD_MUSIC,
     STORY_CMD_FLASH,
     STORY_CMD_BANNER,
+    STORY_CMD_PRESENT,
     STORY_CMD_SAY,
     STORY_CMD_CHOICE,
     STORY_CMD_SET,
@@ -126,6 +132,10 @@ typedef struct {
     unsigned effect_serial;         // counts flash and banner beats; the host plays one when this changes
     char effect_kind[16];           // "flash" or "banner"
     char effect_text[STORY_NAME];   // the banner's text (not saved: effects are momentary)
+    char present[STORY_NAME];       // the portrait now shown (see present); empty for none
+    char present_side[8];           // left or right: the side the portrait stands on
+    char present_name[STORY_NAME];  // the name plate's text; empty for a portrait without one
+    int present_stage;              // 0 none; 1 name just introduced; 2 name shown with its first line; 3 name gone
     int log_total;                  // entries ever logged; the last STORY_LOG are kept
     StoryLogEntry log[STORY_LOG];
 } StoryRun;

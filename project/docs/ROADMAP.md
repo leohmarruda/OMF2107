@@ -1,4 +1,4 @@
-# OMF2115 — roadmap
+# OMF2107 — roadmap
 
 Status: revised after comparing the prototype with the [original game
 reference](OMF2097/OMF2097_REFERENCE.md). This is a milestone plan, not a date
@@ -6,7 +6,7 @@ commitment.
 
 ## Target
 
-Make **OMF2115** a faithful 3D rendition of One Must Fall 2097. Fighters and arenas
+Make **OMF2107** a faithful 3D rendition of One Must Fall 2097. Fighters and arenas
 gain 3D models, animation, lighting, and camera work while the match remains
 readable as a side-view fighter. Preserve the game's pilot-plus-HAR selection,
 directional punch/kick controls, specials, blocking, stun, combos, hazards,
@@ -16,7 +16,7 @@ and Shadow silhouette blockouts. Its standalone combat values and arena remain
 technical placeholders rather than the combat or story template.
 
 The story pass should expand OMF's own neural-link, WAR, Kreissack, and Nova
-themes. The [story treatment](OMF2115_LORE_v2.md) develops the
+themes. The [story treatment](OMF2107_LORE_v2.md) develops the
 government conspiracy, relationships, and physical cost of an experimental
 link while keeping the setting, cast, and central tournament.
 The [game specification](OMF2097_3D_GAME_SPEC.md) defines the target modes,
@@ -34,7 +34,7 @@ guard, and one HAR's specials. A production 3D engine may handle models and
 animation, but gameplay parity is the measure of success. Do not commit to a
 full engine migration until that study and a 3D match spike are complete.
 
-**Fight engine decision (2026-10-15):** OMF2115 does not get a new combat engine.
+**Fight engine decision (2026-10-15):** OMF2107 does not get a new combat engine.
 Every fight runs on OpenOMF's reverse-engineered rules with the original AF/BK
 data; the 3D view only renders the per-tick state it publishes. The prototype's
 built-in combat loop is now a `--sandbox`-only placeholder and is no longer the
@@ -70,7 +70,7 @@ stack; it would then need the same state exporter and REC parity checks.
 
 1. Finish the **original-game baseline**. Isolated range, timing, and guard
    checks now cover all 35 Jaguar and Shadow attacks in
-   [OMF2115_MOVE_MEASUREMENTS.md](OMF2115_MOVE_MEASUREMENTS.md) (Shadow Grab holds
+   [OMF2107_MOVE_MEASUREMENTS.md](OMF2107_MOVE_MEASUREMENTS.md) (Shadow Grab holds
    rather than damages, and Shadow Punch is measured at enhancement 3).
    Signature traces, Stadium
    wall response, and a replayable source-driven match are recorded. Full-match
@@ -84,7 +84,7 @@ stack; it would then need the same state exporter and REC parity checks.
    the Meshy stand-ins) opens an in-game selection screen that connects ten
    playable pilots to Jaguar or Shadow, using their OpenOMF stats. The full
    Stadium match was human-tested while OpenOMF owns combat timing/results.
-4. Compare that playable match against the [recorded model match review](OMF2115_MODEL_MATCH_REVIEW.md)
+4. Compare that playable match against the [recorded model match review](OMF2107_MODEL_MATCH_REVIEW.md)
    before expanding the roster or adding story scenes. **Compared 2026-10-27:**
    facing, hit timing, and recovery match the OpenOMF recordings, including
    Jaguar's close throw and Shadow Grab; the playtest found no mismatch with the
@@ -104,12 +104,22 @@ stack; it would then need the same state exporter and REC parity checks.
      Jaguar concussion shot has been reviewed by screenshot only.
    - Shadow's purple figures have no trails (the renderer has no transparency).
    - Skinned deformation rigs remain deferred to the finished asset pass.
-5. Stage 4 planning has started: see [OMF2115_STAGE4_PLAN.md](OMF2115_STAGE4_PLAN.md)
-   for the proposed scope, work order, and open decisions.
+5. Stage 4 planning has started: see [OMF2107_STAGE4_PLAN.md](OMF2107_STAGE4_PLAN.md)
+   for the proposed scope, work order, and open decisions. **Ari's route is scripted end to end
+   (2026-11-06):** `project/data/story/ari.story` holds Chapters 1 to 6 of the Story Pack (216 scenes), with
+   the Group A, bracket and championship branches from the route spec and a two-fight Nova boss. It passes
+   `story_check`, and `story_check walk` (random choices and fight results; 300 to 1000 runs per HAR, checked
+   2026-11-06) reaches the ending every time. Every character shown with `present` now has a portrait. Still
+   open: a live playtest of the route (`run-story-ari.ps1`), portraits for Kreissack, Nova and the one-line
+   extras, NPC results that are only provisional defaults, and the optional scenes that were not converted.
 6. In parallel, pose and mesh authoring: mesh landmarks
    (`project/data/mesh_landmarks.json`, landmark editor) and projection-pose
    matching (`match_projection_poses.py`) feed the pose catalog; see
    [POSE_AUTHORING.md](POSE_AUTHORING.md).
+
+7. Release path (2026-11-05): see [RELEASE_PLAN.md](RELEASE_PLAN.md) for the dated phases,
+   [ENGINE_PATHS.md](ENGINE_PATHS.md) for the data-free engine choice and
+   [HAR_PIPELINE.md](HAR_PIPELINE.md) for the streamlined modeling flow.
 
 ## Scope boundaries
 
@@ -124,6 +134,11 @@ stack; it would then need the same state exporter and REC parity checks.
 
 ## Rights checkpoint
 
+**Decision (2026-11-05):** free, non-commercial fan project that keeps the name, HARs,
+pilots and references to the original, and ships only original assets. The research,
+release rules, accepted name risk, permission-request draft and replacement checklist
+are in [RIGHTS.md](RIGHTS.md).
+
 OpenOMF's code is MIT licensed, but the original game's artwork, audio, text,
 character designs, and name need their own distribution assessment. The local
 `OMF2097` folder is useful as a development reference; its presence is not a
@@ -133,7 +148,7 @@ holds it (started 2026-10-27 with the original pilot portraits used locally in t
 ## References
 
 - [Original game reference](OMF2097/OMF2097_REFERENCE.md)
-- [Story treatment](OMF2115_LORE_v2.md)
+- [Story treatment](OMF2107_LORE_v2.md)
 - [Game specification](OMF2097_3D_GAME_SPEC.md)
 - [Development plan](OMF2097_DEVPLAN.md)
 - [OpenOMF repository](https://github.com/omf2097/openomf)

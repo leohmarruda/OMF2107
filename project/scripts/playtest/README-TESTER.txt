@@ -1,4 +1,4 @@
-OMF 2115 - story slice playtest
+OMG 2107 - story slice playtest
 ================================
 
 Thank you for testing. This is an early build of a one-player story slice: pick a pilot

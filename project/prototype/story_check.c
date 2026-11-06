@@ -2,7 +2,9 @@
 //   story_check check <script>                       validate and list unreachable scenes
 //   story_check play <script> [--scene id] [--har Jaguar|Shadow] [--choices 0,1,...] [--results W,L,...]
 //                                                    play a script with scripted answers and print a transcript
-//   story_check selftest                             run the module's own tests
+//   story_check walk <script> [--runs N] [--seed S] [--har Jaguar|Shadow|Katana] [--tally flag]
+//                                                    random walks: every run must reach the end; reports scenes where play never stopped
+//   story_check selftest                            run the module's own tests
 #include "story.h"
 
 #include <stdio.h>
@@ -70,7 +72,7 @@ static int cmd_play(int argc, char **argv) {
         return 1;
     }
     char shown_art[STORY_NAME] = "";
-    for(int guard = 0; guard < 1000; guard++) {
+    for(int guard = 0; guard < 20000; guard++) {
         const StoryCmd *c;
         if(strcmp(run.art, shown_art) != 0) {
             printf("[art: %s%s%s]\n", run.art[0] ? run.art : "off", run.art[0] ? " " : "", run.art[0] ? run.art_effect : "");
@@ -92,6 +94,7 @@ static int cmd_play(int argc, char **argv) {
             story_advance(&run);
         } else if(run.event == STORY_EVENT_CHOICE) {
             int pick = next_number(&choices, 0);
+            if(pick >= run.choice_count && getenv("STORY_CHECK_WRAP")) pick %= run.choice_count;
             for(int i = 0; i < run.choice_count; i++)
                 printf("  %c %d. %s\n", i == pick ? '>' : ' ', i, story_choice_cmd(&run, i)->text);
             if(!story_choose(&run, pick)) { fprintf(stderr, "choice %d is out of range\n", pick); story_free(&story); return 1; }
@@ -115,6 +118,87 @@ static int cmd_play(int argc, char **argv) {
     printf("%s\n", run.flag_count ? "" : " (none)");
     story_free(&story);
     return 0;
+}
+
+static unsigned long long walk_rng = 88172645463325252ull;
+static unsigned walk_rand(unsigned n) {            // xorshift64: deterministic for a given --seed
+    walk_rng ^= walk_rng << 13; walk_rng ^= walk_rng >> 7; walk_rng ^= walk_rng << 17;
+    return (unsigned)((walk_rng >> 11) % n);
+}
+
+// Plays the script many times with random choices and random fight results and reports whether every run reaches the
+// end, which scenes were never visited, and how often each value of a flag turned up at the end.
+static int cmd_walk(int argc, char **argv) {
+    const char *path = argv[2], *har = NULL, *tally = "champion";
+    int runs = 300;
+    for(int i = 3; i + 1 < argc; i += 2) {
+        if(strcmp(argv[i], "--runs") == 0) runs = atoi(argv[i + 1]);
+        else if(strcmp(argv[i], "--seed") == 0) walk_rng ^= (unsigned long long)strtoull(argv[i + 1], NULL, 10) * 0x9E3779B97F4A7C15ull;
+        else if(strcmp(argv[i], "--har") == 0) har = argv[i + 1];
+        else if(strcmp(argv[i], "--tally") == 0) tally = argv[i + 1];
+        else { fprintf(stderr, "unknown option %s\n", argv[i]); return 2; }
+    }
+    if(runs < 1) { fprintf(stderr, "--runs must be at least 1\n"); return 2; }
+    Story story;
+    char err[256];
+    if(!story_load(&story, path, err, sizeof(err))) { fprintf(stderr, "%s\n", err); return 1; }
+    for(int i = 0; i < 16; i++) walk_rand(2);       // warm the generator up
+    char *visited = calloc((size_t)story.scene_count, 1);
+    StoryFlag flags[4];
+    int flag_count = 0, stuck = 0, bad = 0, steps_max = 0;
+    if(story.has_cast) {
+        const char *player_har = har ? har : story.player_har;
+        const char *rival_har = strcmp(player_har, "Jaguar") == 0 ? "Shadow" : "Jaguar";
+        snprintf(flags[0].name, STORY_NAME, "player_har"); snprintf(flags[0].value, STORY_NAME, "%s", player_har);
+        snprintf(flags[1].name, STORY_NAME, "rival_har"); snprintf(flags[1].value, STORY_NAME, "%s", rival_har);
+        snprintf(flags[2].name, STORY_NAME, "player_pilot"); snprintf(flags[2].value, STORY_NAME, "%s", story.player_pilot);
+        snprintf(flags[3].name, STORY_NAME, "rival_pilot"); snprintf(flags[3].value, STORY_NAME, "%s", story.rival_pilot);
+        flag_count = 4;
+    }
+    char values[32][STORY_NAME];
+    int counts[32], value_count = 0;
+    for(int r = 0; r < runs; r++) {
+        StoryRun run;
+        if(!story_start_with_flags(&run, &story, NULL, flags, flag_count)) { fprintf(stderr, "cannot start\n"); free(visited); story_free(&story); return 1; }
+        int steps = 0;
+        bool failed = false;
+        for(; steps < 100000; steps++) {
+            if(run.scene >= 0 && run.scene < story.scene_count) visited[run.scene] = 1;
+            if(run.event == STORY_EVENT_SAY) story_advance(&run);
+            else if(run.event == STORY_EVENT_CHOICE) story_choose(&run, (int)walk_rand((unsigned)run.choice_count));
+            else if(run.event == STORY_EVENT_FIGHT) {
+                char h0[STORY_NAME], h1[STORY_NAME];
+                const StoryCmd *c = story_event_cmd(&run);
+                if(!story_fight_har(&run, c, 0, h0, sizeof(h0)) || !story_fight_har(&run, c, 1, h1, sizeof(h1))) {
+                    printf("run %d: the fight at line %d has no usable HAR (%s, %s)\n", r, c->line, h0, h1);
+                    failed = true;
+                    break;
+                }
+                story_fight_result(&run, walk_rand(2) != 0);
+            } else break;
+        }
+        if(steps > steps_max) steps_max = steps;
+        if(failed) { bad++; continue; }
+        if(run.event != STORY_EVENT_END) { stuck++; printf("run %d: did not reach the end in %d steps\n", r, steps); continue; }
+        const char *v = story_flag(&run, tally);
+        if(!*v) v = "(unset)";
+        int k = 0;
+        while(k < value_count && strcmp(values[k], v) != 0) k++;
+        if(k == value_count && value_count < 32) { snprintf(values[k], STORY_NAME, "%s", v); counts[k] = 0; value_count++; }
+        if(k < value_count) counts[k]++;
+    }
+    int unvisited = 0;
+    for(int i = 0; i < story.scene_count; i++) if(!visited[i]) {
+        if(unvisited < 40) printf("no stop in scene '%s' (line %d): a pass-through scene, or never reached\n", story.scenes[i].id, story.scenes[i].line);
+        unvisited++;
+    }
+    printf("%d runs: %d reached the end, %d stuck, %d with a bad fight; longest run %d steps\n", runs,
+           runs - stuck - bad, stuck, bad, steps_max);
+    printf("scenes where play stopped: %d of %d (scenes that only set, jump or banner never stop)\n", story.scene_count - unvisited, story.scene_count);
+    for(int k = 0; k < value_count; k++) printf("  %s=%s: %d\n", tally, values[k], counts[k]);
+    free(visited);
+    story_free(&story);
+    return stuck || bad ? 1 : 0;
 }
 
 static const char *const good_script =
@@ -211,15 +295,15 @@ static void selftest_saves(const Story *story) {
     StoryRun keep = run;
     CHECK(!story_load_save(&run, story, "story_selftest_missing.save", err, sizeof(err)) && strstr(err, "cannot open"));
     CHECK(same_run(&keep, &run));
-    write_file(path, "OMF2115-STORY-SAVE 2\nscript 00000000\nscene start\npc 0\n");
+    write_file(path, "OMF2107-STORY-SAVE 2\nscript 00000000\nscene start\npc 0\n");
     CHECK(!story_load_save(&run, story, path, err, sizeof(err)) && strstr(err, "newer build"));
-    write_file(path, "OMF2115-STORY-SAVE 0\nscript 00000000\nscene start\npc 0\n");
+    write_file(path, "OMF2107-STORY-SAVE 0\nscript 00000000\nscene start\npc 0\n");
     CHECK(!story_load_save(&run, story, path, err, sizeof(err)) && strstr(err, "old format"));
     write_file(path, "hello\n");
     CHECK(!story_load_save(&run, story, path, err, sizeof(err)) && strstr(err, "not a story save"));
-    write_file(path, "OMF2115-STORY-SAVE 1\nscene start\npc 0\n");
+    write_file(path, "OMF2107-STORY-SAVE 1\nscene start\npc 0\n");
     CHECK(!story_load_save(&run, story, path, err, sizeof(err)) && strstr(err, "missing its position"));
-    write_file(path, "OMF2115-STORY-SAVE 1\nscript 12345678\nscene start\npc 0\n");
+    write_file(path, "OMF2107-STORY-SAVE 1\nscript 12345678\nscene start\npc 0\n");
     CHECK(!story_load_save(&run, story, path, err, sizeof(err)) && strstr(err, "script changed"));
     CHECK(same_run(&keep, &run));
 
@@ -240,7 +324,7 @@ static void selftest_saves(const Story *story) {
         write_file(path, bad);
         CHECK(!story_load_save(&loaded, story, path, err, sizeof(err)) && strstr(err, "stopping point"));
     }
-    write_file(path, "OMF2115-STORY-SAVE 1\nscript 00000000\nbanana\n");
+    write_file(path, "OMF2107-STORY-SAVE 1\nscript 00000000\nbanana\n");
     CHECK(!story_load_save(&loaded, story, path, err, sizeof(err)) && strstr(err, "damaged"));
 
     // Editing the script changes its fingerprint.
@@ -517,7 +601,8 @@ static int cmd_selftest(void) {
 int main(int argc, char **argv) {
     if(argc == 3 && strcmp(argv[1], "check") == 0) return cmd_check(argv[2]);
     if(argc >= 3 && strcmp(argv[1], "play") == 0) return cmd_play(argc, argv);
+    if(argc >= 3 && strcmp(argv[1], "walk") == 0) return cmd_walk(argc, argv);
     if(argc == 2 && strcmp(argv[1], "selftest") == 0) return cmd_selftest();
-    fputs("Usage: story_check check <script> | play <script> [--scene id] [--har Jaguar|Shadow] [--choices 0,1] [--results 1,0] | selftest\n", stderr);
+    fputs("Usage: story_check check <script> | walk <script> [--runs N] [--seed S] [--har H] [--tally flag] | play <script> [--scene id] [--har Jaguar|Shadow] [--choices 0,1] [--results 1,0] | selftest\n", stderr);
     return 2;
 }

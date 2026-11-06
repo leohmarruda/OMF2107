@@ -1,0 +1,450 @@
+{
+  "expressions": {
+    "amused": {
+      "expression_code": "EXP-SMILE",
+      "delivery_default": "light, teasing"
+    },
+    "grateful": {
+      "expression_code": "EXP-SMILE",
+      "delivery_default": "sincere"
+    },
+    "teasing": {
+      "expression_code": "EXP-SMIRK",
+      "delivery_default": "playful"
+    },
+    "flirtatious": {
+      "expression_code": "EXP-FLIRT",
+      "delivery_default": "soft, inviting"
+    },
+    "affectionate": {
+      "expression_code": "EXP-TENDER",
+      "delivery_default": "soft and warm"
+    },
+    "excited": {
+      "expression_code": "EXP-BRIGHT",
+      "delivery_default": "animated"
+    },
+    "proud": {
+      "expression_code": "EXP-PROUD",
+      "delivery_default": "satisfied"
+    },
+    "confident": {
+      "expression_code": "EXP-COMPOSED",
+      "delivery_default": "firm"
+    },
+    "defiant": {
+      "expression_code": "EXP-DEFIANT",
+      "delivery_default": "sharp and steady"
+    },
+    "determined": {
+      "expression_code": "EXP-FOCUSED",
+      "delivery_default": "steady and purposeful"
+    },
+    "angry": {
+      "expression_code": "EXP-GLARE",
+      "delivery_default": "hard edged"
+    },
+    "resentful": {
+      "expression_code": "EXP-BITTER",
+      "delivery_default": "clipped"
+    },
+    "hurt": {
+      "expression_code": "EXP-HURT",
+      "delivery_default": "unsteady"
+    },
+    "sad": {
+      "expression_code": "EXP-SAD",
+      "delivery_default": "subdued"
+    },
+    "grieving": {
+      "expression_code": "EXP-GRIEF",
+      "delivery_default": "strained"
+    },
+    "anxious": {
+      "expression_code": "EXP-WORRIED",
+      "delivery_default": "uneasy"
+    },
+    "afraid": {
+      "expression_code": "EXP-FEAR",
+      "delivery_default": "tremulous"
+    },
+    "suspicious": {
+      "expression_code": "EXP-SKEPTICAL",
+      "delivery_default": "guarded"
+    },
+    "guarded": {
+      "expression_code": "EXP-RESERVED",
+      "delivery_default": "controlled"
+    },
+    "concerned": {
+      "expression_code": "EXP-CONCERN",
+      "delivery_default": "careful"
+    },
+    "sympathetic": {
+      "expression_code": "EXP-TENDER",
+      "delivery_default": "gentle"
+    },
+    "hopeful": {
+      "expression_code": "EXP-HOPE",
+      "delivery_default": "quietly hopeful"
+    },
+    "ashamed": {
+      "expression_code": "EXP-DOWNCAST",
+      "delivery_default": "lowered"
+    },
+    "regretful": {
+      "expression_code": "EXP-REMORSE",
+      "delivery_default": "hushed"
+    },
+    "contemptuous": {
+      "expression_code": "EXP-DISDAIN",
+      "delivery_default": "cool"
+    },
+    "manipulative": {
+      "expression_code": "EXP-CALCULATING",
+      "delivery_default": "smooth"
+    },
+    "threatening": {
+      "expression_code": "EXP-MENACE",
+      "delivery_default": "low"
+    },
+    "surprised": {
+      "expression_code": "EXP-SURPRISED",
+      "delivery_default": "startled"
+    },
+    "relieved": {
+      "expression_code": "EXP-RELIEF",
+      "delivery_default": "released"
+    },
+    "conflicted": {
+      "expression_code": "EXP-CONFLICTED",
+      "delivery_default": "halting"
+    },
+    "sarcastic": {
+      "expression_code": "EXP-DRY",
+      "delivery_default": "dry"
+    },
+    "vulnerable": {
+      "expression_code": "EXP-VULNERABLE",
+      "delivery_default": "exposed"
+    },
+    "commanding": {
+      "expression_code": "EXP-INTENSE",
+      "delivery_default": "controlled"
+    },
+    "triumphant": {
+      "expression_code": "EXP-TRIUMPH",
+      "delivery_default": "emphatic"
+    },
+    "accusatory": {
+      "expression_code": "EXP-GLARE",
+      "delivery_default": "sharp"
+    },
+    "possessive": {
+      "expression_code": "EXP-INTENSE",
+      "delivery_default": "insistent"
+    }
+  },
+  "script_revisions": [
+    {
+      "campaign": "Ari",
+      "old": "04_Screenplay_Reconstructions/Chapter_01_Anniversary_v0.4.md",
+      "new": "04_Screenplay_Reconstructions/Chapter_01_Anniversary_v0.5.md",
+      "source_speakers": 230,
+      "expressive_cues": 21,
+      "music_cues": 16
+    },
+    {
+      "campaign": "Ari",
+      "old": "04_Screenplay_Reconstructions/Chapter_02_Champions_Shadow_v0.4.md",
+      "new": "04_Screenplay_Reconstructions/Chapter_02_Champions_Shadow_v0.5.md",
+      "source_speakers": 310,
+      "expressive_cues": 28,
+      "music_cues": 16
+    },
+    {
+      "campaign": "Ari",
+      "old": "04_Screenplay_Reconstructions/Chapter_03_Trouble_With_Attraction_v0.4.md",
+      "new": "04_Screenplay_Reconstructions/Chapter_03_Trouble_With_Attraction_v0.5.md",
+      "source_speakers": 386,
+      "expressive_cues": 31,
+      "music_cues": 23
+    },
+    {
+      "campaign": "Ari",
+      "old": "04_Screenplay_Reconstructions/Chapter_04_No_Holding_Back_v0.4.md",
+      "new": "04_Screenplay_Reconstructions/Chapter_04_No_Holding_Back_v0.5.md",
+      "source_speakers": 364,
+      "expressive_cues": 29,
+      "music_cues": 18
+    },
+    {
+      "campaign": "Ari",
+      "old": "04_Screenplay_Reconstructions/Chapter_05_Fractures_v0.4.md",
+      "new": "04_Screenplay_Reconstructions/Chapter_05_Fractures_v0.5.md",
+      "source_speakers": 370,
+      "expressive_cues": 33,
+      "music_cues": 17
+    },
+    {
+      "campaign": "Ari",
+      "old": "04_Screenplay_Reconstructions/Chapter_06_One_Must_Fall_v0.5.md",
+      "new": "04_Screenplay_Reconstructions/Chapter_06_One_Must_Fall_v0.6.md",
+      "source_speakers": 358,
+      "expressive_cues": 33,
+      "music_cues": 28
+    },
+    {
+      "campaign": "Lyra",
+      "old": "09_Lyra_Campaign/Lyra_Playable_Screenplay_v0.5.md",
+      "new": "09_Lyra_Campaign/Lyra_Playable_Screenplay_v0.6.md",
+      "source_speakers": 112,
+      "expressive_cues": 16,
+      "music_cues": 34
+    },
+    {
+      "campaign": "Mara",
+      "old": "10_Mara_Campaign/Mara_Playable_Screenplay_v0.3.md",
+      "new": "10_Mara_Campaign/Mara_Playable_Screenplay_v0.4.md",
+      "source_speakers": 83,
+      "expressive_cues": 15,
+      "music_cues": 29
+    },
+    {
+      "campaign": "Ren",
+      "old": "11_Ren_Campaign/Ren_Playable_Screenplay_v0.3.md",
+      "new": "11_Ren_Campaign/Ren_Playable_Screenplay_v0.4.md",
+      "source_speakers": 138,
+      "expressive_cues": 16,
+      "music_cues": 32
+    },
+    {
+      "campaign": "Angel",
+      "old": "12_Angel_Campaign/Angel_Playable_Screenplay_v0.3.md",
+      "new": "12_Angel_Campaign/Angel_Playable_Screenplay_v0.4.md",
+      "source_speakers": 100,
+      "expressive_cues": 17,
+      "music_cues": 27
+    },
+    {
+      "campaign": "Crystal",
+      "old": "15_Crystal_Campaign/OMF_2107_Crystal_Playable_Screenplay_v0.7.md",
+      "new": "15_Crystal_Campaign/OMF_2107_Crystal_Playable_Screenplay_v0.8.md",
+      "source_speakers": 76,
+      "expressive_cues": 10,
+      "music_cues": 29
+    },
+    {
+      "campaign": "Raven",
+      "old": "16_Raven_Campaign/OMF_2107_Raven_Playable_Screenplay_v0.6.md",
+      "new": "16_Raven_Campaign/OMF_2107_Raven_Playable_Screenplay_v0.7.md",
+      "source_speakers": 89,
+      "expressive_cues": 27,
+      "music_cues": 30
+    },
+    {
+      "campaign": "Jean-Paul",
+      "old": "20_Jean_Paul_Campaign/Jean_Paul_Playable_Screenplay_v0.2.md",
+      "new": "20_Jean_Paul_Campaign/Jean_Paul_Playable_Screenplay_v0.3.md",
+      "source_speakers": 70,
+      "expressive_cues": 8,
+      "music_cues": 28
+    },
+    {
+      "campaign": "Steffan",
+      "old": "21_Steffan_Campaign/Steffan_Playable_Screenplay_v0.4.md",
+      "new": "21_Steffan_Campaign/Steffan_Playable_Screenplay_v0.5.md",
+      "source_speakers": 77,
+      "expressive_cues": 23,
+      "music_cues": 26
+    },
+    {
+      "campaign": "Dante",
+      "old": "22_Dante_Campaign/Dante_Playable_Screenplay_v0.4.md",
+      "new": "22_Dante_Campaign/Dante_Playable_Screenplay_v0.5.md",
+      "source_speakers": 95,
+      "expressive_cues": 18,
+      "music_cues": 24
+    },
+    {
+      "campaign": "Selene",
+      "old": "23_Selene_Campaign/Selene_Playable_Screenplay_v0.2.md",
+      "new": "23_Selene_Campaign/Selene_Playable_Screenplay_v0.3.md",
+      "source_speakers": 59,
+      "expressive_cues": 15,
+      "music_cues": 27
+    },
+    {
+      "campaign": "Milano",
+      "old": "24_Milano_Campaign/Milano_Playable_Screenplay_v0.2.md",
+      "new": "24_Milano_Campaign/Milano_Playable_Screenplay_v0.3.md",
+      "source_speakers": 93,
+      "expressive_cues": 6,
+      "music_cues": 25
+    },
+    {
+      "campaign": "Christian",
+      "old": "18_Christian_Subplot/OMF_2107_Christian_Independent_Storyline_v0.3.md",
+      "new": "18_Christian_Subplot/OMF_2107_Christian_Independent_Storyline_v0.4.md",
+      "source_speakers": 72,
+      "expressive_cues": 5,
+      "music_cues": 20
+    }
+  ],
+  "counts": {
+    "utterances": 3082,
+    "nonneutral": 351,
+    "music": 449
+  },
+  "music_stems": {
+    "MUS-ARCHIVE": {
+      "description": "distorted archival synth and metallic percussion, restrained",
+      "tempo": "adaptive",
+      "licensed_music_required": false
+    },
+    "MUS-GALA": {
+      "description": "opulent electro-orchestral pulse, social spectacle",
+      "tempo": "adaptive",
+      "licensed_music_required": false
+    },
+    "MUS-ATHLETIC": {
+      "description": "rhythmic electro-percussion, confident athletic motion",
+      "tempo": "adaptive",
+      "licensed_music_required": false
+    },
+    "MUS-ARENA": {
+      "description": "driving electronic rock and mechanical percussion, combat intensity",
+      "tempo": "adaptive",
+      "licensed_music_required": false
+    },
+    "MUS-BANTER": {
+      "description": "light syncopated futuristic lounge groove, playful",
+      "tempo": "adaptive",
+      "licensed_music_required": false
+    },
+    "MUS-ROMANCE": {
+      "description": "warm restrained synth pads and melodic piano, intimate",
+      "tempo": "adaptive",
+      "licensed_music_required": false
+    },
+    "MUS-UNEASE": {
+      "description": "low pulsing synth drones, withheld answers",
+      "tempo": "adaptive",
+      "licensed_music_required": false
+    },
+    "MUS-INVESTIGATION": {
+      "description": "minimal ticking sequencers and suspense textures",
+      "tempo": "adaptive",
+      "licensed_music_required": false
+    },
+    "MUS-ETHICAL": {
+      "description": "dissonant ambient synth, moral unease",
+      "tempo": "adaptive",
+      "licensed_music_required": false
+    },
+    "MUS-CONFRONT": {
+      "description": "driving low strings and industrial pulses, personal conflict",
+      "tempo": "adaptive",
+      "licensed_music_required": false
+    },
+    "MUS-GRIEF": {
+      "description": "sparse piano, low sustained strings, vulnerable",
+      "tempo": "adaptive",
+      "licensed_music_required": false
+    },
+    "MUS-HOPE": {
+      "description": "subdued rising harmony and soft percussion",
+      "tempo": "adaptive",
+      "licensed_music_required": false
+    },
+    "MUS-RESCUE": {
+      "description": "urgent rhythmic electronics and high strings, rescue",
+      "tempo": "adaptive",
+      "licensed_music_required": false
+    },
+    "MUS-NOVA": {
+      "description": "unsettling polyphonic electronic textures and subbass, autonomous intelligence",
+      "tempo": "adaptive",
+      "licensed_music_required": false
+    },
+    "MUS-FINALE": {
+      "description": "hybrid orchestra and industrial electronics, final confrontation",
+      "tempo": "adaptive",
+      "licensed_music_required": false
+    },
+    "MUS-AFTERMATH": {
+      "description": "quiet elegiac synth and distant strings",
+      "tempo": "adaptive",
+      "licensed_music_required": false
+    },
+    "MUS-SILENCE": {
+      "description": "intentional environmental ambience only",
+      "tempo": "adaptive",
+      "licensed_music_required": false
+    },
+    "MUS-CORPORATE": {
+      "description": "clean futuristic ambient pulse, public-facing authority",
+      "tempo": "adaptive",
+      "licensed_music_required": false
+    },
+    "MUS-CLINICAL": {
+      "description": "minimal sterile arpeggios and soft electrical hum",
+      "tempo": "adaptive",
+      "licensed_music_required": false
+    },
+    "MUS-GANYMEDE": {
+      "description": "vast icy soundscape with slow synth chords",
+      "tempo": "adaptive",
+      "licensed_music_required": false
+    }
+  },
+  "notes": {
+    "music": "Palette changes are suggestions, not playback start commands. Music does not change fights.",
+    "dialogue": "No PERF means unannotated, not necessarily emotionally neutral. Review queue catches candidates.",
+    "face": "Codes designate outward acting choices, never a character internal thought or consent."
+  },
+  "sprite_families": {
+    "SPR-NEUTRAL": "relaxed brows and mouth, baseline for the character",
+    "SPR-SMILE": "positive expression and mouth-corner animation",
+    "SPR-WARM": "softened eyes and mouth, optional blush overlay only when scene supports it",
+    "SPR-INTENSE": "concentrated brows and jaw, adaptable from resolve to anger",
+    "SPR-SKEPTICAL": "asymmetric eyebrow and controlled mouth, adaptable to irony and menace",
+    "SPR-SAD": "tension around eyes and lowered mouth, adaptable to grief and remorse",
+    "SPR-CONCERN": "eyes and brows raised or furrowed, adaptable to anxiety and conflict",
+    "SPR-SURPRISE": "raised brows and widened eyes; short-duration transitional expression"
+  },
+  "expression_to_sprite_family": {
+    "EXP-SMILE": "SPR-SMILE",
+    "EXP-SMIRK": "SPR-SMILE",
+    "EXP-FLIRT": "SPR-WARM",
+    "EXP-TENDER": "SPR-WARM",
+    "EXP-BRIGHT": "SPR-SMILE",
+    "EXP-PROUD": "SPR-INTENSE",
+    "EXP-COMPOSED": "SPR-NEUTRAL",
+    "EXP-DEFIANT": "SPR-INTENSE",
+    "EXP-FOCUSED": "SPR-INTENSE",
+    "EXP-GLARE": "SPR-INTENSE",
+    "EXP-BITTER": "SPR-SKEPTICAL",
+    "EXP-HURT": "SPR-SAD",
+    "EXP-SAD": "SPR-SAD",
+    "EXP-GRIEF": "SPR-SAD",
+    "EXP-WORRIED": "SPR-CONCERN",
+    "EXP-FEAR": "SPR-CONCERN",
+    "EXP-SKEPTICAL": "SPR-SKEPTICAL",
+    "EXP-RESERVED": "SPR-NEUTRAL",
+    "EXP-CONCERN": "SPR-CONCERN",
+    "EXP-HOPE": "SPR-WARM",
+    "EXP-DOWNCAST": "SPR-SAD",
+    "EXP-REMORSE": "SPR-SAD",
+    "EXP-DISDAIN": "SPR-SKEPTICAL",
+    "EXP-CALCULATING": "SPR-SKEPTICAL",
+    "EXP-MENACE": "SPR-INTENSE",
+    "EXP-SURPRISED": "SPR-SURPRISE",
+    "EXP-RELIEF": "SPR-WARM",
+    "EXP-CONFLICTED": "SPR-CONCERN",
+    "EXP-DRY": "SPR-SKEPTICAL",
+    "EXP-VULNERABLE": "SPR-WARM",
+    "EXP-INTENSE": "SPR-INTENSE",
+    "EXP-TRIUMPH": "SPR-SMILE"
+  }
+}

@@ -5,6 +5,9 @@ Records where each non-original asset comes from, how it is used, and whether it
 (tasks A06 and F05) require this: original-game artwork, audio, and text have not been cleared for release, and
 only entries marked distributable may go into a release package.
 
+Release position (2026-11-05): free fan project with original assets only, keeping the original names; see
+[RIGHTS.md](RIGHTS.md). Every "Not distributable" entry below must be replaced before a public release.
+
 This ledger was started on 2026-10-27 with the entries below. Other local reference material (original
 sprites and poses in `project/docs/OMF2097/`, the Remastered captures, and so on) has not been inventoried here yet.
 

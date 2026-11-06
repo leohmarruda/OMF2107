@@ -6,7 +6,7 @@ param(
     # Story matches: the rival's HAR. Left out, it is the other of Jaguar and Shadow; it is never the player's own HAR.
     [ValidateSet('', 'Jaguar', 'Shadow', 'Katana')]
     [string]$RivalHar = '',
-    [ValidateSet('Crystal', 'Steffan', 'Milano', 'Christian', 'Shirro', 'JeanPaul', 'Ibrahim', 'Angel', 'Cossette', 'Raven')]
+    [ValidateSet('Crystal', 'Steffan', 'Milano', 'Christian', 'Shirro', 'JeanPaul', 'Ibrahim', 'Angel', 'Cossette', 'Raven', 'Ari', 'Selene', 'Mara', 'Ren', 'Lyra', 'Nova')]
     [string]$Pilot = '',
     # Original Tournament upgrade level for Shadow (0-3). Shadow's shadow attacks,
     # such as Shadow Punch, only exist in the original data at level 3.
@@ -14,7 +14,7 @@ param(
     [int]$ShadowEnhancement = 0,
     # Story matches: the AI rival's pilot, and a file the viewer writes the winner to before it exits
     # (without the retry prompt). The rival always fights in the HAR the player did not pick.
-    [ValidateSet('', 'Crystal', 'Steffan', 'Milano', 'Christian', 'Shirro', 'JeanPaul', 'Ibrahim', 'Angel', 'Cossette', 'Raven')]
+    [ValidateSet('', 'Crystal', 'Steffan', 'Milano', 'Christian', 'Shirro', 'JeanPaul', 'Ibrahim', 'Angel', 'Cossette', 'Raven', 'Ari', 'Selene', 'Mara', 'Ren', 'Lyra', 'Nova')]
     [string]$RivalPilot = '',
     [string]$ResultFile = '',
     # Let OpenOMF play its own sound effects and music in the match. Off by default, as before.
@@ -48,16 +48,22 @@ $env:OMF3K_INPUT_PATH = $null
 $env:OMF3K_LIVE_PLAYER = $Player
 $env:OMF3K_LIVE_RIVAL_HAR = if ($RivalHar -ne '') { $RivalHar } else { $null }
 $pilotNames = @('Crystal', 'Steffan', 'Milano', 'Christian', 'Shirro', 'JeanPaul', 'Ibrahim', 'Angel', 'Cossette', 'Raven')
+# Story pilots that have no original-game pilot: they fight with the stats, sex and colours of a stand-in, under their own name.
+$standIns = @{ Ari = 'Christian'; Selene = 'Cossette'; Mara = 'Milano'; Ren = 'Ibrahim'; Lyra = 'Steffan'; Nova = 'Shirro' }
 if ($Pilot -eq '') { $Pilot = if ($Player -eq 'Shadow') { 'Shirro' } else { 'Crystal' } }
+$pilotLabel = $Pilot
+if ($standIns.ContainsKey($Pilot)) { $Pilot = $standIns[$Pilot] }
 $Pilot = $pilotNames | Where-Object { $_ -ieq $Pilot } | Select-Object -First 1
 $env:OMF3K_LIVE_PILOT_ID = [string][array]::IndexOf($pilotNames, $Pilot)
-$env:OMF3K_LIVE_PILOT_NAME = $Pilot.ToUpperInvariant()
+$env:OMF3K_LIVE_PILOT_NAME = $pilotLabel.ToUpperInvariant()
 $env:OMF3K_LIVE_RIVAL_NAME = if ($Player -eq 'Shadow') { 'CRYSTAL' } else { 'SHIRRO' }
 $env:OMF3K_LIVE_RIVAL_PILOT_ID = $null
 if ($RivalPilot -ne '') {
+    $rivalLabel = $RivalPilot
+    if ($standIns.ContainsKey($RivalPilot)) { $RivalPilot = $standIns[$RivalPilot] }
     $RivalPilot = $pilotNames | Where-Object { $_ -ieq $RivalPilot } | Select-Object -First 1
     $env:OMF3K_LIVE_RIVAL_PILOT_ID = [string][array]::IndexOf($pilotNames, $RivalPilot)
-    $env:OMF3K_LIVE_RIVAL_NAME = $RivalPilot.ToUpperInvariant()
+    $env:OMF3K_LIVE_RIVAL_NAME = $rivalLabel.ToUpperInvariant()
 }
 $env:OMF3K_SHADOW_ENHANCEMENT = [string]$ShadowEnhancement
 Write-Host "Starting $Pilot / $Player in Stadium"

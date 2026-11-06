@@ -21,7 +21,7 @@ The model uses the prototype's Y-up coordinate system, with negative Z toward
 the opponent. Its 3.34-unit height projects to about 183 pixels at the source
 replay's 960×600 fight camera. This render checks scale and side silhouette;
 it is not a prototype integration capture. The
-[match review](../../../docs/OMF2115_MODEL_MATCH_REVIEW.md) contains captures of
+[match review](../../../docs/OMF2107_MODEL_MATCH_REVIEW.md) contains captures of
 the model running in the prototype.
 
 The front has a wedge helmet (flat crown, two front planes meeting at a centre ridge, narrow chin) with slanted green eyes, shoulder fins, chest wedge,

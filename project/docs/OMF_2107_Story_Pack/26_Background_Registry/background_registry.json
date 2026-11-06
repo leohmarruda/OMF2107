@@ -1,0 +1,1890 @@
+{
+  "version": "1.0",
+  "baseline": "Story Pack v2.6",
+  "rules": "BG-ZONE-LOCATION@STATE; source text and editorial defaults distinguished",
+  "backgrounds": [
+    {
+      "code": "BG-ARE-ENTRY",
+      "name": "Arena arrival and residential circulation",
+      "zone": "ARE",
+      "description": "Residential or arena-side connecting corridor with modular doors and wayfinding light strips.",
+      "prompt_base": "High-quality hand-painted 2D sci-fi fighting-game and visual-novel environment background, year 2107, cinematic clear architecture, unified WAR orbital station design: ivory ceramic, brushed titanium and amber in public areas, graphite industrial steel in technical areas, cool cyan in restricted labs. Wide locked-off composition, 16:9 landscape 3840x2160, dialogue-safe clean lower foreground, readable perspective geometry, no foreground characters or identifiable people, no robots in the foreground, no lettering, no readable signage, no interface overlays, no watermarks. Residential or arena-side connecting corridor with modular doors and wayfinding light strips. Light, signage, and architecture must align with the other assets in this location family. ",
+      "variants": [
+        "BASE",
+        "EVENING",
+        "NIGHT"
+      ],
+      "source_sluglines": [
+        "EXT. ARENA TERRACE — NIGHT",
+        "INT. COMPETITORS' RESIDENTIAL CORRIDOR",
+        "INT. HOTEL WALKWAY — EVENING",
+        "INT. QUIET HALLWAY / OBSERVATION GARDEN — NIGHT",
+        "INT. SERVICE CORRIDOR OUTSIDE THE LOUNGE"
+      ],
+      "scene_count": 5,
+      "source_scenes": [
+        "04_Screenplay_Reconstructions/Chapter_03_Trouble_With_Attraction_v0.3.md :: SCENE 8 — THE BREAKUP",
+        "04_Screenplay_Reconstructions/Chapter_05_Fractures_v0.3.md :: SCENE 1 — THE COST OF WINNING",
+        "11_Ren_Campaign/Ren_Playable_Screenplay_v0.2.md :: R5.5 — After the cameras [OPTIONAL / ROMANCE WITH CONSEQUENCES]",
+        "21_Steffan_Campaign/Steffan_Playable_Screenplay_v0.3.md :: ST2.2 — Why he came [MANDATORY; LYRA HAS AGENCY]",
+        "22_Dante_Campaign/Dante_Playable_Screenplay_v0.3.md :: DV3.2 — Lyra chooses [MANDATORY; CONDITIONAL]"
+      ],
+      "status": "source-mapped",
+      "inferred_uses": 0
+    },
+    {
+      "code": "BG-ARE-HALL",
+      "name": "Hall of champions / veterans memorial exhibits",
+      "zone": "ARE",
+      "description": "Hall of Champions exhibit corridor with historical podiums, archival displays and memorial plinths.",
+      "prompt_base": "High-quality hand-painted 2D sci-fi fighting-game and visual-novel environment background, year 2107, cinematic clear architecture, unified WAR orbital station design: ivory ceramic, brushed titanium and amber in public areas, graphite industrial steel in technical areas, cool cyan in restricted labs. Wide locked-off composition, 16:9 landscape 3840x2160, dialogue-safe clean lower foreground, readable perspective geometry, no foreground characters or identifiable people, no robots in the foreground, no lettering, no readable signage, no interface overlays, no watermarks. Hall of Champions exhibit corridor with historical podiums, archival displays and memorial plinths. Light, signage, and architecture must align with the other assets in this location family. ",
+      "variants": [
+        "BASE",
+        "DAY",
+        "NIGHT"
+      ],
+      "source_sluglines": [
+        "INT. ANNIVERSARY MUSEUM / RESTRICTED-ACCESS PUBLIC ARCHIVE DESK — NIGHT",
+        "INT. HALL OF CHAMPIONS",
+        "INT. HALL OF CHAMPIONS — AFTERNOON",
+        "INT. OLD EXHIBITION ARCHIVE — LATER",
+        "INT. PUBLIC HISTORY INSTALLATION — LATER",
+        "INT. RESTRICTED EXHIBITION CORRIDOR — LATER",
+        "INT. VETERANS' WALKWAY — NIGHT"
+      ],
+      "scene_count": 7,
+      "source_scenes": [
+        "04_Screenplay_Reconstructions/Chapter_02_Champions_Shadow_v0.3.md :: SCENE 3 — THE PRICE OF A LEGEND",
+        "12_Angel_Campaign/Angel_Playable_Screenplay_v0.2.md :: (unlabeled setup)",
+        "15_Crystal_Campaign/OMF_2107_Crystal_Playable_Screenplay_v0.6.md :: C1.3 — Christian's objection [MANDATORY]",
+        "15_Crystal_Campaign/OMF_2107_Crystal_Playable_Screenplay_v0.6.md :: C1.4 — The anniversary's second image [MANDATORY]",
+        "15_Crystal_Campaign/OMF_2107_Crystal_Playable_Screenplay_v0.6.md :: C3.3 — Angel and the cost of evidence [MANDATORY]",
+        "20_Jean_Paul_Campaign/Jean_Paul_Playable_Screenplay_v0.1.md :: (unlabeled setup)",
+        "24_Milano_Campaign/Milano_Playable_Screenplay_v0.1.md :: MA2.3 — Crystal will not be his poster [OPTIONAL SECONDARY]"
+      ],
+      "status": "source-mapped",
+      "inferred_uses": 0
+    },
+    {
+      "code": "BG-ARE-LOUNGE",
+      "name": "Athlete lounge and cafeteria",
+      "zone": "ARE",
+      "description": "Competitors social lounge, built-in seats, food counter, glass partitions, relaxed view toward stadium.",
+      "prompt_base": "High-quality hand-painted 2D sci-fi fighting-game and visual-novel environment background, year 2107, cinematic clear architecture, unified WAR orbital station design: ivory ceramic, brushed titanium and amber in public areas, graphite industrial steel in technical areas, cool cyan in restricted labs. Wide locked-off composition, 16:9 landscape 3840x2160, dialogue-safe clean lower foreground, readable perspective geometry, no foreground characters or identifiable people, no robots in the foreground, no lettering, no readable signage, no interface overlays, no watermarks. Competitors social lounge, built-in seats, food counter, glass partitions, relaxed view toward stadium. Light, signage, and architecture must align with the other assets in this location family. ",
+      "variants": [
+        "BASE",
+        "DAY",
+        "EVENING",
+        "NIGHT"
+      ],
+      "source_sluglines": [
+        "INT. ATHLETE LOUNGE / COSTUME EXHIBITION — EVENING",
+        "INT. ATHLETES' SERVICE LOUNGE — AFTERNOON",
+        "INT. COMPETITORS' BAR",
+        "INT. COMPETITORS' CAFETERIA",
+        "INT. COMPETITORS' RESIDENTIAL LOUNGE",
+        "INT. LATE-NIGHT COMPETITORS' LOUNGE"
+      ],
+      "scene_count": 6,
+      "source_scenes": [
+        "04_Screenplay_Reconstructions/Chapter_02_Champions_Shadow_v0.3.md :: SCENE 2 — BREAKFAST WITH THE ENEMY",
+        "04_Screenplay_Reconstructions/Chapter_03_Trouble_With_Attraction_v0.3.md :: SCENE 3 — THE MAN IN THE OTHER CORNER",
+        "04_Screenplay_Reconstructions/Chapter_03_Trouble_With_Attraction_v0.3.md :: SCENE 8 — THE BREAKUP",
+        "09_Lyra_Campaign/Lyra_Playable_Screenplay_v0.4.md :: L4.4 — Two versions of a rival [OPTIONAL; DANTE / STEFFAN]",
+        "12_Angel_Campaign/Angel_Playable_Screenplay_v0.2.md :: (unlabeled setup)",
+        "20_Jean_Paul_Campaign/Jean_Paul_Playable_Screenplay_v0.1.md :: (unlabeled setup)"
+      ],
+      "status": "source-mapped",
+      "inferred_uses": 0
+    },
+    {
+      "code": "BG-ARE-MAIN",
+      "name": "Main tournament combat arena",
+      "zone": "ARE",
+      "description": "Single official HAR tournament arena: reinforced rectangular competition floor, barrier walls, grandstands, overhead display gantries.",
+      "prompt_base": "High-quality hand-painted 2D sci-fi fighting-game and visual-novel environment background, year 2107, cinematic clear architecture, unified WAR orbital station design: ivory ceramic, brushed titanium and amber in public areas, graphite industrial steel in technical areas, cool cyan in restricted labs. Wide locked-off composition, 16:9 landscape 3840x2160, dialogue-safe clean lower foreground, readable perspective geometry, no foreground characters or identifiable people, no robots in the foreground, no lettering, no readable signage, no interface overlays, no watermarks. Single official HAR tournament arena: reinforced rectangular competition floor, barrier walls, grandstands, overhead display gantries. Light, signage, and architecture must align with the other assets in this location family. ",
+      "variants": [
+        "BASE",
+        "DAY",
+        "NIGHT"
+      ],
+      "source_sluglines": [
+        "EXT. ANNIVERSARY ARENA EVACUATION ROUTE — DAY",
+        "INT. ARENA / BROADCAST MONTAGE",
+        "INT. ARENA / INVESTIGATION ROOM — DAY",
+        "INT. ARENA / RESEARCH ACCESS CORRIDOR — DAY",
+        "INT. ARENA OR INDEPENDENT REVIEW DESK — DAY",
+        "INT. ARENA OR SAFETY CORRIDOR — DAY 12",
+        "INT. ARENA — DAY",
+        "INT. ARENA — DAY 11",
+        "INT. ARENA — DAY 11, LATE AFTERNOON",
+        "INT. ARENA — GROUP A",
+        "INT. ARENA — QUALIFYING ROUND",
+        "INT. CHAMPIONSHIP ARENA",
+        "INT. CHAMPIONSHIP ARENA OR AUDIT OFFICE — DAY",
+        "INT. CHAMPIONSHIP ARENA — DAY 13",
+        "INT. CHAMPIONSHIP ARENA — NIGHT",
+        "INT. COMPETITION PIT — DAY",
+        "INT. FINAL ARENA — DAY",
+        "INT. GRAND ARENA — DAY",
+        "INT. GROUP A ARENA — DAY",
+        "INT. GROUP B ARENA — DAY",
+        "INT. GROUP B ARENA — NEXT QUALIFYING DAY",
+        "INT. GROUP D ARENA — DAY",
+        "INT. KNOCKOUT ARENA OR EVIDENCE REVIEW ROOM — DAY",
+        "INT. MAIN ARENA",
+        "INT. OFFICIAL ARENA — QUALIFYING DAY",
+        "INT. SPECTATOR ARENA OR SERVICE OBSERVATION ROOM — LATE AFTERNOON",
+        "INT. TOURNAMENT ARENA — DAY"
+      ],
+      "scene_count": 80,
+      "source_scenes": [
+        "04_Screenplay_Reconstructions/Chapter_01_Anniversary_v0.3.md :: SCENE 1 — THE LEGEND",
+        "04_Screenplay_Reconstructions/Chapter_01_Anniversary_v0.3.md :: SCENE 5 — LET THE FIGHTING BEGIN",
+        "04_Screenplay_Reconstructions/Chapter_01_Anniversary_v0.3.md :: SCENE 5A — PRE-FIGHT",
+        "04_Screenplay_Reconstructions/Chapter_01_Anniversary_v0.3.md :: SCENE 6 — A BETTER KIND OF ENTERTAINMENT",
+        "04_Screenplay_Reconstructions/Chapter_02_Champions_Shadow_v0.3.md :: SCENE 1 — ELECTRIC CELEBRITY",
+        "04_Screenplay_Reconstructions/Chapter_02_Champions_Shadow_v0.3.md :: SCENE 6 — ARI VS. CRYSTAL",
+        "04_Screenplay_Reconstructions/Chapter_02_Champions_Shadow_v0.3.md :: SCENE 7A — IF CRYSTAL WINS",
+        "04_Screenplay_Reconstructions/Chapter_02_Champions_Shadow_v0.3.md :: SCENE 7B — IF ARI WINS",
+        "04_Screenplay_Reconstructions/Chapter_02_Champions_Shadow_v0.3.md :: SCENE 7C — ARI BEATS CRYSTAL AFTER LOSING TO SELENE (`GA_CYCLE`)",
+        "04_Screenplay_Reconstructions/Chapter_02_Champions_Shadow_v0.3.md :: SCENE 7D — ARI LOSES BOTH QUALIFYING MATCHES (`GA_OUT`)",
+        "04_Screenplay_Reconstructions/Chapter_03_Trouble_With_Attraction_v0.3.md :: SCENE 1 — A SMALL MISTAKE",
+        "04_Screenplay_Reconstructions/Chapter_03_Trouble_With_Attraction_v0.3.md :: SCENE 2 — A MATCH WORTH WATCHING",
+        "04_Screenplay_Reconstructions/Chapter_03_Trouble_With_Attraction_v0.3.md :: SCENE 6 — THE QUIETEST VICTORY",
+        "04_Screenplay_Reconstructions/Chapter_04_No_Holding_Back_v0.3.md :: SCENE 5 — THE FIRST QUARTERFINAL",
+        "04_Screenplay_Reconstructions/Chapter_04_No_Holding_Back_v0.3.md :: SCENE 6 — ARI VS. MARA",
+        "04_Screenplay_Reconstructions/Chapter_04_No_Holding_Back_v0.3.md :: SCENE 7 — TWO OLD ENEMIES",
+        "04_Screenplay_Reconstructions/Chapter_04_No_Holding_Back_v0.3.md :: SCENE 8 — A STAR WHO CAN FIGHT",
+        "04_Screenplay_Reconstructions/Chapter_05_Fractures_v0.3.md :: SCENE 11 — THE SECOND SEMIFINAL",
+        "04_Screenplay_Reconstructions/Chapter_05_Fractures_v0.3.md :: SCENE 12 — THE FINALISTS",
+        "04_Screenplay_Reconstructions/Chapter_05_Fractures_v0.3.md :: SCENE 4 — THE FIRST SEMIFINAL",
+        "04_Screenplay_Reconstructions/Chapter_06_One_Must_Fall_v0.4.md :: SCENE 3 — THE CHAMPIONSHIP (AUTHORITATIVE BRACKET DISPATCH)",
+        "04_Screenplay_Reconstructions/Chapter_06_One_Must_Fall_v0.4.md :: SCENE 4 — THE CHAMPION'S CEREMONY (WINNER-EXCLUSIVE)",
+        "04_Screenplay_Reconstructions/Chapter_06_One_Must_Fall_v0.4.md :: SCENE 4L — SOMEONE ELSE WON THE FINAL",
+        "04_Screenplay_Reconstructions/Chapter_06_One_Must_Fall_v0.4.md :: SCENE 4W — ARI ACTUALLY WON THE FINAL",
+        "04_Screenplay_Reconstructions/Chapter_06_One_Must_Fall_v0.4.md :: Scene 3A-L — Ari loses the final",
+        "04_Screenplay_Reconstructions/Chapter_06_One_Must_Fall_v0.4.md :: Scene 3A-W — Ari wins the final",
+        "09_Lyra_Campaign/Lyra_Playable_Screenplay_v0.4.md :: L2.1 — Electra versus Gargoyle [MANDATORY MATCH]",
+        "09_Lyra_Campaign/Lyra_Playable_Screenplay_v0.4.md :: L4.2 — Quarterfinal: earned, not engineered [CONDITIONAL MATCH]",
+        "09_Lyra_Campaign/Lyra_Playable_Screenplay_v0.4.md :: L5.4 — The semifinal belongs to the fighter [CONDITIONAL MATCH]",
+        "09_Lyra_Campaign/Lyra_Playable_Screenplay_v0.4.md :: L6.2 — The championship / the other winner [CONDITIONAL MATCH OR BROADCAST]",
+        "10_Mara_Campaign/Mara_Playable_Screenplay_v0.2.md :: M2.1 — The first group fight: Raven [MATCH GB2; MANDATORY]",
+        "10_Mara_Campaign/Mara_Playable_Screenplay_v0.2.md :: M2.3 — Ren: win or lose, no apology [MATCH GB1; MANDATORY]",
+        "10_Mara_Campaign/Mara_Playable_Screenplay_v0.2.md :: M4.1 — Quarterfinal or outside the ropes [DYNAMIC, MANDATORY]",
+        "10_Mara_Campaign/Mara_Playable_Screenplay_v0.2.md :: M4.5 — Second chance, not a second bracket [OPTIONAL COMPANION]",
+        "10_Mara_Campaign/Mara_Playable_Screenplay_v0.2.md :: M5.3 — A semifinal only if earned [DYNAMIC — DAY 11]",
+        "10_Mara_Campaign/Mara_Playable_Screenplay_v0.2.md :: M6.1 — The final, if she earned it [DYNAMIC]",
+        "11_Ren_Campaign/Ren_Playable_Screenplay_v0.2.md :: R2.1 — First official fight: Ren versus Raven [MANDATORY MATCH GB3]",
+        "11_Ren_Campaign/Ren_Playable_Screenplay_v0.2.md :: R3.1 — Second official fight: Ren versus Mara [MANDATORY MATCH GB1]",
+        "11_Ren_Campaign/Ren_Playable_Screenplay_v0.2.md :: R4.1 — The quarterfinal you earned [CONDITIONAL MATCH]",
+        "11_Ren_Campaign/Ren_Playable_Screenplay_v0.2.md :: R5.3 — The semifinal that happened [CONDITIONAL MATCH / S_AB]",
+        "11_Ren_Campaign/Ren_Playable_Screenplay_v0.2.md :: R6.1 — The real final [CONDITIONAL MATCH]",
+        "12_Angel_Campaign/Angel_Playable_Screenplay_v0.2.md :: (unlabeled setup)",
+        "12_Angel_Campaign/Angel_Playable_Screenplay_v0.2.md :: [v1.9 / K3-A] The absent initiator [DAY 12; OPTIONAL ARCHIVE INSERT]",
+        "15_Crystal_Campaign/OMF_2107_Crystal_Playable_Screenplay_v0.6.md :: C2.1 — Selene: a champion against a strategist [GA2; MANDATORY]",
+        "15_Crystal_Campaign/OMF_2107_Crystal_Playable_Screenplay_v0.6.md :: C2.3 — Ari: the collision of two kinds of justice [GA1; MANDATORY]",
+        "15_Crystal_Campaign/OMF_2107_Crystal_Playable_Screenplay_v0.6.md :: C4.1 — A quarterfinal or an honest absence [CONDITIONAL]",
+        "15_Crystal_Campaign/OMF_2107_Crystal_Playable_Screenplay_v0.6.md :: C5.1 — The semifinal, if earned [S_AB DAY 11; CONDITIONAL]",
+        "15_Crystal_Campaign/OMF_2107_Crystal_Playable_Screenplay_v0.6.md :: C6.1 — The actual final [FINAL; CONDITIONAL]",
+        "16_Raven_Campaign/OMF_2107_Raven_Playable_Screenplay_v0.5.md :: R2.1 — Mara: the refusal [MANDATORY; `GB2`]",
+        "16_Raven_Campaign/OMF_2107_Raven_Playable_Screenplay_v0.5.md :: R2.3 — Ren: the machine that listens [MANDATORY; `GB3`]",
+        "16_Raven_Campaign/OMF_2107_Raven_Playable_Screenplay_v0.5.md :: R4.1 — A quarterfinal, if earned [CONDITIONAL]",
+        "16_Raven_Campaign/OMF_2107_Raven_Playable_Screenplay_v0.5.md :: R5.1 — The semifinal is not optional if earned [CONDITIONAL; DAY 11]",
+        "16_Raven_Campaign/OMF_2107_Raven_Playable_Screenplay_v0.5.md :: R6.1 — The championship belongs to whoever wins [CONDITIONAL; DAY 13]",
+        "18_Christian_Subplot/OMF_2107_Christian_Independent_Storyline_v0.2.md :: CH5.2 — Crisis is not absolution (Day 12 midday)",
+        "20_Jean_Paul_Campaign/Jean_Paul_Playable_Screenplay_v0.1.md :: (unlabeled setup)",
+        "21_Steffan_Campaign/Steffan_Playable_Screenplay_v0.3.md :: ST2.1 — Pyros versus Gargoyle [MANDATORY MATCH GC2]",
+        "21_Steffan_Campaign/Steffan_Playable_Screenplay_v0.3.md :: ST3.1 — Pyros versus Electra [MANDATORY MATCH GC1]",
+        "21_Steffan_Campaign/Steffan_Playable_Screenplay_v0.3.md :: ST4.1 — Real bracket, real opponent [MANDATORY CONDITIONAL]",
+        "21_Steffan_Campaign/Steffan_Playable_Screenplay_v0.3.md :: ST4.2 — Quarterfinal: an honest contest [IF QUALIFIED]",
+        "21_Steffan_Campaign/Steffan_Playable_Screenplay_v0.3.md :: ST5.3 — The semifinal [IF ADVANCED; AFTER RESCUE]",
+        "21_Steffan_Campaign/Steffan_Playable_Screenplay_v0.3.md :: ST6.1 — The actual final [CONDITIONAL]",
+        "22_Dante_Campaign/Dante_Playable_Screenplay_v0.3.md :: DV2.1 — Shredder versus Shadow [MANDATORY MATCH GD3]",
+        "22_Dante_Campaign/Dante_Playable_Screenplay_v0.3.md :: DV3.1 — The fight that wasn't about them [MANDATORY MATCH GD1]",
+        "22_Dante_Campaign/Dante_Playable_Screenplay_v0.3.md :: DV4.1 — Official standings [MANDATORY]",
+        "22_Dante_Campaign/Dante_Playable_Screenplay_v0.3.md :: DV4.2 — Quarterfinal or honest elimination [CONDITIONAL]",
+        "22_Dante_Campaign/Dante_Playable_Screenplay_v0.3.md :: DV4.4 — The worst part of winning [OPTIONAL; DEPENDS ON BRACKET]",
+        "22_Dante_Campaign/Dante_Playable_Screenplay_v0.3.md :: DV5.3 — The rescue nobody ordered [MANDATORY DAY 12, BEFORE SEMIFINAL]",
+        "22_Dante_Campaign/Dante_Playable_Screenplay_v0.3.md :: DV5.4 — A semifinal, if earned [CONDITIONAL DAY 12]",
+        "22_Dante_Campaign/Dante_Playable_Screenplay_v0.3.md :: DV6.1 — The real championship [MANDATORY; CONDITIONAL MATCH]",
+        "23_Selene_Campaign/Selene_Playable_Screenplay_v0.1.md :: SV2.1 — Mirage versus Thorn [MANDATORY MATCH GA3; DISPLAYED FIRST]",
+        "23_Selene_Campaign/Selene_Playable_Screenplay_v0.1.md :: SV3.1 — Mirage versus Crystal [MANDATORY MATCH GA2; DISPLAYED SECOND]",
+        "23_Selene_Campaign/Selene_Playable_Screenplay_v0.1.md :: SV4.2 — Quarterfinal or a different battlefield [MANDATORY BRANCH]",
+        "23_Selene_Campaign/Selene_Playable_Screenplay_v0.1.md :: SV5.3 — Mirage's semifinal [CONDITIONAL, DAY 11]",
+        "23_Selene_Campaign/Selene_Playable_Screenplay_v0.1.md :: SV6.1 — The championship, earned or witnessed [MANDATORY BRANCH, DAY 13]",
+        "24_Milano_Campaign/Milano_Playable_Screenplay_v0.1.md :: MA2.1 — Electra versus Gargoyle [MANDATORY MATCH GC3; DISPLAYED FIRST]",
+        "24_Milano_Campaign/Milano_Playable_Screenplay_v0.1.md :: MA3.1 — Pyros versus Gargoyle [MANDATORY MATCH GC2; DISPLAYED SECOND]",
+        "24_Milano_Campaign/Milano_Playable_Screenplay_v0.1.md :: MA3.2 — The standings are not a negotiation [MANDATORY BRANCH]",
+        "24_Milano_Campaign/Milano_Playable_Screenplay_v0.1.md :: MA4.1 — Quarterfinal or hearings [MANDATORY BRANCH]",
+        "24_Milano_Campaign/Milano_Playable_Screenplay_v0.1.md :: MA5.3 — The Group C/D semifinal [CONDITIONAL, DAY 12 — AFTER THE RESCUE]",
+        "24_Milano_Campaign/Milano_Playable_Screenplay_v0.1.md :: MA6.1 — Gargoyle's last official flight [MANDATORY BRANCH, DAY 13]"
+      ],
+      "status": "source-mapped",
+      "inferred_uses": 39
+    },
+    {
+      "code": "BG-ARE-MED",
+      "name": "Tournament medical and recovery facilities",
+      "zone": "ARE",
+      "description": "Tournament clinic and recovery corridor, softly lit clinical partitions, medical doors and benches.",
+      "prompt_base": "High-quality hand-painted 2D sci-fi fighting-game and visual-novel environment background, year 2107, cinematic clear architecture, unified WAR orbital station design: ivory ceramic, brushed titanium and amber in public areas, graphite industrial steel in technical areas, cool cyan in restricted labs. Wide locked-off composition, 16:9 landscape 3840x2160, dialogue-safe clean lower foreground, readable perspective geometry, no foreground characters or identifiable people, no robots in the foreground, no lettering, no readable signage, no interface overlays, no watermarks. Tournament clinic and recovery corridor, softly lit clinical partitions, medical doors and benches. Light, signage, and architecture must align with the other assets in this location family. ",
+      "variants": [
+        "BASE",
+        "DAY"
+      ],
+      "source_sluglines": [
+        "INT. COMPETITORS' MEDICAL CORRIDOR",
+        "INT. COMPETITORS' MEDICAL HALL",
+        "INT. MEDICAL MONITORING ROOM — AFTERNOON",
+        "INT. QUIET MEDICAL WAITING AREA",
+        "INT. UNMONITORED REST ROOM / INDEPENDENT CLINICAL DESK — AFTERNOON"
+      ],
+      "scene_count": 6,
+      "source_scenes": [
+        "04_Screenplay_Reconstructions/Chapter_01_Anniversary_v0.3.md :: SCENE 5B — POST-FIGHT",
+        "04_Screenplay_Reconstructions/Chapter_02_Champions_Shadow_v0.3.md :: SCENE 8 — THE PERSON WAITING OUTSIDE",
+        "04_Screenplay_Reconstructions/Chapter_04_No_Holding_Back_v0.3.md :: SCENE 9 — THE EMPTY CHAIR",
+        "11_Ren_Campaign/Ren_Playable_Screenplay_v0.2.md :: R2.2 — The symptom report [MANDATORY]",
+        "12_Angel_Campaign/Angel_Playable_Screenplay_v0.2.md :: (unlabeled setup)",
+        "21_Steffan_Campaign/Steffan_Playable_Screenplay_v0.3.md :: ST4.3 — The impossible medical record [MANDATORY]"
+      ],
+      "status": "source-mapped",
+      "inferred_uses": 1
+    },
+    {
+      "code": "BG-ARE-PREPTUN",
+      "name": "Arena preparation and broadcast tunnels",
+      "zone": "ARE",
+      "description": "Athlete preparation tunnel with reinforced walls and directional arena access lighting.",
+      "prompt_base": "High-quality hand-painted 2D sci-fi fighting-game and visual-novel environment background, year 2107, cinematic clear architecture, unified WAR orbital station design: ivory ceramic, brushed titanium and amber in public areas, graphite industrial steel in technical areas, cool cyan in restricted labs. Wide locked-off composition, 16:9 landscape 3840x2160, dialogue-safe clean lower foreground, readable perspective geometry, no foreground characters or identifiable people, no robots in the foreground, no lettering, no readable signage, no interface overlays, no watermarks. Athlete preparation tunnel with reinforced walls and directional arena access lighting. Light, signage, and architecture must align with the other assets in this location family. ",
+      "variants": [
+        "BASE",
+        "NIGHT"
+      ],
+      "source_sluglines": [
+        "INT. ANNIVERSARY ARENA — BROADCAST TUNNEL — NIGHT",
+        "INT. ARENA CORRIDOR — LATE NIGHT",
+        "INT. ATHLETE PREPARATION BAY — NIGHT",
+        "INT. BACKSTAGE LOADING CORRIDOR — LATE NIGHT",
+        "INT. FIGHTER CORRIDOR — AFTER GROUP D RESULTS",
+        "INT. PRACTICE CORRIDOR — NIGHT",
+        "INT. PREPARATION CORRIDOR",
+        "INT. PREPARATION TUNNEL"
+      ],
+      "scene_count": 8,
+      "source_scenes": [
+        "04_Screenplay_Reconstructions/Chapter_06_One_Must_Fall_v0.4.md :: SCENE 3A — IF ARI REACHED THE FINAL (`ARI_FINALIST`)",
+        "09_Lyra_Campaign/Lyra_Playable_Screenplay_v0.4.md :: L3.1 — Fighting the charming liar [MANDATORY MATCH]",
+        "10_Mara_Campaign/Mara_Playable_Screenplay_v0.2.md :: M1.4 — Fighting is not a cure [MANDATORY]",
+        "11_Ren_Campaign/Ren_Playable_Screenplay_v0.2.md :: R3.4 — A quiet question [OPTIONAL / ANGEL]",
+        "16_Raven_Campaign/OMF_2107_Raven_Playable_Screenplay_v0.5.md :: R1.4 — A woman who will not yield [OPTIONAL SECONDARY CHARACTER]",
+        "20_Jean_Paul_Campaign/Jean_Paul_Playable_Screenplay_v0.1.md :: (unlabeled setup)",
+        "21_Steffan_Campaign/Steffan_Playable_Screenplay_v0.3.md :: ST1.1 — A very precise entrance [MANDATORY]",
+        "22_Dante_Campaign/Dante_Playable_Screenplay_v0.3.md :: DV3.3 — A cruel little triumph [MANDATORY; PERSONAL FLAW]"
+      ],
+      "status": "source-mapped",
+      "inferred_uses": 0
+    },
+    {
+      "code": "BG-ARE-RESEARCH",
+      "name": "Research combat enclosure / Nova boss battleground",
+      "zone": "ARE",
+      "description": "Armored underground research combat enclosure linked to Nova systems; concrete and graphite support structures, containment shields.",
+      "prompt_base": "High-quality hand-painted 2D sci-fi fighting-game and visual-novel environment background, year 2107, cinematic clear architecture, unified WAR orbital station design: ivory ceramic, brushed titanium and amber in public areas, graphite industrial steel in technical areas, cool cyan in restricted labs. Wide locked-off composition, 16:9 landscape 3840x2160, dialogue-safe clean lower foreground, readable perspective geometry, no foreground characters or identifiable people, no robots in the foreground, no lettering, no readable signage, no interface overlays, no watermarks. Armored underground research combat enclosure linked to Nova systems; concrete and graphite support structures, containment shields. Light, signage, and architecture must align with the other assets in this location family. ",
+      "variants": [
+        "BASE",
+        "EMERGENCY",
+        "NIGHT"
+      ],
+      "source_sluglines": [
+        "INT. ARMORED RESEARCH ARENA — CONTINUOUS",
+        "INT. ISOLATED MACHINE CHAMBER — NIGHT",
+        "INT. NOVA CORE PLATFORM — CONTINUOUS",
+        "INT. NOVA PLATFORM — CONTINUOUS",
+        "INT. NOVA PLATFORM — DAMAGED CORE CHAMBER",
+        "INT. RESEARCH COMBAT ENCLOSURE"
+      ],
+      "scene_count": 10,
+      "source_scenes": [
+        "04_Screenplay_Reconstructions/Chapter_06_One_Must_Fall_v0.4.md :: SCENE 10 — FINAL BOSS: NOVA",
+        "04_Screenplay_Reconstructions/Chapter_06_One_Must_Fall_v0.4.md :: SCENE 11 — THE EJECTION",
+        "04_Screenplay_Reconstructions/Chapter_06_One_Must_Fall_v0.4.md :: SCENE 9 — THE LAST ARENA",
+        "09_Lyra_Campaign/Lyra_Playable_Screenplay_v0.4.md :: L6.5 — Final boss: Nova [MANDATORY SPECIAL MATCH, NOT OFFICIAL BRACKET]",
+        "11_Ren_Campaign/Ren_Playable_Screenplay_v0.2.md :: R6.3 — A real physical battle [MANDATORY / SPECIAL BOSS]",
+        "12_Angel_Campaign/Angel_Playable_Screenplay_v0.2.md :: [v1.9 / K4-A] A record that proves too little [DAY 13; PRE-ACTIVATION CUTAWAY]",
+        "15_Crystal_Campaign/OMF_2107_Crystal_Playable_Screenplay_v0.6.md :: C6.3 — The one who must fall [SPECIAL_NOVA; MANDATORY]",
+        "20_Jean_Paul_Campaign/Jean_Paul_Playable_Screenplay_v0.1.md :: (unlabeled setup)",
+        "21_Steffan_Campaign/Steffan_Playable_Screenplay_v0.3.md :: ST6.3 — One must fall [MANDATORY NOVA SAFETY BOSS; NOT TOURNAMENT]",
+        "22_Dante_Campaign/Dante_Playable_Screenplay_v0.3.md :: DV6.2 — Nova's veto [MANDATORY, AFTER OFFICIAL FINAL]"
+      ],
+      "status": "source-mapped",
+      "inferred_uses": 4
+    },
+    {
+      "code": "BG-ARE-SIM",
+      "name": "Robot simulation/calibration stage",
+      "zone": "ARE",
+      "description": "Neural-response simulation/calibration chamber, glass recording partitions, motion markers and medical telemetry fixtures.",
+      "prompt_base": "High-quality hand-painted 2D sci-fi fighting-game and visual-novel environment background, year 2107, cinematic clear architecture, unified WAR orbital station design: ivory ceramic, brushed titanium and amber in public areas, graphite industrial steel in technical areas, cool cyan in restricted labs. Wide locked-off composition, 16:9 landscape 3840x2160, dialogue-safe clean lower foreground, readable perspective geometry, no foreground characters or identifiable people, no robots in the foreground, no lettering, no readable signage, no interface overlays, no watermarks. Neural-response simulation/calibration chamber, glass recording partitions, motion markers and medical telemetry fixtures. Light, signage, and architecture must align with the other assets in this location family. ",
+      "variants": [
+        "BASE",
+        "EVENING",
+        "NIGHT"
+      ],
+      "source_sluglines": [
+        "INT. ADVANCED SYNCHRONIZATION CHAMBER",
+        "INT. EMPTY SIMULATION BAY — NIGHT",
+        "INT. NEURAL CALIBRATION CHAMBER"
+      ],
+      "scene_count": 3,
+      "source_scenes": [
+        "04_Screenplay_Reconstructions/Chapter_04_No_Holding_Back_v0.3.md :: SCENE 3 — THE PRICE OF PRECISION",
+        "09_Lyra_Campaign/Lyra_Playable_Screenplay_v0.4.md :: L3.4 — Body language [MANDATORY; NEURAL PATH MIRRORS ARI]",
+        "11_Ren_Campaign/Ren_Playable_Screenplay_v0.2.md :: R1.4 — A very old voice [MANDATORY]"
+      ],
+      "status": "source-mapped",
+      "inferred_uses": 1
+    },
+    {
+      "code": "BG-ARE-TRAIN",
+      "name": "HAR practice arena and training floor",
+      "zone": "ARE",
+      "description": "HAR training floor: durable practice flooring, tool rails, observation window, modular target rigs.",
+      "prompt_base": "High-quality hand-painted 2D sci-fi fighting-game and visual-novel environment background, year 2107, cinematic clear architecture, unified WAR orbital station design: ivory ceramic, brushed titanium and amber in public areas, graphite industrial steel in technical areas, cool cyan in restricted labs. Wide locked-off composition, 16:9 landscape 3840x2160, dialogue-safe clean lower foreground, readable perspective geometry, no foreground characters or identifiable people, no robots in the foreground, no lettering, no readable signage, no interface overlays, no watermarks. HAR training floor: durable practice flooring, tool rails, observation window, modular target rigs. Light, signage, and architecture must align with the other assets in this location family. ",
+      "variants": [
+        "AFTERMATH",
+        "BASE",
+        "DAY",
+        "EMERGENCY",
+        "EVENING",
+        "NIGHT",
+        "SUNSET"
+      ],
+      "source_sluglines": [
+        "EXT. RIBBON PRACTICE STUDIO — NIGHT",
+        "INT. COMPETITORS' PRACTICE FACILITY — LATE AFTERNOON",
+        "INT. EMPTY SPARRING ROOM — NIGHT",
+        "INT. EMPTY TRAINING GALLERY — NIGHT",
+        "INT. EMPTY TRAINING STUDIO — NIGHT",
+        "INT. PRACTICE ARENA",
+        "INT. PRACTICE ARENA WALKWAY — EVENING",
+        "INT. PRACTICE FACILITY",
+        "INT. PRACTICE HALL — LATE AFTERNOON",
+        "INT. QUIET TRAINING DECK — AFTER THE LOCKDOWN",
+        "INT. REPAIR GYM — EVENING",
+        "INT. RESEARCH TRAINING ARENA",
+        "INT. SHREDDER TRAINING BAY — NIGHT",
+        "INT. TRAINING DECK — SUNSET CYCLE",
+        "INT. TRAINING GYM — NIGHT"
+      ],
+      "scene_count": 20,
+      "source_scenes": [
+        "04_Screenplay_Reconstructions/Chapter_01_Anniversary_v0.3.md :: SCENE 7 — A LESSON IN BAD HABITS",
+        "04_Screenplay_Reconstructions/Chapter_02_Champions_Shadow_v0.3.md :: SCENE 5 — THE WRONG WAY TO BEAT A CHAMPION",
+        "04_Screenplay_Reconstructions/Chapter_03_Trouble_With_Attraction_v0.3.md :: SCENE 5 — NOT AN EXHIBITION",
+        "04_Screenplay_Reconstructions/Chapter_03_Trouble_With_Attraction_v0.3.md :: SCENE 5B — FIVE MORE SECONDS (OPTIONAL: ARI / MARA)",
+        "04_Screenplay_Reconstructions/Chapter_04_No_Holding_Back_v0.3.md :: SCENE 3 — THE PRICE OF PRECISION",
+        "10_Mara_Campaign/Mara_Playable_Screenplay_v0.2.md :: M3.1 — Training with Ari [MANDATORY; optional intimacy]",
+        "10_Mara_Campaign/Mara_Playable_Screenplay_v0.2.md :: M6.5 — What we keep [OPTIONAL ENDINGS; eligibility guarded]",
+        "11_Ren_Campaign/Ren_Playable_Screenplay_v0.2.md :: R3.5 — Not a laboratory [OPTIONAL / TESSA]",
+        "15_Crystal_Campaign/OMF_2107_Crystal_Playable_Screenplay_v0.6.md :: C2.2 — The sound of a command [OPTIONAL RAVEN INTERACTION; PLATONIC FALLBACK]",
+        "15_Crystal_Campaign/OMF_2107_Crystal_Playable_Screenplay_v0.6.md :: C5.3 — The private line [OPTIONAL; DAY 12; NO PRIVATE INTIMACY]",
+        "16_Raven_Campaign/OMF_2107_Raven_Playable_Screenplay_v0.5.md :: R4.4 — Mara will not be an exit strategy [OPTIONAL ALTERNATIVE ATTRACTION]",
+        "18_Christian_Subplot/OMF_2107_Christian_Independent_Storyline_v0.2.md :: CH2.2 — Siblings disagree (Crystal / Raven / other pilot variant)",
+        "21_Steffan_Campaign/Steffan_Playable_Screenplay_v0.3.md :: ST3.4 — Dante at the door [OPTIONAL; TENSE, NONROMANTIC BY DEFAULT]",
+        "21_Steffan_Campaign/Steffan_Playable_Screenplay_v0.3.md :: ST5.1 — Evidence with a pulse [MANDATORY; DAY 11]",
+        "22_Dante_Campaign/Dante_Playable_Screenplay_v0.3.md :: DV2.3 — A precise opponent [OPTIONAL BRANCH SEED; DAYS 2–4]",
+        "22_Dante_Campaign/Dante_Playable_Screenplay_v0.3.md :: DV5.2 — The truth he wanted to hurt Steffan with [MANDATORY CONFRONTATION DAY 11]",
+        "22_Dante_Campaign/Dante_Playable_Screenplay_v0.3.md :: DV6.3 — A relationship is not a trophy [MANDATORY AFTERMATH]",
+        "22_Dante_Campaign/Dante_Playable_Screenplay_v0.3.md :: DV6.4 — Optional Steffan reckoning [AFTER FINALE; ADULTS; ROMANCE NOT DEFAULT]",
+        "22_Dante_Campaign/Dante_Playable_Screenplay_v0.3.md :: DV6.5 — Alternate personal endings [AFTER FINALE]",
+        "23_Selene_Campaign/Selene_Playable_Screenplay_v0.1.md :: SV2.4 — Mirage without the costume [OPTIONAL FANFARE / CHARACTER]"
+      ],
+      "status": "source-mapped",
+      "inferred_uses": 4
+    },
+    {
+      "code": "BG-ARE-WALK",
+      "name": "Arena concourse and official results hall",
+      "zone": "ARE",
+      "description": "Arena public concourse and bracket information zone, safety glass, long spectator aisles.",
+      "prompt_base": "High-quality hand-painted 2D sci-fi fighting-game and visual-novel environment background, year 2107, cinematic clear architecture, unified WAR orbital station design: ivory ceramic, brushed titanium and amber in public areas, graphite industrial steel in technical areas, cool cyan in restricted labs. Wide locked-off composition, 16:9 landscape 3840x2160, dialogue-safe clean lower foreground, readable perspective geometry, no foreground characters or identifiable people, no robots in the foreground, no lettering, no readable signage, no interface overlays, no watermarks. Arena public concourse and bracket information zone, safety glass, long spectator aisles. Light, signage, and architecture must align with the other assets in this location family. ",
+      "variants": [
+        "BASE",
+        "EVENING",
+        "NIGHT"
+      ],
+      "source_sluglines": [
+        "EXT. CHAMPIONSHIP PLAZA — NIGHT",
+        "INT. ARENA CONCOURSE — NIGHT",
+        "INT. ARENA RESULTS HALL — NIGHT",
+        "INT. ARENA STAIRWELL — NIGHT",
+        "INT. COMPETITOR CONCOURSE — EVENING",
+        "INT. EMPTY ATRIUM — NIGHT",
+        "INT. TOURNAMENT BRACKET HALL"
+      ],
+      "scene_count": 10,
+      "source_scenes": [
+        "04_Screenplay_Reconstructions/Chapter_03_Trouble_With_Attraction_v0.3.md :: SCENE 13 — THE DRAW (ALL GROUP A OUTCOMES)",
+        "04_Screenplay_Reconstructions/Chapter_03_Trouble_With_Attraction_v0.3.md :: SCENE 13B — Ari beat both opponents (`GA_ARI_WINNER`)",
+        "04_Screenplay_Reconstructions/Chapter_03_Trouble_With_Attraction_v0.3.md :: SCENE 13C — Ari lost to Selene, beat Crystal (`GA_CYCLE`)",
+        "09_Lyra_Campaign/Lyra_Playable_Screenplay_v0.4.md :: L4.1 — Reading the draw [MANDATORY CONDITIONAL]",
+        "10_Mara_Campaign/Mara_Playable_Screenplay_v0.2.md :: M3.3 — The wager nobody makes [MANDATORY]",
+        "11_Ren_Campaign/Ren_Playable_Screenplay_v0.2.md :: R3.6 — The group board [MANDATORY]",
+        "16_Raven_Campaign/OMF_2107_Raven_Playable_Screenplay_v0.5.md :: R2.4 — Standings without a draw [MANDATORY]",
+        "18_Christian_Subplot/OMF_2107_Christian_Independent_Storyline_v0.2.md :: CH4.2 — He doesn't own Crystal's courage",
+        "23_Selene_Campaign/Selene_Playable_Screenplay_v0.1.md :: SV3.2 — Ranking is not entitlement [MANDATORY BRANCH]",
+        "24_Milano_Campaign/Milano_Playable_Screenplay_v0.1.md :: MA4.4 — A conversation without a price [OPTIONAL SELENE ROMANCE / NEGOTIATION]"
+      ],
+      "status": "source-mapped",
+      "inferred_uses": 3
+    },
+    {
+      "code": "BG-COR-BOARD",
+      "name": "WAR board executive chamber and office",
+      "zone": "COR",
+      "description": "WAR executive board and senior management chamber, immaculate black stone, glass and brushed metal.",
+      "prompt_base": "High-quality hand-painted 2D sci-fi fighting-game and visual-novel environment background, year 2107, cinematic clear architecture, unified WAR orbital station design: ivory ceramic, brushed titanium and amber in public areas, graphite industrial steel in technical areas, cool cyan in restricted labs. Wide locked-off composition, 16:9 landscape 3840x2160, dialogue-safe clean lower foreground, readable perspective geometry, no foreground characters or identifiable people, no robots in the foreground, no lettering, no readable signage, no interface overlays, no watermarks. WAR executive board and senior management chamber, immaculate black stone, glass and brushed metal. Light, signage, and architecture must align with the other assets in this location family. ",
+      "variants": [
+        "BASE",
+        "DAY",
+        "NIGHT"
+      ],
+      "source_sluglines": [
+        "INT. BOARD EXECUTIVE CHAMBER — DAY",
+        "INT. RETIRED OPERATIONS OFFICE — NIGHT",
+        "INT. WAR EXECUTIVE SUITE",
+        "INT. WAR GOVERNANCE HALL — DAY"
+      ],
+      "scene_count": 8,
+      "source_scenes": [
+        "04_Screenplay_Reconstructions/Chapter_05_Fractures_v0.3.md :: SCENE 3 — A VERY EXPENSIVE SECRET",
+        "16_Raven_Campaign/OMF_2107_Raven_Playable_Screenplay_v0.5.md :: R5.4 — The offer of one last paycheck [MANDATORY]",
+        "23_Selene_Campaign/Selene_Playable_Screenplay_v0.1.md :: SV6.4 — Alternative personal epilogues [CONDITIONAL]",
+        "24_Milano_Campaign/Milano_Playable_Screenplay_v0.1.md :: MA4.2 — The board that could have stopped it [MANDATORY]",
+        "24_Milano_Campaign/Milano_Playable_Screenplay_v0.1.md :: MA4.3 — A man who should be dead [MANDATORY, DAY 9]",
+        "24_Milano_Campaign/Milano_Playable_Screenplay_v0.1.md :: MA5.1 — Before the board vote [MANDATORY, DAY 11]",
+        "24_Milano_Campaign/Milano_Playable_Screenplay_v0.1.md :: MA6.3 — The first meeting without him [MANDATORY, AFTER EMERGENCY]",
+        "24_Milano_Campaign/Milano_Playable_Screenplay_v0.1.md :: MA6.4 — Three ways to be seen [CONDITIONAL EPILOGUES]"
+      ],
+      "status": "source-mapped",
+      "inferred_uses": 4
+    },
+    {
+      "code": "BG-COR-CALL",
+      "name": "Secure office private call booth",
+      "zone": "COR",
+      "description": "Secluded office communications booth with encrypted terminal and blank glass display.",
+      "prompt_base": "High-quality hand-painted 2D sci-fi fighting-game and visual-novel environment background, year 2107, cinematic clear architecture, unified WAR orbital station design: ivory ceramic, brushed titanium and amber in public areas, graphite industrial steel in technical areas, cool cyan in restricted labs. Wide locked-off composition, 16:9 landscape 3840x2160, dialogue-safe clean lower foreground, readable perspective geometry, no foreground characters or identifiable people, no robots in the foreground, no lettering, no readable signage, no interface overlays, no watermarks. Secluded office communications booth with encrypted terminal and blank glass display. Light, signage, and architecture must align with the other assets in this location family. ",
+      "variants": [
+        "NIGHT"
+      ],
+      "source_sluglines": [
+        "INT. SECURE CALL BOOTH — LATE NIGHT"
+      ],
+      "scene_count": 1,
+      "source_scenes": [
+        "23_Selene_Campaign/Selene_Playable_Screenplay_v0.1.md :: SV3.5 — Price of admission [MANDATORY]"
+      ],
+      "status": "source-mapped",
+      "inferred_uses": 0
+    },
+    {
+      "code": "BG-COR-LICENSING",
+      "name": "WAR procurement / licensing / supervision public offices",
+      "zone": "COR",
+      "description": "Formal public compliance / licensing administration floor with desks, record windows and polished halls.",
+      "prompt_base": "High-quality hand-painted 2D sci-fi fighting-game and visual-novel environment background, year 2107, cinematic clear architecture, unified WAR orbital station design: ivory ceramic, brushed titanium and amber in public areas, graphite industrial steel in technical areas, cool cyan in restricted labs. Wide locked-off composition, 16:9 landscape 3840x2160, dialogue-safe clean lower foreground, readable perspective geometry, no foreground characters or identifiable people, no robots in the foreground, no lettering, no readable signage, no interface overlays, no watermarks. Formal public compliance / licensing administration floor with desks, record windows and polished halls. Light, signage, and architecture must align with the other assets in this location family. ",
+      "variants": [
+        "DAY"
+      ],
+      "source_sluglines": [
+        "INT. WAR LICENSING ATRIUM — MORNING"
+      ],
+      "scene_count": 1,
+      "source_scenes": [
+        "23_Selene_Campaign/Selene_Playable_Screenplay_v0.1.md :: SV4.1 — The contract with a missing counterparty [MANDATORY]"
+      ],
+      "status": "source-mapped",
+      "inferred_uses": 0
+    },
+    {
+      "code": "BG-EPI-CIVIL",
+      "name": "Post-crisis civic workshop and future gallery",
+      "zone": "EPI",
+      "description": "Civic future-oriented shared workshop and design space, hopeful daylight, people deliberately absent.",
+      "prompt_base": "High-quality hand-painted 2D sci-fi fighting-game and visual-novel environment background, year 2107, cinematic clear architecture, unified WAR orbital station design: ivory ceramic, brushed titanium and amber in public areas, graphite industrial steel in technical areas, cool cyan in restricted labs. Wide locked-off composition, 16:9 landscape 3840x2160, dialogue-safe clean lower foreground, readable perspective geometry, no foreground characters or identifiable people, no robots in the foreground, no lettering, no readable signage, no interface overlays, no watermarks. Civic future-oriented shared workshop and design space, hopeful daylight, people deliberately absent. Light, signage, and architecture must align with the other assets in this location family. ",
+      "variants": [
+        "AFTERMATH"
+      ],
+      "source_sluglines": [],
+      "scene_count": 1,
+      "source_scenes": [
+        "18_Christian_Subplot/OMF_2107_Christian_Independent_Storyline_v0.2.md :: CH6.3 — Personal epilogues (mutually exclusive outcomes; weeks later)"
+      ],
+      "status": "source-mapped",
+      "inferred_uses": 1
+    },
+    {
+      "code": "BG-EPI-RECOVERY",
+      "name": "Aftermath recovery atrium and clinics",
+      "zone": "EPI",
+      "description": "Post-incident recovery and civic intake space, subdued lighting, emergency-service infrastructure.",
+      "prompt_base": "High-quality hand-painted 2D sci-fi fighting-game and visual-novel environment background, year 2107, cinematic clear architecture, unified WAR orbital station design: ivory ceramic, brushed titanium and amber in public areas, graphite industrial steel in technical areas, cool cyan in restricted labs. Wide locked-off composition, 16:9 landscape 3840x2160, dialogue-safe clean lower foreground, readable perspective geometry, no foreground characters or identifiable people, no robots in the foreground, no lettering, no readable signage, no interface overlays, no watermarks. Post-incident recovery and civic intake space, subdued lighting, emergency-service infrastructure. Light, signage, and architecture must align with the other assets in this location family. ",
+      "variants": [
+        "AFTERMATH",
+        "NIGHT"
+      ],
+      "source_sluglines": [
+        "INT. RECOVERY ATRIUM — NIGHT"
+      ],
+      "scene_count": 2,
+      "source_scenes": [
+        "10_Mara_Campaign/Mara_Playable_Screenplay_v0.2.md :: M6.4 — After the machines stop cheering [MANDATORY]",
+        "23_Selene_Campaign/Selene_Playable_Screenplay_v0.1.md :: SV6.3 — The asset that doesn't appear in the books [MANDATORY, AFTER EMERGENCY]"
+      ],
+      "status": "source-mapped",
+      "inferred_uses": 1
+    },
+    {
+      "code": "BG-EXT-COLONY-CONSTRUCTION",
+      "name": "Ganymede colony construction montage",
+      "zone": "EXT",
+      "description": "Wide 2107-era Ganymede ice-colony construction site, unfinished domes, cargo gantries and blue-grey ice fields, Jupiter dominating black sky.",
+      "prompt_base": "High quality 2D painted science-fiction visual-novel environment plate, clean perspective, 16:9 3840x2160, empty foreground for character sprites and subtitles, no named people, logos, text or interface. Wide 2107-era Ganymede ice-colony construction site, unfinished domes, cargo gantries and blue-grey ice fields, Jupiter dominating black sky. Maintain camera framing and industrial 2107 world bible style.",
+      "variants": [
+        "BASE"
+      ],
+      "source_sluglines": [
+        "Ari Chapter 1, Scene 1 — archival montage narrative description"
+      ],
+      "scene_count": 1,
+      "source_scenes": [
+        "04_Screenplay_Reconstructions/Chapter_01_Anniversary_v0.3.md :: SCENE 1 — THE LEGEND"
+      ],
+      "status": "source-prose-mapped",
+      "inferred_uses": 0
+    },
+    {
+      "code": "BG-EXT-GANYMEDE",
+      "name": "Ganymede colony and icy exterior",
+      "zone": "EXT",
+      "description": "Icy Ganymede colony with domed structures, utilitarian walkways and Jupiter on horizon.",
+      "prompt_base": "High-quality hand-painted 2D sci-fi fighting-game and visual-novel environment background, year 2107, cinematic clear architecture, unified WAR orbital station design: ivory ceramic, brushed titanium and amber in public areas, graphite industrial steel in technical areas, cool cyan in restricted labs. Wide locked-off composition, 16:9 landscape 3840x2160, dialogue-safe clean lower foreground, readable perspective geometry, no foreground characters or identifiable people, no robots in the foreground, no lettering, no readable signage, no interface overlays, no watermarks. Icy Ganymede colony with domed structures, utilitarian walkways and Jupiter on horizon. Light, signage, and architecture must align with the other assets in this location family. ",
+      "variants": [
+        "BASE"
+      ],
+      "source_sluglines": [
+        "EXT. GANYMEDE — OBSERVATION PLATFORM"
+      ],
+      "scene_count": 1,
+      "source_scenes": [
+        "04_Screenplay_Reconstructions/Chapter_06_One_Must_Fall_v0.4.md :: SCENE 17 — FINAL IMAGE"
+      ],
+      "status": "source-mapped",
+      "inferred_uses": 0
+    },
+    {
+      "code": "BG-EXT-STATION",
+      "name": "Orbital anniversary complex exterior",
+      "zone": "EXT",
+      "description": "Jovian orbital anniversary complex built around a circular HAR stadium and observation dome, Jupiter outside.",
+      "prompt_base": "High-quality hand-painted 2D sci-fi fighting-game and visual-novel environment background, year 2107, cinematic clear architecture, unified WAR orbital station design: ivory ceramic, brushed titanium and amber in public areas, graphite industrial steel in technical areas, cool cyan in restricted labs. Wide locked-off composition, 16:9 landscape 3840x2160, dialogue-safe clean lower foreground, readable perspective geometry, no foreground characters or identifiable people, no robots in the foreground, no lettering, no readable signage, no interface overlays, no watermarks. Jovian orbital anniversary complex built around a circular HAR stadium and observation dome, Jupiter outside. Light, signage, and architecture must align with the other assets in this location family. ",
+      "variants": [
+        "BASE",
+        "NIGHT"
+      ],
+      "source_sluglines": [
+        "EXT. ANNIVERSARY GALA — NIGHT"
+      ],
+      "scene_count": 2,
+      "source_scenes": [
+        "09_Lyra_Campaign/Lyra_Playable_Screenplay_v0.4.md :: L1.1 — A champion arrives [MANDATORY]",
+        "04_Screenplay_Reconstructions/Chapter_01_Anniversary_v0.3.md :: SCENE 1 — THE LEGEND"
+      ],
+      "status": "source-mapped",
+      "inferred_uses": 0
+    },
+    {
+      "code": "BG-HIS-ARENA97",
+      "name": "2097 combat tournament arena",
+      "zone": "HIS",
+      "description": "Industrial late-21st-century mechanized tournament floor with angular steel spectator galleries, battered armor plates and coarse analog broadcast lights; clearly earlier technology than the 2107 stadium.",
+      "prompt_base": "High quality 2D painted science-fiction visual-novel environment plate, clean perspective, 16:9 3840x2160, empty foreground for character sprites and subtitles, no named people, logos, text or interface. Industrial late-21st-century mechanized tournament floor with angular steel spectator galleries, battered armor plates and coarse analog broadcast lights; clearly earlier technology than the 2107 stadium. Maintain camera framing and industrial 2107 world bible style.",
+      "variants": [
+        "ARCHIVAL"
+      ],
+      "source_sluglines": [
+        "Ari Chapter 1, Scene 1 — archival montage narrative description"
+      ],
+      "scene_count": 1,
+      "source_scenes": [
+        "04_Screenplay_Reconstructions/Chapter_01_Anniversary_v0.3.md :: SCENE 1 — THE LEGEND"
+      ],
+      "status": "source-prose-mapped",
+      "inferred_uses": 0
+    },
+    {
+      "code": "BG-HIS-LAB97",
+      "name": "2097 destroyed Nova laboratory",
+      "zone": "HIS",
+      "description": "Ruined 2097-era robotics lab after Nova defeat, broken gantries, hanging power cable, devastated experimental pods, dust and severe industrial damage; no bodies.",
+      "prompt_base": "High quality 2D painted science-fiction visual-novel environment plate, clean perspective, 16:9 3840x2160, empty foreground for character sprites and subtitles, no named people, logos, text or interface. Ruined 2097-era robotics lab after Nova defeat, broken gantries, hanging power cable, devastated experimental pods, dust and severe industrial damage; no bodies. Maintain camera framing and industrial 2107 world bible style.",
+      "variants": [
+        "ARCHIVAL"
+      ],
+      "source_sluglines": [
+        "Ari Chapter 1, Scene 1 — archival montage narrative description"
+      ],
+      "scene_count": 1,
+      "source_scenes": [
+        "04_Screenplay_Reconstructions/Chapter_01_Anniversary_v0.3.md :: SCENE 1 — THE LEGEND"
+      ],
+      "status": "source-prose-mapped",
+      "inferred_uses": 0
+    },
+    {
+      "code": "BG-INV-ARCHIVE",
+      "name": "Records, safety and independent evidence archives",
+      "zone": "INV",
+      "description": "High-security documentary archive with secure records cabinets, provenance desk and scanning stations.",
+      "prompt_base": "High-quality hand-painted 2D sci-fi fighting-game and visual-novel environment background, year 2107, cinematic clear architecture, unified WAR orbital station design: ivory ceramic, brushed titanium and amber in public areas, graphite industrial steel in technical areas, cool cyan in restricted labs. Wide locked-off composition, 16:9 landscape 3840x2160, dialogue-safe clean lower foreground, readable perspective geometry, no foreground characters or identifiable people, no robots in the foreground, no lettering, no readable signage, no interface overlays, no watermarks. High-security documentary archive with secure records cabinets, provenance desk and scanning stations. Light, signage, and architecture must align with the other assets in this location family. ",
+      "variants": [
+        "BASE",
+        "DAY",
+        "NIGHT"
+      ],
+      "source_sluglines": [
+        "INT. ANNIVERSARY COMPLEX — INDEPENDENT ARCHIVE ROOM — DAY 9",
+        "INT. BOARD ARCHIVE — NIGHT",
+        "INT. CIVILIAN RECORDS OFFICE — DAY 4",
+        "INT. SAFETY ARCHIVE — NIGHT",
+        "INT. SECURITY ARCHIVE ANNEX — NIGHT"
+      ],
+      "scene_count": 10,
+      "source_scenes": [
+        "04_Screenplay_Reconstructions/Chapter_05_Fractures_v0.3.md :: SCENE 2B — A CLEAN CHAIN OF CUSTODY (OPTIONAL: ARI / LEENA)",
+        "04_Screenplay_Reconstructions/Chapter_05_Fractures_v0.3.md :: SCENE 5B — THE DOCUMENT YOU DIDN'T BURN (OPTIONAL: CRYSTAL / RAVEN)",
+        "10_Mara_Campaign/Mara_Playable_Screenplay_v0.2.md :: M4.3 — Why a read-only switch moved [MANDATORY / SAFE CLUE]",
+        "14_Ari_Campaign/Ari_Alternate_Scenes_v0.1.md :: supplemental",
+        "16_Raven_Campaign/OMF_2107_Raven_Playable_Screenplay_v0.5.md :: R3.4 — The argument from a dead institution [MANDATORY]",
+        "18_Christian_Subplot/OMF_2107_Christian_Independent_Storyline_v0.2.md :: CH2.1 — The archive with two names",
+        "22_Dante_Campaign/Dante_Playable_Screenplay_v0.3.md :: DV4.3 — A different kind of evidence [MANDATORY]",
+        "22_Dante_Campaign/Dante_Playable_Screenplay_v0.3.md :: DV5.1 — A document, not a conspiracy theory [MANDATORY DAY 11]",
+        "22_Dante_Campaign/Dante_Playable_Screenplay_v0.3.md :: DV6.6 — The evidence that arrives late [DAY 30; OPTIONAL EPILOGUE]",
+        "24_Milano_Campaign/Milano_Playable_Screenplay_v0.1.md :: MA1.3 — What a safeguard buys [MANDATORY]"
+      ],
+      "status": "source-mapped",
+      "inferred_uses": 5
+    },
+    {
+      "code": "BG-INV-CONFERENCE",
+      "name": "Neutral meeting / investigation room",
+      "zone": "INV",
+      "description": "Neutral interview or evidence conference room with modest central table and privacy glazing.",
+      "prompt_base": "High-quality hand-painted 2D sci-fi fighting-game and visual-novel environment background, year 2107, cinematic clear architecture, unified WAR orbital station design: ivory ceramic, brushed titanium and amber in public areas, graphite industrial steel in technical areas, cool cyan in restricted labs. Wide locked-off composition, 16:9 landscape 3840x2160, dialogue-safe clean lower foreground, readable perspective geometry, no foreground characters or identifiable people, no robots in the foreground, no lettering, no readable signage, no interface overlays, no watermarks. Neutral interview or evidence conference room with modest central table and privacy glazing. Light, signage, and architecture must align with the other assets in this location family. ",
+      "variants": [
+        "BASE",
+        "DAY",
+        "EVENING",
+        "NIGHT"
+      ],
+      "source_sluglines": [
+        "EXT. CITY RIVERFRONT / SMALL WORKSHOP / OPEN-AIR CAFÉ — MONTHS LATER",
+        "INT. ARENA OR INDEPENDENT REVIEW DESK — DAY",
+        "INT. CHAMPIONSHIP ARENA OR AUDIT OFFICE — DAY",
+        "INT. KNOCKOUT ARENA OR EVIDENCE REVIEW ROOM — DAY",
+        "INT. NEGOTIATION ROOM / WORKSHOP — AFTERNOON",
+        "INT. NEUTRAL INVESTIGATION ROOM — DAY",
+        "INT. PRIVATE CONFERENCE ROOM",
+        "INT. PRIVATE MEETING ROOM — NIGHT",
+        "INT. QUIET ATHLETE CONFERENCE ROOM"
+      ],
+      "scene_count": 11,
+      "source_scenes": [
+        "04_Screenplay_Reconstructions/Chapter_05_Fractures_v0.3.md :: SCENE 2 — THE SIGNATURE",
+        "09_Lyra_Campaign/Lyra_Playable_Screenplay_v0.4.md :: L5.1 — An invoice for coincidence [MANDATORY; JEAN-PAUL / LEENA]",
+        "10_Mara_Campaign/Mara_Playable_Screenplay_v0.2.md :: M5.1 — Financial offers have strings [MANDATORY]",
+        "10_Mara_Campaign/Mara_Playable_Screenplay_v0.2.md :: M5.4 — Other people get to choose [MANDATORY]",
+        "12_Angel_Campaign/Angel_Playable_Screenplay_v0.2.md :: (unlabeled setup)",
+        "12_Angel_Campaign/Angel_Playable_Screenplay_v0.2.md :: [v1.9 / K4-A] A record that proves too little [DAY 13; PRE-ACTIVATION CUTAWAY]",
+        "16_Raven_Campaign/OMF_2107_Raven_Playable_Screenplay_v0.5.md :: R3.1 — The interview he cannot control [MANDATORY]",
+        "16_Raven_Campaign/OMF_2107_Raven_Playable_Screenplay_v0.5.md :: R4.1 — A quarterfinal, if earned [CONDITIONAL]",
+        "18_Christian_Subplot/OMF_2107_Christian_Independent_Storyline_v0.2.md :: CH3.3 — The bargain he doesn't take",
+        "20_Jean_Paul_Campaign/Jean_Paul_Playable_Screenplay_v0.1.md :: (unlabeled setup)",
+        "23_Selene_Campaign/Selene_Playable_Screenplay_v0.1.md :: SV3.3 — The name behind the corporate veil [MANDATORY EXPOSURE]"
+      ],
+      "status": "source-mapped",
+      "inferred_uses": 2
+    },
+    {
+      "code": "BG-INV-COUNSEL",
+      "name": "Counsel and ethics office",
+      "zone": "INV",
+      "description": "Private ethics and legal office with document terminals and sober professional interior.",
+      "prompt_base": "High-quality hand-painted 2D sci-fi fighting-game and visual-novel environment background, year 2107, cinematic clear architecture, unified WAR orbital station design: ivory ceramic, brushed titanium and amber in public areas, graphite industrial steel in technical areas, cool cyan in restricted labs. Wide locked-off composition, 16:9 landscape 3840x2160, dialogue-safe clean lower foreground, readable perspective geometry, no foreground characters or identifiable people, no robots in the foreground, no lettering, no readable signage, no interface overlays, no watermarks. Private ethics and legal office with document terminals and sober professional interior. Light, signage, and architecture must align with the other assets in this location family. ",
+      "variants": [
+        "BASE",
+        "EVENING",
+        "NIGHT"
+      ],
+      "source_sluglines": [
+        "INT. COUNSEL'S PRIVATE OFFICE — NIGHT",
+        "INT. NEURAL RESEARCH OVERSIGHT OFFICE",
+        "INT. SUPERVISION OFFICE — EVENING",
+        "INT. TEMPORARY INDEPENDENT AUDIT ROOM — NIGHT",
+        "INT. WAR LEGAL COMPLIANCE FLOOR — EVENING"
+      ],
+      "scene_count": 5,
+      "source_scenes": [
+        "04_Screenplay_Reconstructions/Chapter_06_One_Must_Fall_v0.4.md :: SCENE 14 — VARGA'S RECKONING",
+        "12_Angel_Campaign/Angel_Playable_Screenplay_v0.2.md :: (unlabeled setup)",
+        "23_Selene_Campaign/Selene_Playable_Screenplay_v0.1.md :: SV4.3 — The price of naming a living man [MANDATORY, DAY 9]",
+        "24_Milano_Campaign/Milano_Playable_Screenplay_v0.1.md :: MA2.2 — The invoice behind the invoice [MANDATORY INVESTIGATION]",
+        "24_Milano_Campaign/Milano_Playable_Screenplay_v0.1.md :: MA3.3 — The room without observers [MANDATORY]"
+      ],
+      "status": "source-mapped",
+      "inferred_uses": 0
+    },
+    {
+      "code": "BG-INV-DEPOSITION",
+      "name": "Depositions and authenticated evidence room",
+      "zone": "INV",
+      "description": "Recorded deposition facility with microphones, witness table, security glazing and controlled access.",
+      "prompt_base": "High-quality hand-painted 2D sci-fi fighting-game and visual-novel environment background, year 2107, cinematic clear architecture, unified WAR orbital station design: ivory ceramic, brushed titanium and amber in public areas, graphite industrial steel in technical areas, cool cyan in restricted labs. Wide locked-off composition, 16:9 landscape 3840x2160, dialogue-safe clean lower foreground, readable perspective geometry, no foreground characters or identifiable people, no robots in the foreground, no lettering, no readable signage, no interface overlays, no watermarks. Recorded deposition facility with microphones, witness table, security glazing and controlled access. Light, signage, and architecture must align with the other assets in this location family. ",
+      "variants": [
+        "BASE",
+        "DAY",
+        "EVENING"
+      ],
+      "source_sluglines": [
+        "INT. PROTECTED EVIDENCE DEPOSITION — DAY 11",
+        "INT. PUBLIC RECORDS AUTHENTICATION ROOM — DAY",
+        "INT. RECORDED DEPOSITION ROOM",
+        "INT. RECORDED DEPOSITION ROOM — AFTERNOON",
+        "INT. SEALED EVIDENCE OFFICE — EVENING"
+      ],
+      "scene_count": 5,
+      "source_scenes": [
+        "15_Crystal_Campaign/OMF_2107_Crystal_Playable_Screenplay_v0.6.md :: C5.1B — The emergency call Christian kept [MANDATORY; DAY 11; NO FIGHT]",
+        "16_Raven_Campaign/OMF_2107_Raven_Playable_Screenplay_v0.5.md :: R5.1B — The request he refused [MANDATORY; DAYS 9–11; BEFORE THE NOVA RESCUE]",
+        "18_Christian_Subplot/OMF_2107_Christian_Independent_Storyline_v0.2.md :: CH5.1 — The time he chose not to answer (Day 11)",
+        "20_Jean_Paul_Campaign/Jean_Paul_Playable_Screenplay_v0.1.md :: (unlabeled setup)",
+        "23_Selene_Campaign/Selene_Playable_Screenplay_v0.1.md :: SV6.5 — The signature [MANDATORY POST-CREDITS, DAY 30]"
+      ],
+      "status": "source-mapped",
+      "inferred_uses": 0
+    },
+    {
+      "code": "BG-INV-DESK",
+      "name": "Private investigation, editorial and research desks",
+      "zone": "INV",
+      "description": "Compact investigative records desk with secure workstation and privacy barriers.",
+      "prompt_base": "High-quality hand-painted 2D sci-fi fighting-game and visual-novel environment background, year 2107, cinematic clear architecture, unified WAR orbital station design: ivory ceramic, brushed titanium and amber in public areas, graphite industrial steel in technical areas, cool cyan in restricted labs. Wide locked-off composition, 16:9 landscape 3840x2160, dialogue-safe clean lower foreground, readable perspective geometry, no foreground characters or identifiable people, no robots in the foreground, no lettering, no readable signage, no interface overlays, no watermarks. Compact investigative records desk with secure workstation and privacy barriers. Light, signage, and architecture must align with the other assets in this location family. ",
+      "variants": [
+        "DAY",
+        "EMERGENCY",
+        "NIGHT"
+      ],
+      "source_sluglines": [
+        "INT. ANGEL'S OFFLINE EVIDENCE STATION — NIGHT",
+        "INT. TEMPORARY INVESTIGATION OFFICE — DAY 5",
+        "INT. WAR PUBLIC PROCUREMENT KIOSK — DAY"
+      ],
+      "scene_count": 4,
+      "source_scenes": [
+        "12_Angel_Campaign/Angel_Playable_Screenplay_v0.2.md :: [v1.9 / K3-A] The absent initiator [DAY 12; OPTIONAL ARCHIVE INSERT]",
+        "18_Christian_Subplot/OMF_2107_Christian_Independent_Storyline_v0.2.md :: CH2.3 — A good lead is not a verdict",
+        "18_Christian_Subplot/OMF_2107_Christian_Independent_Storyline_v0.2.md :: CH6.1 — Two separate systems (Day 13, after the official final)",
+        "23_Selene_Campaign/Selene_Playable_Screenplay_v0.1.md :: SV2.2 — The impossible vendor [MANDATORY INVESTIGATION]"
+      ],
+      "status": "source-mapped",
+      "inferred_uses": 1
+    },
+    {
+      "code": "BG-INV-FORENSIC",
+      "name": "Forensic evidence lab and inspection room",
+      "zone": "INV",
+      "description": "Forensics and independent inspection laboratory with sealed sample lockers and instrument workbenches.",
+      "prompt_base": "High-quality hand-painted 2D sci-fi fighting-game and visual-novel environment background, year 2107, cinematic clear architecture, unified WAR orbital station design: ivory ceramic, brushed titanium and amber in public areas, graphite industrial steel in technical areas, cool cyan in restricted labs. Wide locked-off composition, 16:9 landscape 3840x2160, dialogue-safe clean lower foreground, readable perspective geometry, no foreground characters or identifiable people, no robots in the foreground, no lettering, no readable signage, no interface overlays, no watermarks. Forensics and independent inspection laboratory with sealed sample lockers and instrument workbenches. Light, signage, and architecture must align with the other assets in this location family. ",
+      "variants": [
+        "DAY",
+        "NIGHT"
+      ],
+      "source_sluglines": [
+        "INT. CIVILIAN EVIDENCE CHAMBER — DAY",
+        "INT. NEUTRAL EVIDENCE OFFICE — NIGHT",
+        "INT. SECURE INSPECTION ROOM — NIGHT"
+      ],
+      "scene_count": 3,
+      "source_scenes": [
+        "15_Crystal_Campaign/OMF_2107_Crystal_Playable_Screenplay_v0.6.md :: C4.2 — A heartbeat beneath the archive [MANDATORY]",
+        "15_Crystal_Campaign/OMF_2107_Crystal_Playable_Screenplay_v0.6.md :: C4.3 — Raven's deposition [MANDATORY; ACCOUNTABILITY INDEPENDENT OF ROMANCE]",
+        "18_Christian_Subplot/OMF_2107_Christian_Independent_Storyline_v0.2.md :: CH6.1B — The signed order (Day 30; E5, after the Nova confrontation)"
+      ],
+      "status": "source-mapped",
+      "inferred_uses": 0
+    },
+    {
+      "code": "BG-INV-HEARING",
+      "name": "Independent hearing / tribunal / public oversight",
+      "zone": "INV",
+      "description": "Civic evidentiary hearing chamber with modest dais, public gallery and presentation displays.",
+      "prompt_base": "High-quality hand-painted 2D sci-fi fighting-game and visual-novel environment background, year 2107, cinematic clear architecture, unified WAR orbital station design: ivory ceramic, brushed titanium and amber in public areas, graphite industrial steel in technical areas, cool cyan in restricted labs. Wide locked-off composition, 16:9 landscape 3840x2160, dialogue-safe clean lower foreground, readable perspective geometry, no foreground characters or identifiable people, no robots in the foreground, no lettering, no readable signage, no interface overlays, no watermarks. Civic evidentiary hearing chamber with modest dais, public gallery and presentation displays. Light, signage, and architecture must align with the other assets in this location family. ",
+      "variants": [
+        "AFTERMATH",
+        "DAY",
+        "NIGHT"
+      ],
+      "source_sluglines": [
+        "INT. CIVILIAN HEARING HALL — WEEKS LATER",
+        "INT. COMPLIANCE REVIEW FACILITY — AFTERNOON",
+        "INT. DEVROE EVIDENCE HEARING — NIGHT",
+        "INT. EMERGENCY HEARING / SECURE PUBLIC EXHIBIT — WEEKS LATER",
+        "INT. ETHICS HEARING PREPARATION ROOM — NIGHT",
+        "INT. INDEPENDENT OVERSIGHT HEARING — DAY",
+        "INT. INDEPENDENT TRIBUNAL ANTECHAMBER — AFTERMATH",
+        "INT. PUBLIC EVIDENCE HEARING — WEEKS LATER",
+        "INT. TECHNICAL REVIEW HEARING — DAY 10",
+        "INT. WAR PUBLIC ETHICS ANNEX — DAY 11"
+      ],
+      "scene_count": 13,
+      "source_scenes": [
+        "11_Ren_Campaign/Ren_Playable_Screenplay_v0.2.md :: R5.4 — The scientist who mistook people for variables [MANDATORY]",
+        "11_Ren_Campaign/Ren_Playable_Screenplay_v0.2.md :: R6.4 — The world that remains [MANDATORY]",
+        "12_Angel_Campaign/Angel_Playable_Screenplay_v0.2.md :: [v1.9 / K3-A] The absent initiator [DAY 12; OPTIONAL ARCHIVE INSERT]",
+        "12_Angel_Campaign/Angel_Playable_Screenplay_v0.2.md :: [v1.9 / K4-A] A record that proves too little [DAY 13; PRE-ACTIVATION CUTAWAY]",
+        "15_Crystal_Campaign/OMF_2107_Crystal_Playable_Screenplay_v0.6.md :: C6.4 — A statement without a statue [MANDATORY]",
+        "15_Crystal_Campaign/OMF_2107_Crystal_Playable_Screenplay_v0.6.md :: C6.4B — The ghost of the man she defeated [AFTER E5, optional personal beat]",
+        "16_Raven_Campaign/OMF_2107_Raven_Playable_Screenplay_v0.5.md :: R4.3 — The shuttle index is not a pardon [MANDATORY]",
+        "16_Raven_Campaign/OMF_2107_Raven_Playable_Screenplay_v0.5.md :: R6.4 — Consequences cannot be negotiated away [MANDATORY; WEEKS LATER]",
+        "16_Raven_Campaign/OMF_2107_Raven_Playable_Screenplay_v0.5.md :: R6.4B — A signature too late [AFTER E5; conditional private perspective]",
+        "18_Christian_Subplot/OMF_2107_Christian_Independent_Storyline_v0.2.md :: CH4.1 — Flight trajectory reconstruction",
+        "18_Christian_Subplot/OMF_2107_Christian_Independent_Storyline_v0.2.md :: CH6.2 — The hearing isn't an ending (weeks later)",
+        "20_Jean_Paul_Campaign/Jean_Paul_Playable_Screenplay_v0.1.md :: (unlabeled setup)",
+        "24_Milano_Campaign/Milano_Playable_Screenplay_v0.1.md :: MA6.5 — An old signature [MANDATORY POST-CREDITS, DAY 30]"
+      ],
+      "status": "source-mapped",
+      "inferred_uses": 3
+    },
+    {
+      "code": "BG-LAB-NEURAL-CLINIC",
+      "name": "NII clinical consultation and research examination",
+      "zone": "LAB",
+      "description": "Neural clinical examination and monitoring laboratory with adjustable chairs and sensor walls.",
+      "prompt_base": "High-quality hand-painted 2D sci-fi fighting-game and visual-novel environment background, year 2107, cinematic clear architecture, unified WAR orbital station design: ivory ceramic, brushed titanium and amber in public areas, graphite industrial steel in technical areas, cool cyan in restricted labs. Wide locked-off composition, 16:9 landscape 3840x2160, dialogue-safe clean lower foreground, readable perspective geometry, no foreground characters or identifiable people, no robots in the foreground, no lettering, no readable signage, no interface overlays, no watermarks. Neural clinical examination and monitoring laboratory with adjustable chairs and sensor walls. Light, signage, and architecture must align with the other assets in this location family. ",
+      "variants": [
+        "BASE",
+        "DAY",
+        "EVENING",
+        "NIGHT"
+      ],
+      "source_sluglines": [
+        "INT. MONITORING LAB — LATE NIGHT",
+        "INT. NEURAL INTEGRATION INITIATIVE — CONSULTATION ROOM",
+        "INT. NEURAL RESEARCH WING — DAY 3, EVENING",
+        "INT. NII OBSERVATION LAB — AFTERNOON"
+      ],
+      "scene_count": 4,
+      "source_scenes": [
+        "04_Screenplay_Reconstructions/Chapter_02_Champions_Shadow_v0.3.md :: SCENE 4 — A MATTER OF COMPATIBILITY",
+        "04_Screenplay_Reconstructions/Chapter_04_No_Holding_Back_v0.3.md :: SCENE 2 — A BETTER PILOT",
+        "11_Ren_Campaign/Ren_Playable_Screenplay_v0.2.md :: R2.5 — A new result, an old question [MANDATORY]",
+        "11_Ren_Campaign/Ren_Playable_Screenplay_v0.2.md :: R3.2 — A contract is not a conscience [MANDATORY]"
+      ],
+      "status": "source-mapped",
+      "inferred_uses": 0
+    },
+    {
+      "code": "BG-LAB-NEURAL-EXHIBIT",
+      "name": "Public neural-interface exhibit / showroom",
+      "zone": "LAB",
+      "description": "Neural-interface public demonstration booth with elegant display pods and research publicity panels.",
+      "prompt_base": "High-quality hand-painted 2D sci-fi fighting-game and visual-novel environment background, year 2107, cinematic clear architecture, unified WAR orbital station design: ivory ceramic, brushed titanium and amber in public areas, graphite industrial steel in technical areas, cool cyan in restricted labs. Wide locked-off composition, 16:9 landscape 3840x2160, dialogue-safe clean lower foreground, readable perspective geometry, no foreground characters or identifiable people, no robots in the foreground, no lettering, no readable signage, no interface overlays, no watermarks. Neural-interface public demonstration booth with elegant display pods and research publicity panels. Light, signage, and architecture must align with the other assets in this location family. ",
+      "variants": [
+        "NIGHT"
+      ],
+      "source_sluglines": [
+        "INT. HAR NEURAL-INTERFACE SHOWROOM — LATE NIGHT",
+        "INT. NEURAL INTEGRATION INITIATIVE EXHIBIT — NIGHT"
+      ],
+      "scene_count": 2,
+      "source_scenes": [
+        "11_Ren_Campaign/Ren_Playable_Screenplay_v0.2.md :: R1.2 — The third page [MANDATORY / SAFE CLUE]",
+        "20_Jean_Paul_Campaign/Jean_Paul_Playable_Screenplay_v0.1.md :: (unlabeled setup)"
+      ],
+      "status": "source-mapped",
+      "inferred_uses": 0
+    },
+    {
+      "code": "BG-LAB-NEURAL-TEST",
+      "name": "Neural diagnostics and integration labs",
+      "zone": "LAB",
+      "description": "Isolated neural diagnostics room with medical-grade machines, data consoles and sealed partitions.",
+      "prompt_base": "High-quality hand-painted 2D sci-fi fighting-game and visual-novel environment background, year 2107, cinematic clear architecture, unified WAR orbital station design: ivory ceramic, brushed titanium and amber in public areas, graphite industrial steel in technical areas, cool cyan in restricted labs. Wide locked-off composition, 16:9 landscape 3840x2160, dialogue-safe clean lower foreground, readable perspective geometry, no foreground characters or identifiable people, no robots in the foreground, no lettering, no readable signage, no interface overlays, no watermarks. Isolated neural diagnostics room with medical-grade machines, data consoles and sealed partitions. Light, signage, and architecture must align with the other assets in this location family. ",
+      "variants": [
+        "BASE",
+        "NIGHT"
+      ],
+      "source_sluglines": [
+        "INT. ARENA RESEARCH FACILITY — ISOLATED DIAGNOSTICS ROOM",
+        "INT. HELIX DIAGNOSTIC STATION — NIGHT",
+        "INT. INDEPENDENT DIAGNOSTICS ROOM — LATE NIGHT",
+        "INT. ISOLATED DIAGNOSTICS ROOM",
+        "INT. NEURAL DIAGNOSTICS LAB",
+        "INT. RESTRICTED METROLOGY ROOM — NIGHT",
+        "INT. SAFETY REVIEW LAB — NIGHT"
+      ],
+      "scene_count": 7,
+      "source_scenes": [
+        "04_Screenplay_Reconstructions/Chapter_02_Champions_Shadow_v0.3.md :: SCENE 9 — THE THINGS THE COMPUTER DIDN'T SAY",
+        "04_Screenplay_Reconstructions/Chapter_04_No_Holding_Back_v0.3.md :: SCENE 11 — THE MEDICAL SIGNATURE",
+        "04_Screenplay_Reconstructions/Chapter_05_Fractures_v0.3.md :: SCENE 10 — THE WRONG THEORY",
+        "11_Ren_Campaign/Ren_Playable_Screenplay_v0.2.md :: R4.2 — Two clocks, one person [MANDATORY / SAFE CLUE]",
+        "11_Ren_Campaign/Ren_Playable_Screenplay_v0.2.md :: [v1.9 / K3-N] A good result and an unanswered authorization [DAY 12; OPTIONAL]",
+        "12_Angel_Campaign/Angel_Playable_Screenplay_v0.2.md :: [v1.9 / K3-A] The absent initiator [DAY 12; OPTIONAL ARCHIVE INSERT]",
+        "20_Jean_Paul_Campaign/Jean_Paul_Playable_Screenplay_v0.1.md :: (unlabeled setup)"
+      ],
+      "status": "source-mapped",
+      "inferred_uses": 0
+    },
+    {
+      "code": "BG-LAB-NOVA-CHAMBER",
+      "name": "Nova containment chamber and mechanical cradle",
+      "zone": "LAB",
+      "description": "Massive sealed containment chamber with Nova neural core cradle, concentric armored rings and retractable work bridges.",
+      "prompt_base": "High-quality hand-painted 2D sci-fi fighting-game and visual-novel environment background, year 2107, cinematic clear architecture, unified WAR orbital station design: ivory ceramic, brushed titanium and amber in public areas, graphite industrial steel in technical areas, cool cyan in restricted labs. Wide locked-off composition, 16:9 landscape 3840x2160, dialogue-safe clean lower foreground, readable perspective geometry, no foreground characters or identifiable people, no robots in the foreground, no lettering, no readable signage, no interface overlays, no watermarks. Massive sealed containment chamber with Nova neural core cradle, concentric armored rings and retractable work bridges. Light, signage, and architecture must align with the other assets in this location family. ",
+      "variants": [
+        "BASE",
+        "EMERGENCY",
+        "NIGHT"
+      ],
+      "source_sluglines": [
+        "INT. KREISSACK'S CHAMBER — AUDIENCE-ONLY CUTAWAY",
+        "INT. NOVA CONTAINMENT CHAMBER",
+        "INT. NOVA CONTAINMENT CHAMBER — BEFORE THE RELAY DEMONSTRATION",
+        "INT. NOVA CONTAINMENT CHAMBER — CONTINUOUS",
+        "INT. NOVA CONTAINMENT CHAMBER — NIGHT",
+        "INT. RESTRICTED NOVA OBSERVATION FACILITY — NIGHT"
+      ],
+      "scene_count": 8,
+      "source_scenes": [
+        "04_Screenplay_Reconstructions/Chapter_04_No_Holding_Back_v0.3.md :: SCENE 13 — THE OLD COMMANDER",
+        "04_Screenplay_Reconstructions/Chapter_05_Fractures_v0.3.md :: SCENE 13 — NOT HIS DECISION",
+        "04_Screenplay_Reconstructions/Chapter_06_One_Must_Fall_v0.4.md :: SCENE 4K — WHAT HE CALLED AN AGREEMENT [NEW v1.8, SHARED CUTAWAY]",
+        "04_Screenplay_Reconstructions/Chapter_06_One_Must_Fall_v0.4.md :: SCENE 6K — AN ORDER THAT NEVER EXISTED [NEW v1.8, SHARED CUTAWAY]",
+        "04_Screenplay_Reconstructions/Chapter_06_One_Must_Fall_v0.4.md :: SCENE 8 — NOVA SPEAKS",
+        "10_Mara_Campaign/Mara_Playable_Screenplay_v0.2.md :: M4.4 — Kreissack's living signal [MANDATORY / SAFE CLUE]",
+        "12_Angel_Campaign/Angel_Playable_Screenplay_v0.2.md :: [v1.9 / K4-A] A record that proves too little [DAY 13; PRE-ACTIVATION CUTAWAY]",
+        "15_Crystal_Campaign/OMF_2107_Crystal_Playable_Screenplay_v0.6.md :: [v1.9 / K4-C] The champion he could not forgive [AFTER FINAL; DAY 13 PRE-ACTIVATION]"
+      ],
+      "status": "source-mapped",
+      "inferred_uses": 2
+    },
+    {
+      "code": "BG-LAB-NOVA-RELAY",
+      "name": "Neural command relay and executive gateway",
+      "zone": "LAB",
+      "description": "Executive neural relay control room, hardened relay racks, central control bridge and protected egress.",
+      "prompt_base": "High-quality hand-painted 2D sci-fi fighting-game and visual-novel environment background, year 2107, cinematic clear architecture, unified WAR orbital station design: ivory ceramic, brushed titanium and amber in public areas, graphite industrial steel in technical areas, cool cyan in restricted labs. Wide locked-off composition, 16:9 landscape 3840x2160, dialogue-safe clean lower foreground, readable perspective geometry, no foreground characters or identifiable people, no robots in the foreground, no lettering, no readable signage, no interface overlays, no watermarks. Executive neural relay control room, hardened relay racks, central control bridge and protected egress. Light, signage, and architecture must align with the other assets in this location family. ",
+      "variants": [
+        "BASE",
+        "DAY",
+        "EMERGENCY",
+        "NIGHT"
+      ],
+      "source_sluglines": [
+        "INT. ADVANCED NEURAL COMMAND CENTER",
+        "INT. EMERGENCY CONTAINMENT ACCESS — CONTINUOUS",
+        "INT. ISOLATED NEURAL COMMAND ARCHIVE — NIGHT",
+        "INT. NEURAL COMMAND RELAY / LIFE-SUPPORT FACILITY — LATER",
+        "INT. NEURAL CONTROL COMPLEX — AFTER OFFICIAL FINAL, DAY 13",
+        "INT. OBSERVATION / RELAY CONTROL DECK",
+        "INT. WAR EXECUTIVE GATEWAY CORRIDOR — AFTER THE FINAL"
+      ],
+      "scene_count": 12,
+      "source_scenes": [
+        "04_Screenplay_Reconstructions/Chapter_06_One_Must_Fall_v0.4.md :: SCENE 5 — A DEMONSTRATION TOO FAR",
+        "04_Screenplay_Reconstructions/Chapter_06_One_Must_Fall_v0.4.md :: SCENE 6 — THE OLD MAN'S PLAN",
+        "04_Screenplay_Reconstructions/Chapter_06_One_Must_Fall_v0.4.md :: SCENE 7 — THE WRONG MASTER",
+        "04_Screenplay_Reconstructions/Chapter_06_One_Must_Fall_v0.4.md :: SCENE 8B — THE UNREQUESTED HANDSHAKE",
+        "09_Lyra_Campaign/Lyra_Playable_Screenplay_v0.4.md :: L6.3 — An act of intelligence [MANDATORY MYSTERY REVEAL]",
+        "10_Mara_Campaign/Mara_Playable_Screenplay_v0.2.md :: M6.3 — A worker can stop a machine without owning it [MANDATORY / NOVA ENCOUNTER]",
+        "11_Ren_Campaign/Ren_Playable_Screenplay_v0.2.md :: R6.2 — Kreissack is not the highest authority [MANDATORY / FINAL REVEAL]",
+        "16_Raven_Campaign/OMF_2107_Raven_Playable_Screenplay_v0.5.md :: R6.2 — The lie with a human face [MANDATORY; AFTER THE FINAL]",
+        "16_Raven_Campaign/OMF_2107_Raven_Playable_Screenplay_v0.5.md :: R6.3 — A fighter with no title to this battle [MANDATORY; SPECIAL ENCOUNTER]",
+        "20_Jean_Paul_Campaign/Jean_Paul_Playable_Screenplay_v0.1.md :: (unlabeled setup)",
+        "21_Steffan_Campaign/Steffan_Playable_Screenplay_v0.3.md :: ST6.2 — The dead man's live order [MANDATORY, AFTER OFFICIAL FINAL]",
+        "23_Selene_Campaign/Selene_Playable_Screenplay_v0.1.md :: SV6.2 — Not an acquisition target [MANDATORY, DAY 13]"
+      ],
+      "status": "source-mapped",
+      "inferred_uses": 5
+    },
+    {
+      "code": "BG-LAB-RESTRICTED",
+      "name": "Restricted research laboratory and records room",
+      "zone": "LAB",
+      "description": "Private WAR laboratory and secured research office with glass data screens, specimen storage and confidential workstations.",
+      "prompt_base": "High-quality hand-painted 2D sci-fi fighting-game and visual-novel environment background, year 2107, cinematic clear architecture, unified WAR orbital station design: ivory ceramic, brushed titanium and amber in public areas, graphite industrial steel in technical areas, cool cyan in restricted labs. Wide locked-off composition, 16:9 landscape 3840x2160, dialogue-safe clean lower foreground, readable perspective geometry, no foreground characters or identifiable people, no robots in the foreground, no lettering, no readable signage, no interface overlays, no watermarks. Private WAR laboratory and secured research office with glass data screens, specimen storage and confidential workstations. Light, signage, and architecture must align with the other assets in this location family. ",
+      "variants": [
+        "BASE",
+        "EVENING",
+        "NIGHT"
+      ],
+      "source_sluglines": [
+        "INT. PRIVATE RESEARCH OFFICE",
+        "INT. RESEARCH DIVISION — NIGHT",
+        "INT. RESEARCH DIVISION — PRIVATE CONSULTATION ROOM",
+        "INT. RESEARCH DIVISION — PRIVATE DATA OFFICE",
+        "INT. RESTRICTED LABORATORY",
+        "INT. RESTRICTED NEURAL WING — NIGHT",
+        "INT. RESTRICTED-SYSTEM RECORD REVIEW ROOM — NIGHT",
+        "INT. VARGA'S OFFICE",
+        "INT. VARGA'S PRIVATE OFFICE",
+        "INT. WAR RESEARCH ARCHIVE READING ROOM — EVENING"
+      ],
+      "scene_count": 9,
+      "source_scenes": [
+        "04_Screenplay_Reconstructions/Chapter_01_Anniversary_v0.3.md :: SCENE 8 — PRIVATE OBSERVATIONS",
+        "04_Screenplay_Reconstructions/Chapter_02_Champions_Shadow_v0.3.md :: SCENE 9 — THE THINGS THE COMPUTER DIDN'T SAY",
+        "04_Screenplay_Reconstructions/Chapter_03_Trouble_With_Attraction_v0.3.md :: SCENE 7 — AN UNFORTUNATE COINCIDENCE",
+        "04_Screenplay_Reconstructions/Chapter_03_Trouble_With_Attraction_v0.3.md :: SCENE 9 — THE DOCTOR'S APPOINTMENT",
+        "04_Screenplay_Reconstructions/Chapter_04_No_Holding_Back_v0.3.md :: SCENE 10 — THE WRONG EXPERIMENT",
+        "04_Screenplay_Reconstructions/Chapter_05_Fractures_v0.3.md :: SCENE 5 — THE EXPERIMENTAL SUBJECT",
+        "09_Lyra_Campaign/Lyra_Playable_Screenplay_v0.4.md :: L4.5 — The man in the machine [MANDATORY MIDPOINT REVEAL]",
+        "15_Crystal_Campaign/OMF_2107_Crystal_Playable_Screenplay_v0.6.md :: C6.2 — A living prisoner, an invisible hand [MANDATORY, AFTER FINAL]",
+        "20_Jean_Paul_Campaign/Jean_Paul_Playable_Screenplay_v0.1.md :: (unlabeled setup)"
+      ],
+      "status": "source-mapped",
+      "inferred_uses": 0
+    },
+    {
+      "code": "BG-LAB-REVIEW",
+      "name": "Independent scientific review lab",
+      "zone": "LAB",
+      "description": "Independent scientific review laboratory with austere audit consoles and isolated instrumentation.",
+      "prompt_base": "High-quality hand-painted 2D sci-fi fighting-game and visual-novel environment background, year 2107, cinematic clear architecture, unified WAR orbital station design: ivory ceramic, brushed titanium and amber in public areas, graphite industrial steel in technical areas, cool cyan in restricted labs. Wide locked-off composition, 16:9 landscape 3840x2160, dialogue-safe clean lower foreground, readable perspective geometry, no foreground characters or identifiable people, no robots in the foreground, no lettering, no readable signage, no interface overlays, no watermarks. Independent scientific review laboratory with austere audit consoles and isolated instrumentation. Light, signage, and architecture must align with the other assets in this location family. ",
+      "variants": [
+        "AFTERMATH",
+        "BASE",
+        "DAY",
+        "EVENING"
+      ],
+      "source_sluglines": [
+        "INT. BROADCAST GALLERY / INDEPENDENT ARCHIVE",
+        "INT. INDEPENDENT ARCHIVE OFFICE — DAY 30",
+        "INT. INDEPENDENT ARCHIVE — DAY 9",
+        "INT. INDEPENDENT ETHICS PRESERVATION OFFICE — EVENING",
+        "INT. INDEPENDENT FORENSICS STUDIO — EVENING",
+        "INT. NEUTRAL FORENSICS OFFICE — DAY 8",
+        "INT. TEMPORARY INDEPENDENT REVIEW OFFICE — AFTERNOON"
+      ],
+      "scene_count": 6,
+      "source_scenes": [
+        "04_Screenplay_Reconstructions/Chapter_04_No_Holding_Back_v0.3.md :: SCENE 5C — NEW PLAYABLE INVESTIGATION: THE SECOND COPY (`GA_OUT`)",
+        "04_Screenplay_Reconstructions/Chapter_06_One_Must_Fall_v0.4.md :: SCENE 3B — IF ARI DID NOT REACH THE FINAL (`ARI_NOT_FINALIST`)",
+        "11_Ren_Campaign/Ren_Playable_Screenplay_v0.2.md :: R5.2 — Three versions of courage [MANDATORY / RESEARCH PATH PAYOFF]",
+        "12_Angel_Campaign/Angel_Playable_Screenplay_v0.2.md :: (unlabeled setup)",
+        "18_Christian_Subplot/OMF_2107_Christian_Independent_Storyline_v0.2.md :: CH3.1 — Two clocks",
+        "20_Jean_Paul_Campaign/Jean_Paul_Playable_Screenplay_v0.1.md :: (unlabeled setup)"
+      ],
+      "status": "source-mapped",
+      "inferred_uses": 0
+    },
+    {
+      "code": "BG-LOC-ARENA-VIEWING-TERRACE",
+      "name": "Arena Viewing Terrace",
+      "zone": "LOC",
+      "description": "Environment plate for the screenplay-described place: Arena Viewing Terrace; follow source sluglines and verify spatial identity before production.",
+      "prompt_base": "High-quality hand-painted 2D sci-fi fighting-game and visual-novel environment background, year 2107, cinematic clear architecture, unified WAR orbital station design: ivory ceramic, brushed titanium and amber in public areas, graphite industrial steel in technical areas, cool cyan in restricted labs. Wide locked-off composition, 16:9 landscape 3840x2160, dialogue-safe clean lower foreground, readable perspective geometry, no foreground characters or identifiable people, no robots in the foreground, no lettering, no readable signage, no interface overlays, no watermarks. Environment plate for the screenplay-described place: Arena Viewing Terrace; follow source sluglines and verify spatial identity before production. Light, signage, and architecture must align with the other assets in this location family. ",
+      "variants": [
+        "NIGHT"
+      ],
+      "source_sluglines": [
+        "EXT. ARENA VIEWING TERRACE — NIGHT"
+      ],
+      "scene_count": 1,
+      "source_scenes": [
+        "14_Ari_Campaign/Ari_Alternate_Scenes_v0.1.md :: supplemental"
+      ],
+      "status": "source-mapped",
+      "inferred_uses": 0
+    },
+    {
+      "code": "BG-RES-ARI",
+      "name": "Ari private residential quarters",
+      "zone": "RES",
+      "description": "Ari private accommodation in the orbital complex, restrained functional furnishings, a personal workspace and a window into Jupiter-space.",
+      "prompt_base": "High-quality hand-painted 2D sci-fi fighting-game and visual-novel environment background, year 2107, cinematic clear architecture, unified WAR orbital station design: ivory ceramic, brushed titanium and amber in public areas, graphite industrial steel in technical areas, cool cyan in restricted labs. Wide locked-off composition, 16:9 landscape 3840x2160, dialogue-safe clean lower foreground, readable perspective geometry, no foreground characters or identifiable people, no robots in the foreground, no lettering, no readable signage, no interface overlays, no watermarks. Ari private accommodation in the orbital complex, restrained functional furnishings, a personal workspace and a window into Jupiter-space. Light, signage, and architecture must align with the other assets in this location family. ",
+      "variants": [
+        "BASE"
+      ],
+      "source_sluglines": [
+        "INT. ARI'S PRIVATE QUARTERS"
+      ],
+      "scene_count": 1,
+      "source_scenes": [
+        "04_Screenplay_Reconstructions/Chapter_03_Trouble_With_Attraction_v0.3.md :: SCENE 12 — THE OFFER"
+      ],
+      "status": "source-mapped",
+      "inferred_uses": 0
+    },
+    {
+      "code": "BG-RES-CHRISTIAN",
+      "name": "Christian temporary room",
+      "zone": "RES",
+      "description": "Christian private accommodation in the orbital complex, restrained functional furnishings, a personal workspace and a window into Jupiter-space.",
+      "prompt_base": "High-quality hand-painted 2D sci-fi fighting-game and visual-novel environment background, year 2107, cinematic clear architecture, unified WAR orbital station design: ivory ceramic, brushed titanium and amber in public areas, graphite industrial steel in technical areas, cool cyan in restricted labs. Wide locked-off composition, 16:9 landscape 3840x2160, dialogue-safe clean lower foreground, readable perspective geometry, no foreground characters or identifiable people, no robots in the foreground, no lettering, no readable signage, no interface overlays, no watermarks. Christian private accommodation in the orbital complex, restrained functional furnishings, a personal workspace and a window into Jupiter-space. Light, signage, and architecture must align with the other assets in this location family. ",
+      "variants": [
+        "NIGHT"
+      ],
+      "source_sluglines": [
+        "INT. CHRISTIAN'S TEMPORARY ROOM — NIGHT"
+      ],
+      "scene_count": 1,
+      "source_scenes": [
+        "18_Christian_Subplot/OMF_2107_Christian_Independent_Storyline_v0.2.md :: CH1.3 — A private memory"
+      ],
+      "status": "source-mapped",
+      "inferred_uses": 0
+    },
+    {
+      "code": "BG-RES-GENERIC",
+      "name": "Pilot apartments, guest suites and balcony",
+      "zone": "RES",
+      "description": "Pilot private accommodation in the orbital complex, restrained functional furnishings, a personal workspace and a window into Jupiter-space.",
+      "prompt_base": "High-quality hand-painted 2D sci-fi fighting-game and visual-novel environment background, year 2107, cinematic clear architecture, unified WAR orbital station design: ivory ceramic, brushed titanium and amber in public areas, graphite industrial steel in technical areas, cool cyan in restricted labs. Wide locked-off composition, 16:9 landscape 3840x2160, dialogue-safe clean lower foreground, readable perspective geometry, no foreground characters or identifiable people, no robots in the foreground, no lettering, no readable signage, no interface overlays, no watermarks. Pilot private accommodation in the orbital complex, restrained functional furnishings, a personal workspace and a window into Jupiter-space. Light, signage, and architecture must align with the other assets in this location family. ",
+      "variants": [
+        "BASE",
+        "EVENING",
+        "NIGHT"
+      ],
+      "source_sluglines": [
+        "INT. CARE FACILITY PRIVATE VIDEO ROOM — NIGHT",
+        "INT. COMPETITORS' RESIDENTIAL SUITE",
+        "INT. HOTEL NETWORK AUDIT SUITE — NIGHT",
+        "INT. PILOT QUARTERS — GARDEN BALCONY — LATE NIGHT",
+        "INT. PRIVATE VIDEO CALL — EVENING",
+        "INT. SPARSE OBSERVATION APARTMENT — NIGHT"
+      ],
+      "scene_count": 6,
+      "source_scenes": [
+        "04_Screenplay_Reconstructions/Chapter_04_No_Holding_Back_v0.3.md :: SCENE 1 — THE MORNING AFTER",
+        "10_Mara_Campaign/Mara_Playable_Screenplay_v0.2.md :: M2.2 — The financial ledger [MANDATORY; varying disclosure]",
+        "10_Mara_Campaign/Mara_Playable_Screenplay_v0.2.md :: M4.2 — The mother who has a name [MANDATORY]",
+        "16_Raven_Campaign/OMF_2107_Raven_Playable_Screenplay_v0.5.md :: R2.2 — The price of silence [MANDATORY]",
+        "16_Raven_Campaign/OMF_2107_Raven_Playable_Screenplay_v0.5.md :: R5.3 — The private boundary [OPTIONAL; DAY 12, BEFORE HEARING; NO INTIMACY]",
+        "22_Dante_Campaign/Dante_Playable_Screenplay_v0.3.md :: DV1.2 — Private laughter [OPTIONAL ROMANCE / WARM FANFARE]"
+      ],
+      "status": "source-mapped",
+      "inferred_uses": 0
+    },
+    {
+      "code": "BG-RES-LYRA",
+      "name": "Lyra private preparation suite",
+      "zone": "RES",
+      "description": "Lyra private accommodation in the orbital complex, restrained functional furnishings, a personal workspace and a window into Jupiter-space.",
+      "prompt_base": "High-quality hand-painted 2D sci-fi fighting-game and visual-novel environment background, year 2107, cinematic clear architecture, unified WAR orbital station design: ivory ceramic, brushed titanium and amber in public areas, graphite industrial steel in technical areas, cool cyan in restricted labs. Wide locked-off composition, 16:9 landscape 3840x2160, dialogue-safe clean lower foreground, readable perspective geometry, no foreground characters or identifiable people, no robots in the foreground, no lettering, no readable signage, no interface overlays, no watermarks. Lyra private accommodation in the orbital complex, restrained functional furnishings, a personal workspace and a window into Jupiter-space. Light, signage, and architecture must align with the other assets in this location family. ",
+      "variants": [
+        "BASE"
+      ],
+      "source_sluglines": [
+        "INT. LYRA'S PREPARATION SUITE",
+        "INT. LYRA'S PRIVATE PREPARATION SUITE"
+      ],
+      "scene_count": 2,
+      "source_scenes": [
+        "04_Screenplay_Reconstructions/Chapter_05_Fractures_v0.3.md :: SCENE 6 — THE DIFFERENCE BETWEEN WANTING AND WINNING",
+        "04_Screenplay_Reconstructions/Chapter_06_One_Must_Fall_v0.4.md :: SCENE 2 — NOT JUST A PRETTY FACE"
+      ],
+      "status": "source-mapped",
+      "inferred_uses": 0
+    },
+    {
+      "code": "BG-RES-MARA",
+      "name": "Mara private residential quarters",
+      "zone": "RES",
+      "description": "Mara private accommodation in the orbital complex, restrained functional furnishings, a personal workspace and a window into Jupiter-space.",
+      "prompt_base": "High-quality hand-painted 2D sci-fi fighting-game and visual-novel environment background, year 2107, cinematic clear architecture, unified WAR orbital station design: ivory ceramic, brushed titanium and amber in public areas, graphite industrial steel in technical areas, cool cyan in restricted labs. Wide locked-off composition, 16:9 landscape 3840x2160, dialogue-safe clean lower foreground, readable perspective geometry, no foreground characters or identifiable people, no robots in the foreground, no lettering, no readable signage, no interface overlays, no watermarks. Mara private accommodation in the orbital complex, restrained functional furnishings, a personal workspace and a window into Jupiter-space. Light, signage, and architecture must align with the other assets in this location family. ",
+      "variants": [
+        "BASE"
+      ],
+      "source_sluglines": [
+        "INT. MARA'S QUARTERS"
+      ],
+      "scene_count": 1,
+      "source_scenes": [
+        "04_Screenplay_Reconstructions/Chapter_03_Trouble_With_Attraction_v0.3.md :: SCENE 13A — Ari beat Selene, lost to Crystal (`GA_DEFAULT`)"
+      ],
+      "status": "source-mapped",
+      "inferred_uses": 0
+    },
+    {
+      "code": "BG-RES-RAVEN",
+      "name": "Raven private temporary room",
+      "zone": "RES",
+      "description": "Raven private accommodation in the orbital complex, restrained functional furnishings, a personal workspace and a window into Jupiter-space.",
+      "prompt_base": "High-quality hand-painted 2D sci-fi fighting-game and visual-novel environment background, year 2107, cinematic clear architecture, unified WAR orbital station design: ivory ceramic, brushed titanium and amber in public areas, graphite industrial steel in technical areas, cool cyan in restricted labs. Wide locked-off composition, 16:9 landscape 3840x2160, dialogue-safe clean lower foreground, readable perspective geometry, no foreground characters or identifiable people, no robots in the foreground, no lettering, no readable signage, no interface overlays, no watermarks. Raven private accommodation in the orbital complex, restrained functional furnishings, a personal workspace and a window into Jupiter-space. Light, signage, and architecture must align with the other assets in this location family. ",
+      "variants": [
+        "NIGHT"
+      ],
+      "source_sluglines": [
+        "INT. RAVEN'S TEMPORARY ROOM — NIGHT"
+      ],
+      "scene_count": 1,
+      "source_scenes": [
+        "16_Raven_Campaign/OMF_2107_Raven_Playable_Screenplay_v0.5.md :: [v1.9 / K3-R] The man who signs other people's orders [DAY 12; OPTIONAL]"
+      ],
+      "status": "source-mapped",
+      "inferred_uses": 0
+    },
+    {
+      "code": "BG-RES-STEFFAN",
+      "name": "Steffan private hotel suite",
+      "zone": "RES",
+      "description": "Steffan private accommodation in the orbital complex, restrained functional furnishings, a personal workspace and a window into Jupiter-space.",
+      "prompt_base": "High-quality hand-painted 2D sci-fi fighting-game and visual-novel environment background, year 2107, cinematic clear architecture, unified WAR orbital station design: ivory ceramic, brushed titanium and amber in public areas, graphite industrial steel in technical areas, cool cyan in restricted labs. Wide locked-off composition, 16:9 landscape 3840x2160, dialogue-safe clean lower foreground, readable perspective geometry, no foreground characters or identifiable people, no robots in the foreground, no lettering, no readable signage, no interface overlays, no watermarks. Steffan private accommodation in the orbital complex, restrained functional furnishings, a personal workspace and a window into Jupiter-space. Light, signage, and architecture must align with the other assets in this location family. ",
+      "variants": [
+        "NIGHT"
+      ],
+      "source_sluglines": [
+        "INT. STEFFAN'S HOTEL SUITE — LATE NIGHT"
+      ],
+      "scene_count": 1,
+      "source_scenes": [
+        "21_Steffan_Campaign/Steffan_Playable_Screenplay_v0.3.md :: ST1.2 — The wrong arithmetic [MANDATORY, AUDIENCE SUBTEXT]"
+      ],
+      "status": "source-mapped",
+      "inferred_uses": 0
+    },
+    {
+      "code": "BG-SOC-BROADCAST",
+      "name": "Broadcast booth and control gallery",
+      "zone": "SOC",
+      "description": "Tournament broadcasting control gallery with glass oversight window, editing consoles, unlettered monitoring screens.",
+      "prompt_base": "High-quality hand-painted 2D sci-fi fighting-game and visual-novel environment background, year 2107, cinematic clear architecture, unified WAR orbital station design: ivory ceramic, brushed titanium and amber in public areas, graphite industrial steel in technical areas, cool cyan in restricted labs. Wide locked-off composition, 16:9 landscape 3840x2160, dialogue-safe clean lower foreground, readable perspective geometry, no foreground characters or identifiable people, no robots in the foreground, no lettering, no readable signage, no interface overlays, no watermarks. Tournament broadcasting control gallery with glass oversight window, editing consoles, unlettered monitoring screens. Light, signage, and architecture must align with the other assets in this location family. ",
+      "variants": [
+        "AFTERMATH",
+        "BASE",
+        "EVENING",
+        "NIGHT"
+      ],
+      "source_sluglines": [
+        "INT. ARENA / BROADCAST MONTAGE",
+        "INT. BROADCAST CONTROL FLOOR",
+        "INT. BROADCAST CORRIDOR — NIGHT",
+        "INT. BROADCAST GALLERY",
+        "INT. BROADCAST GALLERY / INDEPENDENT ARCHIVE",
+        "INT. COMMUNICATIONS GALLERY — LATE NIGHT",
+        "INT. INVESTIGATIVE NEWS STUDIO",
+        "INT. MEDIA CONTROL ROOM — DAY 12 EVENING"
+      ],
+      "scene_count": 13,
+      "source_scenes": [
+        "04_Screenplay_Reconstructions/Chapter_01_Anniversary_v0.3.md :: SCENE 6 — A BETTER KIND OF ENTERTAINMENT",
+        "04_Screenplay_Reconstructions/Chapter_02_Champions_Shadow_v0.3.md :: SCENE 1B — OFF AIR (OPTIONAL: LYRA / ALEX)",
+        "04_Screenplay_Reconstructions/Chapter_06_One_Must_Fall_v0.4.md :: SCENE 13 — THE OTHER EVIDENCE",
+        "04_Screenplay_Reconstructions/Chapter_06_One_Must_Fall_v0.4.md :: SCENE 3B — IF ARI DID NOT REACH THE FINAL (`ARI_NOT_FINALIST`)",
+        "09_Lyra_Campaign/Lyra_Playable_Screenplay_v0.4.md :: L3.3 — The leak [MANDATORY; VARGA'S WRONGDOING]",
+        "14_Ari_Campaign/Ari_Alternate_Scenes_v0.1.md :: supplemental",
+        "15_Crystal_Campaign/OMF_2107_Crystal_Playable_Screenplay_v0.6.md :: C5.4 — The temptation to become a symbol again [MANDATORY]",
+        "18_Christian_Subplot/OMF_2107_Christian_Independent_Storyline_v0.2.md :: CH5.3 — The wrong kind of protection (Day 12 evening, optional)",
+        "20_Jean_Paul_Campaign/Jean_Paul_Playable_Screenplay_v0.1.md :: (unlabeled setup)",
+        "21_Steffan_Campaign/Steffan_Playable_Screenplay_v0.3.md :: ST3.3 — The broadcast leak [MANDATORY; VARIANT]",
+        "21_Steffan_Campaign/Steffan_Playable_Screenplay_v0.3.md :: ST5.5 — The applause after the applause [OPTIONAL; COMEDY/SHIRRO]",
+        "21_Steffan_Campaign/Steffan_Playable_Screenplay_v0.3.md :: ST6.6 — Day 30, distant echo [OPTIONAL AUDIENCE CODA]",
+        "23_Selene_Campaign/Selene_Playable_Screenplay_v0.1.md :: SV5.5 — The honest deception [OPTIONAL JEAN-PAUL ROMANCE]"
+      ],
+      "status": "source-mapped",
+      "inferred_uses": 5
+    },
+    {
+      "code": "BG-SOC-CAFE",
+      "name": "Tournament quiet café / archive café",
+      "zone": "SOC",
+      "description": "Small bookish café with intimate tables, information terminal and a distant view of tournament lights.",
+      "prompt_base": "High-quality hand-painted 2D sci-fi fighting-game and visual-novel environment background, year 2107, cinematic clear architecture, unified WAR orbital station design: ivory ceramic, brushed titanium and amber in public areas, graphite industrial steel in technical areas, cool cyan in restricted labs. Wide locked-off composition, 16:9 landscape 3840x2160, dialogue-safe clean lower foreground, readable perspective geometry, no foreground characters or identifiable people, no robots in the foreground, no lettering, no readable signage, no interface overlays, no watermarks. Small bookish café with intimate tables, information terminal and a distant view of tournament lights. Light, signage, and architecture must align with the other assets in this location family. ",
+      "variants": [
+        "AFTERMATH",
+        "BASE",
+        "EVENING",
+        "NIGHT"
+      ],
+      "source_sluglines": [
+        "EXT. CITY RIVERFRONT / SMALL WORKSHOP / OPEN-AIR CAFÉ — MONTHS LATER",
+        "INT. ARCHIVE-LINK CAFÉ — NIGHT",
+        "INT. QUIET CAFÉ — TOURNAMENT COMPLEX",
+        "INT. QUIET LIBRARY — EVENING"
+      ],
+      "scene_count": 4,
+      "source_scenes": [
+        "04_Screenplay_Reconstructions/Chapter_03_Trouble_With_Attraction_v0.3.md :: SCENE 4 — THE HOLD ORDER",
+        "12_Angel_Campaign/Angel_Playable_Screenplay_v0.2.md :: [v1.9 / K4-A] A record that proves too little [DAY 13; PRE-ACTIVATION CUTAWAY]",
+        "23_Selene_Campaign/Selene_Playable_Screenplay_v0.1.md :: SV2.3 — Jean-Paul and the locked cabinet [OPTIONAL SECONDARY / FLIRT]",
+        "23_Selene_Campaign/Selene_Playable_Screenplay_v0.1.md :: SV4.4 — The secret between competitors [OPTIONAL; JEAN-PAUL]"
+      ],
+      "status": "source-mapped",
+      "inferred_uses": 0
+    },
+    {
+      "code": "BG-SOC-DANCE",
+      "name": "Dance, performance and music venue",
+      "zone": "SOC",
+      "description": "Private performance studio / small music venue with polished floor and customizable light rigs.",
+      "prompt_base": "High-quality hand-painted 2D sci-fi fighting-game and visual-novel environment background, year 2107, cinematic clear architecture, unified WAR orbital station design: ivory ceramic, brushed titanium and amber in public areas, graphite industrial steel in technical areas, cool cyan in restricted labs. Wide locked-off composition, 16:9 landscape 3840x2160, dialogue-safe clean lower foreground, readable perspective geometry, no foreground characters or identifiable people, no robots in the foreground, no lettering, no readable signage, no interface overlays, no watermarks. Private performance studio / small music venue with polished floor and customizable light rigs. Light, signage, and architecture must align with the other assets in this location family. ",
+      "variants": [
+        "EVENING",
+        "NIGHT"
+      ],
+      "source_sluglines": [
+        "EXT. SMALL CIVILIAN PERFORMANCE HALL — NIGHT",
+        "INT. EMPTY DANCE STUDIO — NIGHT",
+        "INT. NIGHT MARKET MUSIC VENUE — NIGHT"
+      ],
+      "scene_count": 4,
+      "source_scenes": [
+        "04_Screenplay_Reconstructions/Chapter_03_Trouble_With_Attraction_v0.3.md :: SCENE 10B — TWO INVENTORS, ONE DANCE (OPTIONAL SUPPORTING CAST)",
+        "11_Ren_Campaign/Ren_Playable_Screenplay_v0.2.md :: R4.5 — The call outside the lab [OPTIONAL / TESSA]",
+        "18_Christian_Subplot/OMF_2107_Christian_Independent_Storyline_v0.2.md :: CH4.3 — An evening not about the case (optional)",
+        "20_Jean_Paul_Campaign/Jean_Paul_Playable_Screenplay_v0.1.md :: (unlabeled setup)"
+      ],
+      "status": "source-mapped",
+      "inferred_uses": 1
+    },
+    {
+      "code": "BG-SOC-FUND",
+      "name": "Fundraiser and social event salon",
+      "zone": "SOC",
+      "description": "Formal reception salon with catered service tables and polished ceremonial flooring.",
+      "prompt_base": "High-quality hand-painted 2D sci-fi fighting-game and visual-novel environment background, year 2107, cinematic clear architecture, unified WAR orbital station design: ivory ceramic, brushed titanium and amber in public areas, graphite industrial steel in technical areas, cool cyan in restricted labs. Wide locked-off composition, 16:9 landscape 3840x2160, dialogue-safe clean lower foreground, readable perspective geometry, no foreground characters or identifiable people, no robots in the foreground, no lettering, no readable signage, no interface overlays, no watermarks. Formal reception salon with catered service tables and polished ceremonial flooring. Light, signage, and architecture must align with the other assets in this location family. ",
+      "variants": [
+        "EVENING"
+      ],
+      "source_sluglines": [],
+      "scene_count": 1,
+      "source_scenes": [
+        "04_Screenplay_Reconstructions/Chapter_03_Trouble_With_Attraction_v0.3.md :: SCENE 3B — THE VELVET PROBLEM (OPTIONAL: JEAN-PAUL)"
+      ],
+      "status": "source-mapped",
+      "inferred_uses": 1
+    },
+    {
+      "code": "BG-SOC-GALA",
+      "name": "Anniversary gala interior",
+      "zone": "SOC",
+      "description": "Double-height anniversary reception hall with panoramic Jovian glazing, warm ivory titanium and amber accents.",
+      "prompt_base": "High-quality hand-painted 2D sci-fi fighting-game and visual-novel environment background, year 2107, cinematic clear architecture, unified WAR orbital station design: ivory ceramic, brushed titanium and amber in public areas, graphite industrial steel in technical areas, cool cyan in restricted labs. Wide locked-off composition, 16:9 landscape 3840x2160, dialogue-safe clean lower foreground, readable perspective geometry, no foreground characters or identifiable people, no robots in the foreground, no lettering, no readable signage, no interface overlays, no watermarks. Double-height anniversary reception hall with panoramic Jovian glazing, warm ivory titanium and amber accents. Light, signage, and architecture must align with the other assets in this location family. ",
+      "variants": [
+        "BASE",
+        "EVENING",
+        "NIGHT"
+      ],
+      "source_sluglines": [
+        "EXT. GALA OBSERVATION DECK — NIGHT",
+        "INT. ANNIVERSARY COMPLEX — GRAND OBSERVATION HALL — NIGHT",
+        "INT. CARGO ELEVATOR / EXT. ANNIVERSARY GALA — EVENING",
+        "INT. FORMAL FUNDRAISER — EVENING",
+        "INT. GALA FLOOR",
+        "INT. JOVIAN ANNIVERSARY GALA — NIGHT",
+        "INT. JOVIAN ORBITAL ANNIVERSARY GALA — NIGHT",
+        "INT. ORBITAL ANNIVERSARY HALL — NIGHT",
+        "INT. VIP BUFFET — CONTINUOUS",
+        "INT. WAR ANNIVERSARY EXHIBITION — NIGHT",
+        "INT. WAR ANNIVERSARY GALA — NIGHT"
+      ],
+      "scene_count": 17,
+      "source_scenes": [
+        "04_Screenplay_Reconstructions/Chapter_01_Anniversary_v0.3.md :: 2A — The legend and the shadow",
+        "04_Screenplay_Reconstructions/Chapter_01_Anniversary_v0.3.md :: 2B — Corporate courtship",
+        "04_Screenplay_Reconstructions/Chapter_01_Anniversary_v0.3.md :: 2C — The celebrity triangle",
+        "04_Screenplay_Reconstructions/Chapter_01_Anniversary_v0.3.md :: 2D — Two professional liars",
+        "04_Screenplay_Reconstructions/Chapter_01_Anniversary_v0.3.md :: SCENE 2 — THE ANNIVERSARY GALA",
+        "04_Screenplay_Reconstructions/Chapter_01_Anniversary_v0.3.md :: SCENE 3 — THE WRONG KIND OF GUEST",
+        "09_Lyra_Campaign/Lyra_Playable_Screenplay_v0.4.md :: L1.2 — Two men, one very tired joke [MANDATORY]",
+        "10_Mara_Campaign/Mara_Playable_Screenplay_v0.2.md :: M1.1 — A message between spotlights [MANDATORY]",
+        "10_Mara_Campaign/Mara_Playable_Screenplay_v0.2.md :: M1.2 — Ari: a difficult first impression [MANDATORY]",
+        "11_Ren_Campaign/Ren_Playable_Screenplay_v0.2.md :: R1.1 — Not a demonstration model [MANDATORY]",
+        "12_Angel_Campaign/Angel_Playable_Screenplay_v0.2.md :: (unlabeled setup)",
+        "15_Crystal_Campaign/OMF_2107_Crystal_Playable_Screenplay_v0.6.md :: C1.1 — The champion under glass [MANDATORY]",
+        "16_Raven_Campaign/OMF_2107_Raven_Playable_Screenplay_v0.5.md :: R1.1 — The last invitation [MANDATORY]",
+        "18_Christian_Subplot/OMF_2107_Christian_Independent_Storyline_v0.2.md :: CH1.1 — Anniversary reception / the empty place",
+        "20_Jean_Paul_Campaign/Jean_Paul_Playable_Screenplay_v0.1.md :: (unlabeled setup)",
+        "23_Selene_Campaign/Selene_Playable_Screenplay_v0.1.md :: SV1.1 — The woman who bought her own invitation [MANDATORY]",
+        "24_Milano_Campaign/Milano_Playable_Screenplay_v0.1.md :: MA1.1 — The man who knows every door [MANDATORY]"
+      ],
+      "status": "source-mapped",
+      "inferred_uses": 5
+    },
+    {
+      "code": "BG-SOC-GARDEN",
+      "name": "Central glazed observation garden",
+      "zone": "SOC",
+      "description": "Jovian observation garden under a glass dome, hydroponic vegetation, curved paths and panoramic Jupiter view.",
+      "prompt_base": "High-quality hand-painted 2D sci-fi fighting-game and visual-novel environment background, year 2107, cinematic clear architecture, unified WAR orbital station design: ivory ceramic, brushed titanium and amber in public areas, graphite industrial steel in technical areas, cool cyan in restricted labs. Wide locked-off composition, 16:9 landscape 3840x2160, dialogue-safe clean lower foreground, readable perspective geometry, no foreground characters or identifiable people, no robots in the foreground, no lettering, no readable signage, no interface overlays, no watermarks. Jovian observation garden under a glass dome, hydroponic vegetation, curved paths and panoramic Jupiter view. Light, signage, and architecture must align with the other assets in this location family. ",
+      "variants": [
+        "BASE",
+        "DAY",
+        "EVENING",
+        "NIGHT"
+      ],
+      "source_sluglines": [
+        "EXT. OBSERVATION GARDEN / PRIVATE RESTAURANT — NIGHT",
+        "EXT. ORBITAL GARDEN / CIVILIAN DESIGN LAB — MORNING",
+        "EXT. SERVICE GARDEN — DAY 11",
+        "INT. ANNIVERSARY COMPLEX — OBSERVATION GARDEN",
+        "INT. GLASS GARDEN — NIGHT",
+        "INT. OBSERVATION GARDEN",
+        "INT. OBSERVATION GARDEN — AFTER MIDNIGHT",
+        "INT. OBSERVATION GARDEN — EVENING",
+        "INT. QUIET CONSERVATORY — EVENING",
+        "INT. QUIET HALLWAY / OBSERVATION GARDEN — NIGHT",
+        "INT. QUIET OBSERVATION GREENHOUSE — EVENING"
+      ],
+      "scene_count": 14,
+      "source_scenes": [
+        "04_Screenplay_Reconstructions/Chapter_03_Trouble_With_Attraction_v0.3.md :: SCENE 11 — SOMETHING WORTH WINNING FOR",
+        "04_Screenplay_Reconstructions/Chapter_04_No_Holding_Back_v0.3.md :: SCENE 4B — THE BLUE HOUR (OPTIONAL: ARI / MARA)",
+        "04_Screenplay_Reconstructions/Chapter_06_One_Must_Fall_v0.4.md :: SCENE 1 — SOMETHING TO LOOK FORWARD TO",
+        "09_Lyra_Campaign/Lyra_Playable_Screenplay_v0.4.md :: L5.2 — Asking the question twice [MANDATORY, VARIANT BY ROMANCE]",
+        "09_Lyra_Campaign/Lyra_Playable_Screenplay_v0.4.md :: [v2.2 supplement — Dante sees what Steffan is hiding; Day 11, after L5.2]",
+        "11_Ren_Campaign/Ren_Playable_Screenplay_v0.2.md :: R5.5 — After the cameras [OPTIONAL / ROMANCE WITH CONSEQUENCES]",
+        "11_Ren_Campaign/Ren_Playable_Screenplay_v0.2.md :: R6.5 — Five endings, none a cure [MANDATORY EPILOGUE]",
+        "12_Angel_Campaign/Angel_Playable_Screenplay_v0.2.md :: (unlabeled setup)",
+        "12_Angel_Campaign/Angel_Playable_Screenplay_v0.2.md :: [v1.9 / K3-A] The absent initiator [DAY 12; OPTIONAL ARCHIVE INSERT]",
+        "15_Crystal_Campaign/OMF_2107_Crystal_Playable_Screenplay_v0.6.md :: C4.4 — The alternative invitation [OPTIONAL ANGEL PATH]",
+        "16_Raven_Campaign/OMF_2107_Raven_Playable_Screenplay_v0.5.md :: R3.2 — Crystal's reflex and Raven's choice [OPTIONAL; NOT A CONTRACT]",
+        "20_Jean_Paul_Campaign/Jean_Paul_Playable_Screenplay_v0.1.md :: (unlabeled setup)",
+        "21_Steffan_Campaign/Steffan_Playable_Screenplay_v0.3.md :: ST3.2 — The triangle, not the prize [MANDATORY PERSONAL CHOICE]",
+        "23_Selene_Campaign/Selene_Playable_Screenplay_v0.1.md :: SV5.4 — An invitation not written as an invoice [OPTIONAL MILANO ROMANCE]"
+      ],
+      "status": "source-mapped",
+      "inferred_uses": 2
+    },
+    {
+      "code": "BG-SOC-POOL",
+      "name": "Rooftop pool and training terrace",
+      "zone": "SOC",
+      "description": "Event rooftop pool with clear deck railings and skyline Jupiter views, social seating and training space.",
+      "prompt_base": "High-quality hand-painted 2D sci-fi fighting-game and visual-novel environment background, year 2107, cinematic clear architecture, unified WAR orbital station design: ivory ceramic, brushed titanium and amber in public areas, graphite industrial steel in technical areas, cool cyan in restricted labs. Wide locked-off composition, 16:9 landscape 3840x2160, dialogue-safe clean lower foreground, readable perspective geometry, no foreground characters or identifiable people, no robots in the foreground, no lettering, no readable signage, no interface overlays, no watermarks. Event rooftop pool with clear deck railings and skyline Jupiter views, social seating and training space. Light, signage, and architecture must align with the other assets in this location family. ",
+      "variants": [
+        "DAY",
+        "NIGHT",
+        "SUNSET"
+      ],
+      "source_sluglines": [
+        "EXT. COMPETITOR ROOFTOP — NIGHT",
+        "EXT. HOTEL ROOFTOP POOL — NIGHT",
+        "EXT. JOVIAN VIEW-DECK POOL — SUNSET",
+        "EXT. OBSERVATION-DECK POOL — SUNSET",
+        "EXT. ROOFTOP POOL / OBSERVATION DECK — NIGHT",
+        "EXT. ROOFTOP POOL AND TRAINING DECK — NIGHT",
+        "INT. PROMOTIONAL ROOFTOP POOL — DAY"
+      ],
+      "scene_count": 10,
+      "source_scenes": [
+        "04_Screenplay_Reconstructions/Chapter_02_Champions_Shadow_v0.3.md :: SCENE 4B — NEON RESPITE (OPTIONAL PUBLIC FAN EVENT)",
+        "09_Lyra_Campaign/Lyra_Playable_Screenplay_v0.4.md :: L2.3 — Neon Respite [OPTIONAL ENSEMBLE / FANSERVICE]",
+        "10_Mara_Campaign/Mara_Playable_Screenplay_v0.2.md :: M2.4 — Rooftop: everybody gets one night [OPTIONAL FAN SERVICE / COMEDY]",
+        "11_Ren_Campaign/Ren_Playable_Screenplay_v0.2.md :: R2.4 — The rooftop experiment [OPTIONAL / FAN SERVICE / ANGEL OR TESSA FRIENDSHIP]",
+        "12_Angel_Campaign/Angel_Playable_Screenplay_v0.2.md :: (unlabeled setup)",
+        "15_Crystal_Campaign/OMF_2107_Crystal_Playable_Screenplay_v0.6.md :: C3.1 — Rooftop without armor [OPTIONAL ENSEMBLE FAN SERVICE / COMEDY]",
+        "16_Raven_Campaign/OMF_2107_Raven_Playable_Screenplay_v0.5.md :: R3.3 — A rooftop full of people who have nothing to hide [OPTIONAL ENSEMBLE / FAN SERVICE]",
+        "21_Steffan_Campaign/Steffan_Playable_Screenplay_v0.3.md :: ST2.4 — The afterparty [OPTIONAL; ENSEMBLE/FANSERVICE]",
+        "22_Dante_Campaign/Dante_Playable_Screenplay_v0.3.md :: DV2.2 — The people behind the armor [MANDATORY; SECONDARY CHARACTER]",
+        "23_Selene_Campaign/Selene_Playable_Screenplay_v0.1.md :: SV3.4 — The rooftop almost-kiss [OPTIONAL, ADULT SUGGESTIVE]"
+      ],
+      "status": "source-mapped",
+      "inferred_uses": 2
+    },
+    {
+      "code": "BG-SOC-PRESS",
+      "name": "Press hall and interview atrium",
+      "zone": "SOC",
+      "description": "Press and publicity studio, camera-track platforms, modular studio lamps and blank display walls.",
+      "prompt_base": "High-quality hand-painted 2D sci-fi fighting-game and visual-novel environment background, year 2107, cinematic clear architecture, unified WAR orbital station design: ivory ceramic, brushed titanium and amber in public areas, graphite industrial steel in technical areas, cool cyan in restricted labs. Wide locked-off composition, 16:9 landscape 3840x2160, dialogue-safe clean lower foreground, readable perspective geometry, no foreground characters or identifiable people, no robots in the foreground, no lettering, no readable signage, no interface overlays, no watermarks. Press and publicity studio, camera-track platforms, modular studio lamps and blank display walls. Light, signage, and architecture must align with the other assets in this location family. ",
+      "variants": [
+        "AFTERMATH",
+        "BASE",
+        "DAY",
+        "EVENING",
+        "NIGHT"
+      ],
+      "source_sluglines": [
+        "EXT. PRESS TERRACE — NIGHT",
+        "INT. ARENA PRESS ATRIUM",
+        "INT. CRYSTAL'S PUBLIC LIAISON ROOM — EVENING",
+        "INT. ELECTRA MEDIA BOOTH / WAR PRIVATE COMMUNICATION NODE — NIGHT",
+        "INT. PHOTO STUDIO — EVENING",
+        "INT. POST-MATCH PUBLICITY STUDIO — NIGHT",
+        "INT. PRESS ATRIUM",
+        "INT. PRODUCTION SUITE",
+        "INT. PUBLIC PRESS HALL — DAYS LATER",
+        "INT. STYLING STUDIO"
+      ],
+      "scene_count": 12,
+      "source_scenes": [
+        "04_Screenplay_Reconstructions/Chapter_03_Trouble_With_Attraction_v0.3.md :: SCENE 10 — EVERYBODY'S BUSINESS",
+        "04_Screenplay_Reconstructions/Chapter_05_Fractures_v0.3.md :: SCENE 7 — LYRA TAKES THE MICROPHONE",
+        "04_Screenplay_Reconstructions/Chapter_05_Fractures_v0.3.md :: SCENE 7B — OWN THE SPOTLIGHT (OPTIONAL: LYRA)",
+        "09_Lyra_Campaign/Lyra_Playable_Screenplay_v0.4.md :: L2.2 — The contract with a face [MANDATORY; SHIRRO]",
+        "09_Lyra_Campaign/Lyra_Playable_Screenplay_v0.4.md :: L5.3 — Own the Spotlight [OPTIONAL GLAMOUR / SECONDARY AGENCY]",
+        "09_Lyra_Campaign/Lyra_Playable_Screenplay_v0.4.md :: L5.5 — The cost of speaking publicly [MANDATORY]",
+        "09_Lyra_Campaign/Lyra_Playable_Screenplay_v0.4.md :: L6.6 — A statement, not a confession [MANDATORY PUBLIC AFTERMATH]",
+        "09_Lyra_Campaign/Lyra_Playable_Screenplay_v0.4.md :: [v1.9 / K3-L] The credit roll that arrived too soon [OPTIONAL DAY-12 CUTAWAY]",
+        "12_Angel_Campaign/Angel_Playable_Screenplay_v0.2.md :: (unlabeled setup)",
+        "15_Crystal_Campaign/OMF_2107_Crystal_Playable_Screenplay_v0.6.md :: C2.4 — Red carpet, unguarded [OPTIONAL GLAMOUR / FAN SERVICE]",
+        "15_Crystal_Campaign/OMF_2107_Crystal_Playable_Screenplay_v0.6.md :: [v1.9 / K3-C] What counts as a hero [DAY 12; OPTIONAL]",
+        "21_Steffan_Campaign/Steffan_Playable_Screenplay_v0.3.md :: ST6.4 — The confession that changes no verdict [MANDATORY EPILOGUE]"
+      ],
+      "status": "source-mapped",
+      "inferred_uses": 3
+    },
+    {
+      "code": "BG-SOC-RESTAURANT",
+      "name": "Observation-deck restaurant and dining room",
+      "zone": "SOC",
+      "description": "Jovian restaurant with modest tables or executive dining booths, low warm lights and observation windows.",
+      "prompt_base": "High-quality hand-painted 2D sci-fi fighting-game and visual-novel environment background, year 2107, cinematic clear architecture, unified WAR orbital station design: ivory ceramic, brushed titanium and amber in public areas, graphite industrial steel in technical areas, cool cyan in restricted labs. Wide locked-off composition, 16:9 landscape 3840x2160, dialogue-safe clean lower foreground, readable perspective geometry, no foreground characters or identifiable people, no robots in the foreground, no lettering, no readable signage, no interface overlays, no watermarks. Jovian restaurant with modest tables or executive dining booths, low warm lights and observation windows. Light, signage, and architecture must align with the other assets in this location family. ",
+      "variants": [
+        "BASE",
+        "EVENING",
+        "NIGHT"
+      ],
+      "source_sluglines": [
+        "EXT. OBSERVATION GARDEN / PRIVATE RESTAURANT — NIGHT",
+        "INT. MODEST RESTAURANT — GANYMEDE TRANSIT STATION",
+        "INT. OBSERVATION DECK RESTAURANT — NIGHT",
+        "INT. ORBITAL ROOFTOP RESTAURANT — EVENING",
+        "INT. WAR HOSPITALITY TOWER — PRIVATE DINING ROOM"
+      ],
+      "scene_count": 5,
+      "source_scenes": [
+        "04_Screenplay_Reconstructions/Chapter_06_One_Must_Fall_v0.4.md :: SCENE 16 — SOMETHING OTHER THAN SURVIVAL",
+        "11_Ren_Campaign/Ren_Playable_Screenplay_v0.2.md :: R2.3 — Dinner for people who aren't algorithms [OPTIONAL / WARMTH]",
+        "12_Angel_Campaign/Angel_Playable_Screenplay_v0.2.md :: [v1.9 / K3-A] The absent initiator [DAY 12; OPTIONAL ARCHIVE INSERT]",
+        "20_Jean_Paul_Campaign/Jean_Paul_Playable_Screenplay_v0.1.md :: (unlabeled setup)",
+        "23_Selene_Campaign/Selene_Playable_Screenplay_v0.1.md :: SV5.1 — The offer [MANDATORY, DAY 11]"
+      ],
+      "status": "source-mapped",
+      "inferred_uses": 0
+    },
+    {
+      "code": "BG-SOC-TRANSIT",
+      "name": "Transit platform, passage and public promenade",
+      "zone": "SOC",
+      "description": "Civic transit promenades and shuttle platforms near the anniversary complex, commuter railings and distant orbital modules.",
+      "prompt_base": "High-quality hand-painted 2D sci-fi fighting-game and visual-novel environment background, year 2107, cinematic clear architecture, unified WAR orbital station design: ivory ceramic, brushed titanium and amber in public areas, graphite industrial steel in technical areas, cool cyan in restricted labs. Wide locked-off composition, 16:9 landscape 3840x2160, dialogue-safe clean lower foreground, readable perspective geometry, no foreground characters or identifiable people, no robots in the foreground, no lettering, no readable signage, no interface overlays, no watermarks. Civic transit promenades and shuttle platforms near the anniversary complex, commuter railings and distant orbital modules. Light, signage, and architecture must align with the other assets in this location family. ",
+      "variants": [
+        "BASE",
+        "EVENING",
+        "NIGHT",
+        "SUNSET"
+      ],
+      "source_sluglines": [
+        "EXT. CITY RIVERFRONT / SMALL WORKSHOP / OPEN-AIR CAFÉ — MONTHS LATER",
+        "EXT. PUBLIC BOARDWALK — DUSK",
+        "EXT. PUBLIC TRANSIT PLATFORM — TWILIGHT",
+        "EXT. QUIET PROMENADE — EVENING",
+        "INT. CITY TRANSIT PLATFORM — LATE NIGHT",
+        "INT. WAR ANNIVERSARY COMPLEX — ARRIVAL WALKWAY — NIGHT"
+      ],
+      "scene_count": 6,
+      "source_scenes": [
+        "09_Lyra_Campaign/Lyra_Playable_Screenplay_v0.4.md :: L6.7 — After the broadcast [OPTIONAL; ROMANTIC / FRIENDSHIP / SOLO EPILOGUE]",
+        "12_Angel_Campaign/Angel_Playable_Screenplay_v0.2.md :: (unlabeled setup)",
+        "12_Angel_Campaign/Angel_Playable_Screenplay_v0.2.md :: [v1.9 / K4-A] A record that proves too little [DAY 13; PRE-ACTIVATION CUTAWAY]",
+        "18_Christian_Subplot/OMF_2107_Christian_Independent_Storyline_v0.2.md :: CH3.2 — A source who refuses to become a weapon",
+        "18_Christian_Subplot/OMF_2107_Christian_Independent_Storyline_v0.2.md :: CH6.4 — Final image",
+        "22_Dante_Campaign/Dante_Playable_Screenplay_v0.3.md :: DV1.1 — The anniversary walkway [MANDATORY]"
+      ],
+      "status": "source-mapped",
+      "inferred_uses": 0
+    },
+    {
+      "code": "BG-SOC-VIEW",
+      "name": "Main public observation deck / gallery",
+      "zone": "SOC",
+      "description": "Elevated observation deck/gallery above the tournament complex with panoramic glass and dark seating ledges.",
+      "prompt_base": "High-quality hand-painted 2D sci-fi fighting-game and visual-novel environment background, year 2107, cinematic clear architecture, unified WAR orbital station design: ivory ceramic, brushed titanium and amber in public areas, graphite industrial steel in technical areas, cool cyan in restricted labs. Wide locked-off composition, 16:9 landscape 3840x2160, dialogue-safe clean lower foreground, readable perspective geometry, no foreground characters or identifiable people, no robots in the foreground, no lettering, no readable signage, no interface overlays, no watermarks. Elevated observation deck/gallery above the tournament complex with panoramic glass and dark seating ledges. Light, signage, and architecture must align with the other assets in this location family. ",
+      "variants": [
+        "BASE",
+        "DAY",
+        "EVENING",
+        "NIGHT"
+      ],
+      "source_sluglines": [
+        "EXT. EXHIBITION BALCONY — LATER",
+        "EXT. OBSERVATION BALCONY — NIGHT",
+        "EXT. ZERO-G PERFORMANCE TERRACE — LATER",
+        "INT. BACKSTAGE GALLERY — LATER",
+        "INT. BACKSTAGE OBSERVATION GALLERY — CONTINUOUS",
+        "INT. CAMERA BALCONY",
+        "INT. INDUSTRIAL OBSERVATION BRIDGE — DAY",
+        "INT. OBSERVATION DECK",
+        "INT. OBSERVATION DECK — NIGHT",
+        "INT. OBSERVATION GALLERY — LATER",
+        "INT. QUIET OBSERVATION GALLERY",
+        "INT. SERVICE GALLERY — GALA INTERMISSION",
+        "INT. SERVICE OBSERVATION DECK"
+      ],
+      "scene_count": 15,
+      "source_scenes": [
+        "04_Screenplay_Reconstructions/Chapter_01_Anniversary_v0.3.md :: SCENE 2E — THE PROPER QUESTION (OPTIONAL: LEENA)",
+        "04_Screenplay_Reconstructions/Chapter_02_Champions_Shadow_v0.3.md :: SCENE 10 — THE EMPTY PLACE",
+        "04_Screenplay_Reconstructions/Chapter_03_Trouble_With_Attraction_v0.3.md :: SCENE 13D — Ari lost both matches (`GA_OUT`)",
+        "04_Screenplay_Reconstructions/Chapter_06_One_Must_Fall_v0.4.md :: SCENE 15B — NO INTERVIEW TONIGHT (OPTIONAL: LYRA / ALEX)",
+        "09_Lyra_Campaign/Lyra_Playable_Screenplay_v0.4.md :: L1.3 — Off-script [OPTIONAL; ALEX, LEENA]",
+        "09_Lyra_Campaign/Lyra_Playable_Screenplay_v0.4.md :: L3.2 — Before the kiss [MANDATORY RELATIONSHIP DECISION]",
+        "11_Ren_Campaign/Ren_Playable_Screenplay_v0.2.md :: R1.3 — Somebody who can dance badly [OPTIONAL / NEW CIVILIAN]",
+        "15_Crystal_Campaign/OMF_2107_Crystal_Playable_Screenplay_v0.6.md :: C1.2 — Raven in the doorway [MANDATORY]",
+        "16_Raven_Campaign/OMF_2107_Raven_Playable_Screenplay_v0.5.md :: R1.2 — An unpleasant discovery [MANDATORY]",
+        "18_Christian_Subplot/OMF_2107_Christian_Independent_Storyline_v0.2.md :: CH1.2 — Interview without ownership (optional Leena first encounter)",
+        "20_Jean_Paul_Campaign/Jean_Paul_Playable_Screenplay_v0.1.md :: (unlabeled setup)",
+        "23_Selene_Campaign/Selene_Playable_Screenplay_v0.1.md :: SV1.2 — Two kinds of inheritance [MANDATORY]",
+        "23_Selene_Campaign/Selene_Playable_Screenplay_v0.1.md :: SV5.2 — A genuine rescue [MANDATORY, DAY 12]",
+        "24_Milano_Campaign/Milano_Playable_Screenplay_v0.1.md :: MA1.2 — The woman who sees through the smile [OPTIONAL SELENE / PROFESSIONAL]",
+        "24_Milano_Campaign/Milano_Playable_Screenplay_v0.1.md :: MA5.4 — The first honest terms [OPTIONAL POST-CONFLICT SELENE; ADULT]"
+      ],
+      "status": "source-mapped",
+      "inferred_uses": 2
+    },
+    {
+      "code": "BG-SOC-VIEW-PRIVATE",
+      "name": "Private observation suite and lounges",
+      "zone": "SOC",
+      "description": "Quiet private gallery with upholstered bench, discreet lighting and floor-to-ceiling glazing.",
+      "prompt_base": "High-quality hand-painted 2D sci-fi fighting-game and visual-novel environment background, year 2107, cinematic clear architecture, unified WAR orbital station design: ivory ceramic, brushed titanium and amber in public areas, graphite industrial steel in technical areas, cool cyan in restricted labs. Wide locked-off composition, 16:9 landscape 3840x2160, dialogue-safe clean lower foreground, readable perspective geometry, no foreground characters or identifiable people, no robots in the foreground, no lettering, no readable signage, no interface overlays, no watermarks. Quiet private gallery with upholstered bench, discreet lighting and floor-to-ceiling glazing. Light, signage, and architecture must align with the other assets in this location family. ",
+      "variants": [
+        "AFTERMATH",
+        "BASE",
+        "DAY",
+        "EVENING",
+        "NIGHT"
+      ],
+      "source_sluglines": [
+        "INT. DINING SALON — NIGHT",
+        "INT. GLASS-WALLED LOUNGE — NIGHT",
+        "INT. OBSERVATION CORRIDOR",
+        "INT. OBSERVATION LOUNGE",
+        "INT. OBSERVATION LOUNGE — AFTER MIDNIGHT",
+        "INT. PRIVATE OBSERVATION LOUNGE — LATER",
+        "INT. PRIVATE OBSERVATION SUITE — LATE NIGHT",
+        "INT. QUIET GALLERY — NIGHT",
+        "INT. QUIET GALLERY, OFF THE POOL — NIGHT",
+        "INT. SPECTATOR ARENA OR SERVICE OBSERVATION ROOM — LATE AFTERNOON"
+      ],
+      "scene_count": 16,
+      "source_scenes": [
+        "04_Screenplay_Reconstructions/Chapter_04_No_Holding_Back_v0.3.md :: SCENE 12 — A DIFFERENT KIND OF VICTORY",
+        "04_Screenplay_Reconstructions/Chapter_04_No_Holding_Back_v0.3.md :: SCENE 4 — THE ARGUMENT",
+        "04_Screenplay_Reconstructions/Chapter_05_Fractures_v0.3.md :: SCENE 6 — THE DIFFERENCE BETWEEN WANTING AND WINNING",
+        "04_Screenplay_Reconstructions/Chapter_06_One_Must_Fall_v0.4.md :: SCENE 15 — THE PEOPLE WHO REMAIN",
+        "04_Screenplay_Reconstructions/Chapter_06_One_Must_Fall_v0.4.md :: SCENE 16B — ALTERNATIVE RELATIONSHIP EPILOGUES (OPTIONAL)",
+        "09_Lyra_Campaign/Lyra_Playable_Screenplay_v0.4.md :: L2.4 — An unusual invitation [MANDATORY]",
+        "09_Lyra_Campaign/Lyra_Playable_Screenplay_v0.4.md :: [v2.1 supplement — the dominance trap; after L4.4, if Steffan partner]",
+        "12_Angel_Campaign/Angel_Playable_Screenplay_v0.2.md :: [v1.9 / K3-A] The absent initiator [DAY 12; OPTIONAL ARCHIVE INSERT]",
+        "15_Crystal_Campaign/OMF_2107_Crystal_Playable_Screenplay_v0.6.md :: C3.2 — The words neither has said [OPTIONAL RAVEN PATH; CHOICE IS NOT RECIPROCITY]",
+        "15_Crystal_Campaign/OMF_2107_Crystal_Playable_Screenplay_v0.6.md :: C3.4 — Milano's offer [MANDATORY]",
+        "15_Crystal_Campaign/OMF_2107_Crystal_Playable_Screenplay_v0.6.md :: C6.5 — Private endings [EXCLUSIVE ELIGIBLE VARIANTS]",
+        "16_Raven_Campaign/OMF_2107_Raven_Playable_Screenplay_v0.5.md :: R6.5 — The ends he cannot choose alone [ENDING DISPATCH]",
+        "20_Jean_Paul_Campaign/Jean_Paul_Playable_Screenplay_v0.1.md :: (unlabeled setup)",
+        "21_Steffan_Campaign/Steffan_Playable_Screenplay_v0.3.md :: ST4.4 — No victory on credit [OPTIONAL; LYRA/DANTE]",
+        "23_Selene_Campaign/Selene_Playable_Screenplay_v0.1.md :: SV1.4 — A dance with a balance sheet [OPTIONAL, ADULT FANFARE]",
+        "24_Milano_Campaign/Milano_Playable_Screenplay_v0.1.md :: MA2.4 — Unscheduled attention [OPTIONAL ADULT FLIRT]"
+      ],
+      "status": "source-mapped",
+      "inferred_uses": 7
+    },
+    {
+      "code": "BG-TEC-EXPERIMENT",
+      "name": "Experimental equipment / demonstration wing",
+      "zone": "TEC",
+      "description": "Experimental equipment and public demonstration wing, equipment racks, sealed machinery and test platforms.",
+      "prompt_base": "High-quality hand-painted 2D sci-fi fighting-game and visual-novel environment background, year 2107, cinematic clear architecture, unified WAR orbital station design: ivory ceramic, brushed titanium and amber in public areas, graphite industrial steel in technical areas, cool cyan in restricted labs. Wide locked-off composition, 16:9 landscape 3840x2160, dialogue-safe clean lower foreground, readable perspective geometry, no foreground characters or identifiable people, no robots in the foreground, no lettering, no readable signage, no interface overlays, no watermarks. Experimental equipment and public demonstration wing, equipment racks, sealed machinery and test platforms. Light, signage, and architecture must align with the other assets in this location family. ",
+      "variants": [
+        "BASE",
+        "DAY",
+        "NIGHT"
+      ],
+      "source_sluglines": [
+        "INT. DEMONSTRATION WING — DAY",
+        "INT. EQUIPMENT WING — MIDDAY",
+        "INT. EXPERIMENTAL EQUIPMENT WING",
+        "INT. EXPERIMENTAL EQUIPMENT WING — DAY 12",
+        "INT. EXPERIMENTAL EQUIPMENT WING — DAY 12, BEFORE SEMIFINAL",
+        "INT. EXPERIMENTAL WING — DAY 12",
+        "INT. PROP WAREHOUSE — AFTER HOURS",
+        "INT. TECHNICAL DEMONSTRATION BAY — LATER",
+        "INT. TECHNICAL EXHIBITION ROOM — NIGHT"
+      ],
+      "scene_count": 9,
+      "source_scenes": [
+        "04_Screenplay_Reconstructions/Chapter_01_Anniversary_v0.3.md :: SCENE 4 — A VERY OLD GHOST",
+        "04_Screenplay_Reconstructions/Chapter_05_Fractures_v0.3.md :: SCENE 8 — THE FAILURE",
+        "09_Lyra_Campaign/Lyra_Playable_Screenplay_v0.4.md :: L5.0 — The emergency nobody could choreograph [MANDATORY NOVA RESCUE]",
+        "12_Angel_Campaign/Angel_Playable_Screenplay_v0.2.md :: (unlabeled setup)",
+        "15_Crystal_Campaign/OMF_2107_Crystal_Playable_Screenplay_v0.6.md :: C5.2 — Disaster, rescue, and the signature that does not fit [DAY 12 MIDDAY; MANDATORY]",
+        "16_Raven_Campaign/OMF_2107_Raven_Playable_Screenplay_v0.5.md :: R5.2 — The machine saves a life [MANDATORY; DAY 12 MIDDAY]",
+        "20_Jean_Paul_Campaign/Jean_Paul_Playable_Screenplay_v0.1.md :: (unlabeled setup)",
+        "21_Steffan_Campaign/Steffan_Playable_Screenplay_v0.3.md :: ST2.3 — Shirro sees the flaw [OPTIONAL; MENTOR]",
+        "24_Milano_Campaign/Milano_Playable_Screenplay_v0.1.md :: MA5.2 — The rescue nobody authorized [MANDATORY, DAY 12]"
+      ],
+      "status": "source-mapped",
+      "inferred_uses": 0
+    },
+    {
+      "code": "BG-TEC-HANGAR",
+      "name": "Pilots’ HAR hangar and maintenance bay",
+      "zone": "TEC",
+      "description": "HAR maintenance hangar, giant overhead gantries, armored rig cradles, tool benches and deck markings.",
+      "prompt_base": "High-quality hand-painted 2D sci-fi fighting-game and visual-novel environment background, year 2107, cinematic clear architecture, unified WAR orbital station design: ivory ceramic, brushed titanium and amber in public areas, graphite industrial steel in technical areas, cool cyan in restricted labs. Wide locked-off composition, 16:9 landscape 3840x2160, dialogue-safe clean lower foreground, readable perspective geometry, no foreground characters or identifiable people, no robots in the foreground, no lettering, no readable signage, no interface overlays, no watermarks. HAR maintenance hangar, giant overhead gantries, armored rig cradles, tool benches and deck markings. Light, signage, and architecture must align with the other assets in this location family. ",
+      "variants": [
+        "AFTERMATH",
+        "BASE",
+        "EVENING",
+        "NIGHT"
+      ],
+      "source_sluglines": [
+        "INT. ELECTRA HANGAR",
+        "INT. ELECTRA SERVICE BAY",
+        "INT. EQUIPMENT BAY — PHOTO SESSION",
+        "INT. MARA'S MAINTENANCE BAY — NIGHT",
+        "INT. PILOT HANGAR — NIGHT",
+        "INT. PILOT MAINTENANCE BAY — LATE NIGHT",
+        "INT. SERVICE BAY — NIGHT",
+        "INT. SHREDDER MAINTENANCE BAY — NIGHT"
+      ],
+      "scene_count": 13,
+      "source_scenes": [
+        "04_Screenplay_Reconstructions/Chapter_04_No_Holding_Back_v0.3.md :: SCENE 3B — COOLING SYSTEM (OPTIONAL: MARA / PLUG)",
+        "09_Lyra_Campaign/Lyra_Playable_Screenplay_v0.4.md :: L4.3 — A technician's warning [MANDATORY, INCLUDING ELIMINATED ROUTE]",
+        "09_Lyra_Campaign/Lyra_Playable_Screenplay_v0.4.md :: L6.1 — Final preparations [MANDATORY]",
+        "10_Mara_Campaign/Mara_Playable_Screenplay_v0.2.md :: M1.3 — A professional's repair [OPTIONAL; nonromantic alternative always available]",
+        "10_Mara_Campaign/Mara_Playable_Screenplay_v0.2.md :: M3.2 — Two other kinds of chemistry [OPTIONAL; separate scenes]",
+        "10_Mara_Campaign/Mara_Playable_Screenplay_v0.2.md :: [v1.9 / K3-M] A worker is not a line item [DAY 12; OPTIONAL CUTAWAY]",
+        "21_Steffan_Campaign/Steffan_Playable_Screenplay_v0.3.md :: ST1.3 — Control rehearsal [OPTIONAL; GLAMOUR / FANSERVICE]",
+        "21_Steffan_Campaign/Steffan_Playable_Screenplay_v0.3.md :: ST5.4 — The confession he can postpone [OPTIONAL; DANTE]",
+        "21_Steffan_Campaign/Steffan_Playable_Screenplay_v0.3.md :: ST6.5 — Endings [MUTUALLY EXCLUSIVE, POST-TOURNAMENT]",
+        "22_Dante_Campaign/Dante_Playable_Screenplay_v0.3.md :: DV1.3 — The mirror without a reflection [MANDATORY]",
+        "22_Dante_Campaign/Dante_Playable_Screenplay_v0.3.md :: DV3.4 — Someone says no [OPTIONAL; SECONDARY-CHARACTER CHEMISTRY]",
+        "23_Selene_Campaign/Selene_Playable_Screenplay_v0.1.md :: SV1.3 — Mirage isn't an illusion [MANDATORY; SECONDARY CAST]",
+        "24_Milano_Campaign/Milano_Playable_Screenplay_v0.1.md :: MA1.4 — Gargoyle on the dark side [OPTIONAL FANFARE / ENGINEERING]"
+      ],
+      "status": "source-mapped",
+      "inferred_uses": 5
+    },
+    {
+      "code": "BG-TEC-LIFE",
+      "name": "Coolant / coupling safety and life-support wing",
+      "zone": "TEC",
+      "description": "Water-cooling and life-support infrastructure wing, manifold arrays, heavy valves, emergency control junctions.",
+      "prompt_base": "High-quality hand-painted 2D sci-fi fighting-game and visual-novel environment background, year 2107, cinematic clear architecture, unified WAR orbital station design: ivory ceramic, brushed titanium and amber in public areas, graphite industrial steel in technical areas, cool cyan in restricted labs. Wide locked-off composition, 16:9 landscape 3840x2160, dialogue-safe clean lower foreground, readable perspective geometry, no foreground characters or identifiable people, no robots in the foreground, no lettering, no readable signage, no interface overlays, no watermarks. Water-cooling and life-support infrastructure wing, manifold arrays, heavy valves, emergency control junctions. Light, signage, and architecture must align with the other assets in this location family. ",
+      "variants": [
+        "BASE",
+        "DAY",
+        "EMERGENCY",
+        "NIGHT"
+      ],
+      "source_sluglines": [
+        "INT. ARENA OR SAFETY CORRIDOR — DAY 12",
+        "INT. COOLANT-SAFETY WING — DAY 12, MIDDAY",
+        "INT. NEURAL COMMAND RELAY / LIFE-SUPPORT FACILITY — LATER",
+        "INT. NII INFRASTRUCTURE CONTROL HUB — NIGHT",
+        "INT. SUBLEVEL LIFE-SUPPORT RECORDS BAY — NIGHT",
+        "INT. WAR COUPLING WING / KREISSACK'S RESTRICTED CHAMBER — INTERCUT"
+      ],
+      "scene_count": 8,
+      "source_scenes": [
+        "10_Mara_Campaign/Mara_Playable_Screenplay_v0.2.md :: M5.0 — A rescue without a command [MANDATORY / SAFE CLUE]",
+        "10_Mara_Campaign/Mara_Playable_Screenplay_v0.2.md :: M6.2 — Two voices inside Nova [MANDATORY]",
+        "10_Mara_Campaign/Mara_Playable_Screenplay_v0.2.md :: [v1.9 / K4-M] Who ordered the evacuation? [AFTER DAY-13 FINAL, BEFORE RELAY ACTIVATION]",
+        "11_Ren_Campaign/Ren_Playable_Screenplay_v0.2.md :: R5.1 — A rescue nobody ordered [MANDATORY / SAFE CLUE]",
+        "11_Ren_Campaign/Ren_Playable_Screenplay_v0.2.md :: R6.2 — Kreissack is not the highest authority [MANDATORY / FINAL REVEAL]",
+        "16_Raven_Campaign/OMF_2107_Raven_Playable_Screenplay_v0.5.md :: R4.2 — The man behind the defeat of 2097 [MANDATORY]",
+        "20_Jean_Paul_Campaign/Jean_Paul_Playable_Screenplay_v0.1.md :: (unlabeled setup)",
+        "21_Steffan_Campaign/Steffan_Playable_Screenplay_v0.3.md :: ST5.2 — The real rescue [MANDATORY; DAY 12 BEFORE S_CD]"
+      ],
+      "status": "source-mapped",
+      "inferred_uses": 1
+    },
+    {
+      "code": "BG-TEC-OPERATIONS",
+      "name": "Research and maintenance operations center",
+      "zone": "TEC",
+      "description": "Engineering operations center with hardware service racks, telemetry surfaces and command desks.",
+      "prompt_base": "High-quality hand-painted 2D sci-fi fighting-game and visual-novel environment background, year 2107, cinematic clear architecture, unified WAR orbital station design: ivory ceramic, brushed titanium and amber in public areas, graphite industrial steel in technical areas, cool cyan in restricted labs. Wide locked-off composition, 16:9 landscape 3840x2160, dialogue-safe clean lower foreground, readable perspective geometry, no foreground characters or identifiable people, no robots in the foreground, no lettering, no readable signage, no interface overlays, no watermarks. Engineering operations center with hardware service racks, telemetry surfaces and command desks. Light, signage, and architecture must align with the other assets in this location family. ",
+      "variants": [
+        "AFTERMATH",
+        "BASE",
+        "EMERGENCY"
+      ],
+      "source_sluglines": [
+        "INT. NOVA CONTROL COMPLEX — EMERGENCY",
+        "INT. NOVA FACILITY — AUDIENCE-ONLY PRIVATE CUTAWAY",
+        "INT. NOVA FACILITY — RESTRICTED CUTAWAY (AUDIENCE ONLY)",
+        "INT. RESEARCH OPERATIONS CENTER",
+        "INT. WAR CONTROL WING — PRIVATE CUTAWAY"
+      ],
+      "scene_count": 6,
+      "source_scenes": [
+        "04_Screenplay_Reconstructions/Chapter_05_Fractures_v0.3.md :: SCENE 9 — THE MACHINE THAT SAVED THEM",
+        "04_Screenplay_Reconstructions/Chapter_06_One_Must_Fall_v0.4.md :: SCENE 12 — AFTER THE FALL",
+        "09_Lyra_Campaign/Lyra_Playable_Screenplay_v0.4.md :: [v1.9 / K4-L] The promise behind the curtain [DAY 13; AFTER FINAL, BEFORE RELAY ACTIVATION]",
+        "11_Ren_Campaign/Ren_Playable_Screenplay_v0.2.md :: [v1.9 / K4-N] The contract neither scientist read alike [DAY 13; PRE-ACTIVATION]",
+        "16_Raven_Campaign/OMF_2107_Raven_Playable_Screenplay_v0.5.md :: [v1.9 / K4-R] The bodyguard's missing clause [AFTER FINAL; DAY 13 PRE-ACTIVATION]",
+        "24_Milano_Campaign/Milano_Playable_Screenplay_v0.1.md :: MA6.2 — The order Kreissack cannot give [MANDATORY, DAY 13]"
+      ],
+      "status": "source-mapped",
+      "inferred_uses": 1
+    },
+    {
+      "code": "BG-TEC-SERVICE",
+      "name": "Back-of-house service corridors and technician desk",
+      "zone": "TEC",
+      "description": "Restricted service hallway with exposed conduits, mechanic access hatches and industrial lighting.",
+      "prompt_base": "High-quality hand-painted 2D sci-fi fighting-game and visual-novel environment background, year 2107, cinematic clear architecture, unified WAR orbital station design: ivory ceramic, brushed titanium and amber in public areas, graphite industrial steel in technical areas, cool cyan in restricted labs. Wide locked-off composition, 16:9 landscape 3840x2160, dialogue-safe clean lower foreground, readable perspective geometry, no foreground characters or identifiable people, no robots in the foreground, no lettering, no readable signage, no interface overlays, no watermarks. Restricted service hallway with exposed conduits, mechanic access hatches and industrial lighting. Light, signage, and architecture must align with the other assets in this location family. ",
+      "variants": [
+        "BASE",
+        "DAY",
+        "EMERGENCY",
+        "EVENING",
+        "NIGHT"
+      ],
+      "source_sluglines": [
+        "INT. ARENA / RESEARCH ACCESS CORRIDOR — DAY",
+        "INT. BACKSTAGE SERVICE CORRIDOR",
+        "INT. CARGO ELEVATOR / EXT. ANNIVERSARY GALA — EVENING",
+        "INT. DECOMMISSIONED MAINTENANCE WING — NIGHT",
+        "INT. EMERGENCY SECURITY CORRIDOR",
+        "INT. EMPTY GLASS CORRIDOR — LATER",
+        "INT. EVENT SERVICE CORRIDOR",
+        "INT. EVENT SERVICE WING — DAY",
+        "INT. SERVICE CORRIDOR / AUTHORIZED TECHNICIAN DESK — AFTERNOON",
+        "INT. SERVICE CORRIDOR — LATE EVENING",
+        "INT. SERVICE CORRIDOR — NIGHT",
+        "INT. SERVICE ELEVATOR — EVENING",
+        "INT. SERVICE LIFT — LATE NIGHT"
+      ],
+      "scene_count": 14,
+      "source_scenes": [
+        "04_Screenplay_Reconstructions/Chapter_03_Trouble_With_Attraction_v0.3.md :: SCENE 7 — AN UNFORTUNATE COINCIDENCE",
+        "09_Lyra_Campaign/Lyra_Playable_Screenplay_v0.4.md :: L1.4 — The signature [MANDATORY]",
+        "09_Lyra_Campaign/Lyra_Playable_Screenplay_v0.4.md :: L6.4 — Why she can intervene [MANDATORY; NOVA ACCESS INDEPENDENT OF TOURNAMENT]",
+        "10_Mara_Campaign/Mara_Playable_Screenplay_v0.2.md :: M1.1 — A message between spotlights [MANDATORY]",
+        "10_Mara_Campaign/Mara_Playable_Screenplay_v0.2.md :: M2.5 — Who owns the inspection log? [MANDATORY]",
+        "10_Mara_Campaign/Mara_Playable_Screenplay_v0.2.md :: M5.2 — A confession is not a clearance [OPTIONAL RELATIONSHIP BRANCH]",
+        "11_Ren_Campaign/Ren_Playable_Screenplay_v0.2.md :: R3.3 — An honest small betrayal [MANDATORY / LYRA]",
+        "11_Ren_Campaign/Ren_Playable_Screenplay_v0.2.md :: R4.1 — The quarterfinal you earned [CONDITIONAL MATCH]",
+        "11_Ren_Campaign/Ren_Playable_Screenplay_v0.2.md :: R4.3 — The thing that survived [MANDATORY / MIDPOINT REVEAL]",
+        "11_Ren_Campaign/Ren_Playable_Screenplay_v0.2.md :: R4.4 — Unobserved [OPTIONAL / ROMANTIC TENSION]",
+        "12_Angel_Campaign/Angel_Playable_Screenplay_v0.2.md :: (unlabeled setup)",
+        "16_Raven_Campaign/OMF_2107_Raven_Playable_Screenplay_v0.5.md :: R1.3 — Brother and witness [MANDATORY]",
+        "16_Raven_Campaign/OMF_2107_Raven_Playable_Screenplay_v0.5.md :: [v1.9 / K4-R] The bodyguard's missing clause [AFTER FINAL; DAY 13 PRE-ACTIVATION]",
+        "24_Milano_Campaign/Milano_Playable_Screenplay_v0.1.md :: MA3.4 — The mask slips in the service lift [OPTIONAL SELENE OR FRIENDSHIP]"
+      ],
+      "status": "source-mapped",
+      "inferred_uses": 2
+    }
+  ]
+}

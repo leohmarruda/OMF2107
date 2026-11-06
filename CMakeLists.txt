@@ -2,7 +2,7 @@ cmake_minimum_required(VERSION 3.16)
 
 # Options
 OPTION(USE_TESTS "Build unittests" OFF)
-OPTION(OMF3K_SOURCE_TRACE "Enable opt-in OMF2115 source match CSV tracing" OFF)
+OPTION(OMF3K_SOURCE_TRACE "Enable opt-in OMF2107 source match CSV tracing" OFF)
 OPTION(USE_TOOLS "Build tools" OFF)
 OPTION(USE_LIBPNG "Build with libpng support" ON)
 OPTION(USE_SANITIZERS "Enable Asan and Ubsan" OFF)

@@ -1,5 +1,5 @@
 # DRAFT first story slice: Crystal Devroe versus Christian Devroe.
-# Built only from project/docs/OMF20115_SIMPLE_LORE.md. The wording is placeholder dialogue for testing the
+# Built only from project/docs/OMF2107_SIMPLE_LORE.md. The wording is placeholder dialogue for testing the
 # runner and the flow of the slice, not final writing. Check it with:
 #   build/omf_debug_z7/story_check.exe check project/data/story/crystal_christian.story
 #

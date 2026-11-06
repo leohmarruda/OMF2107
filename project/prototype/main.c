@@ -1286,7 +1286,7 @@ static void label(float x,float y,float size,const char *s,float r,float g,float
 static void selection_hud(void) {
     quad(-1,-1,2,2,.015f,.025f,.065f);
     quad(-.78f,.62f,1.56f,.20f,.04f,.10f,.18f);
-    label(-.70f,.71f,.018f,"OMF2115 / CHOOSE YOUR FIGHTER",.65f,.92f,1);
+    label(-.70f,.71f,.018f,"OMF2107 / CHOOSE YOUR FIGHTER",.65f,.92f,1);
     label(-.72f,.43f,.012f,"UP DOWN ROBOT",.55f,.70f,.84f);
     label(-.72f,.34f,.012f,"LEFT RIGHT PILOT",.55f,.70f,.84f);
     label(-.72f,.18f,.011f,"ROBOT",.48f,.60f,.72f);
@@ -1542,17 +1542,25 @@ static void story_draw_stadium_fallback(void) {
 // ---- smooth pictures: the upscaled *_hd.bmp files are drawn as textures, between two runs of the quad batch ----
 typedef struct { GLuint id; int w,h; } StoryTexture;
 static StoryTexture story_backdrop_tex, story_art_tex;
-static struct { bool active; GLuint id; float x0,y0,x1,y1,u0,v0,u1,v1,bright; int split; } story_tex_draw;
+typedef struct { GLuint id; float x0,y0,x1,y1,u0,v0,u1,v1,bright,blur,opacity; int split; } StoryTexDraw;
+#define STORY_TEX_DRAWS 3
+static StoryTexDraw story_tex_draws[STORY_TEX_DRAWS];   // pictures drawn between runs of quads, in order
+static int story_tex_draw_count;
+static float story_tex_blur;                           // mip level the next story_tex_request samples at (0 sharp)
 static GLuint story_gl_program, story_gl_vao;     // the quad batch's, restored after a textured draw
 static GLuint story_tex_program, story_tex_vao, story_tex_vbo;
-static GLint story_tex_bright_loc;
+static GLint story_tex_bright_loc, story_tex_blur_loc, story_tex_opacity_loc;
 static GLuint make_shader(GLenum type,const char *source);
 static void story_tex_init(GLuint main_program,GLuint main_vao) {
     story_gl_program=main_program; story_gl_vao=main_vao;
     const char *vs="#version 330 core\nlayout(location=0) in vec2 p;layout(location=1) in vec2 t;out vec2 uv;"
                    "void main(){gl_Position=vec4(p,-.99,1);uv=t;}";
-    const char *fs="#version 330 core\nin vec2 uv;uniform sampler2D img;uniform float bright;out vec4 o;"
-                   "void main(){o=vec4(texture(img,uv).rgb*bright,1);}";
+    const char *fs="#version 330 core\nin vec2 uv;uniform sampler2D img;uniform float bright;uniform float blur;uniform float opacity;out vec4 o;"
+                   "void main(){"
+                   "if(blur>0.0){vec2 r=vec2(.0035,.006)*blur;vec3 c=vec3(0);"
+                   "for(int i=-1;i<=1;i++)for(int j=-1;j<=1;j++)c+=textureLod(img,uv+vec2(float(i),float(j))*r,blur).rgb;"
+                   "o=vec4(c/9.0*bright,opacity);}"
+                   "else{vec4 t=texture(img,uv);o=vec4(t.rgb*bright,t.a*opacity);}}";
     GLuint v=make_shader(GL_VERTEX_SHADER,vs), f=make_shader(GL_FRAGMENT_SHADER,fs);
     story_tex_program=glCreateProgram();
     glAttachShader(story_tex_program,v); glAttachShader(story_tex_program,f); glLinkProgram(story_tex_program);
@@ -1560,6 +1568,8 @@ static void story_tex_init(GLuint main_program,GLuint main_vao) {
     glDeleteShader(v); glDeleteShader(f);
     if(!linked) { fprintf(stderr,"Texture program link failed; smooth pictures are off\n"); story_tex_program=0; return; }
     story_tex_bright_loc=glGetUniformLocation(story_tex_program,"bright");
+    story_tex_blur_loc=glGetUniformLocation(story_tex_program,"blur");
+    story_tex_opacity_loc=glGetUniformLocation(story_tex_program,"opacity");
     glUseProgram(story_tex_program);
     glUniform1i(glGetUniformLocation(story_tex_program,"img"),0);
     glGenVertexArrays(1,&story_tex_vao); glGenBuffers(1,&story_tex_vbo);
@@ -1589,25 +1599,56 @@ static void story_texture_load(StoryTexture *texture,const char *path) {
     texture->w=image.w; texture->h=image.h;
     free(image.rgb);
 }
+// A cut-out: a 32-bit BMP whose alpha channel shapes the figure (see tools/build_ari_art.py).
+static void story_texture_load_rgba(StoryTexture *texture,const char *path) {
+    if(texture->id) { glDeleteTextures(1,&texture->id); texture->id=0; }
+    texture->w=texture->h=0;
+    if(!story_tex_program) return;
+    SDL_Surface *loaded=SDL_LoadBMP(path);
+    if(!loaded) return;
+    SDL_Surface *rgba=SDL_ConvertSurfaceFormat(loaded,SDL_PIXELFORMAT_RGBA32,0);
+    SDL_FreeSurface(loaded);
+    if(!rgba) return;
+    glGenTextures(1,&texture->id);
+    glBindTexture(GL_TEXTURE_2D,texture->id);
+    glPixelStorei(GL_UNPACK_ALIGNMENT,1);
+    glPixelStorei(GL_UNPACK_ROW_LENGTH,rgba->pitch/4);
+    glTexImage2D(GL_TEXTURE_2D,0,GL_RGBA8,rgba->w,rgba->h,0,GL_RGBA,GL_UNSIGNED_BYTE,rgba->pixels);
+    glPixelStorei(GL_UNPACK_ROW_LENGTH,0);
+    glGenerateMipmap(GL_TEXTURE_2D);
+    glTexParameteri(GL_TEXTURE_2D,GL_TEXTURE_MIN_FILTER,GL_LINEAR_MIPMAP_LINEAR);
+    glTexParameteri(GL_TEXTURE_2D,GL_TEXTURE_MAG_FILTER,GL_LINEAR);
+    glTexParameteri(GL_TEXTURE_2D,GL_TEXTURE_WRAP_S,GL_CLAMP_TO_EDGE);
+    glTexParameteri(GL_TEXTURE_2D,GL_TEXTURE_WRAP_T,GL_CLAMP_TO_EDGE);
+    texture->w=rgba->w; texture->h=rgba->h;
+    SDL_FreeSurface(rgba);
+}
 // Asks for a texture to be drawn over the rectangle x0..x1, y0..y1 (NDC) after the quads emitted so far.
+static void story_tex_add(const StoryTexture *texture,float x0,float y0,float x1,float y1,
+                          float u0,float v0,float u1,float v1,float bright,float blur,float opacity) {
+    if(story_tex_draw_count>=STORY_TEX_DRAWS) return;
+    StoryTexDraw *d=&story_tex_draws[story_tex_draw_count++];
+    d->id=texture->id;
+    d->x0=x0; d->y0=y0; d->x1=x1; d->y1=y1;
+    d->u0=u0; d->v0=v0; d->u1=u1; d->v1=v1;
+    d->bright=bright; d->blur=blur; d->opacity=opacity;
+    d->split=vertex_count;
+}
 static void story_tex_request(const StoryTexture *texture,float x0,float y0,float x1,float y1,
                               float u0,float v0,float u1,float v1,float bright) {
-    story_tex_draw.active=true; story_tex_draw.id=texture->id;
-    story_tex_draw.x0=x0; story_tex_draw.y0=y0; story_tex_draw.x1=x1; story_tex_draw.y1=y1;
-    story_tex_draw.u0=u0; story_tex_draw.v0=v0; story_tex_draw.u1=u1; story_tex_draw.v1=v1;
-    story_tex_draw.bright=bright;
-    story_tex_draw.split=vertex_count;
+    story_tex_add(texture,x0,y0,x1,y1,u0,v0,u1,v1,bright,story_tex_blur,1.0f);
 }
-static void story_tex_flush(void) {
-    if(!story_tex_draw.active || !story_tex_program) return;
-    const float x0=story_tex_draw.x0,y0=story_tex_draw.y0,x1=story_tex_draw.x1,y1=story_tex_draw.y1;
-    const float u0=story_tex_draw.u0,v0=story_tex_draw.v0,u1=story_tex_draw.u1,v1=story_tex_draw.v1;
+static void story_tex_flush_one(const StoryTexDraw *d) {
+    const float x0=d->x0,y0=d->y0,x1=d->x1,y1=d->y1;
+    const float u0=d->u0,v0=d->v0,u1=d->u1,v1=d->v1;
     // The picture's first row is the top of the screen rectangle, so v grows downwards.
     const float quad_data[24]={x0,y1,u0,v0, x1,y1,u1,v0, x1,y0,u1,v1,  x0,y1,u0,v0, x1,y0,u1,v1, x0,y0,u0,v1};
     glUseProgram(story_tex_program);
-    glUniform1f(story_tex_bright_loc,story_tex_draw.bright);
+    glUniform1f(story_tex_bright_loc,d->bright);
+    glUniform1f(story_tex_blur_loc,d->blur);
+    glUniform1f(story_tex_opacity_loc,d->opacity);
     glActiveTexture(GL_TEXTURE0);
-    glBindTexture(GL_TEXTURE_2D,story_tex_draw.id);
+    glBindTexture(GL_TEXTURE_2D,d->id);
     glBindVertexArray(story_tex_vao);
     glBindBuffer(GL_ARRAY_BUFFER,story_tex_vbo);
     glBufferData(GL_ARRAY_BUFFER,sizeof(quad_data),quad_data,GL_STREAM_DRAW);
@@ -1841,7 +1882,7 @@ static bool story_switch_route(void) {
 static void story_setup_hud(void) {
     static const char *har_names[3]={"JAGUAR","SHADOW","KATANA"};
     quad(-1,-1,2,2,.015f,.025f,.065f);
-    label(-.94f,.985f,.008f,"OMF2115 / STORY",.65f,.92f,1);
+    label(-.94f,.985f,.008f,"OMF2107 / STORY",.65f,.92f,1);
     label(-.94f,.89f,.016f,story_data.has_route ? "PILOT AND HAR" : "CHOOSE YOUR HAR",.80f,.88f,.96f);
     char choice[32];
     snprintf(choice,sizeof(choice),"< %s >",har_names[story_setup_har]);
@@ -1880,8 +1921,9 @@ static int story_pilot_index(const char *name) {   // 0-9 in the pilot table, or
     return -1;
 }
 // The portraits of the two fighters stand over the backdrop, the speaker lit and the other dimmed.
+static bool story_present_active(void);
 static void story_draw_speakers(const char *speaker,bool all_lit) {
-    if(story_art_image.rgb) return;   // an illustration replaces the cast
+    if(story_art_image.rgb || story_present_active()) return;   // an illustration or a presentation replaces the cast
     int stand[2]={-1,-1};
     int speaking=story_pilot_index(speaker);
     if(story_data.has_cast) {
@@ -1987,18 +2029,94 @@ static void story_draw_hangar_life(void) {
     quad(.90f,story_v(.93f),.07f,.05f*aspect*.5f,1.0f,.55f,.18f);
     vertex_alpha=1.0f;
 }
+// ---- a character presentation (the present command): the portrait and name plate slide in from opposite sides over the
+// blurred picture; the name slides out again with the second line, leaving the portrait ----
+static StoryTexture story_present_tex;
+static char story_present_loaded[STORY_NAME];   // the portrait now in story_present_tex
+static Uint64 story_present_started, story_present_name_out;
+static int story_present_seen_stage;
+static float story_present_age(Uint64 since) { return since ? (float)(SDL_GetTicks64()-since)/1000.0f : 0; }
+static float story_ease_out(float t) { t=clampf(t,0,1); return 1.0f-(1.0f-t)*(1.0f-t)*(1.0f-t); }
+static void story_update_present(void) {
+    if(strcmp(story_present_loaded,story_run.present)!=0) {
+        snprintf(story_present_loaded,sizeof(story_present_loaded),"%s",story_run.present);
+        story_present_started=SDL_GetTicks64();
+        story_present_name_out=0;
+        story_present_seen_stage=0;
+        if(story_present_loaded[0]) {
+            char file[STORY_NAME];
+            size_t n=0;
+            for(const char *c=story_present_loaded;*c && n+1<sizeof(file);c++) file[n++]=(char)((*c>='A' && *c<='Z') ? *c+32 : *c);
+            file[n]=0;
+            char path[160];
+            snprintf(path,sizeof(path),"project/build/art/%s_cut.bmp",file);
+            story_texture_load_rgba(&story_present_tex,path);
+        } else if(story_present_tex.id) {
+            glDeleteTextures(1,&story_present_tex.id); story_present_tex.id=0;
+        }
+    }
+    if(story_run.present_stage>=3 && story_present_seen_stage<3 && story_present_seen_stage>0) story_present_name_out=SDL_GetTicks64();
+    story_present_seen_stage=story_run.present_stage;
+}
+static bool story_present_active(void) { return story_run.present[0] && story_present_tex.id; }
+// The blur on the picture behind a presentation, easing in with it.
+static float story_present_blur(void) {
+    if(!story_present_active()) return 0;
+    return 1.6f*story_ease_out(story_capturing ? 1.0f : story_present_age(story_present_started)/.45f);
+}
+static void story_draw_present(void) {
+    if(!story_present_active()) return;
+    bool left=!strcmp(story_run.present_side,"left");
+    float age=story_capturing ? 3.0f : story_present_age(story_present_started);
+    float aspect=(float)win_width/(float)win_height;
+    float top=story_v(.93f), bottom=story_v(0.0f)-.02f;   // a little below the picture: the dialogue box covers the cut
+    float height=top-bottom;
+    float width=height*((float)story_present_tex.w/(float)story_present_tex.h)/aspect;
+    float slide=story_ease_out(age/.5f);
+    float edge=.90f;
+    float x0=left ? -edge-(1.0f-slide)*(width+.25f) : edge-width+(1.0f-slide)*(width+.25f);
+    story_tex_add(&story_present_tex,x0,bottom,x0+width,top,0,0,1,1,1.0f,0,clampf(age/.25f,0,1));
+    bool name_gone=story_run.present_stage>=3 && (story_capturing || !story_present_name_out || story_present_age(story_present_name_out)>.4f);
+    if(!story_run.present_name[0] || name_gone) return;
+    // The name plate comes from the other side a moment later, and leaves the same way.
+    float in=story_ease_out((age-.12f)/.5f);
+    float out=story_run.present_stage>=3 ? story_ease_out(story_present_age(story_present_name_out)/.35f) : 0;
+    float size=.0105f;
+    float length=(float)strlen(story_run.present_name);
+    float plate=length*6.0f*size+.14f;
+    float py=story_v(.24f), ph=.115f;
+    float offset=(1.0f-in)*(plate+.25f)+out*(plate+.25f);
+    float r=.95f,g=.72f,b=.30f;
+    if(left) {   // the portrait is on the left, so the plate hangs from the right edge
+        float x=edge-plate+offset;
+        quad(x,py,plate,ph,.01f,.02f,.05f);
+        quad(x,py+ph-.014f,plate,.014f,r,g,b);
+        quad(x,py,.012f,ph,r,g,b);
+        label(x+.07f,py+ph-.026f,size,story_run.present_name,1,.95f,.80f);
+    } else {
+        float x=-edge-offset;
+        quad(x,py,plate,ph,.01f,.02f,.05f);
+        quad(x,py+ph-.014f,plate,.014f,r,g,b);
+        quad(x+plate-.012f,py,.012f,ph,r,g,b);
+        label(x+.07f,py+ph-.026f,size,story_run.present_name,1,.95f,.80f);
+    }
+}
 static void story_hud_body(void) {
     if(story_setup) { story_setup_hud(); return; }
     quad(-1,-1,2,2,.015f,.025f,.065f);
     story_update_backdrop();
     story_update_art();
+    story_update_present();
+    story_tex_blur=story_present_blur();
     story_draw_backdrop();
+    story_tex_blur=0;
+    story_draw_present();
     bool typed_all=story_update_typing();
     const char *speaker_name=story_run.event==STORY_EVENT_SAY ? story_event_cmd(&story_run)->speaker : "";
     story_draw_speakers(speaker_name,story_run.event!=STORY_EVENT_SAY);
     if(story_run.event==STORY_EVENT_FIGHT && story_art_tex.id) story_draw_hangar_life();
     quad(-1,.86f,2,.14f,.03f,.07f,.14f);   // header band
-    label(-.94f,.985f,.008f,"OMF2115 / STORY",.65f,.92f,1);
+    label(-.94f,.985f,.008f,"OMF2107 / STORY",.65f,.92f,1);
     char scene_label[64];
     snprintf(scene_label,sizeof(scene_label),"SCENE %.10s",story_data.scenes[story_run.scene].id);
     label(.10f,.985f,.008f,scene_label,.48f,.60f,.72f);
@@ -2104,7 +2222,7 @@ static void story_hud_body(void) {
     }
 }
 static void story_hud(void) {
-    story_tex_draw.active=false;
+    story_tex_draw_count=0;
     story_music_sync(story_setup ? "menu" : story_run.music);
     story_update_effect();
     story_hud_body();
@@ -2791,7 +2909,7 @@ static void hud(void) {
         const char *pose[]={"IDLE","PUNCH","KICK","GUARD","CROUCH",
                             "WALK","JUMP","HIT","SPECIAL"};
         quad(-1,.80f,2,.20f,.02f,.04f,.10f);
-        label(-.92f,.94f,.014f,"OMF2115 / MODEL BLOCKOUTS",.72f,.90f,1);
+        label(-.92f,.94f,.014f,"OMF2107 / MODEL BLOCKOUTS",.72f,.90f,1);
         label(-.92f,.85f,.012f,view,.60f,.95f,.67f);
         label(-.12f,.85f,.012f,pose[model_preview_pose],.60f,.95f,.67f);
         label(-.67f,-.64f,.015f,"JAGUAR",.80f,.87f,.94f);
@@ -2802,8 +2920,8 @@ static void hud(void) {
         return;
     }
     quad(-1,.83f,2,.17f,.02f,.04f,.10f);
-    label(-.94f,.95f,.0145f,source_follow_mode ? "OMF2115 / LIVE SOURCE" :
-          (source_replay_mode ? "OMF2115 / SOURCE REPLAY" : "OMF2115 / SIDE ON SPIKE"),
+    label(-.94f,.95f,.0145f,source_follow_mode ? "OMF2107 / LIVE SOURCE" :
+          (source_replay_mode ? "OMF2107 / SOURCE REPLAY" : "OMF2107 / SIDE ON SPIKE"),
           .62f,.89f,.96f);
     if(phase==1) {
         quad(-.94f,.78f,.78f,.035f,.14f,.18f,.25f);
@@ -2895,7 +3013,7 @@ static void hud(void) {
     } else {
         quad(-.78f,-.39f,1.56f,.65f,.025f,.045f,.10f);
         if(phase==0) {
-            label(-.68f,.15f,.021f,"OMF2115",.74f,.94f,1);
+            label(-.68f,.15f,.021f,"OMF2107",.74f,.94f,1);
             label(-.68f,.00f,.015f,source_follow_mode ? "LIVE SOURCE VIEW" :
                   "SIDE ON FIGHTING SPIKE",.85f,.9f,.96f);
             label(-.68f,-.11f,.015f,source_follow_mode ? "STARTING OPENOMF MATCH" :
@@ -2927,7 +3045,7 @@ static GLuint make_shader(GLenum type,const char *source) {
     if(!ok) { char log[1024]; glGetShaderInfoLog(s,sizeof(log),NULL,log); fprintf(stderr,"Shader: %s\n",log); exit(1); }
     return s;
 }
-// Captures go to project/build, next to the files the OMF2115 tools generate, not into OpenOMF's build tree.
+// Captures go to project/build, next to the files the OMF2107 tools generate, not into OpenOMF's build tree.
 static void ensure_capture_dir(void) {
 #ifdef _WIN32
     _mkdir("project");
@@ -3065,7 +3183,7 @@ int main(int argc,char **argv) {
     if(!selection_mode && !story_mode && !model_preview_mode && !smoke && !capture && !sandbox && !source_check && !source_replay_mode) {
         // Real fights come from OpenOMF (the original-game engine). The built-in combat
         // loop is a provisional placeholder kept only for rendering and self-tests.
-        fputs("OMF2115 fights run on the OpenOMF engine. Start one with:\n"
+        fputs("OMF2107 fights run on the OpenOMF engine. Start one with:\n"
               "  powershell -ExecutionPolicy Bypass -File project/scripts/run-blockout-jaguar.ps1\n"
               "Other modes: --source-live trace.csv | --source-replay trace.csv | --source-replay-check trace.csv\n"
               "             --model-preview | --select selection.txt | --story script.story | --self-test | --sandbox (provisional non-OMF combat)\n",stderr);
@@ -3209,7 +3327,7 @@ int main(int argc,char **argv) {
     SDL_GL_SetAttribute(SDL_GL_DEPTH_SIZE,24);
     SDL_GL_SetAttribute(SDL_GL_MULTISAMPLEBUFFERS,1);
     SDL_GL_SetAttribute(SDL_GL_MULTISAMPLESAMPLES,4);
-    SDL_Window *window=SDL_CreateWindow("OMF2115 / PROTOTYPE",SDL_WINDOWPOS_CENTERED,SDL_WINDOWPOS_CENTERED,
+    SDL_Window *window=SDL_CreateWindow("OMF2107 / PROTOTYPE",SDL_WINDOWPOS_CENTERED,SDL_WINDOWPOS_CENTERED,
                                        WIDTH,HEIGHT,SDL_WINDOW_OPENGL|SDL_WINDOW_RESIZABLE|
                                        ((smoke || capture || source_capture || model_preview_capture || story_shot_path) ? SDL_WINDOW_HIDDEN : SDL_WINDOW_SHOWN));
     if(!window) { fprintf(stderr,"Window: %s\n",SDL_GetError()); SDL_Quit(); return 1; }
@@ -3518,10 +3636,16 @@ int main(int argc,char **argv) {
             glDepthMask(GL_TRUE);
         }
         glDisable(GL_DEPTH_TEST);
-        int split=story_mode && story_tex_draw.active ? story_tex_draw.split : world_count;
-        glDrawArrays(GL_TRIANGLES,world_count,split-world_count);
-        if(story_mode) story_tex_flush();
-        glDrawArrays(GL_TRIANGLES,split,vertex_count-split);
+        int drawn=world_count;
+        if(story_mode && story_tex_program) {
+            for(int i=0;i<story_tex_draw_count;i++) {   // runs of quads, each followed by the picture requested after them
+                const StoryTexDraw *d=&story_tex_draws[i];
+                if(d->split>drawn) glDrawArrays(GL_TRIANGLES,drawn,d->split-drawn);
+                drawn=d->split>drawn ? d->split : drawn;
+                story_tex_flush_one(d);
+            }
+        }
+        glDrawArrays(GL_TRIANGLES,drawn,vertex_count-drawn);
         Uint64 profile_after_gpu=SDL_GetPerformanceCounter();
         bool capture_now=capture || story_shot_path || (source_capture && (!source_follow_mode ||
                          (source_replay.count && source_replay.frames[source_replay_index].tick>=capture_tick)));

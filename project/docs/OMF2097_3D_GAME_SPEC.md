@@ -1,12 +1,12 @@
-# OMF2115 — game specification
+# OMF2107 — game specification
 
 **Version:** 0.1, design target for review  
-**Project name:** OMF2115  
-**Basis:** the original game, the local OpenOMF source, the [original-game reference](OMF2097/OMF2097_REFERENCE.md), and the proposed [story treatment](OMF2115_LORE_v2.md).
+**Project name:** OMF2107  
+**Basis:** the original game, the local OpenOMF source, the [original-game reference](OMF2097/OMF2097_REFERENCE.md), and the proposed [story treatment](OMF2107_LORE_v2.md).
 
 ## 1. Product definition
 
-OMF2115 is a single-player and local-versus robot fighting game that rebuilds
+OMF2107 is a single-player and local-versus robot fighting game that rebuilds
 *One Must Fall 2097* in 3D. Players choose a **pilot and a HAR independently**,
 fight on a **side-on gameplay plane**, and use recognizable OMF attacks, specials, stun,
 combos, arena hazards, and scrap finishes. The new production adds expressive
@@ -119,9 +119,9 @@ and game version so fights can be reviewed and combat regressions reproduced.
 - New 3D HAR models preserve the original machines' silhouette, main colors,
   weapons, and scale relationships. Materials add mechanical depth without
   turning the roster into interchangeable realistic robots.
-- For Jaguar, use the approved [front, back, and right-side modeling references](../robots/jaguar/canonical/README.md) as the visual source of truth for the OMF2115 mesh. Original sprites continue to guide movement and recognizability.
-- For Shadow, use the approved [front, back, and right-side modeling references](../robots/shadow/canonical/README.md) as the visual source of truth for the OMF2115 mesh. Original sprites continue to guide movement and recognizability.
-- Where the original sprites are too small to resolve a robot feature or a pilot's appearance, consult OMF 2097 Remastered's higher-resolution robot and character sprites as an additional reference. Keep the approved OMF2115 modeling views and measured OpenOMF move timing as the production guides; record the remastered asset used and review its terms before reuse.
+- For Jaguar, use the approved [front, back, and right-side modeling references](../robots/jaguar/canonical/README.md) as the visual source of truth for the OMF2107 mesh. Original sprites continue to guide movement and recognizability.
+- For Shadow, use the approved [front, back, and right-side modeling references](../robots/shadow/canonical/README.md) as the visual source of truth for the OMF2107 mesh. Original sprites continue to guide movement and recognizability.
+- Where the original sprites are too small to resolve a robot feature or a pilot's appearance, consult OMF 2097 Remastered's higher-resolution robot and character sprites as an additional reference. Keep the approved OMF2107 modeling views and measured OpenOMF move timing as the production guides; record the remastered asset used and review its terms before reuse.
 - Animation has a readable anticipation, active strike, and recovery.
   Gameplay timing drives animation; animation does not secretly change hit
   timing or move distance.
@@ -151,7 +151,7 @@ The story treatment permits optional romantic tension among adult characters.
 All characters are presumed bisexual, regardless of their default
 relationships; romance routes are available only to consenting adults.
 Intimate moments are skippable and depend on
-consent. OMF2115 establishes Angel as 28 because the original manual leaves her
+consent. OMF2107 establishes Angel as 28 because the original manual leaves her
 age unspecified. Steffan remains 17 and has no romance or sexual route in the
 2097 story.
 
@@ -166,7 +166,7 @@ is a content-budget decision made after the first route is playable.
 ### Premise and structure
 
 Story mode follows WAR's 2097 tournament for the Ganymede position. The
-[story treatment](OMF2115_LORE_v2.md) supplies the proposed conspiracy:
+[story treatment](OMF2107_LORE_v2.md) supplies the proposed conspiracy:
 an experimental neural link drains pilots, a cover-up protects the Ganymede
 charter, and Kreissack uses the trial to advance Nova. The tone combines public
 spectacle with private physical and emotional cost. There is no supernatural

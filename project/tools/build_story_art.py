@@ -161,7 +161,7 @@ def pixel_text(base: Image.Image, label: str, xy: tuple[int, int], size: int, sc
 def title_frame() -> Image.Image:
     frame = vignette(bars(arena("stadium", .55), (70, 110, 200)), .8)
     pixel_text(frame, "WAR PRESENTS", (88, 18), 10, 2, (255, 190, 90))
-    pixel_text(frame, "OMF 2115", (50, 46), 16, 3)
+    pixel_text(frame, "OMG 2107", (50, 46), 16, 3)
     return frame
 
 
@@ -220,7 +220,7 @@ def ending_apart_frame() -> Image.Image:
 def ending_title_frame() -> Image.Image:
     frame = vignette(sunset(.6), .8)
     pixel_text(frame, "END OF SLICE", (30, 34), 20, 2)
-    pixel_text(frame, "OMF 2115", (110, 88), 10, 2, (255, 190, 90))
+    pixel_text(frame, "OMG 2107", (110, 88), 10, 2, (255, 190, 90))
     return frame
 
 
