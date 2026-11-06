@@ -1812,7 +1812,7 @@ static void story_load_cut(StoryTexture *texture,const char *pilot) {
 }
 // Draws a pilot's cut-out in a box whose top-left corner is x,top, head and shoulders first. A missing render falls
 // back to a plain card with the pilot's initial.
-static void story_draw_cut(const StoryTexture *texture,const char *pilot,float x,float top,float width,float height,float bright) {
+static void story_draw_cut(const StoryTexture *texture,const char *pilot,float x,float top,float width,float height,float bright,bool mirror) {
     if(!texture->id) {
         static const StoryPortrait none={0};
         story_draw_bright=bright;
@@ -1825,6 +1825,7 @@ static void story_draw_cut(const StoryTexture *texture,const char *pilot,float x
     float image=(float)texture->w/(float)texture->h;
     float u0=0,u1=1,v1=image/box;
     if(v1>1.0f) { float visible=box/image; u0=(1.0f-visible)/2.0f; u1=u0+visible; v1=1.0f; }
+    if(mirror) { float t=u0; u0=u1; u1=t; }   // a figure on the right faces the middle
     story_tex_add(texture,x,top-height,x+width,top,u0,0,u1,v1,bright,0,1.0f);
 }
 static void story_stat_row(float x,float y,const char *name,int value) {
@@ -1848,7 +1849,7 @@ static void story_setup_card(int side,float x,const char *pilot,const char *har,
             story_load_cut(&story_card_tex[side],pilot);
             snprintf(story_card_loaded[side],sizeof(story_card_loaded[side]),"%s",pilot);
         }
-        story_draw_cut(&story_card_tex[side],pilot,x,.50f,57*cx,57*cy,1.0f);
+        story_draw_cut(&story_card_tex[side],pilot,x,.50f,57*cx,57*cy,1.0f,side==1);
     }
     char upper[STORY_NAME];
     snprintf(upper,sizeof(upper),"%s",pilot);
@@ -1976,7 +1977,7 @@ static void story_draw_speakers(const char *speaker,bool all_lit) {
         float top=-.20f+height;
         const float *accent=side==0 ? (const float[]){.24f,.78f,1.0f} : (const float[]){1.0f,.55f,.27f};
         quad(x-.012f,top-height-.016f,width+.024f,height+.032f,accent[0]*bright,accent[1]*bright,accent[2]*bright);
-        story_draw_cut(&story_speaker_tex[index],story_pilot_stats[index].name,x,top,width,height,bright);
+        story_draw_cut(&story_speaker_tex[index],story_pilot_stats[index].name,x,top,width,height,bright,side==1);
     }
 }
 // Advances the typewriter for the current say line; true once the whole line is showing.
@@ -2093,7 +2094,7 @@ static float story_present_blur(void) {
     float blur=0;
     for(int s=0;s<2;s++) {
         if(!story_present_slot_active(s)) continue;
-        float b=1.6f*story_ease_out(story_capturing ? 1.0f : story_present_age(story_present_started[s])/.45f);
+        float b=.8f*story_ease_out(story_capturing ? 1.0f : story_present_age(story_present_started[s])/.45f);
         if(b>blur) blur=b;
     }
     return blur;
@@ -2109,7 +2110,8 @@ static void story_draw_present_slot(int s) {
     float slide=story_ease_out(age/.5f);
     float edge=.90f;
     float x0=left ? -edge-(1.0f-slide)*(width+.25f) : edge-width+(1.0f-slide)*(width+.25f);
-    story_tex_add(&story_present_tex[s],x0,bottom,x0+width,top,0,0,1,1,1.0f,0,clampf(age/.25f,0,1));
+    // The figure on the right is mirrored so that both face the middle.
+    story_tex_add(&story_present_tex[s],x0,bottom,x0+width,top,left ? 0.0f : 1.0f,0,left ? 1.0f : 0.0f,1,1.0f,0,clampf(age/.25f,0,1));
 }
 static void story_draw_present_name(int s) {
     if(!story_present_slot_active(s)) return;
