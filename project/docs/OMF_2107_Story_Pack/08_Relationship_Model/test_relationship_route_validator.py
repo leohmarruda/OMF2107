@@ -91,12 +91,12 @@ class RelationshipBranches(unittest.TestCase):
 
     def test_ch3_first_kiss_not_repeated_in_spar(self):
         p=Path(__file__).resolve().parents[1]/'04_Screenplay_Reconstructions'/'Chapter_03_Trouble_With_Attraction_v0.2.md'
-        scene=p.read_text().split('## SCENE 5B — FIVE MORE SECONDS')[1].split('# SCENE 6')[0]
+        scene=p.read_text(encoding='utf-8').split('## SCENE 5B — FIVE MORE SECONDS')[1].split('# SCENE 6')[0]
         self.assertIn('*does not* include a first kiss',scene)
         self.assertNotIn('they kiss',scene.lower())
 
     def test_lyra_alex_after_default_steffan_breakup(self):
-        ch6=(Path(__file__).resolve().parents[1]/'04_Screenplay_Reconstructions'/'Chapter_06_One_Must_Fall_v0.2.md').read_text()
+        ch6=(Path(__file__).resolve().parents[1]/'04_Screenplay_Reconstructions'/'Chapter_06_One_Must_Fall_v0.2.md').read_text(encoding='utf-8')
         self.assertIn('the tournament and Alex\'s active coverage of her matches have ended',ch6)
         self.assertIn('## SCENE 15B — NO INTERVIEW TONIGHT',ch6)
 

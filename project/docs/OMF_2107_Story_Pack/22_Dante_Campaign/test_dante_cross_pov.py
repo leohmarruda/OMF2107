@@ -2,7 +2,7 @@ import unittest
 from pathlib import Path
 ROOT = Path(__file__).resolve().parents[1]
 
-def read(rel): return (ROOT/rel).read_text()
+def read(rel): return (ROOT/rel).read_text(encoding='utf-8')
 
 class DanteCrossPOVTests(unittest.TestCase):
     def test_dante_and_steffan_share_private_confrontation_day11(self):

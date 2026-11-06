@@ -5,8 +5,8 @@ HERE=Path(__file__).parent
 class TestDossiers(unittest.TestCase):
     @classmethod
     def setUpClass(cls):
-        with (HERE/'NPC_PRIORITY_MATCHUP_DOSSIERS_v4.0.csv').open() as f:cls.rows=list(csv.DictReader(f))
-        with (HERE/'NPC_PAIR_EDITORIAL_REVIEW_v3.9.csv').open() as f:cls.baseline=list(csv.DictReader(f))
+        with (HERE/'NPC_PRIORITY_MATCHUP_DOSSIERS_v4.0.csv').open(encoding='utf-8') as f:cls.rows=list(csv.DictReader(f))
+        with (HERE/'NPC_PAIR_EDITORIAL_REVIEW_v3.9.csv').open(encoding='utf-8') as f:cls.baseline=list(csv.DictReader(f))
     def test_exact_sample_pending_coverage(self):
         expected={frozenset((r['fighter_a'],r['fighter_b'])) for r in self.baseline if int(r['observed_npc_occurrences_in_384_test_inputs'])>0 and r['proposal_type']!='established_exact_pair'}
         actual={frozenset(r['pair'].split('|')) for r in self.rows}

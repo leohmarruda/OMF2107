@@ -157,7 +157,7 @@ if __name__ == '__main__':
 class JeanPaulScreenplayClockTests(unittest.TestCase):
     @classmethod
     def setUpClass(cls):
-        cls.script = (Path(__file__).parent / 'Jean_Paul_Playable_Screenplay_v0.1.md').read_text()
+        cls.script = (Path(__file__).parent / 'Jean_Paul_Playable_Screenplay_v0.1.md').read_text(encoding='utf-8')
 
     def test_day_11_confrontation_before_day_12_rescue(self):
         script = self.script

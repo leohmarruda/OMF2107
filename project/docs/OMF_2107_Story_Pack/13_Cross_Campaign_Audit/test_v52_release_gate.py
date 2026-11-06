@@ -11,7 +11,7 @@ class V52ReleaseGate(unittest.TestCase):
   cross-checkable against real code/data, and v5.2's own self-audit for why
   this distinction matters (manifest.json/FINAL_STABILIZATION_AUDIT_v5.2.md
   previously over-trusted doc-only claims like this one)."""
-  t=(R/'00_README/CURRENT_RELEASE.md').read_text()
+  t=(R/'00_README/CURRENT_RELEASE.md').read_text(encoding='utf-8')
   for val in ('v5.8 background locations ratified','NPC-vs-NPC fights occur **offscreen**','Cossette–Ibrahim'):
    self.assertIn(val,t)
  def test_current_policy_matches_implementation(self):
@@ -27,16 +27,16 @@ class V52ReleaseGate(unittest.TestCase):
     'recorded_uniform_random_draw' ranking method the policy describes."""
   from npc_outcome_registry import provisional_preview_status
   status = provisional_preview_status()
-  t=(R/'00_README/CURRENT_RELEASE.md').read_text()
+  t=(R/'00_README/CURRENT_RELEASE.md').read_text(encoding='utf-8')
   self.assertIn(f"{status['provisionally_approved']} provisional", t)
   self.assertEqual(status['provisionally_approved'], 51)
-  validator_src = (R/'07_Tournament_Model/tournament_validator.py').read_text()
+  validator_src = (R/'07_Tournament_Model/tournament_validator.py').read_text(encoding='utf-8')
   self.assertIn('recorded_uniform_random_draw', validator_src)
   self.assertIn('persisted uniform random permutation', t)
  def test_scene_inventory_source_lines(self):
-  with (R/'31_Cross_POV_Integration/ACTIVE_SCENE_INVENTORY_v3.3.csv').open(newline='') as f: rows=list(csv.DictReader(f))
+  with (R/'31_Cross_POV_Integration/ACTIVE_SCENE_INVENTORY_v3.3.csv').open(newline='',encoding='utf-8') as f: rows=list(csv.DictReader(f))
   self.assertEqual(len(rows),405)
   for row in rows:
-   s=(R/row['source']).read_text().splitlines()[int(row['line'])-1]
+   s=(R/row['source']).read_text(encoding='utf-8').splitlines()[int(row['line'])-1]
    self.assertIn(row['scene_id'].lower().replace(' ',''),s.lower().replace(' ',''))
 if __name__=='__main__':unittest.main()

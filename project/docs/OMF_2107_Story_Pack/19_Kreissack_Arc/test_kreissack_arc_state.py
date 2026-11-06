@@ -77,7 +77,7 @@ class KreissackSceneTests(unittest.TestCase):
 
     def test_integrated_script_contains_shared_insertions_once(self):
         root=Path(__file__).resolve().parents[1]
-        active=(root/'04_Screenplay_Reconstructions/Chapter_06_One_Must_Fall_v0.4.md').read_text()
+        active=(root/'04_Screenplay_Reconstructions/Chapter_06_One_Must_Fall_v0.4.md').read_text(encoding='utf-8')
         self.assertEqual(active.count('## SCENE 4K —'),1)
         self.assertEqual(active.count('## SCENE 6K —'),1)
         self.assertLess(active.index('## SCENE 4K —'),active.index('# SCENE 5 —'))

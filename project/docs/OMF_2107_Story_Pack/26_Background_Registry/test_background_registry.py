@@ -5,9 +5,9 @@ C=R/'26_Background_Registry'
 class TestBackgroundRegistry(unittest.TestCase):
     @classmethod
     def setUpClass(cls):
-        cls.catalog=json.loads((C/'background_registry.json').read_text())['backgrounds']
+        cls.catalog=json.loads((C/'background_registry.json').read_text(encoding='utf-8'))['backgrounds']
         cls.codes={i['code']:set(i['variants']) for i in cls.catalog}
-        with (C/'scene_background_bindings.csv').open(newline='') as f:
+        with (C/'scene_background_bindings.csv').open(newline='',encoding='utf-8') as f:
             cls.bindings=list(csv.DictReader(f))
     def test_distinct_catalog_ids(self):
         self.assertEqual(len(self.codes),len(self.catalog))
@@ -18,7 +18,7 @@ class TestBackgroundRegistry(unittest.TestCase):
                 self.assertIn(state,self.codes[code])
     def test_slugs_have_annotation(self):
         for script in sorted({x['script'] for x in self.bindings}):
-            lines=(R/script).read_text().splitlines()
+            lines=(R/script).read_text(encoding='utf-8').splitlines()
             for i,line in enumerate(lines):
                 if re.match(r'^\*\*(INT|EXT|INT/EXT)\.',line):
                     self.assertTrue(i+1<len(lines) and lines[i+1].startswith('**[BG:'),(script,i+1))

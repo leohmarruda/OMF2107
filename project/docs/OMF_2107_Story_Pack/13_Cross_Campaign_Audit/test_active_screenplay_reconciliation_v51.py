@@ -2,7 +2,7 @@ import unittest
 from pathlib import Path
 ROOT=Path(__file__).resolve().parents[1]
 class ActiveScriptReconciliationV51(unittest.TestCase):
- def script(self,path): return (ROOT/path).read_text()
+ def script(self,path): return (ROOT/path).read_text(encoding='utf-8')
  def test_circular_group_seeding_removed_from_active_pov(self):
   for p in ('09_Lyra_Campaign/Lyra_Playable_Screenplay_v0.8.md','22_Dante_Campaign/Dante_Playable_Screenplay_v0.7.md','16_Raven_Campaign/OMF_2107_Raven_Playable_Screenplay_v0.9.md'):
    s=self.script(p)

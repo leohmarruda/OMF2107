@@ -24,7 +24,7 @@ def valid(pilot):
 
 @pytest.mark.parametrize('pilot',PILOT_FILES)
 def test_four_ordered_inserts_and_shared_ending(pilot):
-    text=(ROOT/PILOT_FILES[pilot]).read_text()
+    text=(ROOT/PILOT_FILES[pilot]).read_text(encoding='utf-8')
     key={'Lyra':'L','Mara':'M','Ren':'N','Angel':'A','Crystal':'C','Raven':'R'}[pilot]
     indices=[text.index(f'[v1.9 / K{scene}-{key}') for scene in (3,4,5,6)]
     assert indices==sorted(indices), (pilot,indices)
@@ -46,7 +46,7 @@ def test_finale_requires_same_guarded_physical_facts(pilot):
 
 @pytest.mark.parametrize('pilot',PILOT_FILES)
 def test_audience_cutaway_not_an_exclusive_early_clue(pilot):
-    text=(ROOT/PILOT_FILES[pilot]).read_text()
+    text=(ROOT/PILOT_FILES[pilot]).read_text(encoding='utf-8')
     part=text[text.index('[v1.9 / K3-'):text.index('[v1.9 / K4-')]
     assert ('CUTAWAY' in part.upper())
     assert ('private' in part.lower() or 'audience' in part.lower())
@@ -57,13 +57,13 @@ def test_e5_independent_knowledge_clock(day,authenticated,expected):
 
 
 def test_raven_participation_requires_external_authorization():
-    t=(ROOT/PILOT_FILES['Raven']).read_text()
+    t=(ROOT/PILOT_FILES['Raven']).read_text(encoding='utf-8')
     assert 'only if' in t[t.index('[v1.9 / K5-R'):t.index('[v1.9 / K6-R')]
     assert 'an authorized pilot' in t
 
 
 def test_base_ari_finale_preserved():
-    t=(ROOT/'04_Screenplay_Reconstructions/Chapter_06_One_Must_Fall_v0.4.md').read_text()
+    t=(ROOT/'04_Screenplay_Reconstructions/Chapter_06_One_Must_Fall_v0.4.md').read_text(encoding='utf-8')
     assert 'Apparently, I can still surprise you.' in t
     assert '[v1.9 / K6-' not in t
 

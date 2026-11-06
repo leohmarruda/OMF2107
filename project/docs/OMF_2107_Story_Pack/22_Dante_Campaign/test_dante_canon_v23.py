@@ -6,18 +6,18 @@ ROOT=Path(__file__).resolve().parents[1]
 
 class DanteV23CanonTests(unittest.TestCase):
     def test_author_established_default_nonromantic(self):
-        c=(ROOT/'02_Story_Bibles/Dante_Character_Addendum_v2.3.md').read_text()
+        c=(ROOT/'02_Story_Bibles/Dante_Character_Addendum_v2.3.md').read_text(encoding='utf-8')
         self.assertIn('default',c.lower()); self.assertIn('nonromantic',c.lower())
         self.assertIn('change the course',c)
 
     def test_active_dante_scenes_present_and_time_order(self):
-        d=(ROOT/'22_Dante_Campaign/Dante_Playable_Screenplay_v0.2.md').read_text()
+        d=(ROOT/'22_Dante_Campaign/Dante_Playable_Screenplay_v0.2.md').read_text(encoding='utf-8')
         self.assertLess(d.index('### DV2.3'),d.index('### DV5.2'))
         self.assertLess(d.index('### DV5.2'),d.index('### DV6.4'))
         self.assertIn('default is still nonromantic',d)
 
     def test_steffan_view_separates_own_attraction_from_dante_default(self):
-        s=(ROOT/'21_Steffan_Campaign/Steffan_Playable_Screenplay_v0.3.md').read_text()
+        s=(ROOT/'21_Steffan_Campaign/Steffan_Playable_Screenplay_v0.3.md').read_text(encoding='utf-8')
         self.assertIn('Dante defaults to nonromantic feelings',s)
         self.assertIn('DV5.2',s)
 

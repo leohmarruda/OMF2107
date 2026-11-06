@@ -79,7 +79,7 @@ class FanserviceRegistryTests(unittest.TestCase):
         that pilot -- see test_tagged_content_matches_current_active_script
         for that. (Renamed from test_sources_in_index_point_to_new_versions,
         which asserted currency but only ever checked this weaker fact.)"""
-        curr=(ROOT/'00_README/CURRENT_RELEASE.md').read_text()
+        curr=(ROOT/'00_README/CURRENT_RELEASE.md').read_text(encoding='utf-8')
         for r in self.rows:
             if r['status']=='ACTIVE_SCRIPT_REVIEW':self.assertIn(Path(r['source']).name,curr)
     # Known, investigated exceptions -- do NOT add to this silently. Each

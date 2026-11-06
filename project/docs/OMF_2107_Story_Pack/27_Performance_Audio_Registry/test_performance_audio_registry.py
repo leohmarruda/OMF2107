@@ -4,16 +4,16 @@ R=Path(__file__).resolve().parents[1]; D=R/'27_Performance_Audio_Registry'
 class TestPerformanceAudioRegistry(unittest.TestCase):
  @classmethod
  def setUpClass(cls):
-  cls.registry=json.loads((D/'registry.json').read_text())
-  cls.revisions=list(csv.DictReader((D/'script_revisions.csv').open()))
-  cls.dialogue=list(csv.DictReader((D/'dialogue_cues.csv').open()))
-  cls.music=list(csv.DictReader((D/'scene_music_cues.csv').open()))
+  cls.registry=json.loads((D/'registry.json').read_text(encoding='utf-8'))
+  cls.revisions=list(csv.DictReader((D/'script_revisions.csv').open(encoding='utf-8')))
+  cls.dialogue=list(csv.DictReader((D/'dialogue_cues.csv').open(encoding='utf-8')))
+  cls.music=list(csv.DictReader((D/'scene_music_cues.csv').open(encoding='utf-8')))
  def test_covers_all_campaigns_and_18_scripts(self):
   self.assertEqual(len(self.revisions),18)
   self.assertEqual(len(set(r['campaign'] for r in self.revisions)),13)
  def test_no_content_changed(self):
   for r in self.revisions:
-   text=(R/r['new']).read_text();old=(R/r['old']).read_text()
+   text=(R/r['new']).read_text(encoding='utf-8');old=(R/r['old']).read_text(encoding='utf-8')
    text=re.sub(r'^<!-- ACTIVE performance-annotated version[^\n]+-->\n','',text)
    text=re.sub(r'^\*\*\[MUSIC: [^\n]*\]\*\*\n','',text,flags=re.M)
    text=re.sub(r'^\*\*\[PERF: [^\n]*\]\*\*\n','',text,flags=re.M)
@@ -32,7 +32,7 @@ class TestPerformanceAudioRegistry(unittest.TestCase):
    self.assertTrue(r['bg'].startswith('BG-'))
  def test_no_script_has_unknown_music_or_expression(self):
   for r in self.revisions:
-   txt=(R/r['new']).read_text()
+   txt=(R/r['new']).read_text(encoding='utf-8')
    self.assertEqual(txt.count('[MUSIC:'),int(r['music_cues']))
    self.assertEqual(txt.count('[PERF:'),int(r['expressive_cues']))
  def test_sprite_family_lookup_complete(self):
@@ -45,7 +45,7 @@ class TestPerformanceAudioRegistry(unittest.TestCase):
   ids=[r['utterance_id'] for r in self.dialogue]
   self.assertEqual(len(ids),len(set(ids)))
  def test_current_release_refs_exist(self):
-  release=(R/'00_README/CURRENT_RELEASE.md').read_text()
+  release=(R/'00_README/CURRENT_RELEASE.md').read_text(encoding='utf-8')
   for r in self.revisions:
    self.assertIn(Path(r['new']).name,release)
 if __name__=='__main__':unittest.main()

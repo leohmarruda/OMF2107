@@ -76,7 +76,7 @@ class CrossCampaignAudit(unittest.TestCase):
 
     def test_corrected_angel_chapter_days(self):
         root=Path(__file__).resolve().parents[1]
-        text=(root/'12_Angel_Campaign/Angel_Playable_Screenplay_v0.1.md').read_text()
+        text=(root/'12_Angel_Campaign/Angel_Playable_Screenplay_v0.1.md').read_text(encoding='utf-8')
         for header in ('Days 3–4. Question','Day 5. Question','Days 8–10. Question',
                        'Days 11–12. Question','Day 13. Question'):
             self.assertIn(header,text)
