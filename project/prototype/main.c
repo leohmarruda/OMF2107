@@ -2029,60 +2029,76 @@ static void story_draw_hangar_life(void) {
     quad(.90f,story_v(.93f),.07f,.05f*aspect*.5f,1.0f,.55f,.18f);
     vertex_alpha=1.0f;
 }
-// ---- a character presentation (the present command): the portrait and name plate slide in from opposite sides over the
-// blurred picture; the name slides out again with the second line, leaving the portrait ----
-static StoryTexture story_present_tex;
-static char story_present_loaded[STORY_NAME];   // the portrait now in story_present_tex
-static Uint64 story_present_started, story_present_name_out;
-static int story_present_seen_stage;
+// ---- character presentations (the present command): up to two portraits, one on each side, slide in over the blurred
+// picture; a name plate slides in from the opposite side the first time a portrait appears and leaves with the second line ----
+static StoryTexture story_present_tex[2];
+static char story_present_loaded[2][STORY_NAME];   // the portrait now in story_present_tex[side]
+static Uint64 story_present_started[2], story_present_name_out[2];
+static int story_present_seen_stage[2];
 static float story_present_age(Uint64 since) { return since ? (float)(SDL_GetTicks64()-since)/1000.0f : 0; }
 static float story_ease_out(float t) { t=clampf(t,0,1); return 1.0f-(1.0f-t)*(1.0f-t)*(1.0f-t); }
 static void story_update_present(void) {
-    if(strcmp(story_present_loaded,story_run.present)!=0) {
-        snprintf(story_present_loaded,sizeof(story_present_loaded),"%s",story_run.present);
-        story_present_started=SDL_GetTicks64();
-        story_present_name_out=0;
-        story_present_seen_stage=0;
-        if(story_present_loaded[0]) {
-            char file[STORY_NAME];
-            size_t n=0;
-            for(const char *c=story_present_loaded;*c && n+1<sizeof(file);c++) file[n++]=(char)((*c>='A' && *c<='Z') ? *c+32 : *c);
-            file[n]=0;
-            char path[160];
-            snprintf(path,sizeof(path),"project/build/art/%s_cut.bmp",file);
-            story_texture_load_rgba(&story_present_tex,path);
-        } else if(story_present_tex.id) {
-            glDeleteTextures(1,&story_present_tex.id); story_present_tex.id=0;
+    for(int s=0;s<2;s++) {
+        const StoryPresent *p=&story_run.present[s];
+        if(strcmp(story_present_loaded[s],p->image)!=0) {
+            snprintf(story_present_loaded[s],sizeof(story_present_loaded[s]),"%s",p->image);
+            story_present_started[s]=SDL_GetTicks64();
+            story_present_name_out[s]=0;
+            story_present_seen_stage[s]=0;
+            if(story_present_loaded[s][0]) {
+                char file[STORY_NAME];
+                size_t n=0;
+                for(const char *c=story_present_loaded[s];*c && n+1<sizeof(file);c++) file[n++]=(char)((*c>='A' && *c<='Z') ? *c+32 : *c);
+                file[n]=0;
+                char path[160];
+                snprintf(path,sizeof(path),"project/build/art/%s_cut.bmp",file);
+                story_texture_load_rgba(&story_present_tex[s],path);
+            } else if(story_present_tex[s].id) {
+                glDeleteTextures(1,&story_present_tex[s].id); story_present_tex[s].id=0;
+            }
         }
+        if(p->stage>=3 && story_present_seen_stage[s]<3 && story_present_seen_stage[s]>0) story_present_name_out[s]=SDL_GetTicks64();
+        story_present_seen_stage[s]=p->stage;
     }
-    if(story_run.present_stage>=3 && story_present_seen_stage<3 && story_present_seen_stage>0) story_present_name_out=SDL_GetTicks64();
-    story_present_seen_stage=story_run.present_stage;
 }
-static bool story_present_active(void) { return story_run.present[0] && story_present_tex.id; }
+static bool story_present_slot_active(int s) { return story_run.present[s].image[0] && story_present_tex[s].id; }
+static bool story_present_active(void) { return story_present_slot_active(0) || story_present_slot_active(1); }
 // The blur on the picture behind a presentation, easing in with it.
 static float story_present_blur(void) {
-    if(!story_present_active()) return 0;
-    return 1.6f*story_ease_out(story_capturing ? 1.0f : story_present_age(story_present_started)/.45f);
+    float blur=0;
+    for(int s=0;s<2;s++) {
+        if(!story_present_slot_active(s)) continue;
+        float b=1.6f*story_ease_out(story_capturing ? 1.0f : story_present_age(story_present_started[s])/.45f);
+        if(b>blur) blur=b;
+    }
+    return blur;
 }
-static void story_draw_present(void) {
-    if(!story_present_active()) return;
-    bool left=!strcmp(story_run.present_side,"left");
-    float age=story_capturing ? 3.0f : story_present_age(story_present_started);
+static void story_draw_present_slot(int s) {
+    if(!story_present_slot_active(s)) return;
+    bool left=(s==0);
+    float age=story_capturing ? 3.0f : story_present_age(story_present_started[s]);
     float aspect=(float)win_width/(float)win_height;
     float top=story_v(.93f), bottom=story_v(0.0f)-.02f;   // a little below the picture: the dialogue box covers the cut
     float height=top-bottom;
-    float width=height*((float)story_present_tex.w/(float)story_present_tex.h)/aspect;
+    float width=height*((float)story_present_tex[s].w/(float)story_present_tex[s].h)/aspect;
     float slide=story_ease_out(age/.5f);
     float edge=.90f;
     float x0=left ? -edge-(1.0f-slide)*(width+.25f) : edge-width+(1.0f-slide)*(width+.25f);
-    story_tex_add(&story_present_tex,x0,bottom,x0+width,top,0,0,1,1,1.0f,0,clampf(age/.25f,0,1));
-    bool name_gone=story_run.present_stage>=3 && (story_capturing || !story_present_name_out || story_present_age(story_present_name_out)>.4f);
-    if(!story_run.present_name[0] || name_gone) return;
+    story_tex_add(&story_present_tex[s],x0,bottom,x0+width,top,0,0,1,1,1.0f,0,clampf(age/.25f,0,1));
+}
+static void story_draw_present_name(int s) {
+    if(!story_present_slot_active(s)) return;
+    const StoryPresent *p=&story_run.present[s];
+    bool left=(s==0);
+    float age=story_capturing ? 3.0f : story_present_age(story_present_started[s]);
+    float edge=.90f;
+    bool name_gone=p->stage>=3 && (story_capturing || !story_present_name_out[s] || story_present_age(story_present_name_out[s])>.4f);
+    if(!p->name[0] || name_gone) return;
     // The name plate comes from the other side a moment later, and leaves the same way.
     float in=story_ease_out((age-.12f)/.5f);
-    float out=story_run.present_stage>=3 ? story_ease_out(story_present_age(story_present_name_out)/.35f) : 0;
+    float out=p->stage>=3 ? story_ease_out(story_present_age(story_present_name_out[s])/.35f) : 0;
     float size=.0105f;
-    float length=(float)strlen(story_run.present_name);
+    float length=(float)strlen(p->name);
     float plate=length*6.0f*size+.14f;
     float py=story_v(.24f), ph=.115f;
     float offset=(1.0f-in)*(plate+.25f)+out*(plate+.25f);
@@ -2092,14 +2108,20 @@ static void story_draw_present(void) {
         quad(x,py,plate,ph,.01f,.02f,.05f);
         quad(x,py+ph-.014f,plate,.014f,r,g,b);
         quad(x,py,.012f,ph,r,g,b);
-        label(x+.07f,py+ph-.026f,size,story_run.present_name,1,.95f,.80f);
+        label(x+.07f,py+ph-.026f,size,p->name,1,.95f,.80f);
     } else {
         float x=-edge-offset;
         quad(x,py,plate,ph,.01f,.02f,.05f);
         quad(x,py+ph-.014f,plate,.014f,r,g,b);
         quad(x+plate-.012f,py,.012f,ph,r,g,b);
-        label(x+.07f,py+ph-.026f,size,story_run.present_name,1,.95f,.80f);
+        label(x+.07f,py+ph-.026f,size,p->name,1,.95f,.80f);
     }
+}
+static void story_draw_present(void) {
+    story_draw_present_slot(0);
+    story_draw_present_slot(1);
+    story_draw_present_name(0);   // the plates go over both portraits
+    story_draw_present_name(1);
 }
 static void story_hud_body(void) {
     if(story_setup) { story_setup_hud(); return; }

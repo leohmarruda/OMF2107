@@ -9,10 +9,12 @@
 //   music <track>                       background music: menu, arena0 to arena4, end, or off (the original
 //                                       game's tracks; the viewer plays them from OMF2097/ when it can)
 //   present <image> <left|right> [name] a character portrait slides in from that side over the current picture, which
-//                                       is blurred a little; the name slides in from the other side and slides out
-//                                       again when the line after the first one appears, leaving only the portrait.
+//                                       is blurred a little. Two characters can be shown, one on each side, so a
+//                                       conversation shows both; a new present replaces that side's portrait. The name
+//                                       slides in from the other side and out again when the line after the first one
+//                                       appears, and only the first time that portrait is ever shown.
 //                                       <image> is project/build/art/<image>_cut.bmp (a 32-bit cut-out). Leave the
-//                                       name out to show the portrait alone; "present off" removes it
+//                                       name out to show the portrait alone; "present off" removes both
 //   flash                               a quick white flash over the picture (a presentation beat; does not wait)
 //   banner <text>                       a big banner across the picture for a moment (does not wait)
 //   say <speaker>: <text>               one line of dialogue; an empty speaker (say : text) is narration
@@ -113,6 +115,12 @@ int story_find_scene(const Story *story, const char *id);
 
 typedef enum { STORY_EVENT_SAY, STORY_EVENT_CHOICE, STORY_EVENT_FIGHT, STORY_EVENT_END } StoryEventKind;
 
+#define STORY_NAME_SEEN 40
+typedef struct {
+    char image[STORY_NAME];         // the portrait on this side; empty for none
+    char name[STORY_NAME];          // the name plate's text; empty for none (a plate shows only the first time a portrait appears)
+    int stage;                      // 0 none; 1 name just introduced; 2 name shown with its first line; 3 name gone
+} StoryPresent;
 typedef struct { char name[STORY_NAME]; char value[STORY_NAME]; } StoryFlag;
 typedef struct { char speaker[STORY_NAME]; char text[STORY_TEXT]; } StoryLogEntry;
 
@@ -132,10 +140,9 @@ typedef struct {
     unsigned effect_serial;         // counts flash and banner beats; the host plays one when this changes
     char effect_kind[16];           // "flash" or "banner"
     char effect_text[STORY_NAME];   // the banner's text (not saved: effects are momentary)
-    char present[STORY_NAME];       // the portrait now shown (see present); empty for none
-    char present_side[8];           // left or right: the side the portrait stands on
-    char present_name[STORY_NAME];  // the name plate's text; empty for a portrait without one
-    int present_stage;              // 0 none; 1 name just introduced; 2 name shown with its first line; 3 name gone
+    StoryPresent present[2];        // the portraits now shown (see present): [0] stands on the left, [1] on the right
+    char name_seen[STORY_NAME_SEEN][STORY_NAME];   // the portraits whose name plate has already been shown; a plate shows once
+    int name_seen_count;
     int log_total;                  // entries ever logged; the last STORY_LOG are kept
     StoryLogEntry log[STORY_LOG];
 } StoryRun;

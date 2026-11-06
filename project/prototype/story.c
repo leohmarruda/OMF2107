@@ -531,12 +531,17 @@ static void step_to_event(StoryRun *r, bool log_say) {
                 break;
             case STORY_CMD_PRESENT:
                 if(strcmp(c->flag, "off") == 0) {
-                    r->present[0] = 0; r->present_side[0] = 0; r->present_name[0] = 0; r->present_stage = 0;
+                    memset(r->present, 0, sizeof(r->present));
                 } else {
-                    snprintf(r->present, sizeof(r->present), "%s", c->flag);
-                    snprintf(r->present_side, sizeof(r->present_side), "%s", c->value);
-                    snprintf(r->present_name, sizeof(r->present_name), "%s", c->text);
-                    r->present_stage = c->text[0] ? 1 : 3;
+                    StoryPresent *p = &r->present[strcmp(c->value, "left") == 0 ? 0 : 1];
+                    bool seen = false;
+                    for(int i = 0; i < r->name_seen_count; i++) if(strcmp(r->name_seen[i], c->flag) == 0) seen = true;
+                    snprintf(p->image, sizeof(p->image), "%s", c->flag);
+                    // The name plate shows the first time this portrait appears and never again.
+                    snprintf(p->name, sizeof(p->name), "%s", seen ? "" : c->text);
+                    p->stage = p->name[0] ? 1 : 3;
+                    if(!seen && c->text[0] && r->name_seen_count < STORY_NAME_SEEN)
+                        snprintf(r->name_seen[r->name_seen_count++], STORY_NAME, "%s", c->flag);
                 }
                 r->pc++;
                 break;
@@ -560,8 +565,10 @@ static void step_to_event(StoryRun *r, bool log_say) {
                 expand(r, c->text, r->say_text, sizeof(r->say_text));
                 if(log_say) {
                     log_add(r, c->speaker, r->say_text);
-                    if(r->present_stage == 1) r->present_stage = 2;        // the name arrives with its first line
-                    else if(r->present_stage == 2) r->present_stage = 3;   // and leaves with the next
+                    for(int i = 0; i < 2; i++) {
+                        if(r->present[i].stage == 1) r->present[i].stage = 2;        // the name arrives with its first line
+                        else if(r->present[i].stage == 2) r->present[i].stage = 3;   // and leaves with the next
+                    }
                 }
                 r->event = STORY_EVENT_SAY;
                 return;
@@ -816,9 +823,9 @@ bool story_load_save(StoryRun *run, const Story *story, const char *path, char *
             else {
                 *side = 0; *stage = 0;
                 if(name) *name = 0;
-                ok = copy(tmp.present, sizeof(tmp.present), image) && copy(tmp.present_side, sizeof(tmp.present_side), side + 1) &&
-                     copy(tmp.present_name, sizeof(tmp.present_name), name ? name + 1 : "");
-                tmp.present_stage = atoi(stage + 1);
+                StoryPresent *p = &tmp.present[strcmp(side + 1, "left") == 0 ? 0 : 1];
+                ok = copy(p->image, sizeof(p->image), image) && copy(p->name, sizeof(p->name), name ? name + 1 : "");
+                p->stage = atoi(stage + 1);
             }
         }
         else if(strncmp(l, "flag ", 5) == 0) {
