@@ -1,0 +1,127 @@
+# Story tiers for ari.story (the audit's pacing model, Critical_Story_Audit_v1.0.md section 9.2). PROPOSED, not approved.
+#   spine    the mandatory cinematic spine (audit section 9.3: gala, Crystal, qualifier, Mara bond, neural-program choice,
+#            knockout match, Kreissack, evidence, Lyra v Steffan, rescue, final, Nova, ending)
+#   optional character episodes: skippable, viewable between matches or from a story menu
+#   arcade   (second column) also kept in a compressed arcade run
+# A scene named here by name or by a * pattern. Scenes matching nothing are reported as unassigned: decide them.
+# Format: <scene or pattern> <spine|optional> [arcade]
+# First match wins, so put specific lines before patterns.
+
+# ---- spine ----
+intro spine
+gala spine
+sponsors spine
+mara_meet spine
+mara_after spine
+arena spine
+hangar spine
+prefight spine arcade
+won spine arcade
+lost spine arcade
+close spine
+ch2_hall spine
+ch2_prefight spine arcade
+g7? spine arcade
+ch2_med spine
+ch2_med_won spine
+ch3_garden spine
+ch3_decide spine
+ch3_lovers spine
+ch3_friends spine
+ch3_night spine
+ch3_door spine
+ch3_talk spine
+ch3_direct spine
+ch3_playful spine
+ch3_vuln spine
+ch3_offer spine
+ch3_draw* spine
+ch4_consult spine
+ch4_refuse spine
+ch4_monitored spine
+ch4_extended spine
+ch4_consent spine
+ch4_suspend spine
+ch4_review spine
+ch4_argument spine
+ch4_arg_* spine
+ch4_qf spine
+ch4_q1_ari spine arcade
+ch4_q1_won spine arcade
+ch4_q1_lost spine arcade
+ch4_q2_* spine arcade
+ch4_q1_crystal spine
+ch4_commander spine arcade
+ch5_signature spine
+ch5_ev_* spine
+ch5_board spine
+ch5_semi spine
+ch5_semi_* spine arcade
+ch5_semi2 spine
+ch5_saved* spine
+ch5_failure spine
+ch5_nova_hint spine
+ch5_finalists* spine
+ch6_final spine
+ch6_final_ari spine arcade
+ch6_won_final spine arcade
+ch6_lost_final spine arcade
+ch6_speech_* spine
+ch6_final_npc spine
+ch6_watch_final spine
+ch6_verify spine
+ch6_npc_ceremony spine
+ch6_cutaway spine
+ch6_demo spine
+ch6_oldman spine
+ch6_wrongmaster spine
+ch6_novaspeaks spine
+ch6_ren spine
+ch6_lastarena* spine
+ch6_boss* spine arcade
+ch6_eject spine arcade
+ch6_after spine
+ch6_evidence spine
+ch6_ev_* spine
+ch6_epi spine
+ch6_status spine
+ch6_final_image spine arcade
+
+# ---- optional character episodes ----
+ch2_offair* optional
+ch2_neon* optional
+ch3_velvet* optional
+ch3_towel* optional
+ch3_inventors* optional
+ch4_cooling* optional
+ch4_blue* optional
+ch5_custody* optional
+ch5_spot* optional
+ch6_e1* optional
+ch6_alex* optional
+ch2_lyra optional
+ch2_clinic optional
+ch2_practice optional
+ch3_lyra optional
+ch3_bar optional
+ch3_angel optional
+ch3_breakup optional
+ch3_kiss optional
+ch3_doctor optional
+ch3_leak optional
+ch3_billing optional
+ch4_varga optional
+ch5_varga optional
+ch5_lyra optional
+ch5_press optional
+ch5_theory optional
+ch6_remain* optional
+ch6_restaurant optional
+ch6_rest_* optional
+ch6_varga optional
+ch6_lyra_prep* optional
+mara_raven optional
+varga optional
+ch4_npc_day9 optional
+ch4_empty_chair optional
+ch4_chair_* optional
