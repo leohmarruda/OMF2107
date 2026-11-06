@@ -2486,7 +2486,7 @@ present sorell right Imani Sorell
 say Sorell: I'll consider it.
 present haldane right Dr. Haldane
 say Milano: That's not reassuring.
-say : He leaves. Haldane waits for the doors to close.
+say : Milano leaves. Haldane waits for the doors to close.
 present sorell left Imani Sorell
 say Sorell: Is there something I ought to know?
 say Haldane: The program is more capable than our initial projections.
