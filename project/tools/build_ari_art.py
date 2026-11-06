@@ -29,20 +29,21 @@ ART = ROOT / "project" / "build" / "art"
 W, H = 1280, 496
 
 SCENES = {
-    "ari_ch1_nova_lab": "ruined_nova_lab_2097_industrial_wasteland.png",
-    "ari_ch1_ganymede": "Ganymede Ice Colony Under Jupiter.png",
-    "ari_ch1_arena": "analog_combat_arena_broadcast.png",
+    "ari_ch1_nova_lab": "art_nova_lab_2097.png",
+    "ari_ch1_ganymede": "art_ganymede_colony.png",
+    "ari_ch1_arena": "art_arena_broadcast.png",
     "ari_ch1_station": "BG-EXT-STATION_BASE.png",
     "ari_ch1_gala": "BG-SOC-GALA_NIGHT.png",
     "ari_ch1_tech": "BG-TEC-EXPERIMENT_NIGHT.png",
     "ari_ch1_arena_main": "BG-ARE-MAIN_BASE.png",
     "ari_ch1_arena_day": "BG-ARE-MAIN_DAY.png",
     "ari_ch1_med": "BG-ARE-MED_BASE.png",
+    "ari_fs_five_seconds": "fs_ari_five_seconds.png",   # optional scene 5B (ch3_towel)
 }
 CARDS = {  # name: (render, title, bar colour, figure on the right)
-    "ari_card": ("ari_solano_rebel_frontier_pilot.png", "ARI SOLANO", (200, 90, 40), False),
-    "selene_card": ("selene_vale_futuristic_executive_heiress.png", "SELENE VALE", (120, 70, 190), True),
-    "mara_card": ("mara_voss_rugged_industrial_survivor.png", "MARA VOSS", (60, 150, 140), False),
+    "ari_card": ("ari_solano.png", "ARI SOLANO", (200, 90, 40), False),
+    "selene_card": ("selene_vale.png", "SELENE VALE", (120, 70, 190), True),
+    "mara_card": ("mara_voss.png", "MARA VOSS", (60, 150, 140), False),
     "ari_ch1_card_crystal": ("crystal_devroe.png", "CRYSTAL DEVROE", (190, 40, 60), True),
     "ari_ch1_card_steffan": ("steffan_thomas.png", "STEFFAN THOMAS", (230, 120, 30), False),
     "ari_ch1_card_ren": ("ren_akiyama.png", "REN AKIYAMA", (70, 130, 220), True),
@@ -108,9 +109,9 @@ def card(src: str, title: str, color, right: bool, left_trim: float = 0.09) -> I
 
 
 CUTS = {  # name: render
-    "ari": "ari_solano_rebel_frontier_pilot.png",
-    "selene": "selene_vale_futuristic_executive_heiress.png",
-    "mara": "mara_voss_rugged_industrial_survivor.png",
+    "ari": "ari_solano.png",
+    "selene": "selene_vale.png",
+    "mara": "mara_voss.png",
     "crystal": "crystal_devroe.png",
     "steffan": "steffan_thomas.png",
     "ren": "ren_akiyama.png",
@@ -179,7 +180,16 @@ def save_bmp32(img: Image.Image, path: Path) -> None:
     path.write_bytes(header + v4 + bgra)
 
 
+def check_renders() -> None:
+    """Stop before building anything if a render the tables name is missing (a rename would otherwise fail midway)."""
+    names = set(SCENES.values()) | {v[0] for v in CARDS.values()} | set(CUTS.values())
+    missing = sorted(n for n in names if not (RENDERS / n).is_file())
+    if missing:
+        raise SystemExit("missing renders in " + str(RENDERS) + ": " + ", ".join(missing))
+
+
 def main() -> None:
+    check_renders()
     for name, src in SCENES.items():
         save(scene(src), name)
     for name, (src, title, color, right) in CARDS.items():
