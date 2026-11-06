@@ -11,7 +11,7 @@
 //   present <image> <left|right> [name] a character portrait slides in from that side over the current picture, which
 //                                       is blurred a little. Two characters can be shown, one on each side, so a
 //                                       conversation shows both; a new present replaces that side's portrait. The name
-//                                       slides in from the other side and out again when the line after the first one
+//                                       slides in from the portrait's own side and out again when the line after the first one
 //                                       appears, and only the first time that portrait is ever shown.
 //                                       <image> is project/build/art/<image>_cut.bmp (a 32-bit cut-out). Leave the
 //                                       name out to show the portrait alone; "present off" removes both

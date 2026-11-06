@@ -108,7 +108,6 @@ static bool story_notice_pending;
 static bool story_setup;
 static int story_setup_har;          // 0 Jaguar, 1 Shadow, 2 Katana
 typedef struct { int w,h; unsigned char *rgb; } StoryPortrait;
-static StoryPortrait story_portraits[2];   // the player's pilot, then the rival's
 // Power, agility and endurance of the ten playable pilots, copied from src/resources/pilots.c (OpenOMF).
 static const struct { const char *name; int power,agility,endurance; } story_pilot_stats[] = {
     {"Crystal",5,16,9},{"Steffan",13,9,8},{"Milano",7,20,4},{"Christian",9,7,15},{"Shirro",20,1,8},
@@ -1323,8 +1322,7 @@ static void story_speaker_color(const char *speaker,float *r,float *g,float *b) 
     else if(!strcmp(speaker,"YOU")) { c[0]=.85f; c[1]=1; c[2]=.70f; }
     *r=c[0]; *g=c[1]; *b=c[2];
 }
-// Loads project/build/portraits/<Pilot>.bmp, exported from the original game's data by
-// project/tools/export_pilot_portraits.py. Local only: the art is never committed. Missing files fall back to a card.
+// Loads a BMP into 24-bit RGB; a missing file leaves the portrait empty.
 static void story_load_bmp(StoryPortrait *portrait,const char *path) {
     free(portrait->rgb);
     portrait->rgb=NULL; portrait->w=portrait->h=0;
@@ -1340,11 +1338,6 @@ static void story_load_bmp(StoryPortrait *portrait,const char *path) {
         portrait->w=rgb->w; portrait->h=rgb->h;
     }
     SDL_FreeSurface(rgb);
-}
-static void story_load_portrait(StoryPortrait *portrait,const char *pilot) {
-    char path[256];
-    snprintf(path,sizeof(path),"project/build/portraits/%s.bmp",pilot);
-    story_load_bmp(portrait,path);
 }
 
 // ---- sounds: original effects exported by export_story_assets.py into project/build/sounds ----
@@ -1465,8 +1458,7 @@ static unsigned story_effect_seen;              // last flash or banner beat pla
 static Uint64 story_effect_start;
 static char story_effect_kind[16];
 static char story_effect_text[STORY_NAME];
-static StoryPortrait story_speakers[10];        // portraits of the ten pilots, loaded when first needed
-static bool story_speaker_tried[10];
+static bool story_speaker_tried[10];            // the ten pilots' cut-outs, loaded when first needed
 // The backdrop fills x -1..1 and y -.24..1, under the header band and above the dialogue box.
 static float story_u(float u) { return -1.0f+2.0f*u; }
 static float story_v(float v) { return -.24f+1.24f*v; }
@@ -1542,8 +1534,11 @@ static void story_draw_stadium_fallback(void) {
 // ---- smooth pictures: the upscaled *_hd.bmp files are drawn as textures, between two runs of the quad batch ----
 typedef struct { GLuint id; int w,h; } StoryTexture;
 static StoryTexture story_backdrop_tex, story_art_tex;
+static StoryTexture story_speaker_tex[10];   // the ten pilots' cut-outs (build/art/<pilot>_cut.bmp), for the speaker strip
+static StoryTexture story_card_tex[2];       // the player's pilot, then the rival's, on the selection cards
+static char story_card_loaded[2][STORY_NAME]; // the pilot now in story_card_tex[side]; loaded when drawn, once GL is up
 typedef struct { GLuint id; float x0,y0,x1,y1,u0,v0,u1,v1,bright,blur,opacity; int split; } StoryTexDraw;
-#define STORY_TEX_DRAWS 3
+#define STORY_TEX_DRAWS 4
 static StoryTexDraw story_tex_draws[STORY_TEX_DRAWS];   // pictures drawn between runs of quads, in order
 static int story_tex_draw_count;
 static float story_tex_blur;                           // mip level the next story_tex_request samples at (0 sharp)
@@ -1805,6 +1800,33 @@ static void story_draw_portrait(const StoryPortrait *portrait,const char *pilot,
         }
     }
 }
+// A pilot's cut-out render, from project/build/art/<pilot>_cut.bmp (tools/build_ari_art.py); the file name is the pilot's lowercased.
+static void story_load_cut(StoryTexture *texture,const char *pilot) {
+    char file[STORY_NAME];
+    size_t n=0;
+    for(const char *c=pilot;*c && n+1<sizeof(file);c++) file[n++]=(char)((*c>='A' && *c<='Z') ? *c+32 : *c);
+    file[n]=0;
+    char path[160];
+    snprintf(path,sizeof(path),"project/build/art/%s_cut.bmp",file);
+    story_texture_load_rgba(texture,path);
+}
+// Draws a pilot's cut-out in a box whose top-left corner is x,top, head and shoulders first. A missing render falls
+// back to a plain card with the pilot's initial.
+static void story_draw_cut(const StoryTexture *texture,const char *pilot,float x,float top,float width,float height,float bright) {
+    if(!texture->id) {
+        static const StoryPortrait none={0};
+        story_draw_bright=bright;
+        story_draw_portrait(&none,pilot,x,top,width*(float)win_width/2.0f/57.0f);
+        story_draw_bright=1.0f;
+        return;
+    }
+    quad(x,top-height,width,height,.07f*bright,.10f*bright,.16f*bright);
+    float box=(width*(float)win_width)/(height*(float)win_height);   // the box's width over its height, in pixels
+    float image=(float)texture->w/(float)texture->h;
+    float u0=0,u1=1,v1=image/box;
+    if(v1>1.0f) { float visible=box/image; u0=(1.0f-visible)/2.0f; u1=u0+visible; v1=1.0f; }
+    story_tex_add(texture,x,top-height,x+width,top,u0,0,u1,v1,bright,0,1.0f);
+}
 static void story_stat_row(float x,float y,const char *name,int value) {
     label(x,y,.008f,name,.55f,.70f,.84f);
     quad(x+.46f,y-.040f,.40f,.040f,.08f,.12f,.20f);
@@ -1820,7 +1842,14 @@ static int story_har_index(const char *name) {
 }
 static void story_setup_card(int side,float x,const char *pilot,const char *har,const char *role) {
     char lines[8][80];
-    story_draw_portrait(&story_portraits[side],pilot,x,.50f,3.0f);
+    {
+        float cx=2.0f*3.0f/(float)win_width, cy=2.0f*3.0f/(float)win_height;
+        if(strcmp(story_card_loaded[side],pilot)!=0) {
+            story_load_cut(&story_card_tex[side],pilot);
+            snprintf(story_card_loaded[side],sizeof(story_card_loaded[side]),"%s",pilot);
+        }
+        story_draw_cut(&story_card_tex[side],pilot,x,.50f,57*cx,57*cy,1.0f);
+    }
     char upper[STORY_NAME];
     snprintf(upper,sizeof(upper),"%s",pilot);
     label(x+.40f,.46f,.009f,upper,side==0 ? .55f : 1,side==0 ? .90f : .70f,side==0 ? 1 : .62f);
@@ -1857,8 +1886,6 @@ static void story_route_path(const char *script,const Story *story,char *out,siz
     snprintf(out,size,"%.*s%s",(int)dir,script,story->route.path);
 }
 static void story_load_cast_portraits(void) {
-    story_load_portrait(&story_portraits[0],story_data.player_pilot);
-    story_load_portrait(&story_portraits[1],story_data.rival_pilot);
     story_setup_har=story_har_index(story_data.player_har);
 }
 // Replaces the loaded script with its route; false (and the old script kept) when the route cannot be loaded.
@@ -1935,13 +1962,13 @@ static void story_draw_speakers(const char *speaker,bool all_lit) {
     if(speaking>=0 && speaking!=stand[0] && speaking!=stand[1]) stand[1]=speaking;   // a guest takes the right side
     const float px=3.6f;
     float dx=2.0f*px/(float)win_width, dy=2.0f*px/(float)win_height;
-    float width=57*dx, height=57*dy;
+    float width=62*dx, height=74*dy;
     for(int side=0;side<2;side++) {
         int index=stand[side];
         if(index<0) continue;
         if(!story_speaker_tried[index]) {
             story_speaker_tried[index]=true;
-            story_load_portrait(&story_speakers[index],story_pilot_stats[index].name);
+            story_load_cut(&story_speaker_tex[index],story_pilot_stats[index].name);
         }
         bool lit=all_lit || (*speaker && index==speaking);
         float bright=lit ? 1.0f : .45f;
@@ -1949,9 +1976,7 @@ static void story_draw_speakers(const char *speaker,bool all_lit) {
         float top=-.20f+height;
         const float *accent=side==0 ? (const float[]){.24f,.78f,1.0f} : (const float[]){1.0f,.55f,.27f};
         quad(x-.012f,top-height-.016f,width+.024f,height+.032f,accent[0]*bright,accent[1]*bright,accent[2]*bright);
-        story_draw_bright=bright;
-        story_draw_portrait(&story_speakers[index],story_pilot_stats[index].name,x,top,px);
-        story_draw_bright=1.0f;
+        story_draw_cut(&story_speaker_tex[index],story_pilot_stats[index].name,x,top,width,height,bright);
     }
 }
 // Advances the typewriter for the current say line; true once the whole line is showing.
@@ -2030,7 +2055,7 @@ static void story_draw_hangar_life(void) {
     vertex_alpha=1.0f;
 }
 // ---- character presentations (the present command): up to two portraits, one on each side, slide in over the blurred
-// picture; a name plate slides in from the opposite side the first time a portrait appears and leaves with the second line ----
+// picture; a name plate slides in from the same side the first time a portrait appears and leaves with the second line ----
 static StoryTexture story_present_tex[2];
 static char story_present_loaded[2][STORY_NAME];   // the portrait now in story_present_tex[side]
 static Uint64 story_present_started[2], story_present_name_out[2];
@@ -2094,7 +2119,7 @@ static void story_draw_present_name(int s) {
     float edge=.90f;
     bool name_gone=p->stage>=3 && (story_capturing || !story_present_name_out[s] || story_present_age(story_present_name_out[s])>.4f);
     if(!p->name[0] || name_gone) return;
-    // The name plate comes from the other side a moment later, and leaves the same way.
+    // The name plate comes in from its portrait's side a moment later, and leaves the same way.
     float in=story_ease_out((age-.12f)/.5f);
     float out=p->stage>=3 ? story_ease_out(story_present_age(story_present_name_out[s])/.35f) : 0;
     float size=.0105f;
@@ -2103,14 +2128,14 @@ static void story_draw_present_name(int s) {
     float py=story_v(.24f), ph=.115f;
     float offset=(1.0f-in)*(plate+.25f)+out*(plate+.25f);
     float r=.95f,g=.72f,b=.30f;
-    if(left) {   // the portrait is on the left, so the plate hangs from the right edge
-        float x=edge-plate+offset;
+    if(left) {   // the plate sits on its portrait's side and slides in from that edge
+        float x=-edge-offset;
         quad(x,py,plate,ph,.01f,.02f,.05f);
         quad(x,py+ph-.014f,plate,.014f,r,g,b);
         quad(x,py,.012f,ph,r,g,b);
         label(x+.07f,py+ph-.026f,size,p->name,1,.95f,.80f);
     } else {
-        float x=-edge-offset;
+        float x=edge-plate+offset;
         quad(x,py,plate,ph,.01f,.02f,.05f);
         quad(x,py+ph-.014f,plate,.014f,r,g,b);
         quad(x+plate-.012f,py,.012f,ph,r,g,b);
