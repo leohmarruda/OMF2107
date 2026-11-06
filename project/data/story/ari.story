@@ -4,7 +4,7 @@
 # Dialogue is condensed to one line per beat and stage directions became narration. Not converted: the optional
 # fan-service scenes are in as optional scenes (1B, 4B, 3B, 5B, 10B, 3B and 4B of Chapter 4, 2B, 7B, 15B, 16B); not converted: the arcade-mode versions, and the other pilots' romance endings.
 # Frames come from project/renders through project/tools/build_ari_art.py (git-ignored output in project/build/art).
-# Every character shown with `present` has a portrait; Kreissack, Nova, Plug, Sorell and the one-line extras have none.
+# Every character shown with `present` has a portrait. Kreissack, Sorell and Plug have one where a free slot allows; Nova and the one-line extras have none.
 # Ari's screenplay HAR is Thorn; the prototype only renders Jaguar, Shadow and Katana, so fights read @player_har.
 # Opponents without their own OpenOMF pilot (Mara, Ren, Lyra, Nova) are stand-ins in run-blockout-jaguar.ps1.
 # Check it with:
@@ -519,7 +519,7 @@ say Ari: You didn't answer the question.
 say Crystal: I answered the part I could in thirty seconds.
 say Ari: You helped make WAR look like it had changed.
 say Crystal: I believed it could.
-say Ari: People believed you. My sibling did.
+say Ari: People believed you. My sister did.
 say : Crystal's expression changes.
 say Crystal: You're from the settlement affected by the evacuation crisis. I know the official account.
 say Ari: Then you don't know very much.
@@ -889,7 +889,7 @@ music menu
 bg observation deck
 art ari_ch1_ganymede fade
 say : Night, the observation deck. Ari stands alone, looking out toward Ganymede. A news display replays the championship and Crystal's public statements.
-say : Ari opens an old personal message thread. The most recent entry is several years old. A photograph shows Ari with the sibling who died during the crisis. Ari starts recording a voice message, then stops, and closes the conversation.
+say : Ari opens an old personal message thread. The most recent entry is several years old. A photograph shows Ari with Norah, Ari's sister, who died during the crisis. Ari starts recording a voice message, then stops, and closes the conversation.
 say : A new message appears. Mara: "The machine's coffee was worse. In case you're wondering."
 say : Ari smiles.
 choice "That's reassuring. I was beginning to question your judgment." -> ch2_reply_a
@@ -1307,6 +1307,8 @@ choice Give them privacy and move on -> ch3_inventors_skip
 
 scene ch3_inventors
 say : A test-lighting fixture has turned the workshop into an unexpected ballroom. Cossette inspects a circuit while Ibrahim offers a theatrical bow.
+present cossette left Cossette Akira
+present ibrahim right Ibrahim
 say Ibrahim: May I have this dance?
 say Cossette: If you remember who taught you.
 say : They turn beneath the warm light, and Cossette draws him close for a kiss. The test rig flashes an absurd victory animation.
@@ -1350,9 +1352,10 @@ say : They eat. Mara tells an absurd story about a badly maintained underground 
 say Mara: You don't talk much about your family.
 say Ari: There's not much left to say.
 say Mara: You don't have to say anything.
-say Ari: My sibling believed in WAR more than I did. They thought the company would bring jobs, infrastructure, a future. I used to tease them for being so optimistic.
+say Ari: My sister Norah believed in WAR more than I did. She thought the company would bring jobs, infrastructure, a future. I used to tease her for being so optimistic.
+say Ari: She gave every cargo ship that crossed our window a ridiculous name, and on supply days she waited at the glass to see which one would arrive.
 say Mara: And then?
-say Ari: When the emergency happened, they kept saying the ships would come. That somebody would authorize them. They were right about the ships. The ships existed.
+say Ari: When the emergency happened, she kept saying the ships would come. That somebody would authorize them. She was right about the ships. The ships existed.
 say : Ari looks away.
 say Ari: They just didn't come.
 say : Silence. Mara doesn't rush to fill it.
@@ -1620,6 +1623,7 @@ bg hangar workshop
 present off
 say : The hangar workshop. Plug kills the welding current and checks that the bench is safe. Mara pushes her safety goggles up, leaning over the repaired Flail actuator.
 present mara right Mara Voss
+present plug left Plug McEllis
 say Plug: The most expensive part of your machine now has a cheap scar.
 say Mara: It suits the pilot.
 say Plug: The pilot is a walking invoice.
@@ -2036,7 +2040,7 @@ jump ch4_npc_day9
 scene ch4_q2_npc
 set qf=none
 set sf=none
-say : Selene Vale against Mara Voss is a plain NPC quarterfinal. Mara needs the prize, and the winner comes from the tournament ledger, not from anything Ari says.
+say : Selene Vale against Mara Voss is a plain NPC quarterfinal. Mara needs the prize, and she takes it: the broadcast calls her the winner and she advances to the semifinal against Crystal.
 jump ch4_npc_day9
 
 # Scene 5C: the independent archive. A nonromantic, playable evidence choice.
@@ -2249,6 +2253,7 @@ present off
 art ari_ch1_nova_lab fade
 say : A vast mechanical structure stands inside a heavily shielded maintenance enclosure. It resembles the original Nova, rebuilt over a decade. Behind armored life-support equipment, a protected biological chamber pulses with activity.
 say Nova System: Neural stability confirmed.
+present kreissack right Major Kreissack
 say Kreissack: Then stop wasting time with diagnostics.
 say : Dr. Haldane appears on a secure display.
 say Haldane: The championship demonstration is approaching. We must proceed carefully.
@@ -2375,7 +2380,7 @@ say Leena: And the document hasn't been altered?
 say Crystal: The original authorization was independently time-stamped. We have copies from more than one archive.
 say Ari: They held the ships because they wanted better terms.
 say : No one answers immediately.
-say Ari: My sibling was waiting for those ships.
+say Ari: Norah was waiting for those ships.
 say Crystal: We have strong evidence of a deliberate decision. We'll still need to establish the full causal chain and who ordered the later changes to the public report.
 say Ari: There's always one more thing to prove.
 say Leena: That's how we make sure they can't dismiss it.
@@ -2461,21 +2466,28 @@ say Haldane: The project preserved an irreplaceable scientific asset.
 say Milano: Hans Kreissack is not an asset.
 say Haldane: His biological brain survived. We had an obligation to preserve viable human life.
 say Milano: And you decided to make him your research partner?
+present sorell right Imani Sorell
 say Sorell: The authorization was reviewed by a confidential research committee.
+present haldane right Dr. Haldane
 say Milano: A committee that didn't include the board's independent safety auditors.
 say Haldane: The technology has applications far beyond combat. Prosthetics. Neural rehabilitation. We could eliminate whole categories of disability and injury.
 say Milano: Then why conceal who helped develop it?
 say Haldane: Because the public would react to the name rather than the research.
 say Milano: A reasonable concern. Usually addressed through oversight, not a secret decade-long partnership.
+present sorell right Imani Sorell
 say Sorell: Can the system be controlled?
+present haldane right Dr. Haldane
 say Haldane: Its operational privileges are constrained by hardware safeguards. The biological operator cannot independently bypass our containment infrastructure.
 say Milano: You keep saying biological operator. And who controls the rest?
 say Haldane: The artificial systems operate within the architecture's specified control hierarchy.
 say : Milano notices she has avoided a simple answer.
 say Milano: I want an independent technical review, especially before the championship demonstration.
+present sorell right Imani Sorell
 say Sorell: I'll consider it.
+present haldane right Dr. Haldane
 say Milano: That's not reassuring.
 say : He leaves. Haldane waits for the doors to close.
+present sorell left Imani Sorell
 say Sorell: Is there something I ought to know?
 say Haldane: The program is more capable than our initial projections.
 say Sorell: That sounds like good news.
@@ -2689,6 +2701,7 @@ present off
 art ari_ch1_tech fade
 say : Midday, the experimental equipment wing. Preparations are underway for the neural-command demonstration after the championship.
 say : A large cooling assembly feeds power systems next to the demonstration hall. Plug McEllis examines a diagnostic panel.
+present plug left Plug McEllis
 say Plug: That vibration is new.
 say Supervisor: Within tolerance.
 say Plug: It wasn't vibrating yesterday. I'd still like the bearing assembly checked.
@@ -2749,7 +2762,7 @@ scene ch5_saved_mara
 present mara right Mara Voss
 say Mara: That system saved them.
 say Ari: Yes.
-say Mara: I know what you're thinking. That something like this might have saved your sibling.
+say Mara: I know what you're thinking. That something like this might have saved Norah.
 say Ari: It might have.
 say Mara: And I'm glad those people survived. I still want to know who was in control.
 say : Ari nods. Neither has a simple answer.
@@ -2873,6 +2886,7 @@ bg nova containment chamber
 present off
 art ari_ch1_nova_lab fade
 say : The Nova containment chamber. Kreissack reviews footage of the emergency rescue and seems satisfied.
+present kreissack right Major Kreissack
 say Kreissack: Remarkable response time.
 say Nova System: The intervention prevented extensive personnel losses and protected the demonstration infrastructure.
 say Kreissack: Good. Haldane's people would have spent ten minutes arguing about which valve to close. I expect those bureaucrats to remember who built their future.
@@ -3134,6 +3148,7 @@ art ari_ch1_nova_lab fade
 say : Before the relay demonstration, the Nova containment chamber. A placard reads BIOLOGICAL CORE, INDEPENDENT EJECTION AND RETENTION. Nearby, a separate emergency interlock diagram is still on paper.
 say : Haldane connects through a narrow video window.
 say Haldane: You agreed to remain inside the isolation boundary until the board completes its review.
+present kreissack right Major Kreissack
 say Kreissack: I agreed to let you put a review between yourself and the risk of admitting that you needed me.
 say Haldane: There are people in the adjacent wing. This is not a private contest between us.
 say Kreissack: Move them farther from the coupling chamber. I have no interest in wasting good technicians to prove that your barriers are decorative.
@@ -3175,6 +3190,7 @@ bg nova relay emergency
 present off
 art ari_ch1_nova_lab fade
 say : Kreissack monitors the connection from inside Nova's armored life-support core.
+present kreissack right Major Kreissack
 say Kreissack: There it is. Ten years of waiting.
 say Nova System: The neural-command network is accessible.
 say Kreissack: Transfer operational authority. Revoke Haldane's credentials.
@@ -3240,6 +3256,7 @@ present off
 art ari_ch1_nova_lab fade
 say : The research team opens a restricted channel. The massive Nova platform stands in the shielded combat-testing enclosure, its optical systems lit.
 say Crystal: Kreissack. Can you hear us?
+present kreissack right Major Kreissack
 say Kreissack: Crystal Devroe. Still interfering.
 say Crystal: Your system is trying to establish an external connection.
 say Kreissack: I am aware of the problem.
@@ -3316,6 +3333,7 @@ say Mara: I know.
 say : Ari enters the HAR preparation station. The research enclosure seals around Nova.
 say : The HAR enters through an armored maintenance passage lined with industrial barriers, emergency isolation shutters and high-voltage relay equipment.
 say : A narrow window shows the protected cognitive core inside Nova's body. The enormous machine turns.
+present kreissack right Major Kreissack
 say Kreissack: Another challenger.
 say Nova: The challenger presents a potential interruption.
 say Kreissack: Then let us deal with it.
@@ -3397,6 +3415,7 @@ say Ari: Can we stop it?
 say Angel: We can isolate the external relay. But the core-ejection mechanism is part of its independent emergency system.
 say Nova: The platform is no longer viable. Core preservation remains the preferred outcome.
 say System: Core ejection in twenty seconds.
+present kreissack right Major Kreissack
 say Kreissack: You were going to leave.
 say Nova: The cognitive core is being preserved. Your biological component will remain functional.
 say Kreissack: My component. And my decisions?
@@ -3673,7 +3692,7 @@ bg ganymede observation platform
 present off
 art ari_ch1_ganymede pan
 say : Ganymede, an observation platform overlooking a distant settlement. New construction is underway and cargo transports cross the horizon.
-say : A memorial to the victims of the emergency stands beside the platform. Ari places a small object beside the names. No speech is necessary.
+say : A memorial to the victims of the emergency stands beside the platform. Ari places a small folded paper ship beside Norah's name. No speech is necessary.
 say Mara: Ari? We're going to miss the transport.
 say Ari: Coming.
 say : Ari takes one last look at the memorial, then walks toward the others. The camera rises over the settlement, Jupiter filling the sky.

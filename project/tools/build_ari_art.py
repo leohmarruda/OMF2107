@@ -127,6 +127,11 @@ CUTS = {  # name: render
     "jeanpaul": "jean_paul.png",
     "raven": "raven.png",
     "milano": "milano.png",
+    "kreissack": "kreissack.png",
+    "sorell": "sorell.png",
+    "plug": "plug.png",
+    "ibrahim": "ibrahim.png",
+    "cossette": "cossette.png",
 }
 
 
