@@ -375,10 +375,10 @@ Selene,SV5.2,"A genuine rescue [MANDATORY, DAY 12]",23_Selene_Campaign/Selene_Pl
 Selene,SV5.4,An invitation not written as an invoice [OPTIONAL MILANO ROMANCE],23_Selene_Campaign/Selene_Playable_Screenplay_v0.5.md,414,unverified,,,,,,UNREVIEWED
 Selene,SV5.5,The honest deception [OPTIONAL JEAN-PAUL ROMANCE],23_Selene_Campaign/Selene_Playable_Screenplay_v0.5.md,433,unverified,VARGA_EVIDENCE,,,,,UNREVIEWED
 Selene,SV6.1,"The championship, earned or witnessed [MANDATORY BRANCH, DAY 13]",23_Selene_Campaign/Selene_Playable_Screenplay_v0.5.md,458,day13_candidate,FINAL,,,,,UNREVIEWED
-Selene,SV6.2,"Not an acquisition target [MANDATORY, DAY 13]",23_Selene_Campaign/Selene_Playable_Screenplay_v0.5.md,470,day13_candidate,K_BIO,,,,,UNREVIEWED
-Selene,SV6.3,"The asset that doesn't appear in the books [MANDATORY, AFTER EMERGENCY]",23_Selene_Campaign/Selene_Playable_Screenplay_v0.5.md,492,unverified,,,,,,UNREVIEWED
-Selene,SV6.4,Alternative personal epilogues [CONDITIONAL],23_Selene_Campaign/Selene_Playable_Screenplay_v0.5.md,502,unverified,,,,,,UNREVIEWED
-Selene,SV6.5,"The signature [MANDATORY POST-CREDITS, DAY 30]",23_Selene_Campaign/Selene_Playable_Screenplay_v0.5.md,518,day30_candidate,,,,,,UNREVIEWED
+Selene,SV6.2,"Not an acquisition target [MANDATORY, DAY 13]",23_Selene_Campaign/Selene_Playable_Screenplay_v0.5.md,491,day13_candidate,K_BIO,,,,,UNREVIEWED
+Selene,SV6.3,"The asset that doesn't appear in the books [MANDATORY, AFTER EMERGENCY]",23_Selene_Campaign/Selene_Playable_Screenplay_v0.5.md,513,unverified,,,,,,UNREVIEWED
+Selene,SV6.4,Alternative personal epilogues [CONDITIONAL],23_Selene_Campaign/Selene_Playable_Screenplay_v0.5.md,523,unverified,,,,,,UNREVIEWED
+Selene,SV6.5,"The signature [MANDATORY POST-CREDITS, DAY 30]",23_Selene_Campaign/Selene_Playable_Screenplay_v0.5.md,539,day30_candidate,,,,,,UNREVIEWED
 Milano,MA1.1,The man who knows every door [MANDATORY],24_Milano_Campaign/Milano_Playable_Screenplay_v0.5.md,19,day9_candidate,,,,,,UNREVIEWED
 Milano,MA1.2,The woman who sees through the smile [OPTIONAL SELENE / PROFESSIONAL],24_Milano_Campaign/Milano_Playable_Screenplay_v0.5.md,53,unverified,,,,,,UNREVIEWED
 Milano,MA1.3,What a safeguard buys [MANDATORY],24_Milano_Campaign/Milano_Playable_Screenplay_v0.5.md,81,unverified,K_BIO,,,,,UNREVIEWED
@@ -400,7 +400,7 @@ Milano,MA5.2,"The rescue nobody authorized [MANDATORY, DAY 12]",24_Milano_Campai
 Milano,MA5.3,"The Group C/D semifinal [CONDITIONAL, DAY 12 — AFTER THE RESCUE]",24_Milano_Campaign/Milano_Playable_Screenplay_v0.5.md,420,day12_candidate,SF_CD,,,,,UNREVIEWED
 Milano,MA5.4,The first honest terms [OPTIONAL POST-CONFLICT SELENE; ADULT],24_Milano_Campaign/Milano_Playable_Screenplay_v0.5.md,432,day12_candidate,,,,,,UNREVIEWED
 Milano,MA6.1,"Gargoyle's last official flight [MANDATORY BRANCH, DAY 13]",24_Milano_Campaign/Milano_Playable_Screenplay_v0.5.md,455,day13_candidate,FINAL,,,,,UNREVIEWED
-Milano,MA6.2,"The order Kreissack cannot give [MANDATORY, DAY 13]",24_Milano_Campaign/Milano_Playable_Screenplay_v0.5.md,467,day13_candidate,RESCUE;NOVA_CORE,,,,,UNREVIEWED
-Milano,MA6.3,"The first meeting without him [MANDATORY, AFTER EMERGENCY]",24_Milano_Campaign/Milano_Playable_Screenplay_v0.5.md,493,unverified,NOVA_CORE,,,,,UNREVIEWED
-Milano,MA6.4,Three ways to be seen [CONDITIONAL EPILOGUES],24_Milano_Campaign/Milano_Playable_Screenplay_v0.5.md,517,unverified,,,,,,UNREVIEWED
-Milano,MA6.5,"An old signature [MANDATORY POST-CREDITS, DAY 30]",24_Milano_Campaign/Milano_Playable_Screenplay_v0.5.md,535,day30_candidate,K_BIO;RESCUE;NOVA_CORE;DEVROE_ORDER_E5,,,,,UNREVIEWED
+Milano,MA6.2,"The order Kreissack cannot give [MANDATORY, DAY 13]",24_Milano_Campaign/Milano_Playable_Screenplay_v0.5.md,488,day13_candidate,RESCUE;NOVA_CORE,,,,,UNREVIEWED
+Milano,MA6.3,"The first meeting without him [MANDATORY, AFTER EMERGENCY]",24_Milano_Campaign/Milano_Playable_Screenplay_v0.5.md,514,unverified,NOVA_CORE,,,,,UNREVIEWED
+Milano,MA6.4,Three ways to be seen [CONDITIONAL EPILOGUES],24_Milano_Campaign/Milano_Playable_Screenplay_v0.5.md,538,unverified,,,,,,UNREVIEWED
+Milano,MA6.5,"An old signature [MANDATORY POST-CREDITS, DAY 30]",24_Milano_Campaign/Milano_Playable_Screenplay_v0.5.md,556,day30_candidate,K_BIO;RESCUE;NOVA_CORE;DEVROE_ORDER_E5,,,,,UNREVIEWED

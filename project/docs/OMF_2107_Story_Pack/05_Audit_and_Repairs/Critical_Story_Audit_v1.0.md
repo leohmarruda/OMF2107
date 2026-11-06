@@ -14,7 +14,7 @@
 Proposed repairs are recommendations, not automatically established canon.
 
 
-> **Resolution status (consolidated archive):** The Chapter 3 romance/friendship choice and corridor-camera fix, the Chapter 5 stinger rewrite, Ren's unwanted handshake and the finale staging note (Chapter 6), NII continued consent and evidence custody (Chapter 4) have been applied to the chapter files as labelled `[REVISION]` inserts. Not yet applied: executable bracket validator, per-pilot Nova entrance scenes, sibling's name, pacing reduction. See Story_Repair_Pack_v0.2.md.
+> **Resolution status (consolidated archive):** The Chapter 3 romance/friendship choice and corridor-camera fix, the Chapter 5 stinger rewrite, Ren's unwanted handshake and the finale staging note (Chapter 6), NII continued consent and evidence custody (Chapter 4) have been applied to the chapter files as labelled `[REVISION]` inserts. Executable bracket validator: applied (`07_Tournament_Model/tournament_validator.py`, tested; 424/424 pack tests pass as of 2026-11-06). Per-pilot Nova entrance scenes: applied for every pilot with a campaign (Mara, Jean-Paul, Steffan, Lyra, Ari and Dante had one; Selene and Milano got SV6.2a and MA6.2a on 2026-11-06). Crystal, Angel, Ren and Raven have no campaign folder yet. Sibling's name: applied in `ari.story` (Norah, a sister; trait and memory proposed). Not yet applied: pacing reduction (awaiting an animatic timing; scene tiers in `data/story/ari.tiers`). See Story_Repair_Pack_v0.2.md.
 
 ---
 

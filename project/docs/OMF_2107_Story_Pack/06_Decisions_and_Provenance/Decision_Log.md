@@ -218,3 +218,9 @@ The latest screenplay snapshots are Crystal v0.4 and Raven v0.3 (small cross-cut
 - **Technical correction applied:** The duplicate scene label `DV2.3` in Dante's screenplay v0.2 is removed by naming the rooftop scene `DV2.2b` and relocating the original Days 2–4 training scene `DV2.3` from Chapter 3 to Chapter 2 in a new v0.3. No dialogue, result, approved characterization or romance eligibility is changed.
 - **New reference documents:** `00_README/CURRENT_RELEASE.md`, `25_Narrative_Quality_Review/Narrative_Quality_Audit_v2.6.md`, `Cross_POV_Collision_Matrix_v2.6.md`, `Arcade_and_Cinematic_Production_Plan_v2.6.md`. Their recommendations are editorial and **do not create canon**.
 - **Validation:** 272 discovered methods across 19 test directories passed (268 original + 4 new structural checks). Full literary quality remains untested and must be reviewed by humans/playtested.
+
+## Ari's sister and the ship memory (November 6, 2026)
+
+- **User decision:** Ari's sibling is a sister named **Norah** (closes repair R11, `Story_Repair_Pack_v0.2.md`).
+- **Proposed, not yet approved:** her trait and the shared memory in `data/story/ari.story`: she was an optimist who believed WAR would bring a future, and she named every cargo ship that crossed the settlement window and waited at the glass on supply days. The memorial recalls it with a folded paper ship placed beside her name.
+- **Also decided the same day:** Mara wins the Selene-vs-Mara quarterfinal when Ari is out of Group A; the Crystal and Lyra NPC defaults stand; the three-way Group A tie keeps the announced seed; Nova gets no portrait.

@@ -464,6 +464,27 @@ Milano has an optional choice: `invite_independent` (“Dinner, when this is ove
 
 **MILANO (quietly):** “For once, that's a comfort.”
 
+### MA6.2a — Why he, and not someone else [MANDATORY / NOVA ENCOUNTER] [REVISION, repair R10]
+**INT. NOVA CONTROL COMPLEX — EMERGENCY ENCLOSURE**
+**[BG: BG-TEC-OPERATIONS@EMERGENCY | STAGING PROVISIONAL — no source slugline]**
+**[MUSIC: MUS-FINALE | behavior=palette; continue_same_theme_unless_edited]**
+
+Milano has board-level standing and the authority to sign an emergency exclusion order, and nothing else. He cannot command Nova, and he knows it after the exchange at the console. The technicians can open the combat enclosure only for a pilot who personally enters it and accepts liability for the entry, and who passes the independent safety check like anyone else. Gargoyle is staged near the demonstration hall. Other top pilots are held at the perimeter or sent to medical. That leaves one machine inside, and one person with the authority to take the responsibility for opening the door.
+
+**TECHNICIAN LEAD:** "I can open the enclosure for a pilot who signs for the entry. If it goes wrong, the signature is the pilot's. Not the board's, not WAR's."
+
+**MILANO:** [PERF: tone=guarded | expression=EXP-RESERVED | delivery=controlled | intensity=2] "Then the signature is mine. I spent years approving things I never looked at. I would like to look at this one."
+
+He signs, and then he goes through the independent safety check on the same terms as everyone else. Angel and Ren supply the architecture, and the technicians isolate relay **R**. Milano's title opens no lock; his only contribution is that he stays on the hook for the choice.
+
+**ANGEL:** "Gargoyle can reach the gateway window. Nova's veto will contest the approach."
+
+**MILANO:** "Then let it contest. I'm not asking it for permission."
+
+**BOSS ENCOUNTER — `SPECIAL_NOVA`, not a championship match.** Milano earns his place by accepting liability and passing the safety check, not through rank, a private deal or a relationship flag. The player controls Gargoyle and must land the strike that breaks the executive gateway **G**. An unsuccessful strike retries under the same safety limits. It is Milano's strike, not an unnamed other pilot's.
+
+The scene continues into the gateway strike and Kreissack's retention-latch moment in the next scene. Milano learns nothing about Kreissack's signed 2092 order here.
+
 ## MA6.2 — The order Kreissack cannot give [MANDATORY, DAY 13]
 
 **INT. NOVA CONTROL COMPLEX — EMERGENCY**

@@ -54,11 +54,12 @@ Done before M0 (the old Stages 0 to 2 and the start of 4):
 - **Staging:** the Stadium has an enclosed bowl, stepped crowd stands and a central board. The blockout launcher
   (`run-blockout.ps1`; `run-meshy.ps1 -Fight` for Meshy stand-ins) opens a selection screen connecting ten playable
   pilots to Jaguar, Shadow or Katana, using their OpenOMF stats.
-- **Story (2026-11-06):** `project/data/story/ari.story` holds Chapters 1 to 6 of the Story Pack (216 scenes) with
+- **Story (2026-11-06):** `project/data/story/ari.story` holds Chapters 1 to 6 of the Story Pack (266 scenes, including the skippable optional scenes) with
   the Group A, bracket and championship branches and a two-fight Nova boss. It passes `story_check`, and
   `story_check walk` reaches the ending every time. Every character shown with `present` has a portrait. Still open: a
-  live playtest of the route (`run-story-ari.ps1`), portraits for Kreissack, Nova and the one-line extras, provisional
-  NPC results, and the optional scenes not yet converted. Scope and open decisions are in
+  live playtest of the route (`run-story-ari.ps1`), and a portrait for Nova (voice-only by design, so possibly none). Kreissack, Sorell and Plug have
+  portraits. The seven NPC results are decided: Mara wins the Group A-out quarterfinal against Selene, the Crystal
+  and Lyra defaults stand, and the three-way tie keeps the announced seed. Scope and open decisions are in
   [OMF2107_STAGE4_PLAN.md](OMF2107_STAGE4_PLAN.md).
 - **Pose and mesh authoring:** mesh landmarks (`project/data/mesh_landmarks.json`) and projection-pose matching
   (`match_projection_poses.py`) feed the pose catalog; see [POSE_AUTHORING.md](POSE_AUTHORING.md).
@@ -182,8 +183,10 @@ provenance list.
 ## Next three actions
 
 1. Send the permission email (needs a contact; I can look for one).
-2. Start Spike A and the tool audit (both are read-only on the codebase).
-3. Decide the simplified style direction from two or three quick renders of the Jaguar blockout.
+2. Decide the simplified style direction from two or three quick renders of the Jaguar blockout.
+3. Live playtest of Ari's route (`run-story-ari.ps1`), then fill the `rig.json` fields.
+
+(Spike A and the first pass of the tool audit are done; see the 2026-11-05 entry above.)
 
 ## References
 

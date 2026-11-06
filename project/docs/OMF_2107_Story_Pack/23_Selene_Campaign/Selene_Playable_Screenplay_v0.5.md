@@ -467,6 +467,27 @@ If both choose it, a quiet kiss follows. Otherwise she invites him to collaborat
 
 **SELENE (quietly):** “It has to be possible to admire a victory you didn't buy.”
 
+### SV6.2a — Why she, and not someone else [MANDATORY / NOVA ENCOUNTER] [REVISION, repair R10]
+**INT. NOVA-LINKED SERVICE BAY — EMERGENCY**
+**[BG: BG-LAB-NOVA-RELAY@EMERGENCY | STAGING PROVISIONAL — no source slugline]**
+**[MUSIC: MUS-FINALE | behavior=palette; continue_same_theme_unless_edited]**
+
+Selene reaches the service bay with the authenticated supplier records and finds the emergency exclusion perimeter already closed. A safety officer blocks her. Angel and Ren are already working the architecture with the technicians. Other top pilots are available in the building, but they are being held behind the perimeter or sent to medical, and none has a machine inside the supplier-certified bay. Mirage was staged there for the demonstration, so the isolation window can be authenticated against Selene's own verified records.
+
+**SAFETY OFFICER:** "Executive title doesn't clear this perimeter. Nothing about this building does tonight."
+
+**SELENE:** [PERF: tone=defiant | expression=EXP-DEFIANT | delivery=sharp and steady | intensity=1] "Good. My name is on forty procurement orders in this building. That isn't clearance, it's liability. Check the lockout, and check me."
+
+She does not ask to be waved through. She puts Mirage through the independent safety check in front of the crew. Her supplier map, if she shared it in Chapter 5, shortens the *local* equipment shutdown; if she kept it private, Angel and Ren's independent path still works, only more slowly. Neither version lets her command Nova.
+
+**ANGEL:** "You understand what this window is for."
+
+**SELENE:** "It's for the person who can reach the gateway while someone else isolates the relay. I'm the one who's already here, and I'm the one who signed for half this hardware. I'd rather fix it than sign for it a third time."
+
+**BOSS ENCOUNTER — `SPECIAL_NOVA`, not a championship match.** Selene earns her place through the safety check and her own records, not through title, tournament result or romance. The player controls Mirage and must land the strike that damages the executive gateway **G**; separately qualified technicians isolate relay **R**. An unsuccessful strike retries under the same safety limits. It is Selene's strike, not an unnamed other pilot's.
+
+She does not claim to have invented the intervention, and she does not claim to have redeemed Kreissack. The scene continues into the gateway strike and Kreissack's retention-latch moment in the next scene.
+
 ## SV6.2 — Not an acquisition target [MANDATORY, DAY 13]
 
 **INT. WAR EXECUTIVE GATEWAY CORRIDOR — AFTER THE FINAL**
