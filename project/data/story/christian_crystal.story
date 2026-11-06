@@ -1,6 +1,6 @@
 # DRAFT first story slice, Christian's route: Christian Devroe versus Crystal Devroe.
 # The same evening as crystal_christian.story, told from the other sibling's side. Built only from
-# project/docs/OMF2107_SIMPLE_LORE.md. The wording is placeholder dialogue for testing the runner and the flow of the
+# project/docs/OMF2107_LORE_v2.md (the Devroe siblings). The wording is placeholder dialogue for testing the runner and the flow of the
 # slice, not final writing. Check it with:
 #   build/omf_debug_z7/story_check.exe check project/data/story/christian_crystal.story
 #

@@ -30,7 +30,7 @@ Matching [rear view](../back/05-tournament-polish-shadow-spikes-back.png) for th
 
 Updated rear view with dark cylindrical limb backs and a sharper triangular upper-back plate:
 
-![Shadow rear view with ribbed limbs and triangular upper-back plate](../back/05-tournament-polish-shadow-spikes-ribbed-back.png)
+![Shadow rear view with ribbed limbs and triangular upper-back plate](../canonical/shadow-back.png)
 
 Matching updated front with the same dark cylindrical limb construction and sharper triangular chest plate:
 

@@ -348,5 +348,5 @@ These do not block the baseline or first 3D spike:
 ## Source notes
 
 - [Local OpenOMF build instructions](../../BUILD.md), [CMake configuration](../../CMakeLists.txt), and [pilot/HAR identifiers](../../src/game/common_defines.c).
-- [Existing 3D prototype notes](../prototype/README.md) and [project roadmap](ROADMAP.md).
+- [Existing 3D prototype notes](../prototype/README.md) and [release plan](RELEASE_PLAN.md).
 - [Original OMF manual](https://www.omf2097.com/wiki/doku.php?id=omf2097:manual.doc) and [decoded story text](https://www.omf2097.com/wiki/doku.php?id=omf2097:english.dat) for canon checks.

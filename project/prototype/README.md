@@ -285,7 +285,7 @@ engine. See the [original-game reference](../docs/OMF2097/OMF2097_REFERENCE.md) 
 
 ## Roadmap
 
-See [the project roadmap](../docs/ROADMAP.md) for milestones, completion checks,
+See [the release plan](../docs/RELEASE_PLAN.md) for milestones, completion checks,
 near-term work, and scope decisions.
 
 ## Current visual pass
@@ -316,7 +316,7 @@ original sprites.
 window system as the viewer. The format, validator, and runner live in `story.h` and `story.c` with
 no graphics code, so they can move into the full game later. The draft Crystal versus Christian
 slice is `project/data/story/crystal_christian.story`, written from
-`project/docs/OMF2107_SIMPLE_LORE.md`; its wording is placeholder dialogue.
+`project/docs/OMF2107_LORE_v2.md`; its wording is placeholder dialogue.
 
 ```text
 build/omf_debug_z7/omf3d_prototype.exe --story project/data/story/crystal_christian.story

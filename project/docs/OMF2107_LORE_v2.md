@@ -1,7 +1,7 @@
 # OMF2107 — Ensemble story treatment
 
 **Setting:** WAR's 2097 Ganymede tournament
-**Status:** Original story proposal for a 3D adaptation, revised against the [original-game lore](OMF2097/OMF2097_LORE.md) and [manual findings](OMF2097/MANUAL_FINDINGS.md). New motives, characters, the deep-link, and branching outcomes below are OMF2107 inventions, not original-game canon.
+**Status:** Original story proposal for a 3D adaptation, revised against the [original-game lore](OMF_2107_Story_Pack/01_Original_Sources/OMF2097_LORE.md) and [manual findings](OMF2097/MANUAL_FINDINGS.md). New motives, characters, the deep-link, and branching outcomes below are OMF2107 inventions, not original-game canon.
 
 ## 0. Canon boundary and route rule
 

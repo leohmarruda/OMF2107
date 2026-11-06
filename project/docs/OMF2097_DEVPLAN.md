@@ -325,7 +325,7 @@ status, becomes the first credible schedule for the full target.
 meshes, reproducible generators, and front, back, side, and fight-distance
 renders derived from their approved three-view references. The user accepted
 both silhouettes on 2026-10-14. The earlier
-[procedural blockout review](OMF2107_BLOCKOUT_REVIEW.md) is historical; its
+[procedural blockout review](_archive/OMF2107_BLOCKOUT_REVIEW.md) is historical; its
 pending editable-mesh decision is superseded by these assets.
 
 **B10 has a recorded fight-camera comparison, with live readability still
@@ -361,5 +361,5 @@ sheet, and A06's asset ledger open in parallel.
 - [Game specification](OMF2097_3D_GAME_SPEC.md)
 - [Story treatment](OMF2107_LORE_v2.md)
 - [Original game reference](OMF2097/OMF2097_REFERENCE.md)
-- [Milestone roadmap](ROADMAP.md)
+- [Release plan](RELEASE_PLAN.md)
 - [Existing prototype notes](../prototype/README.md)

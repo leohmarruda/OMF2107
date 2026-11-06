@@ -16,17 +16,19 @@ required. This is exit gate C of the development plan.
 
 - A faithful match: OpenOMF owns combat, the 3D viewer renders its per-tick state,
   and all 35 Jaguar and Shadow attacks are measured.
-- A fighter selection screen: ten pilots and two HARs (Jaguar, Shadow) with their
+- A fighter selection screen: ten pilots and three HARs (Jaguar, Shadow, Katana) with their
   OpenOMF stats. The story may recommend a pairing but must not lock it.
 - A match result and a retry or quit choice at the end of a live match.
 - OpenOMF's own scenes (`cutscene.c`, `newsroom.c`, `vs.c`, `mechlab`) as a reference for
   scene progression. I have not read them for reuse.
 
-## What does not exist
+## What was missing, and is now built
 
-I searched the 3D prototype (`project/prototype/main.c`) and found no dialogue,
-cutscene, portrait, choice, or save code. Stage 4 builds all of these, plus the
-writing and art that feed them.
+The 3D prototype originally had no dialogue, cutscene, portrait, choice, or save code.
+Stage 4 built them (see Progress below): `story.c`, `story_check.c`, the `--story` viewer
+with up to two portraits on stage, saves, and `project/data/story/ari.story`. Still missing:
+the cutscene polish, the live playtest and the remaining art; see the open items in the
+[release plan](RELEASE_PLAN.md#where-development-stands-today).
 
 ## Proposed work, in order
 
@@ -61,7 +63,7 @@ text with placeholder portraits.
   runs it, and keeps a log and flags; `story_check` self-tests and plays scripts without a window;
   `omf3d_prototype --story` plays a script with a dialogue box, choices, skip, and a log. A draft
   of the slice (`project/data/story/crystal_christian.story`, 12 scenes) was written from
-  `OMF2107_SIMPLE_LORE.md` and checks and plays through.
+  `OMF2107_LORE_v2.md` (the Devroe siblings) and checks and plays through.
 - **Step 2, save data: built.** `story_save` and `story_load_save` write and read a versioned
   text save (position, flags, log, script fingerprint); an older or newer format version, a changed
   script, or a damaged file is refused with a message and leaves the run untouched. The viewer
@@ -92,7 +94,7 @@ text with placeholder portraits.
   Not tested: choosing a HAR with the keyboard on the screen, and playing Crystal in Shadow by hand.
 - **Dialogue decision (2026-10-27):** the draft dialogue in `crystal_christian.story` is kept as it is for
   now after a playtest ("it ran fine"). A rewrite is deferred, not cancelled; the file stays placeholder
-  wording built from `OMF2107_SIMPLE_LORE.md`.
+  wording built from `OMF2107_LORE_v2.md` (the Devroe siblings).
 - **Backdrops and sounds: built** (decided 2026-10-27: generated backdrops for story scenes, the original
   arenas behind fights, original sounds). The viewer draws the original arena image when a scene's `bg` names
   an arena and an exported file exists, and generated scenes otherwise (green room, medical bay, a stand-in
@@ -287,7 +289,7 @@ is the intended later integration. Both are better done once the story format ha
 3. **First pass format.** Text and placeholder portraits only, or illustrated frames
    from the start. Text-first lets the writing and flow be judged cheaply.
 4. **Rights.** The story uses the original cast and setting; the
-   [roadmap's rights checkpoint](ROADMAP.md#rights-checkpoint) applies to any portrait or
+   [release plan's rights checkpoint](RELEASE_PLAN.md#rights-checkpoint) applies to any portrait or
    dialogue asset that is reused from the original game.
 
 ## Risks

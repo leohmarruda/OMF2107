@@ -1,7 +1,7 @@
 # Asset ledger
 
 Records where each non-original asset comes from, how it is used, and whether it may be distributed. The
-[roadmap's rights checkpoint](ROADMAP.md#rights-checkpoint) and the [development plan](OMF2097_DEVPLAN.md)
+[release plan's rights checkpoint](RELEASE_PLAN.md#rights-checkpoint) and the [development plan](OMF2097_DEVPLAN.md)
 (tasks A06 and F05) require this: original-game artwork, audio, and text have not been cleared for release, and
 only entries marked distributable may go into a release package.
 
