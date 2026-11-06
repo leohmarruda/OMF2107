@@ -2278,10 +2278,6 @@ static char story_match_result_path[512];
 static HANDLE story_match_job;
 static HANDLE story_match_child;
 #endif
-static bool story_har_equal(const char *a,const char *b) {
-    for(;*a && *b;a++,b++) if((*a|32)!=(*b|32)) return false;
-    return *a==*b;
-}
 static void story_notify(const char *text);
 static void story_autosave(void);
 static void story_match_finish(bool win) {
@@ -2299,10 +2295,6 @@ static void story_match_start(void) {
     char har0[STORY_NAME],har1[STORY_NAME];
     if(!story_fight_har(&story_run,c,0,har0,sizeof(har0)) || !story_fight_har(&story_run,c,1,har1,sizeof(har1))) {
         snprintf(story_match_message,sizeof(story_match_message),"A FIGHTER HAS NO HAR: CHECK THE SCRIPT.");
-        return;
-    }
-    if(story_har_equal(har0,har1)) {
-        snprintf(story_match_message,sizeof(story_match_message),"BOTH FIGHTERS USE %s: NOT SUPPORTED YET.",har0);
         return;
     }
 #ifdef _WIN32

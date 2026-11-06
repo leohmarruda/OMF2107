@@ -497,7 +497,7 @@ int game_state_create(game_state *gs, const engine_init_flags *init_flags) {
     int nscene;
     if(init_flags->omf3k_live) {
         // The HAR of each side, by name (OMF3K_LIVE_PLAYER, OMF3K_LIVE_RIVAL_HAR). The player defaults to Jaguar; the rival
-        // defaults to the other of Jaguar and Shadow, and is never the player's own HAR.
+        // defaults to the other of Jaguar and Shadow; OMF3K_LIVE_RIVAL_HAR may name the player's own HAR for a mirror match.
         static const char *const har_names[NUMBER_OF_HAR_TYPES] = {"Jaguar", "Shadow", "Thorn",     "Pyros",
                                                                     "Electra", "Katana", "Shredder", "Flail",
                                                                     "Gargoyle", "Chronos", "Nova"};
@@ -511,7 +511,7 @@ int game_state_create(game_state *gs, const engine_init_flags *init_flags) {
         }
         live_har[1] = live_har[0] == HAR_JAGUAR ? HAR_SHADOW : (live_har[0] == HAR_SHADOW ? HAR_JAGUAR : HAR_JAGUAR);
         for(int h = 0; h < NUMBER_OF_HAR_TYPES; h++) {
-            if(live_rival_har && strcmp(live_rival_har, har_names[h]) == 0 && h != live_har[0]) {
+            if(live_rival_har && strcmp(live_rival_har, har_names[h]) == 0) {   // a mirror match (the same HAR) is allowed
                 live_har[1] = h;
             }
         }
