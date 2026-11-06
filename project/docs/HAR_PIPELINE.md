@@ -43,9 +43,11 @@ Consequences: a blockout change is not seen by the detailed mesh; a new mesh cos
 
 ### Rules
 
-1. **One rig spec per HAR family** (`rig.json`): joint names, hierarchy, units (rig units, floor at 0, pelvis
-   origin), axes (+z toward the opponent in the fight plane, +y up), rest pose. Everything else reads it. Jaguar and
-   Shadow already share one rig, so this is mostly a write-down, plus a check that every generator uses it.
+1. **One rig spec per HAR family** (`rig.json`): joint names, hierarchy, units (rig units, floor at 0, root on the
+   floor at the origin), axes (-z toward the opponent, +y up, as the blockout generators and the prototype have it),
+   rest pose. Everything else reads it. Jaguar and Shadow share the same 16 joints and hierarchy; they differ only in 13
+   pivot offsets of 0.01 to 0.03 rig units, which are proportions and move to `har.json`. Written 2026-11-06 as
+   [robots/rig.json](../robots/rig.json), guarded by `python robots/check_rig.py`.
 2. **The blockout is generated, not modelled.** Built procedurally from `rig.json` plus per-HAR part parameters
    (lengths, widths, armor volumes). A proportion change is a parameter edit. It has no landmarks to match, because
    it is made from the rig.
@@ -111,7 +113,7 @@ pose evaluation in `main.c` (lines ~820-950) to decide what moves into data.
 | ID | Task | Output |
 | --- | --- | --- |
 | P0 | Audit the tools above: what each reads, writes and duplicates; confirm the table | One-page audit, list of what to delete |
-| P1 | Write `rig.json` from the existing Jaguar and Shadow rig; verify all generators use it | Spec file plus a check |
+| P1 | Write `rig.json` from the existing Jaguar and Shadow rig; verify all generators use it | Spec file plus a check. **Done 2026-11-06** for the glTF rig; the pose code in `main.c` and the CSV catalog are not checked against it yet |
 | P2 | Procedural blockout from rig plus parameters; match the accepted Jaguar and Shadow blockouts | `har_build` blockout stage; before and after silhouette diff |
 | P3 | Importer: auto up, front, scale; landmark proposal; confirm UI | Detailed mesh in rig space, small landmarks file |
 | P4 | Auto-skinning and glTF export; viewer loads glTF at run time | One skinned glTF per variant; C headers removed |

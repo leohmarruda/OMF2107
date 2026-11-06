@@ -91,8 +91,10 @@ The old roadmap's stages map onto these: Stage 0 (source baseline) and Stage 1 (
 ## Progress
 
 - 2026-11-05: Spike A done (read-only), result **go with conditions**: [SPIKE_A_FINDINGS.md](SPIKE_A_FINDINGS.md). The
-  tool audit (P0) first pass is in [HAR_PIPELINE.md](HAR_PIPELINE.md). Still open in Phase 0: permission email,
-  simplified style brief, `rig.json` fields.
+  tool audit (P0) first pass is in [HAR_PIPELINE.md](HAR_PIPELINE.md). Still open in Phase 0: permission email
+  and simplified style brief. 2026-11-06: `rig.json` written ([robots/rig.json](../robots/rig.json), checked by
+  `robots/check_rig.py`); it found that `jaguar-rigged.gltf` is stale against its generator (it has two helmet parts the
+  generator no longer makes).
 - 2026-11-06: Ari's route scripted end to end (see above). Docs consolidated: this plan replaces `ROADMAP.md`.
 
 ## Phase 0: decisions and spikes (2026-11-09 to 2026-11-20)
@@ -184,7 +186,7 @@ provenance list.
 
 1. Send the permission email (needs a contact; I can look for one).
 2. Decide the simplified style direction from two or three quick renders of the Jaguar blockout.
-3. Live playtest of Ari's route (`run-story-ari.ps1`), then fill the `rig.json` fields.
+3. Live playtest of Ari's route (`run-story-ari.ps1`).
 
 (Spike A and the first pass of the tool audit are done; see the 2026-11-05 entry above.)
 

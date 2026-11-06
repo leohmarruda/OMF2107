@@ -17,7 +17,7 @@ sys.path.insert(0, str(ROOT))
 from jaguar.blockout import build as jaguar  # noqa: E402
 from shadow.blockout import build as shadow  # noqa: E402
 
-sys.path.insert(0, str(ROOT.parent / "prototype"))
+sys.path.insert(0, str(ROOT.parent / "tools"))
 from generate_model_meshes import group  # noqa: E402
 
 
@@ -103,7 +103,12 @@ def clips_for(har):
     ]
 
 
-def export(har, parts, output):
+def rig(har):
+    """The rest-pose joint pivots and the hierarchy for a HAR (0 Jaguar, 1 Shadow), in rig units.
+
+    robots/rig.json records the joint names, hierarchy, axes and the Jaguar pivots; robots/check_rig.py compares this
+    function with it, so a change here that rig.json does not know about is reported.
+    """
     pivots = {"root": (0, 0, 0), "torso": (0, 0, 0),
               "head": (0, 2.77 if har == 0 else 2.75, 0),
               "pelvis": (0, 1.38, 0)}
@@ -128,6 +133,11 @@ def export(har, parts, output):
         parents[f"hip_{suffix}"] = "pelvis"
         parents[f"knee_{suffix}"] = f"hip_{suffix}"
         parents[f"ankle_{suffix}"] = f"knee_{suffix}"
+    return pivots, parents
+
+
+def export(har, parts, output):
+    pivots, parents = rig(har)
     gltf = {"asset": {"version": "2.0", "generator": "OMF2107 rigid-joint rig"},
             "scene": 0, "scenes": [{"nodes": [0]}], "nodes": [], "meshes": [],
             "materials": [], "animations": [], "buffers": [], "bufferViews": [], "accessors": [],
