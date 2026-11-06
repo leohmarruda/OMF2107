@@ -855,8 +855,8 @@ jump ch3_start
 
 # ======================================================================================================
 # CHAPTER 3, "The Trouble with Attraction" (Days 5 to 7), condensed from Chapter_03_Trouble_With_Attraction_v0.7.
-# Not converted: the optional fan-service scenes (3B, 5B, 10B). The kiss and the private evening stay offscreen/optional.
-# Flags set here: ari_mara (lovers or friends), private_evening, spar, offer_seen. Tournament progression never depends on them.
+# Not converted: the optional fan-service scenes (3B, 10B); 5B is scene ch3_towel. The kiss and the private evening stay offscreen/optional.
+# Flags set here: ari_mara (lovers or friends), private_evening, spar, offer_seen, and the optional 5B rapport flags (ari_mara_banter, ari_mara_spar_respect, ari_mara_friendship_rapport). Tournament progression never depends on them.
 # ======================================================================================================
 
 scene ch3_start
@@ -1009,16 +1009,50 @@ scene ch3_spar_won
 say Mara: Not bad. I may have created a problem for myself.
 say Ari: You could stop giving me advice.
 say Mara: And miss the chance to complain when you ignore it?
-jump ch3_billing
+jump ch3_towel
 
 scene ch3_spar_lost
 say Mara: There. Feel better?
 say Ari: Not particularly.
 say Mara: Then again. Until you do.
-jump ch3_billing
+jump ch3_towel
 
 scene ch3_nospar
 set spar=skipped
+jump ch3_billing
+
+scene ch3_towel
+# Optional scene 5B, "Five More Seconds": reached after the friendly spar. No romance is inferred from it; the first kiss stays in scene 11.
+present off
+art ari_fs_five_seconds fade
+say : The training robots cool behind the glass. Mara, in ordinary practice clothing, catches Ari studying her left shoulder.
+say Mara: You keep watching that arm.
+say Ari: It telegraphs your hook.
+say Mara: Then why does it keep hitting you?
+say : She offers a towel. Ari takes it; their fingers linger for an instant.
+choice Tease: "Maybe I like the view from here." -> ch3_towel_a set ari_mara_banter=1
+choice Ask for another round: "Five more seconds." -> ch3_towel_b set ari_mara_spar_respect=1
+choice End it as friends: "I trust you to tell me when I'm wrong." -> ch3_towel_c set ari_mara_friendship_rapport=1
+
+scene ch3_towel_a
+say : Mara laughs.
+say Mara: Then keep your guard up.
+jump ch3_towel_out
+
+scene ch3_towel_b
+say : Mara steps into stance. Behind them the training clock flashes a new countdown.
+say Mara: Finally, a reasonable request.
+jump ch3_towel_out
+
+scene ch3_towel_c
+say Mara: I may need a larger schedule.
+jump ch3_towel_out
+
+scene ch3_towel_out
+say : They leave for separate obligations. No match is rigged, and nothing here changes the choices that come later.
+art ari_ch1_arena_day fade
+present ari left Ari Solano
+present mara right Mara Voss
 jump ch3_billing
 
 scene ch3_billing
