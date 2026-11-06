@@ -243,6 +243,12 @@ static bool rejects(const char *script, const char *expect) {
 static bool same_run(const StoryRun *a, const StoryRun *b) {
     if(a->event != b->event || a->scene != b->scene || a->pc != b->pc || strcmp(a->bg, b->bg) != 0 ||
        a->flag_count != b->flag_count || story_log_count(a) != story_log_count(b)) return false;
+    for(int i = 0; i < 2; i++)
+        if(strcmp(a->present[i].image, b->present[i].image) != 0 || strcmp(a->present[i].name, b->present[i].name) != 0 ||
+           a->present[i].stage != b->present[i].stage) return false;
+    if(a->name_seen_count != b->name_seen_count) return false;
+    for(int i = 0; i < a->name_seen_count; i++)
+        if(strcmp(a->name_seen[i], b->name_seen[i]) != 0) return false;
     for(int i = 0; i < a->flag_count; i++)
         if(strcmp(a->flags[i].name, b->flags[i].name) != 0 || strcmp(a->flags[i].value, b->flags[i].value) != 0) return false;
     for(int i = 0; i < story_log_count(a); i++)
@@ -357,6 +363,37 @@ static const char *const cast_script =
     "say : lost\n"
     "end\n";
 
+// Two portraits on stage, a name plate only the first time, and all of it surviving a save.
+static const char *stage_script =
+    "scene a\n"
+    "present crystal right Crystal Devroe\n"
+    "present ari left Ari Solano\n"
+    "say Ari: First line.\n"
+    "say Crystal: Second line.\n"
+    "present off\n"
+    "present crystal right Crystal Devroe\n"
+    "say Crystal: Back again.\n"
+    "say Ari: Last line.\n"
+    "end\n";
+static void selftest_stage(void) {
+    Story story;
+    char err[256];
+    StoryRun run, loaded;
+    CHECK(story_parse(&story, stage_script, "stage", err, sizeof(err)));
+    CHECK(story_start(&run, &story, NULL));
+    CHECK(strcmp(run.present[0].image, "ari") == 0 && strcmp(run.present[1].image, "crystal") == 0);   // both sides at once
+    CHECK(run.present[0].stage == 2 && run.present[1].stage == 2 && run.name_seen_count == 2);   // shown with the first line
+    CHECK(story_save(&run, "story_selftest_stage.save", err, sizeof(err)));
+    CHECK(story_load_save(&loaded, &story, "story_selftest_stage.save", err, sizeof(err)) && same_run(&run, &loaded));
+    story_advance(&run);   // the second line: the plates leave
+    CHECK(run.present[0].stage == 3 && run.present[1].stage == 3);
+    story_advance(&run);   // present off, then crystal again: she is already known, so no name plate
+    CHECK(strcmp(run.present[1].image, "crystal") == 0 && run.present[1].name[0] == 0 && run.present[0].image[0] == 0);
+    CHECK(story_save(&run, "story_selftest_stage.save", err, sizeof(err)));
+    CHECK(story_load_save(&loaded, &story, "story_selftest_stage.save", err, sizeof(err)) && same_run(&run, &loaded));
+    remove("story_selftest_stage.save");
+    story_free(&story);
+}
 static void selftest_cast(void) {
     Story story;
     char err[256];
@@ -559,6 +596,7 @@ static int cmd_selftest(void) {
     CHECK(strcmp(story_event_cmd(&run)->text, "Won plainly.") == 0);   // flag unset: the if falls through
     CHECK(!story_start(&run, &story, "nowhere"));
     selftest_saves(&story);
+    selftest_stage();
     selftest_cast();
     selftest_art();
     selftest_effects();

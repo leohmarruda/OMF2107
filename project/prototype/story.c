@@ -742,6 +742,14 @@ bool story_save(const StoryRun *run, const char *path, char *err, size_t err_siz
     fputs("music ", f); put_clean(f, run->music); fputc('\n', f);
     fputs("art ", f); put_clean(f, run->art); fputc(' ', f); put_clean(f, run->art_effect[0] ? run->art_effect : "none");
     fputc('\n', f);
+    for(int i = 0; i < 2; i++) {   // the portraits on stage: image, side, name-plate stage, name
+        const StoryPresent *p = &run->present[i];
+        if(!p->image[0]) continue;
+        fputs("present ", f); put_clean(f, p->image); fprintf(f, " %s %d", i == 0 ? "left" : "right", p->stage);
+        if(p->name[0]) { fputc(' ', f); put_clean(f, p->name); }
+        fputc('\n', f);
+    }
+    for(int i = 0; i < run->name_seen_count; i++) { fputs("seen ", f); put_clean(f, run->name_seen[i]); fputc('\n', f); }
     for(int i = 0; i < run->flag_count; i++) {
         fputs("flag ", f); put_clean(f, run->flags[i].name); fputc('=', f);
         put_clean(f, run->flags[i].value); fputc('\n', f);
@@ -827,6 +835,10 @@ bool story_load_save(StoryRun *run, const Story *story, const char *path, char *
                 ok = copy(p->image, sizeof(p->image), image) && copy(p->name, sizeof(p->name), name ? name + 1 : "");
                 p->stage = atoi(stage + 1);
             }
+        }
+        else if(strncmp(l, "seen ", 5) == 0) {   // a portrait whose name plate was already shown
+            ok = tmp.name_seen_count < STORY_NAME_SEEN && copy(tmp.name_seen[tmp.name_seen_count], STORY_NAME, l + 5);
+            if(ok) tmp.name_seen_count++;
         }
         else if(strncmp(l, "flag ", 5) == 0) {
             char *eq = strchr(l + 5, '=');
