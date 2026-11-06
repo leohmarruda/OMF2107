@@ -2,7 +2,7 @@
 # Sources: project/docs/OMF_2107_Story_Pack/04_Screenplay_Reconstructions/Chapter_01_Anniversary_v0.6.md through
 # Chapter_06_One_Must_Fall_v0.8.md, routed by 14_Ari_Campaign/Ari_Route_Spec_v0.1.md.
 # Dialogue is condensed to one line per beat and stage directions became narration. Not converted: the optional
-# fan-service scenes (2B, 3B, 5B, 7B, 10B and so on), the arcade-mode versions, and the other pilots' romance endings.
+# fan-service scenes are in as optional scenes (1B, 4B, 3B, 5B, 10B, 3B and 4B of Chapter 4, 2B, 7B, 15B, 16B); not converted: the arcade-mode versions, and the other pilots' romance endings.
 # Frames come from project/renders through project/tools/build_ari_art.py (git-ignored output in project/build/art).
 # Every character shown with `present` has a portrait; Kreissack, Nova, Plug, Sorell and the one-line extras have none.
 # Ari's screenplay HAR is Thorn; the prototype only renders Jaguar, Shadow and Katana, so fights read @player_har.
@@ -389,7 +389,7 @@ jump ch2_breakfast
 # ======================================================================================================
 # CHAPTER 2, "The Champion's Shadow" (Days 3 and 4), condensed from Chapter_02_Champions_Shadow_v0.7.
 # Both Group A results are tracked: result (Ari vs Selene, set in chapter 1) and crystal_result (set below).
-# 7A to 7D of the screenplay follow the four combinations; the optional fan-service scenes (1B, 4B) are not converted.
+# 7A to 7D of the screenplay follow the four combinations; the optional scenes 1B and 4B follow as ch2_offair and ch2_neon.
 # ======================================================================================================
 
 scene ch2_breakfast
@@ -478,6 +478,28 @@ say Steffan: That concern almost sounds affectionate.
 say Dante: Don't flatter yourself. You'll get your chance against me.
 say Steffan: Good. I'd hate to think you were avoiding me.
 say : Steffan walks away. Dante notices a replay of Lyra's victory, and his expression softens into pride.
+jump ch2_offair_ask
+
+# Optional scene 1B, "Off Air" (Day 3, after the broadcast). Ari is not present; Lyra and Alex, backstage. No romance is set.
+scene ch2_offair_ask
+choice Meanwhile, backstage with Lyra and Alex (optional) -> ch2_offair
+choice Carry on to the Hall of Champions -> ch2_hall
+
+scene ch2_offair
+bg broadcast studio corridor
+present off
+say : The interview lights go dark. Lyra, still in a shimmering sponsor jacket over her training gear, sets her Electra gloves on a desk. Alex unclips a microphone.
+present lyra left Lyra Kisaragi
+present alex right Alex
+say Lyra: Everyone asked who I arrived with. Nobody asked how I improved my reaction time.
+say Alex: Your third-round counter was the best part of the fight. The producer cut my analysis.
+say Lyra: You noticed?
+say Alex: I was doing my job.
+say Lyra: Then put the counter on the next technical segment.
+say Alex: I can argue for analysis. I can't promise the edit.
+say Lyra: You seem more interesting without a camera.
+say Alex: And you're still in an interview corridor. Talk to me when the tournament's over.
+say : Alex goes back to objective commentary and Lyra to training. Nothing here changes the Lyra, Dante and Steffan thread or the result of any match.
 jump ch2_hall
 
 scene ch2_hall
@@ -790,6 +812,47 @@ say Ari: No.
 say : Mara's smile becomes noticeably warmer.
 say Mara: Then ask me again after tomorrow.
 say : She leaves. The moment is hopeful, but it promises nothing about the tournament or the relationship.
+jump ch2_neon_ask
+
+# Optional scene 4B, "Neon Respite" (Day 3, night): a sponsor rooftop party. Skipping is always available and has no cost.
+scene ch2_neon_ask
+bg sponsor rooftop
+present off
+art ari_ch1_gala fade
+say : Night. A sponsor has invited the pilots to a rooftop party after the day's matches. There is no obligation to go.
+choice Join the party -> ch2_neon
+choice Have a quiet word with Mara on the balcony -> ch2_neon_mara set rooftop_companion=mara
+choice Skip it and go to the reading lounge -> ch2_neon_skip set rooftop_joined=0
+
+scene ch2_neon
+set rooftop_joined=1
+say : Reflected pool light scatters across a display of miniature HARs. Several adult pilots have chosen swimwear or tailored resort attire, and staff ask permission before filming.
+say : Shirro poses for a camera that has already found a better subject: Lyra, demonstrating an impossible-looking dive for the cheering fans.
+say Lyra: That's what they call grace, Steffan. Your turn.
+say Steffan: I thought we were here to celebrate charisma.
+say : He makes a spectacular splash. Dante rescues his soaked jacket with a look of absolute despair.
+say Dante: I am going to win this tournament out of spite.
+say : Mara laughs and Crystal hands Dante a dry towel without comment. Ari takes a turn at the miniature HAR display and loses, loudly and happily.
+say : High on the balcony an uninvited WAR camera pans toward a restricted equipment hatch; Plug closes it and asks security to redirect the camera.
+jump ch2_neon_end
+
+scene ch2_neon_mara
+set rooftop_joined=1
+say : Mara has found a quiet corner of the balcony, away from the splashing.
+present mara right Mara Voss
+say Mara: Don't look so pleased. I'm not saying a word about dinner.
+say Ari: You just did.
+say Mara: Then I'll leave it at that. No promises.
+say : A teasing line, a shared look over the lights, and nothing more: no courtship, no kiss, no change to the relationship.
+jump ch2_neon_end
+
+scene ch2_neon_skip
+say : In the reading lounge Cossette and Ibrahim are discussing voluntary interface safeguards.
+say : Cossette sketches an opt-out circuit, and Ibrahim notes that the same research context and an odd equipment anomaly can be learned about without any party at all.
+jump ch2_neon_end
+
+scene ch2_neon_end
+say : The evening stays light. Outfits, poses and camera consent have nothing to do with anyone's romantic interest or consent to neural interface work. By morning every pilot is back on schedule for official fights.
 jump ch2_ghost
 
 scene ch2_ghost
@@ -855,7 +918,7 @@ jump ch3_start
 
 # ======================================================================================================
 # CHAPTER 3, "The Trouble with Attraction" (Days 5 to 7), condensed from Chapter_03_Trouble_With_Attraction_v0.7.
-# Not converted: the optional fan-service scenes (3B, 10B); 5B is scene ch3_towel. The kiss and the private evening stay offscreen/optional.
+# Optional scenes: 3B is ch3_velvet, 5B ch3_towel and 10B ch3_inventors. The kiss and the private evening stay offscreen/optional.
 # Flags set here: ari_mara (lovers or friends), private_evening, spar, offer_seen, and the optional 5B rapport flags (ari_mara_banter, ari_mara_spar_respect, ari_mara_friendship_rapport). Tournament progression never depends on them.
 # ======================================================================================================
 
@@ -939,6 +1002,26 @@ say Steffan: And where does it matter, Dante?
 say : The question hangs between them. Dante looks away first.
 say Dante: We'll settle it in the arena.
 say Steffan: I certainly hope so.
+jump ch3_velvet_ask
+
+# Optional scene 3B, "The Velvet Problem" (Day 5, late evening). Ari is not present: a research-benefit reception. It sets no flag.
+scene ch3_velvet_ask
+choice Elsewhere that night, a research-benefit reception (optional) -> ch3_velvet
+choice Carry on -> ch3_hold
+
+scene ch3_velvet
+bg research benefit reception
+present off
+say : Late evening, a small research-benefit reception. Jean-Paul stands near the doors with his tuxedo jacket slung over one shoulder. Dr. Varga emerges from the crowd in an elegant evening suit.
+present jeanpaul left Jean-Paul
+present varga right Dr. Varga
+say Jean-Paul: I thought this party was supposed to be boring.
+say Varga: Only if you listen to the presentations.
+say Jean-Paul: Then save me with a dance.
+say : She joins him. They trade graceful steps and barbed compliments, and an almost-kiss stops when she remarks that he doesn't know what she is asking.
+say Jean-Paul: Then ask in words.
+say : Neither answers. In her private study log Varga has recorded the predicted encounter rather than an outcome.
+say : She cannot compel his genuine feelings, and her undisclosed orchestration stays an ethical breach even if the attraction is mutual.
 jump ch3_hold
 
 scene ch3_hold
@@ -1211,9 +1294,44 @@ say Leena: It was a private conversation. You don't seem curious about who leake
 say Shirro: Should I be?
 say Leena: Probably.
 say : (Varga routed the corridor clip to a media intermediary. Shirro's team edited it for sensation on their own. The full extent of her role stays hidden for now.)
-jump ch3_garden
+jump ch3_inventors_ask
 
 # Scene 11: the garden. Choice 4 only changes tone; Choice 5 sets ari_mara. The private-evening beat is optional and offscreen.
+# Optional scene 10B, "Two Inventors, One Dance" (Day 7, late afternoon). Ari is a guest, never a voyeur; the safeguards can be learned either way.
+scene ch3_inventors_ask
+bg workshop
+present off
+say : Late afternoon, the technical workshop. Warm light spills out of the open door.
+choice Look in on the workshop -> ch3_inventors
+choice Give them privacy and move on -> ch3_inventors_skip
+
+scene ch3_inventors
+say : A test-lighting fixture has turned the workshop into an unexpected ballroom. Cossette inspects a circuit while Ibrahim offers a theatrical bow.
+say Ibrahim: May I have this dance?
+say Cossette: If you remember who taught you.
+say : They turn beneath the warm light, and Cossette draws him close for a kiss. The test rig flashes an absurd victory animation.
+say Cossette: Was that deliberate?
+say Ibrahim: I was hoping you wouldn't ask.
+choice Tease kindly: "Should we applaud or send an invoice?" -> ch3_inventors_a set workshop_trust=1
+choice Ask about the safeguards -> ch3_inventors_b
+choice Step back and leave them to it -> ch3_inventors_skip
+
+scene ch3_inventors_a
+say : They laugh, then explain why an opt-out control matters in neural systems.
+jump ch3_inventors_end
+
+scene ch3_inventors_b
+say : Cossette shows an isolated kill-switch design. Its usefulness has nothing to do with the couple's private affection.
+jump ch3_inventors_end
+
+scene ch3_inventors_skip
+say : Ari withdraws. The same safeguard information is on the public workshop schematic outside, and no footage is recorded.
+jump ch3_inventors_end
+
+scene ch3_inventors_end
+say : The light goes out. The technology remains testable whether or not anyone attended.
+jump ch3_garden
+
 scene ch3_garden
 music menu
 bg observation garden
@@ -1415,7 +1533,7 @@ jump ch4_start
 
 # ======================================================================================================
 # CHAPTER 4, "No Holding Back" (Days 8 to 10), condensed from Chapter_04_No_Holding_Back_v0.7.
-# Not converted: the optional fan-service scenes (3B, 4B). The NPC quarterfinal winners below follow the screenplay's
+# Optional scenes: 3B is ch4_cooling and 4B ch4_blue. The NPC quarterfinal winners below follow the screenplay's
 # default results and are provisional (route spec: NPC outcomes are test scaffolding, not approved canon).
 # Flags set here: nii (refused, monitored or extended), qf (won or lost, or none when Ari was not in the bracket),
 # sf (the semifinal opponent: crystal or mara, or none), kreissack (known).
@@ -1490,6 +1608,35 @@ say Ari: That's why there's a consultation.
 say Mara: A consultation run by the people selling it. Just promise you'll find out what you're agreeing to.
 say Ari: I will.
 say : Mara nods, but her concern stays.
+jump ch4_cooling_ask
+
+# Optional scene 3B of Chapter 4, "Cooling System" (Day 8, afternoon). Mara and Plug, in the hangar. Friendship only: no romance is set here.
+scene ch4_cooling_ask
+choice Drop by the hangar workshop (optional) -> ch4_cooling
+choice Go straight to the consultation -> ch4_consult
+
+scene ch4_cooling
+bg hangar workshop
+present off
+say : The hangar workshop. Plug kills the welding current and checks that the bench is safe. Mara pushes her safety goggles up, leaning over the repaired Flail actuator.
+present mara right Mara Voss
+say Plug: The most expensive part of your machine now has a cheap scar.
+say Mara: It suits the pilot.
+say Plug: The pilot is a walking invoice.
+choice Say the scar is a bargain -> ch4_cooling_a set mara_plug_friendship=1
+choice Ask about the feedback loop in the log -> ch4_cooling_b set plug_hardware_clue=1
+
+scene ch4_cooling_a
+say Mara: Keep the invoice. I'll keep the scar.
+say : They laugh. The repair is paid, the work is legitimate, and nobody pays for it with anything but money.
+jump ch4_cooling_end
+
+scene ch4_cooling_b
+say : Mara spots an odd feedback loop in the test data. Plug hands over the publicly inspectable testing log, with a note about the unusual timings. It will matter later.
+jump ch4_cooling_end
+
+scene ch4_cooling_end
+say : Flail's repairs, Mara's independent ability and the anomaly are preserved on every branch.
 jump ch4_consult
 
 scene ch4_consult
@@ -1677,13 +1824,60 @@ say Ari: Tomorrow's already here.
 if ga=out -> ch4_5c
 if ga=winner -> ch4_arg_alt
 say Mara: Then let's make it a good fight.
-jump ch4_qf
+jump ch4_blue_ask
 
 scene ch4_arg_alt
 say Mara: Then let's both make it through tomorrow.
-jump ch4_qf
+jump ch4_blue_ask
 
 # Day 9 routing by the Group A result. ga=winner: Ari vs Ren. ga=second or cycle: Ari vs Mara. ga=out: archive.
+# Optional scene 4B of Chapter 4, "The Blue Hour" (Day 8, late evening, after the argument). With ari_mara=lovers it has a private moment;
+# otherwise a friends fallback. The private-night choice cuts away offscreen. Tournament outcomes and medical risks are unaffected.
+scene ch4_blue_ask
+bg hallway at night
+present off
+art ari_ch1_gala fade
+say : Late evening. A short walk later Ari and Mara reach her doorway; the city bathes the hall in blue neon through a tall window.
+choice Linger a moment at her door -> ch4_blue
+choice Say goodnight -> ch4_qf
+
+scene ch4_blue
+present ari left Ari Solano
+present mara right Mara Voss
+say : Mara holds Ari's jacket across her shoulders.
+say Mara: Tomorrow we might have to fight each other.
+say Ari: Can we schedule being enemies for after breakfast?
+say Mara: You think you can distract me?
+say Ari: I think you still have my jacket.
+if ari_mara=friends -> ch4_blue_f
+say : They step closer only if both signal that the moment is welcome. Neither moves away.
+choice Stay together tonight: "Then let's have one night that's ours." -> ch4_blue_a set ari_mara_private_night=1
+choice Kiss and part: no favors in the arena -> ch4_blue_b set ari_mara_private_night=0
+choice Sit by the window and talk instead -> ch4_blue_c set ari_mara_emotional_trust=1
+
+scene ch4_blue_a
+say : Mara's answer is plain and warm. They kiss, the hallway empties, the door closes, and the scene cuts to the morning. What happens in between stays offscreen.
+jump ch4_blue_end
+
+scene ch4_blue_b
+say : They share a warm kiss and agree to meet in the arena with no favors asked or given.
+jump ch4_blue_end
+
+scene ch4_blue_c
+say : They sit beside the window and talk about Mara's mother and Ari's family. The disagreement about the neural program is still there, unresolved, and neither pretends it isn't.
+jump ch4_blue_end
+
+scene ch4_blue_f
+say : Mara hands the jacket back and asks whether they are still ready to fight honestly tomorrow.
+say Ari: Honestly. And with respect.
+say Mara: That's all I want.
+say : They reaffirm their mutual respect, with no kiss and no private-night choice.
+jump ch4_blue_end
+
+scene ch4_blue_end
+say : The quarterfinal is still ahead. Their competitive integrity and their concerns about WAR carry on.
+jump ch4_qf
+
 scene ch4_qf
 music arena0
 bg main arena
@@ -2080,7 +2274,7 @@ jump ch5_start
 
 # ======================================================================================================
 # CHAPTER 5, "Fractures" (Days 11 and 12), condensed from Chapter_05_Fractures_v0.7.
-# Not converted: the optional scenes 2B, 5B and 7B. When Ari is not in the first semifinal the broadcast shows
+# Optional scenes: 2B is ch5_custody and 7B ch5_spot. Another note: When Ari is not in the first semifinal the broadcast shows
 # Crystal advancing, a provisional default (route spec: NPC outcomes are scaffolding until approved). The second
 # semifinal defaults to Lyra over Steffan, as in the screenplay.
 # Flags set here: evidence_plan (the Choice 6 handling), final (ari when Ari reaches the final, otherwise none).
@@ -2215,6 +2409,41 @@ say Ari: Was it?
 say Crystal: No.
 say : A moment passes. Then she stands.
 say Crystal: And now we have a semifinal to prepare for.
+jump ch5_custody_ask
+
+# Optional scene 2B of Chapter 5, "A Clean Chain of Custody" (Day 11, after the document review). Deliberately not a date.
+scene ch5_custody_ask
+bg evidence archive
+present off
+say : The archive, after the document review. Leena records the archivist's receipt number.
+choice Stay for the receipt (optional) -> ch5_custody
+choice Leave them to it -> ch5_board
+
+scene ch5_custody
+present leena right Leena Sato
+say : Ari watches a loss that was personal turn into a case number.
+say Ari: I wanted someone to believe me. I didn't know it would feel like this.
+say Leena: I didn't believe you. I checked. You were right, and that's more useful.
+choice Thank her for checking: "I needed the truth more than an ally." -> ch5_custody_a set ari_leena_trust=1
+choice Ask about the next steps -> ch5_custody_b set leena_custody_knowledge=1
+choice Admit an interest, without asking for an answer -> ch5_custody_c set ari_leena_future_invitation=1
+
+scene ch5_custody_a
+say Leena: Then we're both being useful.
+jump ch5_custody_end
+
+scene ch5_custody_b
+say : Leena describes the independent chain of custody and how public release has to protect living witnesses.
+jump ch5_custody_end
+
+scene ch5_custody_c
+say Ari: When your assignment is over, I'd like to see you outside an interview.
+say Leena: When it's over, we can talk about that. Not before.
+say : It is an invitation, not a commitment, and not consent to anything.
+jump ch5_custody_end
+
+scene ch5_custody_end
+say : Leena goes back to professional coverage, and the evidence is released through independent verification on every branch. No romantic choice changes a line of the records.
 jump ch5_board
 
 scene ch5_board
@@ -2432,9 +2661,27 @@ say Lyra: I trained for years to get here. And tonight I'm fighting one of the b
 say Reporter: Do you think you can defeat Steffan, even after losing to him in qualification?
 say Lyra: Especially after losing to him in qualification. I learned something useful.
 say : A fan outside holds a handmade sign: WE'RE HERE FOR ELECTRA. Lyra sees it and smiles. Some of her fans genuinely admire her athletic accomplishments, not only her image.
-jump ch5_failure
+jump ch5_spot_ask
 
 # Scene 8: the coolant failure is an accident, not Nova sabotage; Nova's intervention is a choice.
+# Optional scene 7B of Chapter 5, "Own the Spotlight" (Day 12, morning). Lyra after her press conference; Steffan is not her public boyfriend.
+scene ch5_spot_ask
+choice Elsewhere that morning, a sponsor's promotional shoot (optional) -> ch5_spot
+choice Carry on -> ch5_failure
+
+scene ch5_spot
+bg press suite
+present off
+say : A sponsor offers Lyra a last-minute promotional portrait: two silhouettes, her Electra and Steffan's Pyros, posed like a romantic duel. Lyra surveys the lighting rig and a rack of tailored outfits.
+present lyra left Lyra Kisaragi
+say Lyra: I'm fighting him tonight. We're not selling a relationship.
+say Photographer: The contrast would get attention.
+say Lyra: So would showing the move that got me here.
+say : She takes a metallic-jacketed, Electra-inspired outfit and performs a controlled vault beside her HAR for the cameras. Fans applaud her mastery.
+say : If the photographer wants a double shot, it will be a rivalry: opposite marks, no embrace, and the caption reads REMATCH, not REUNION.
+say : Fan support changes nothing in the fight. Her public identity belongs to her, and the semifinal will be decided in the arena.
+jump ch5_failure
+
 scene ch5_failure
 music arena0
 bg experimental equipment wing
@@ -2638,7 +2885,7 @@ jump ch6_start
 
 # ======================================================================================================
 # CHAPTER 6, "One Must Fall" (Day 13 and the epilogue), condensed from Chapter_06_One_Must_Fall_v0.8.
-# Not converted: the optional scenes 15B and 16B (other pilots' relationship endings; Ari's Mara ending is scene 16).
+# Optional scenes 15B and 16B are ch6_alex and ch6_e1 (Ari's Mara ending is scene 16).
 # The final is Ari vs. Lyra when Ari reached it (final=ari). Otherwise the NPC final is a provisional Crystal win
 # (route spec: no Ari-Lyra default after a different pilot wins, and NPC outcomes await approval).
 # The Nova boss is two fights; a loss offers a retry instead of ending the story. SPECIAL_NOVA never gives Ari a trophy.
@@ -3349,9 +3596,75 @@ say : They raise their glasses to the investigation and the jobs still ahead, cl
 jump ch6_rest_end
 
 scene ch6_rest_end
-if nii=refused -> ch6_final_image
+if nii=refused -> ch6_epi
 say : Ari continues independent monitoring and rehabilitation where needed. Winning, or losing, did not instantly remove the neural complications.
 say : Mara's finances improve through realistic work and restructuring, not through any transfer of Ari's prize money.
+jump ch6_epi
+
+# Optional epilogue scenes 15B and 16B (weeks later). Only one personal ending runs for Ari: the Mara dinner above, or Leena (E1) when Ari and Mara
+# stayed friends. Lyra and Alex, Mara and Plug, and Crystal and Raven get short non-romantic status vignettes. The inquiry continues regardless.
+scene ch6_epi
+if ari_mara=friends -> ch6_e1_ask
+jump ch6_alex_ask
+
+scene ch6_e1_ask
+bg transit station noodle bar
+present off
+art ari_ch1_ganymede fade
+say : Weeks later. Rain beads against the window of a transit-station noodle bar.
+choice Meet Leena (optional) -> ch6_e1
+choice Carry on -> ch6_alex_ask
+
+scene ch6_e1
+present leena right Leena Sato
+say : Leena sets an obsolete press badge on the table, face down.
+say Leena: I thought handing it in would make this simple.
+say Ari: Does it?
+say Leena: It means I can ask you to dinner without pretending it's an interview.
+if ari_leena_future_invitation=1 -> ch6_e1_go
+say : Her assignment has not ended cleanly and the records are not yet in independent hands, so there is nothing to say yet beyond thanks. They part warmly, and the verified report is published by the independent team all the same.
+jump ch6_alex_ask
+
+scene ch6_e1_go
+say : Her assignment has ended, the Ganymede evidence is with an independent editor and archivist, and she has handed on her coverage and disclosed her conflict.
+choice Accept: "Dinner. No recorder." -> ch6_e1_a set ari_leena_date=1
+choice Keep it slow: "The case is still open. Let's see what we want when the noise dies down." -> ch6_e1_b set ari_leena_open=1
+choice Remain friends: "I trust you. I don't want to turn that into something else." -> ch6_e1_c set ari_leena_friendship=1
+
+scene ch6_e1_a
+say : She laughs, reaches across the table and takes Ari's hand. At the door they share a mutual kiss.
+jump ch6_alex_ask
+
+scene ch6_e1_b
+say : They agree to meet again once the noise has died down.
+jump ch6_alex_ask
+
+scene ch6_e1_c
+say : Leena accepts it without awkwardness. The friendship stays exactly what it was.
+jump ch6_alex_ask
+
+scene ch6_alex_ask
+choice Elsewhere, on a terrace after a charity repair event (optional) -> ch6_alex
+choice Carry on -> ch6_status
+
+scene ch6_alex
+bg city terrace
+present off
+say : On a terrace after a charitable arena-repair event, Lyra looks up at a huge holographic advertisement of her old smiling self. Alex joins her without a microphone.
+present lyra left Lyra Kisaragi
+present alex right Alex
+say Lyra: She looks perfect. She's very tired.
+say Alex: It's a convincing performance.
+say Lyra: That sounds like a professional review.
+say Alex: I'm off the assignment. You don't owe me a performance now.
+say Lyra: Walk with me, then. No interview.
+say : They leave as two friends with an unresolved spark, and nothing more is decided. Alex's earlier commentary and Lyra's victories stay as they were, and her fanbase and her athletic future are intact.
+jump ch6_status
+
+scene ch6_status
+present off
+say : Elsewhere, the other endings stay quiet. In a public train-station café Plug slides Mara a receipt, the Flail's last invoice, settled in full, and they toast the next contract.
+say : In a training room lit only by the sparring lamps, Crystal takes the archival report rather than Raven's offered hand. They agree to cooperate, not to resume anything, and Christian keeps custody of the documents.
 jump ch6_final_image
 
 scene ch6_final_image
