@@ -1,8 +1,12 @@
 # OMF2107 documents
 
-- [Release plan](RELEASE_PLAN.md) — the single plan: target, current state, milestones M0 to M6, phases, rights checkpoint and risks.
-- [Development plan](OMF2097_DEVPLAN.md) — task order, dependencies, and acceptance checks.
+- [Release plan](RELEASE_PLAN.md) — the single plan: target, current state, milestones M0 to M6, phases, task register with acceptance checks, rights checkpoint and risks.
 - [Game specification](OMF2097_3D_GAME_SPEC.md) — intended game and first playable gates.
+- [Core loop](OMF2107_CORE_LOOP.md) — one-page session and career loop, with open questions.
+- [Feature list](OMF2107_FEATURES.md) — modes, combat, content and platform with milestone and state, plus known doc conflicts.
+- [Controls](OMF2107_CONTROLS.md) — default keyboard, gamepad, menu and story-window bindings as found in code.
+- [Arcade mode](OMF2107_ARCADE_MODE.md) — ladder flow, newscast, hangar, tune-ups, implemented vs missing.
+- [Balance and tuning](OMF2107_BALANCE.md) — formulas, difficulty, tune-up values, rules and a tuning log.
 - [Original One Must Fall 2097](OMF2097/README.md) — game reference, lore, archived manual and wiki pages, and original robot poses.
 - [Remastered visual references](Remastered/README.md) — HD move captures for 15 robots, including four new Remastered robots.
 - [Imported mesh candidates](mesh/README.md) — inventory and neutral previews of the new FBX exports.

@@ -15,7 +15,8 @@ endings, and Tournament mode.
 The story pass expands OMF's own neural-link, WAR, Kreissack and Nova themes. The [story treatment](OMF2107_LORE_v2.md)
 develops the government conspiracy, relationships and the physical cost of an experimental link, keeping the setting,
 cast and central tournament. The [game specification](OMF2097_3D_GAME_SPEC.md) defines modes, combat rules,
-presentation, architecture and acceptance gates. The [development plan](OMF2097_DEVPLAN.md) breaks them into tasks.
+presentation, architecture and acceptance gates. The task register below breaks the phases into tasks; it replaces the
+former `OMF2097_DEVPLAN.md`, retired 2026-11-07 and kept in git history.
 
 Fixed decisions: [rights and release rules](RIGHTS.md); no original data in a release; real 3D; two visual modes,
 the simplified one a stylised look in its own right, both driven by one rig and one gameplay proxy
@@ -76,7 +77,7 @@ Done before M0 (the old Stages 0 to 2 and the start of 4):
 | M2 Data-free duel | 2027-03-12 | Jaguar and Shadow on authored data and keyframes, no original file read; parity within tolerance of the measurements; both looks playable |
 | M3 Clean vertical slice | 2027-04-30 | One story route, menus, sound and music all original; build gate passes; outside playtest |
 | M4 Public demo | 2027-07-30 | Four HARs, local versus, one story route, options; permission answer received or takedown plan ready |
-| M5 Full roster | 2027-11-30 | All 11 HARs, Tournament mode, remaining arenas and routes |
+| M5 Full roster | 2027-11-30 | All ten standard HARs plus Nova as story boss (unlock policy open), Tournament mode, remaining arenas and routes |
 | M6 Release candidate | 2028-01-31 | QA, controller and options polish, packaging, rights review complete |
 
 The old roadmap's stages map onto these: Stage 0 (source baseline) and Stage 1 (3D fidelity spike) are done; Stage 2
@@ -155,6 +156,95 @@ mode (custom pilot, winnings, upgrades, bracket), final audio, voice if wanted.
 QA across hardware, performance for both modes, accessibility, localisation if wanted, crash reporting, installers,
 final rights review against the ledger, disclaimer in the README, title screen and store page.
 
+## Task register (from the former development plan)
+
+The old plan used Phases A to F with task IDs. The IDs stay so earlier notes still resolve; the phases map onto the
+milestones above. Priorities: **P0** is needed for the next playable gate or a safe production decision, **P1** is
+needed for the complete game, **P2** is an enhancement that can wait. No phase is done because the code compiles: each
+gate needs a demonstrated flow, comparison with the OMF baseline where relevant, and a list of remaining defects. Create
+one work item per task ID with owner, dependencies, files touched, acceptance evidence and actual effort.
+
+| Old phase | Now | Old exit gate, in short |
+| --- | --- | --- |
+| A Baseline (P0) | Done before M0 | Clean build, reference captures, two-HAR move sheet, rights ledger, architecture map |
+| B 3D fidelity spike (P0) | Done before M0; gate closed 2026-10-27 | Legible 3D local Stadium match on the fight plane; toolchain decision recorded (option A, see top) |
+| C Vertical slice (P0) | M3, with Ari's route as the story segment | Pilot and HAR pick, exchange, fight, recovery, choice, consequence; stable enough to cost a HAR, arena and route |
+| D Shared systems (P1) | Phases 3 to 5 | Every mode has a working loop; saves survive a build update; content is added without touching fight code |
+| E Content production (P1) | Phases 4 and 5 (M4, M5) | Ten pilots, ten HARs, five arenas, endings, Tournament, all in the coverage matrix |
+| F Release candidate (P1) | Phase 6 (M6) | Installable, playable, savable and finishable, with all shipped content cleared |
+
+### Phases A and B (done)
+
+Task-level status was not re-audited. The recorded outcomes are in "Done before M0". Open carry-overs:
+
+| ID | Task | Status |
+| --- | --- | --- |
+| A02 | Run the source unit tests, record failures apart from 3D work | Open |
+| A03 | Reference captures (Jaguar vs Shadow, Stadium plus one hazard arena); a visible human-played reference match | Replayable source-driven match recorded; human-played match open |
+| A06 | Asset inventory and provenance ledger | Open, tracked under Rights in Phase 1 |
+| A07 | Human playtest protocol with OMF-familiar players | Open; the Phase 3 outside playtest reuses it |
+| B07 | Fidelity report and prioritized defect list | Match review done 2026-10-27; the live playtest of readability is open |
+| B08 | Production toolchain decision | **Decided 2026-10-15**: option A. The Remastered port stays a reference (optional Spike B) |
+
+### Phase C (M3)
+
+| ID | Task | Where it lands |
+| --- | --- | --- |
+| C01 | Complete Jaguar and Shadow combat: move lists, stun, combos, knockdowns, rounds, timeouts, scrap finish | Phase 2, on `fightcore` and authored data |
+| C02 | Original hazard arena with a visible cue and a replayable timing test | Phase 2 (second arena) |
+| C03 | Slice-quality models, rigs, animations, effects, HUD, one arena treatment; OMF veterans name the machines unlabelled | Phases 1 and 2 |
+| C04 | Pilot selection independent of HAR selection | Done in the selection screen; the story recommends a pairing without locking it |
+| C05 | Data-driven scene runner (portraits, dialogue, choices, skip and log); invalid references reported | Done (`story_check`) |
+| C06 | Story sequence: pre-fight exchange, match, recovery, evidence choice, consequence; choices persist through save and load | Ari's route built; save persistence and the live playtest open |
+| C07 | One polished anime-style sequence and one short in-engine HAR sequence, skippable and replayable | Phase 3 |
+| C08 | Combat sound cues, music, dialogue timing, audio controls; block, hit, stun, hazard and victory distinguishable without the HUD | Phase 3 |
+| C09 | End-to-end playtests; frame pacing and input latency on a real target PC | Phase 3 outside playtest |
+
+After the slice, measure real time for one HAR, one arena, one character sequence and one route segment, then forecast the
+rest and reconcile it with capacity before authoring the full roster.
+
+### Phase D: shared systems (P1)
+
+| ID | Task | Acceptance |
+| --- | --- | --- |
+| D01 | Versioned schemas for HAR moves and hooks, pilot stats, hazards, dialogue, scene timing, ending flags | Malformed entries fail with useful errors |
+| D02 | Versioned saves for story, Tournament, controls and settings, with migration tests | An older save loads after a schema change or fails safely with a message |
+| D03 | Training mode: move list, input history, dummy settings, hitbox and stun display, recording playback | A player can practice one special and see why it missed |
+| D04 | Arcade ladder and local Versus menu with round, time and arena options | Matches run without entering Story or Tournament |
+| D05 | Tournament: pilot creation, budget, owned HARs, ranked events, payouts, repairs, training, upgrades, ranking | One short bracket can be won, spent, saved and continued; every price and stat change shown before purchase |
+| D06 | Named rivals; three event templates (ranked bracket, challenge, contract); short rivalry beats | Rival state changes on repeat fights; rank does not need easy-event farming |
+| D07 | Settings and accessibility: remap, text scale, subtitles and log, reduced flashes and shake, audio mix, graphics scale, scene skip | Settings persist and work on keyboard and gamepad; all story text stays available |
+| D08 | Content checks and a smoke suite for every mode entry and exit, save and load, one representative fight | Invalid content is caught before a build is shared |
+
+Arcade mode is scoped in [OMF2107_ARCADE_MODE.md](OMF2107_ARCADE_MODE.md). D05 sits in Phase 5, after the roster.
+
+### Phase E: content rules (P1)
+
+- **Per HAR:** build in small batches in this order: silhouette sheet, move data, placeholder implementation, balance
+  test, rig and animation, effects and sound, AI tuning, review. Done means every source-defining move is represented,
+  has documented inputs and timings, shows in training and AI, two local players can use it, and no major camera or
+  hitbox ambiguity remains. Nova follows as a boss once the normal roster works, with explicit, learnable rules.
+- **Per arena:** gameplay bounds and hazard, readable blockout, art and lighting, cue and audio, playtest.
+- **Per route:** lock the shared 2097 timeline first, marking proposed additions against original canon. Done means the
+  pilot can finish the campaign, every required scene and match has a fallback for any legal HAR, choices are saved and
+  reflected later, and a pilot-specific ending plays. Build reusable portrait poses before commissioning unique shots;
+  keep full animation for the opening, key revelations, Nova and a few endings. Romance and fanservice stay limited to
+  established adult characters and voluntary scenes.
+- **Tournament and audio:** several spending strategies must reach the top rank without repeating low-level fights.
+  Add voice only after text and timing are stable. Tournament upgrades stay inside its ruleset unless both Versus
+  players opt in.
+
+### Phase F: release evidence (P1)
+
+| ID | Task | Evidence |
+| --- | --- | --- |
+| F01 | Full combat regression: input traces, replays, all moves, all hazards, all pilot stat combinations | No reproducible winner or health desync; no unreadable move |
+| F02 | Story and Tournament walkthroughs on clean profiles and upgraded saves | Every route ends; purchases, repairs, rank and choices persist |
+| F03 | Performance and hardware sweep on minimum and recommended PCs | Frame pacing, input latency and load times measured |
+| F04 | Accessibility, controller and UX pass with OMF newcomers and veterans | Subtitles, remaps, skip, log and reduced effects work throughout |
+| F05 | Content and legal audit; packaging | Ledger complete; only approved data and licensed material ship |
+| F06 | Crash and telemetry policy, bug triage, release notes, support plan | A shippable build and a known-issues list |
+
 ## Parallel tracks, always on
 
 | Track | Standing rule |
@@ -163,6 +253,22 @@ final rights review against the ledger, disclaimer in the README, title screen a
 | Parity | After any rules or data change, re-run the measurement and replay checks |
 | Two looks | A HAR or arena is not done until both looks pass review and `har_check` |
 | Docs | Update this plan at each milestone |
+
+## Evidence to keep
+
+| Evidence | Created | Purpose |
+| --- | --- | --- |
+| Clean build record ([OMF2107_BASELINE.md](OMF2107_BASELINE.md)) | Phase 0 and each release build | Setup quirks cannot mask project failures |
+| Original-match reference captures | Baseline; updated only if source settings change | Anchor movement, moves, camera and hazards |
+| Input and replay fixtures | Phase 1 on | Reproduce combat changes and regressions |
+| Human playtest notes | Each playable gate | Catch feel and readability problems headless tests miss |
+| Coverage matrix | M3 on | Track each pilot, HAR, arena, mode, route, move and scene |
+| Asset ledger | Always | Separate local reference data from shippable content |
+| Decision records | Spikes and scope reviews | Keep the reasons for engine, art, input and balance choices |
+
+Automated tests target rules that can regress silently: move legality, collision and damage order, hazard timing, save
+migration, content references and replay reproduction. A passing self-test does not prove a good fighting game, so also
+review captured frames and live play.
 
 ## Rights checkpoint
 
@@ -184,6 +290,12 @@ provenance list.
 | Single developer capacity | All dates slip | Re-plan at each milestone; the demo (M4) is the first safe stopping point |
 | Auto-skinning quality | Extra manual weight work | Manual fixes only where `har_check` flags; thin parts handled by rigid binding |
 | Audio and art sourcing and terms | Delays M3 | Start sourcing in Phase 1; record terms before use |
+| Free camera or 3D rotation makes inputs feel wrong | Crossovers and corner fights confuse playtesters | Locked fight plane and facing rule; cinematic camera only in noninteractive moments |
+| Art looks generic despite higher fidelity | Veterans fail to name HARs or arenas in an unlabelled clip | Review silhouette, colour blocking and framing before detail passes |
+| Ten HARs and ten routes exceed capacity | Measured slice throughput exceeds available time | Re-plan batches from real costs; make any scope cut explicit |
+| Tournament turns grindy or upgrades beat skill | Testers repeat easy matches; one purchase dominates | Simulate payouts, cap upgrade effects, test several career paths |
+| Story scenes interrupt match rhythm | Frequent skipping between fights | Short routine scenes, all skippable, a log, animation only for major turns |
+| Local build works on one machine only | A clean build cannot be reproduced | Stabilise the toolchain and build script first; test a second machine at each gate |
 
 ## Next three actions
 
@@ -198,7 +310,6 @@ provenance list.
 - [Original game reference](OMF2097/OMF2097_REFERENCE.md)
 - [Story treatment](OMF2107_LORE_v2.md)
 - [Game specification](OMF2097_3D_GAME_SPEC.md)
-- [Development plan](OMF2097_DEVPLAN.md)
 - [OpenOMF repository](https://github.com/omf2097/openomf)
 - [Original manual story](https://www.omf2097.com/wiki/doku.php?id=omf2097:story)
 - [Decoded in-game help and text](https://www.omf2097.com/wiki/doku.php?id=omf2097:english.dat)

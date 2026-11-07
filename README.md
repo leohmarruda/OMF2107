@@ -66,5 +66,5 @@ OMF2107 is the planned 3D adaptation of One Must Fall 2097. This checkout
 keeps its OMF2107 work together in [project](project/README.md): project plans,
 the Jaguar and Shadow modeling references, and an experimental side-on
 [3D prototype](project/prototype/README.md) driven by OpenOMF combat. The
-[development plan](project/docs/OMF2097_DEVPLAN.md) tracks the next build and
+[release plan](project/docs/RELEASE_PLAN.md) tracks the milestones, tasks and
 validation gates.

@@ -177,7 +177,7 @@ pre-fight rival exchanges, at least one distinctive mid-route scene, a Nova
 conclusion, and a pilot-specific ending. Every pilot has a default path while
 unselected; when selected, the player controls their decisions and alliances.
 No playable pilot is irreplaceable: critical evidence and finale functions
-have alternate carriers. Crystal is the reference route for the first
+have alternate carriers. Ari is the reference route for the first
 complete production pass, not the required lead of every route.
 
 ### Choices and consequences
@@ -197,9 +197,12 @@ complete production pass, not the required lead of every route.
 - Shared scenes, replayed cutscenes, and dialogue can be skipped; a log records
   key evidence and decisions. Route select shows which pilots are complete.
 
-**First complete story slice:** Crystal versus Christian, with a pre-fight
-exchange, match, recovery scene, evidence choice, and a short consequence.
-This tests the new story's tone while preserving OMF's core structure.
+**First complete story slice:** Ari's route (`project/data/story/ari.story`,
+Chapters 1 to 6, built and passing `story_check`; see `RELEASE_PLAN.md`
+Progress). It covers a pre-fight exchange, match, recovery scene, evidence
+choice, and consequence, and tests the new story's tone while preserving OMF's
+core structure. The Crystal versus Christian route is deferred to Phase 3 of the
+release plan. `RELEASE_PLAN.md` wins where the two documents disagree.
 
 ## 7. Tournament mode
 
@@ -299,7 +302,7 @@ allows a match replay to reproduce the same outcome with lower graphics.
 | Fight identity | A player familiar with OMF recognizes the HARs, plane, guard, specials, stun, and hazards in an unlabelled match clip and short hands-on test. |
 | Combat parity | Side-by-side Jaguar reference documents all timing and spacing differences; intentional changes are recorded and playtested. |
 | Camera and input | Camera motion never makes a directional attack or guard ambiguous; fighters retain a readable silhouette at normal speed. |
-| Story slice | Crystal/Christian sequence plays start to finish, offers a clear choice, records it, and shows a consequence after the match. |
+| Story slice | Ari's route plays start to finish, offers a clear evidence choice, records it, and shows a consequence after the match. |
 | Tournament slice | A custom pilot finishes a bracket, earns money, repairs/upgrades a HAR, and sees changed performance and rank after loading a save. |
 | Content pipeline | A new dialogue scene, model, animation, and arena hazard can be added without changing combat code. |
 | Accessibility | Every story scene has readable text and skip/log support; flashes and camera shake can be reduced. |
@@ -316,7 +319,7 @@ on hardware, not only in a headless check.
 | --- | --- | --- |
 | A. Baseline | Source match captures, move data, rights inventory | Which mechanics can be reused unchanged? |
 | B. 3D fidelity spike | Two recognizable HARs, Stadium, fixed plane, camera, one complete move set | Keep the C rendering path or choose a 3D content toolchain? |
-| C. Vertical slice | Two pilots, two HARs, second arena hazard, polished match, Crystal/Christian story segment | Is the combat/story presentation worth scaling? |
+| C. Vertical slice | Two pilots, two HARs, second arena hazard, polished match, Ari's route story segment | Is the combat/story presentation worth scaling? |
 | D. Systems alpha | Core combat roster in progress, Tournament economy, saves, UI, art pipeline | Are authoring and balance costs sustainable? |
 | E. Content production | Ten pilots, ten standard HARs, five arenas, routes, anime sequences, Tournament events | Is the full target complete and licensed? |
 | F. Release candidate | Performance, accessibility, balance, packaging, regression and rights checks | Ship or narrow scope explicitly. |
