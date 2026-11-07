@@ -853,6 +853,9 @@ void calc_damage_and_stun(object *obj, af_move *move, int *damage, int *stun) {
         //  Stun = (Base Damage * 2 + 12) * 256
         *stun = *damage;
         *damage = *damage * (20 + pilot->power) / 30 + 1;
+        if(h->tune_damage_pct) {   // the story's power tune-up
+            *damage = *damage * h->tune_damage_pct / 100;
+        }
     } else {
         // Tournament Mode
         // Damage = (Base Damage * (25 + Power) / 35 + 1) * leg/arm power / armor
@@ -2644,6 +2647,13 @@ void har_bootstrap(object *obj) {
     obj->clone_free = har_clone_free;
 }
 
+// A percentage from the environment, 50 to 200; 0 when unset or out of range.
+static int tune_env_pct(const char *name) {
+    const char *value = getenv(name);
+    int pct = value ? atoi(value) : 0;
+    return (pct >= 50 && pct <= 200) ? pct : 0;
+}
+
 int har_create(object *obj, af *af_data, int dir, int har_id, int pilot_id, int player_id) {
     // Create local data
     har *local = omf_calloc(1, sizeof(har));
@@ -2658,6 +2668,11 @@ int har_create(object *obj, af *af_data, int dir, int har_id, int pilot_id, int 
     local->player_id = player_id;
     local->pilot_id = pilot_id;
     sd_pilot *pilot = gp->pilot;
+    if(player_id == 0) {   // the story's hangar tune-up, for the player's HAR only
+        local->tune_hp_pct = tune_env_pct("OMF3K_LIVE_PLAYER_HP_PCT");
+        local->tune_damage_pct = tune_env_pct("OMF3K_LIVE_PLAYER_DAMAGE_PCT");
+        local->tune_speed_pct = tune_env_pct("OMF3K_LIVE_PLAYER_SPEED_PCT");
+    }
 
     // power 2 applies to player 1's health
     int power = obj->gs->match_settings.power2;
@@ -2690,6 +2705,9 @@ int har_create(object *obj, af *af_data, int dir, int har_id, int pilot_id, int 
     // (HAR hp * (Pilot Endurance + 25) / 35) * 1.1
     local->health_max = local->health =
         ((af_data->health * (pilot->endurance + 25) / 35) * 1.1) * power_multiplier * vitality_multiplier;
+    if(local->tune_hp_pct) {
+        local->health_max = local->health = local->health_max * local->tune_hp_pct / 100;
+    }
 
     // log_debug("HAR health is %d with pilot endurance %d and base health %d", local->health, pilot->endurance,
     // af_data->health);
@@ -2718,6 +2736,10 @@ int har_create(object *obj, af *af_data, int dir, int har_id, int pilot_id, int 
     local->fall_speed = (((float)gp->pilot->agility + 20) / 30) * af_data->fall_speed;
     local->fwd_speed = (((float)gp->pilot->agility + 20) / 30) * af_data->forward_speed;
     local->back_speed = (((float)gp->pilot->agility + 20) / 30) * af_data->reverse_speed;
+    if(local->tune_speed_pct) {
+        local->fwd_speed = local->fwd_speed * local->tune_speed_pct / 100;
+        local->back_speed = local->back_speed * local->tune_speed_pct / 100;
+    }
     local->stride = (gp->pilot->agility + 20) / 30;
     log_debug("setting HAR stride to %d", local->stride);
     local->close = 0;

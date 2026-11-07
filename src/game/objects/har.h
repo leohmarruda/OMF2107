@@ -147,6 +147,10 @@ typedef struct har_t {
     float fwd_speed;       // Agility generated speed modifier for falling
     float back_speed;      // Agility generated speed modifier for falling
 
+    // Story tune-up for the local player (OMF3K_LIVE_PLAYER_HP_PCT, _DAMAGE_PCT, _SPEED_PCT); 0 means no change.
+    // Per-process only: not part of the netplay state.
+    int tune_hp_pct, tune_damage_pct, tune_speed_pct;
+
     int in_stasis_ticks; // Handle stasis activator
     int throw_duration;
     int block_duration;

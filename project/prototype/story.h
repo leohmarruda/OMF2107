@@ -22,8 +22,9 @@
 //   set <flag>=<value>                  stores a flag
 //   if <flag>=<value> -> <scene>        jumps when the flag has that value, otherwise continues
 //   jump <scene>                        continues in another scene
-//   fight <pilot> <har> vs <pilot> <har> win -> <scene> lose -> <scene>
-//                                       hands off to a match; the host reports the result
+//   fight <pilot> <har> vs <pilot> <har> win -> <scene> lose -> <scene> [difficulty <0-6>]
+//                                       hands off to a match; the host reports the result. difficulty is the
+//                                       rival's AI level (0 punching bag to 6 ultimate); left out, the game's setting
 //   end                                 finishes the story
 // Header directives (before the first scene) describe who is playing, for a selection screen:
 //   player <pilot> <har>                the pilot the player controls and the HAR the story recommends
@@ -81,6 +82,7 @@ typedef struct {
     int target, target2;            // resolved scene indices
     char pilot[2][STORY_NAME];      // fight
     char har[2][STORY_NAME];
+    int difficulty;                 // fight: the rival's AI level 0-6, or -1 for the game's own setting
 } StoryCmd;
 
 typedef struct {

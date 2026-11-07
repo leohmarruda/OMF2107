@@ -1429,7 +1429,19 @@ void _setup_ai(game_state *gs, int player_id) {
     controller_init(ctrl, gs);
 
     sd_pilot *pilot = game_player_get_pilot(player);
-    ai_controller_create(ctrl, settings_get()->gameplay.difficulty, pilot, player->pilot->pilot_id);
+    int difficulty = settings_get()->gameplay.difficulty;
+    if(player_id == 1 && gs->init_flags->omf3k_live) {
+        // Story matches pick the rival's AI level per fight (0-6); without it the game's own setting stands.
+        const char *override = getenv("OMF3K_LIVE_RIVAL_DIFFICULTY");
+        if(override && *override) {
+            char *end = NULL;
+            long level = strtol(override, &end, 10);
+            if(*end == '\0' && level >= 0 && level <= 6) {
+                difficulty = (int)level;
+            }
+        }
+    }
+    ai_controller_create(ctrl, difficulty, pilot, player->pilot->pilot_id);
 
     game_player_set_ctrl(player, ctrl);
     game_player_set_selectable(player, 0);

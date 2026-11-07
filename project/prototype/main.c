@@ -226,11 +226,33 @@ static void apply_source_fighter(Fighter *dest, const SourceFighter *source) {
     dest->pose_stride = (source->state == 2 || source->state == 3) ?
                          sinf((float)source->animation_tick * .75f) * .30f : 0;
 }
+// The blows the player's HAR takes in a story match, written to the result file for the hangar's scratches:
+// which side the attacker was on, roughly how high the blow landed (0 feet to 100 top), and the health it cost.
+#define LIVE_HITS_MAX 32
+static struct { int side, height, damage; } live_hits[LIVE_HITS_MAX];
+static int live_hit_count;
+static unsigned live_hit_last_tick=~0u;
+static void live_hit_record(unsigned tick,int side,int height,int damage) {
+    if(!live_result_path || live_hit_count>=LIVE_HITS_MAX || tick==live_hit_last_tick) return;
+    live_hit_last_tick=tick;
+    live_hits[live_hit_count].side=side;
+    live_hits[live_hit_count].height=height;
+    live_hits[live_hit_count].damage=damage<1 ? 1 : damage;
+    live_hit_count++;
+}
 static void apply_source_frame(size_t index) {
     const SourceFrame *frame = &source_replay.frames[index];
     source_replay_index = index;
     apply_source_fighter(&player, &frame->fighter[0]);
     apply_source_fighter(&rival, &frame->fighter[1]);
+    if(frame->has_events && (frame->hit_mask&1)) {   // the player's HAR was hit; a kick lands low, a punch higher
+        int cost=index>0 ? (int)(source_replay.frames[index-1].fighter[0].health-frame->fighter[0].health) : 0;
+        live_hit_record(frame->tick,rival.x>player.x ? 1 : -1,rival.attack>0 ? (rival.kind==2 ? 30 : 62) : 50,cost);
+    } else if(source_follow_mode && !frame->has_events && index>0 &&
+              frame->fighter[0].health<source_replay.frames[index-1].fighter[0].health) {
+        live_hit_record(frame->tick,rival.x>player.x ? 1 : -1,50,
+                        (int)(source_replay.frames[index-1].fighter[0].health-frame->fighter[0].health));
+    }
     if(frame->has_events && (frame->hit_mask || frame->block_mask)) {
         int hit=frame->hit_mask;
         int recipient=hit ? (hit&1 ? 0 : 1) : (frame->block_mask&1 ? 0 : 1);
@@ -1537,7 +1559,8 @@ static StoryTexture story_backdrop_tex, story_art_tex;
 static StoryTexture story_speaker_tex[10];   // the ten pilots' cut-outs (build/art/<pilot>_cut.bmp), for the speaker strip
 static StoryTexture story_card_tex[2];       // the player's pilot, then the rival's, on the selection cards
 static char story_card_loaded[2][STORY_NAME]; // the pilot now in story_card_tex[side]; loaded when drawn, once GL is up
-typedef struct { GLuint id; float x0,y0,x1,y1,u0,v0,u1,v1,bright,blur,opacity; int split; } StoryTexDraw;
+typedef struct { GLuint id; float x0,y0,x1,y1,u0,v0,u1,v1,bright,blur,opacity; int split;
+                 bool corners; float cx[4],cy[4]; } StoryTexDraw;   // corners: draw the picture on a four-sided shape (TL,TR,BR,BL, NDC) instead
 #define STORY_TEX_DRAWS 16
 static StoryTexDraw story_tex_draws[STORY_TEX_DRAWS];   // pictures drawn between runs of quads, in order
 static int story_tex_draw_count;
@@ -1628,6 +1651,19 @@ static void story_tex_add(const StoryTexture *texture,float x0,float y0,float x1
     d->u0=u0; d->v0=v0; d->u1=u1; d->v1=v1;
     d->bright=bright; d->blur=blur; d->opacity=opacity;
     d->split=vertex_count;
+    d->corners=false;
+}
+// The whole picture on a four-sided shape (top-left, top-right, bottom-right, bottom-left, in NDC), clipped to the
+// story's picture area. Used for the studio's screen, which the studio image shows in perspective.
+static void story_tex_add_corners(const StoryTexture *texture,const float cx[4],const float cy[4],float bright) {
+    if(story_tex_draw_count>=STORY_TEX_DRAWS) return;
+    StoryTexDraw *d=&story_tex_draws[story_tex_draw_count++];
+    d->id=texture->id;
+    d->x0=d->y0=d->x1=d->y1=0; d->u0=d->v0=0; d->u1=d->v1=1;
+    d->bright=bright; d->blur=0; d->opacity=1.0f;
+    d->split=vertex_count;
+    d->corners=true;
+    for(int i=0;i<4;i++) { d->cx[i]=cx[i]; d->cy[i]=cy[i]; }
 }
 static void story_tex_request(const StoryTexture *texture,float x0,float y0,float x1,float y1,
                               float u0,float v0,float u1,float v1,float bright) {
@@ -1637,7 +1673,16 @@ static void story_tex_flush_one(const StoryTexDraw *d) {
     const float x0=d->x0,y0=d->y0,x1=d->x1,y1=d->y1;
     const float u0=d->u0,v0=d->v0,u1=d->u1,v1=d->v1;
     // The picture's first row is the top of the screen rectangle, so v grows downwards.
-    const float quad_data[24]={x0,y1,u0,v0, x1,y1,u1,v0, x1,y0,u1,v1,  x0,y1,u0,v0, x1,y0,u1,v1, x0,y0,u0,v1};
+    float quad_data[24]={x0,y1,u0,v0, x1,y1,u1,v0, x1,y0,u1,v1,  x0,y1,u0,v0, x1,y0,u1,v1, x0,y0,u0,v1};
+    if(d->corners) {   // top-left, top-right, bottom-right, bottom-left, with the picture's own corners
+        const float *cx=d->cx, *cy=d->cy;
+        const float corner_data[24]={cx[0],cy[0],0,0, cx[1],cy[1],1,0, cx[2],cy[2],1,1,  cx[0],cy[0],0,0, cx[2],cy[2],1,1, cx[3],cy[3],0,1};
+        memcpy(quad_data,corner_data,sizeof(quad_data));
+        glEnable(GL_SCISSOR_TEST);   // only inside the story's picture area
+        int bottom=(int)((story_v(0.0f)+1.0f)*.5f*(float)win_height);
+        int top=(int)((story_v(1.0f)+1.0f)*.5f*(float)win_height);
+        glScissor(0,bottom,win_width,top-bottom);
+    }
     glUseProgram(story_tex_program);
     glUniform1f(story_tex_bright_loc,d->bright);
     glUniform1f(story_tex_blur_loc,d->blur);
@@ -1648,6 +1693,7 @@ static void story_tex_flush_one(const StoryTexDraw *d) {
     glBindBuffer(GL_ARRAY_BUFFER,story_tex_vbo);
     glBufferData(GL_ARRAY_BUFFER,sizeof(quad_data),quad_data,GL_STREAM_DRAW);
     glDrawArrays(GL_TRIANGLES,0,6);
+    if(d->corners) glDisable(GL_SCISSOR_TEST);
     glUseProgram(story_gl_program); glBindVertexArray(story_gl_vao);
     glBindBuffer(GL_ARRAY_BUFFER,0);
 }
@@ -1682,6 +1728,64 @@ static void story_draw_backdrop_image(const StoryPortrait *image) {
         }
     }
 }
+// ---- the newscast's replay: the frames the match viewer saved (replay_save), as textures, in order ----
+#define STORY_REPLAY_MAX 32
+#define STORY_REPLAY_DIR "project/build/news_replay"
+static StoryTexture story_replay_tex[STORY_REPLAY_MAX];
+static int story_replay_count;
+static bool story_replay_tried;   // looked for the frames since the last match, so a missing set is not searched for every frame
+static void story_replay_clear(bool delete_files) {
+    for(int i=0;i<STORY_REPLAY_MAX;i++) {
+        if(story_replay_tex[i].id) { glDeleteTextures(1,&story_replay_tex[i].id); story_replay_tex[i].id=0; }
+        if(delete_files) {
+            char path[96];
+            snprintf(path,sizeof(path),STORY_REPLAY_DIR "/frame_%02d.bmp",i);
+            remove(path);
+        }
+    }
+    story_replay_count=0;
+    story_replay_tried=false;
+}
+static void story_replay_load(void) {
+    if(story_replay_tried) return;
+    story_replay_tried=true;
+    for(int i=0;i<STORY_REPLAY_MAX;i++) {
+        char path[96];
+        snprintf(path,sizeof(path),STORY_REPLAY_DIR "/frame_%02d.bmp",i);
+        story_texture_load(&story_replay_tex[i],path);
+        if(!story_replay_tex[i].id) break;
+        story_replay_count++;
+    }
+}
+// ---- the hangar's scratches: the blows the player's HAR took in the last match (from the result file), drawn on the
+// HAR in the maintenance picture. The picture's HAR silhouette (project/build/art/masks/<art>.bmp) keeps them on the metal ----
+#define STORY_SCRATCHES_MAX 32
+static struct { int side, height, damage; } story_scratches[STORY_SCRATCHES_MAX];
+static int story_scratch_count;
+static StoryPortrait story_art_mask;
+static int story_mask_x0,story_mask_y0,story_mask_x1,story_mask_y1;   // the silhouette's bounding box, in picture pixels
+static void story_mask_load(const char *art_file) {
+    free(story_art_mask.rgb);
+    story_art_mask.rgb=NULL; story_art_mask.w=story_art_mask.h=0;
+    if(strncmp(art_file,"maintenance_",12)) return;
+    char path[200];
+    snprintf(path,sizeof(path),"project/build/art/masks/%s.bmp",art_file);
+    story_load_bmp(&story_art_mask,path);
+    story_mask_x0=story_art_mask.w; story_mask_y0=story_art_mask.h; story_mask_x1=story_mask_y1=-1;
+    for(int y=0;y<story_art_mask.h;y++)
+        for(int x=0;x<story_art_mask.w;x++)
+            if(story_art_mask.rgb[((size_t)y*story_art_mask.w+x)*3]>127) {
+                if(x<story_mask_x0) story_mask_x0=x;
+                if(x>story_mask_x1) story_mask_x1=x;
+                if(y<story_mask_y0) story_mask_y0=y;
+                if(y>story_mask_y1) story_mask_y1=y;
+            }
+    if(story_mask_x1<0) { free(story_art_mask.rgb); story_art_mask.rgb=NULL; story_art_mask.w=story_art_mask.h=0; }
+}
+static bool story_mask_inside(int x,int y) {
+    return x>=0 && y>=0 && x<story_art_mask.w && y<story_art_mask.h &&
+           story_art_mask.rgb[((size_t)y*story_art_mask.w+x)*3]>127;
+}
 static void story_update_art(void) {
     if(!strcmp(story_art_name,story_run.art) && !strcmp(story_art_effect,story_run.art_effect)) return;
     bool new_picture=strcmp(story_art_name,story_run.art)!=0;
@@ -1699,6 +1803,7 @@ static void story_update_art(void) {
     char path[160];
     snprintf(path,sizeof(path),"project/build/art/%s.bmp",file);
     story_load_bmp(&story_art_image,path);
+    story_mask_load(file);
     snprintf(path,sizeof(path),"project/build/art/%s_hd.bmp",file);
     story_texture_load(&story_art_tex,path);
 }
@@ -1752,7 +1857,62 @@ static void story_draw_art_texture(const StoryTexture *texture) {
     float u0=!strcmp(story_art_effect,"pan") ? shift : (1.0f-window)*.5f;
     float v0=(1.0f-window)*.5f;
     story_tex_request(texture,-1.0f,story_v(0.0f),1.0f,story_v(1.0f),u0,v0,u0+window,v0+window,bright);
-    (void)texture;
+    // In a newscast, the studio screen shows the real finish of the match just played (see replay_save).
+    if(!strncmp(story_art_name,"news_",5)) {
+        story_replay_load();
+        if(story_replay_count>0) {
+            // The screen's corners in the studio picture (fractions across and down), mapped through the same zoom/pan.
+            static const float screen_u[4]={.531f,.991f,.975f,.497f}, screen_v[4]={.008f,.085f,.636f,.562f};
+            float cx[4],cy[4],region=story_v(1.0f)-story_v(0.0f);
+            for(int i=0;i<4;i++) {
+                cx[i]=-1.0f+2.0f*(screen_u[i]-u0)/window;
+                cy[i]=story_v(1.0f)-(screen_v[i]-v0)/window*region;
+            }
+            // 80 ms a frame, a pause on the last one, then round again.
+            Uint64 ms=story_capturing ? 100000 : SDL_GetTicks64()-story_art_started;
+            Uint64 cycle=(Uint64)story_replay_count*80+700;
+            Uint64 at=ms%cycle;
+            int index=at<(Uint64)story_replay_count*80 ? (int)(at/80) : story_replay_count-1;
+            story_tex_add_corners(&story_replay_tex[index],cx,cy,bright*.95f);
+        }
+    }
+    // In the hangar, the HAR shows scratches where the blows of the last match landed.
+    if(!strncmp(story_art_name,"maintenance_",12) && story_scratch_count>0 && story_art_mask.rgb) {
+        float region=story_v(1.0f)-story_v(0.0f);
+        float pw=2.0f/((float)story_art_mask.w*window), ph=region/((float)story_art_mask.h*window);
+        int bw=story_mask_x1-story_mask_x0+1, bh=story_mask_y1-story_mask_y0+1;
+        int mid_x=(story_mask_x0+story_mask_x1)/2, mid_y=(story_mask_y0+story_mask_y1)/2;
+        for(int i=0;i<story_scratch_count;i++) {
+            unsigned h=(unsigned)i*2654435761u+17u;
+            float jitter_x=(float)((h>>3)&255)/255.0f, jitter_y=(float)((h>>11)&255)/255.0f;
+            int direction=((h>>19)&1) ? 1 : -1;
+            // The HAR faces left in the hangar, so the side a fighter was hit from in the match (the right) is the picture's left.
+            float fx=(story_scratches[i].side>0 ? .30f : .70f)+(jitter_x-.5f)*.28f;
+            float fy=clampf(1.0f-(float)story_scratches[i].height/100.0f+(jitter_y-.5f)*.14f,.05f,.95f);
+            int px=story_mask_x0+(int)(fx*(float)bw), py=story_mask_y0+(int)(fy*(float)bh);
+            for(int t=0;t<24 && !story_mask_inside(px,py);t++) {   // a blow on the edge of the shape is pulled onto the metal
+                px+=mid_x>px ? 1 : mid_x<px ? -1 : 0;
+                py+=mid_y>py ? 1 : mid_y<py ? -1 : 0;
+            }
+            if(!story_mask_inside(px,py)) continue;
+            int length=4+(story_scratches[i].damage>24 ? 24 : story_scratches[i].damage)/2;
+            for(int pass=0;pass<3;pass++) {   // soot first, then the dark under-edge, then the bright gouge
+                if(pass==0) { vertex_alpha=.30f; }
+                else if(pass==1) { vertex_alpha=.65f; }
+                else vertex_alpha=.95f;
+                for(int k=(pass==0 ? -1 : 0);k<(pass==0 ? 2 : length);k++) {
+                    int sx=px+k*direction, sy=py+(k*2)/3+(pass==1 ? 1 : 0);
+                    if(!story_mask_inside(sx,sy)) continue;
+                    float x=-1.0f+2.0f*(((float)sx/(float)story_art_mask.w)-u0)/window;
+                    float top=story_v(1.0f)-(((float)sy/(float)story_art_mask.h)-v0)/window*region;
+                    if(pass==0) quad(x-pw,top-2.0f*ph,3.0f*pw,3.0f*ph,.04f*bright,.03f*bright,.03f*bright);
+                    else if(pass==1) quad(x,top-ph,pw,ph,.05f*bright,.04f*bright,.04f*bright);
+                    else quad(x,top-ph,pw,ph,.93f*bright,.88f*bright,.78f*bright);
+                }
+            }
+            vertex_alpha=1.0f;
+        }
+    }
 }
 static void story_update_backdrop(void) {
     if(!strcmp(story_backdrop_name,story_run.bg)) return;
@@ -2077,18 +2237,11 @@ static void story_draw_hangar_life(void) {
     // Hot spots on the two HARs, in picture coordinates (0..1 across and up).
     static const float spots[][2]={{.27f,.62f},{.33f,.40f},{.31f,.20f},{.38f,.50f},{.72f,.60f},{.66f,.38f},{.69f,.18f},{.62f,.50f}};
     for(int i=0;i<8;i++) {
-        float cycle=fmodf(t*(1.3f+.17f*(float)i)+(float)i*.37f,1.0f);
         float flare=sinf(t*21.0f+(float)i*5.0f)>-.2f ? 1.0f : .35f;
         float u=spots[i][0], v=spots[i][1];
         vertex_alpha=.16f*flare;   // the glow of the weld on the armour
         float gw=.060f;
         quad(-1.0f+2.0f*u-gw*.5f,story_v(v)-gw*aspect*.5f,gw,gw*aspect,1.0f,.62f,.25f);
-        if(cycle>.32f) continue;
-        float k=cycle/.32f;       // a spark flies up and away, then burns out
-        float su=u+(k*.020f)*((i&1) ? 1.0f : -1.0f), sv=v+k*.10f;
-        float w=.016f*(1.0f-k)+.004f;
-        vertex_alpha=1.0f-k;
-        quad(-1.0f+2.0f*su,story_v(sv),w,w*aspect,1.0f,.82f,.36f);
     }
     float pulse=.45f+.45f*sinf(t*4.2f);   // the warning lamps at the top corners
     vertex_alpha=pulse;
@@ -2275,6 +2428,21 @@ static void story_hud_body(void) {
     } else if(story_run.event==STORY_EVENT_FIGHT) {
         const StoryCmd *c=story_event_cmd(&story_run);
         label(-.92f,-.30f,.012f,"MATCH",1,.80f,.45f);
+        // A name tag for each pilot at the bottom corners of the picture, in the colour of their line below.
+        for(int i=0;i<2;i++) {
+            char name[STORY_NAME];
+            size_t n=0;
+            for(const char *p=c->pilot[i];*p && n+1<sizeof(name);p++) name[n++]=(char)((*p>='a' && *p<='z') ? *p-32 : *p);
+            name[n]=0;
+            if(!n) continue;
+            float size=.0105f, plate=(float)n*6.0f*size+.14f, py=story_v(.06f), ph=.115f, edge=.90f;
+            float r=i==0 ? .55f : 1.0f, g=i==0 ? .90f : .70f, b=i==0 ? 1.0f : .62f;
+            float x=i==0 ? -edge : edge-plate;
+            quad(x,py,plate,ph,.01f,.02f,.05f);
+            quad(x,py+ph-.014f,plate,.014f,r,g,b);
+            quad(i==0 ? x : x+plate-.012f,py,.012f,ph,r,g,b);
+            label(x+.07f,py+ph-.026f,size,name,r,g,b);
+        }
         char who[2][80];
         for(int i=0;i<2;i++) {
             char har[STORY_NAME];
@@ -2369,6 +2537,7 @@ static void story_autosave(void);
 static void story_match_finish(bool win) {
     story_record(&story_run,"MATCH",win ? "You won the match." : "You lost the match.");
     story_fight_result(&story_run,win);
+    story_replay_clear(false);   // the newscast loads the frames the match just saved
     story_sel=0;
     story_match_state=0;
     story_match_message[0]=0;
@@ -2398,11 +2567,19 @@ static void story_match_start(void) {
     fclose(probe);
     story_make_dirs();
     remove(result);
+    story_replay_clear(true);   // no replay from an earlier match
+    story_scratch_count=0;      // and no scratches: the hangar crew repairs the HAR between fights
     snprintf(story_match_result_path,sizeof(story_match_result_path),"%s",result);
-    char cmd[1600];
+    char cmd[1600],difficulty_arg[32]="",tune_arg[64]="";
+    if(c->difficulty>=0) snprintf(difficulty_arg,sizeof(difficulty_arg)," -RivalDifficulty %d",c->difficulty);
+    // The hangar's tune-up (the "tune" flag) changes the player's HAR for the fights that follow, until the next pick.
+    const char *tune=story_flag(&story_run,"tune");
+    if(!strcmp(tune,"armor")) snprintf(tune_arg,sizeof(tune_arg)," -PlayerHpPct 125");
+    else if(!strcmp(tune,"power")) snprintf(tune_arg,sizeof(tune_arg)," -PlayerDamagePct 120");
+    else if(!strcmp(tune,"speed")) snprintf(tune_arg,sizeof(tune_arg)," -PlayerSpeedPct 115");
     snprintf(cmd,sizeof(cmd),"powershell.exe -NoProfile -ExecutionPolicy Bypass -File \"%s\" -Player %s -Pilot %s "
-             "-RivalPilot %s -RivalHar %s -ResultFile \"%s\"%s",launcher,har0,c->pilot[0],c->pilot[1],har1,result,
-             story_muted ? "" : " -Sound");
+             "-RivalPilot %s -RivalHar %s -ResultFile \"%s\"%s%s%s",launcher,har0,c->pilot[0],c->pilot[1],har1,result,
+             difficulty_arg,tune_arg,story_muted ? "" : " -Sound");
     if(!story_match_job) {
         story_match_job=CreateJobObjectA(NULL,NULL);
         if(story_match_job) {
@@ -2442,7 +2619,17 @@ static void story_match_poll(void) {
     int winner=-1;
     FILE *f=fopen(story_match_result_path,"r");
     if(f) {
-        if(fscanf(f,"winner=%d",&winner)!=1) winner=-1;
+        char line[96];
+        while(fgets(line,sizeof(line),f)) {   // winner=, health=, then one hit=side,height,damage per blow the player's HAR took
+            int a,b,c;
+            if(sscanf(line,"winner=%d",&a)==1) winner=a;
+            else if(sscanf(line,"hit=%d,%d,%d",&a,&b,&c)==3 && story_scratch_count<STORY_SCRATCHES_MAX) {
+                story_scratches[story_scratch_count].side=a;
+                story_scratches[story_scratch_count].height=b;
+                story_scratches[story_scratch_count].damage=c;
+                story_scratch_count++;
+            }
+        }
         fclose(f);
     }
     if(winner==0 || winner==1) {
@@ -3214,6 +3401,81 @@ static bool save_frame_bmp(const char *path) {
     SDL_FreeSurface(shot);
     return saved;
 }
+// ---- newscast replay: a story match keeps its last second and a half as small frames, and writes them when the
+// match ends, so the story's newscast can show the real finishing moves on the studio screen ----
+#define REPLAY_W 320
+#define REPLAY_H 180
+#define REPLAY_FRAMES 24         // about 1.6 s at one frame every 66 ms
+#define REPLAY_DIR "project/build/news_replay"
+static unsigned char *replay_ring;
+static int replay_head, replay_count;
+static Uint64 replay_last;
+static void replay_capture(void) {
+    // Keep going for 0.6 s after the decision (the timer starts at 3.5), so the clip ends on the knockout, not a frozen pose.
+    if(!live_result_path || (live_result_written && live_result_timer<2.9)) return;
+    Uint64 now=SDL_GetTicks64();
+    if(now-replay_last<66) return;
+    replay_last=now;
+    const size_t frame_bytes=(size_t)REPLAY_W*REPLAY_H*3;
+    if(!replay_ring) replay_ring=malloc(frame_bytes*REPLAY_FRAMES);
+    static unsigned char *full;
+    static size_t full_size;
+    size_t need=(size_t)win_width*(size_t)win_height*3;
+    if(need>full_size) {
+        unsigned char *bigger=realloc(full,need);
+        if(!bigger) return;
+        full=bigger; full_size=need;
+    }
+    if(!replay_ring) return;
+    glPixelStorei(GL_PACK_ALIGNMENT,1);
+    glReadPixels(0,0,win_width,win_height,GL_RGB,GL_UNSIGNED_BYTE,full);
+    glPixelStorei(GL_PACK_ALIGNMENT,4);
+    unsigned char *out=replay_ring+(size_t)replay_head*frame_bytes;
+    for(int y=0;y<REPLAY_H;y++) {
+        int row0=win_height-1-(y*win_height)/REPLAY_H;   // GL rows count from the bottom
+        int row1=row0>0 ? row0-1 : row0;
+        for(int x=0;x<REPLAY_W;x++) {
+            int col0=(x*win_width)/REPLAY_W;
+            int col1=col0+1<win_width ? col0+1 : col0;
+            for(int c=0;c<3;c++) {
+                int sum=full[((size_t)row0*win_width+col0)*3+c]+full[((size_t)row0*win_width+col1)*3+c]
+                       +full[((size_t)row1*win_width+col0)*3+c]+full[((size_t)row1*win_width+col1)*3+c];
+                out[((size_t)y*REPLAY_W+x)*3+c]=(unsigned char)(sum/4);
+            }
+        }
+    }
+    replay_head=(replay_head+1)%REPLAY_FRAMES;
+    if(replay_count<REPLAY_FRAMES) replay_count++;
+}
+// Writes the kept frames, oldest first, as frame_00.bmp ...; stale higher numbers from an earlier match are removed.
+static void replay_save(void) {
+    if(!replay_ring || replay_count<=0) return;
+#ifdef _WIN32
+    _mkdir("project"); _mkdir("project/build"); _mkdir(REPLAY_DIR);
+#else
+    mkdir("project",0755); mkdir("project/build",0755); mkdir(REPLAY_DIR,0755);
+#endif
+    const size_t frame_bytes=(size_t)REPLAY_W*REPLAY_H*3;
+    int first=(replay_head-replay_count+REPLAY_FRAMES)%REPLAY_FRAMES;
+    char path[128];
+    int written=0;
+    for(int i=0;i<replay_count;i++) {
+        unsigned char *pixels=replay_ring+(size_t)((first+i)%REPLAY_FRAMES)*frame_bytes;
+        SDL_Surface *surface=SDL_CreateRGBSurfaceWithFormatFrom(pixels,REPLAY_W,REPLAY_H,24,REPLAY_W*3,SDL_PIXELFORMAT_RGB24);
+        if(!surface) break;
+        snprintf(path,sizeof(path),REPLAY_DIR "/frame_%02d.bmp",i);
+        bool saved=SDL_SaveBMP(surface,path)==0;
+        SDL_FreeSurface(surface);
+        if(!saved) break;
+        written++;
+    }
+    for(int i=written;i<REPLAY_FRAMES;i++) {
+        snprintf(path,sizeof(path),REPLAY_DIR "/frame_%02d.bmp",i);
+        remove(path);
+    }
+    printf("Saved %d newscast replay frames\n",written);
+    fflush(stdout);
+}
 static int self_test(void) {
     reset_fight();
     unsigned char keys[SDL_NUM_SCANCODES]={0};
@@ -3264,6 +3526,18 @@ static int self_test(void) {
     return 0;
 }
 int main(int argc,char **argv) {
+    // --arcade [story options] is the story viewer on the arcade ladder script
+    char *arcade_argv[64];
+    if(argc>1 && strcmp(argv[1],"--arcade")==0) {
+        if(argc>60) { fputs("Usage: omf3d_prototype --arcade [story options]\n",stderr); return 1; }
+        arcade_argv[0]=argv[0];
+        arcade_argv[1]="--story";
+        arcade_argv[2]="project/data/story/arcade_ari.story";
+        for(int i=2;i<argc;i++) arcade_argv[i+1]=argv[i];
+        argc+=1;
+        arcade_argv[argc]=NULL;
+        argv=arcade_argv;
+    }
     if(argc>1 && strcmp(argv[1],"--self-test")==0) return self_test();
     selection_mode=argc>1 && strcmp(argv[1],"--select")==0;
     selection_path=selection_mode && argc==3 ? argv[2] : NULL;
@@ -3299,7 +3573,8 @@ int main(int argc,char **argv) {
         }
         if(!good) {
             fputs("Usage: omf3d_prototype --story script.story [--new] [--debug-fights] [--mute] [--save-file path] [--scene id] [--har Jaguar|Shadow|Katana]\n"
-                  "                       [--script a,c1,w,...] [--shot out.bmp]\n",stderr);
+                  "                       [--script a,c1,w,...] [--shot out.bmp]\n"
+                  "       omf3d_prototype --arcade [same options]   (the arcade ladder, arcade_ari.story)\n",stderr);
             return 1;
         }
         story_path=argv[2];
@@ -3710,6 +3985,8 @@ int main(int argc,char **argv) {
                 FILE *result=fopen(live_result_path,"w");
                 if(result) {
                     fprintf(result,"winner=%d\nhealth=%d\n",source_live_winner,(int)last->fighter[source_live_winner].health);
+                    for(int i=0;i<live_hit_count;i++)
+                        fprintf(result,"hit=%d,%d,%d\n",live_hits[i].side,live_hits[i].height,live_hits[i].damage);
                     fclose(result);
                     printf("Match decided at tick %u: winner=%d health=%d\n",last->tick,source_live_winner,
                            (int)last->fighter[source_live_winner].health);
@@ -3722,7 +3999,7 @@ int main(int argc,char **argv) {
                 live_result_timer=3.5;
             }
             live_result_timer-=frame>.25 ? .25 : frame;
-            if(live_result_timer<=0) running=false;
+            if(live_result_timer<=0) { replay_save(); running=false; }
         }
         interpolate_live_fighters(now,source_capture && source_replay.count &&
                                   source_replay.frames[source_replay_index].tick>=capture_tick);
@@ -3784,6 +4061,7 @@ int main(int argc,char **argv) {
                 story_tex_flush_one(d);
             }
         }
+        replay_capture();   // the fight alone: the world is drawn, the HUD (health bars, text) is the batch after it
         glDrawArrays(GL_TRIANGLES,drawn,vertex_count-drawn);
         Uint64 profile_after_gpu=SDL_GetPerformanceCounter();
         bool capture_now=capture || story_shot_path || (source_capture && (!source_follow_mode ||

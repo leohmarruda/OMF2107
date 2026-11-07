@@ -79,6 +79,7 @@ static StoryCmd *add_cmd(Story *s, StoryCmdKind kind, int line) {
     c->kind = kind;
     c->line = line;
     c->target = c->target2 = -1;
+    c->difficulty = -1;
     return c;
 }
 
@@ -312,11 +313,21 @@ static bool parse_line(Story *s, char *line_text, int line, const char *name, ch
         char *a_pilot = token(&rest), *a_har = token(&rest), *vs = token(&rest), *b_pilot = token(&rest);
         char *b_har = token(&rest), *w = token(&rest), *w_arrow = token(&rest), *w_scene = token(&rest);
         char *l = token(&rest), *l_arrow = token(&rest), *l_scene = token(&rest), *extra = token(&rest);
-        if(!l_scene || extra || strcmp(vs, "vs") != 0 || strcmp(w, "win") != 0 || strcmp(w_arrow, "->") != 0 ||
-           strcmp(l, "lose") != 0 || strcmp(l_arrow, "->") != 0) {
+        char *d_value = extra ? token(&rest) : NULL, *d_more = d_value ? token(&rest) : NULL;
+        if(!l_scene || strcmp(vs, "vs") != 0 || strcmp(w, "win") != 0 || strcmp(w_arrow, "->") != 0 ||
+           strcmp(l, "lose") != 0 || strcmp(l_arrow, "->") != 0 ||
+           (extra && (strcmp(extra, "difficulty") != 0 || !d_value || d_more))) {
             fail(err, err_size, name, line,
-                 "fight needs '<pilot> <har> vs <pilot> <har> win -> <scene> lose -> <scene>'");
+                 "fight needs '<pilot> <har> vs <pilot> <har> win -> <scene> lose -> <scene> [difficulty <0-6>]'");
             return false;
+        }
+        if(extra) {
+            char *end = NULL;
+            long d = strtol(d_value, &end, 10);
+            if(*end || d < 0 || d > 6) {
+                fail(err, err_size, name, line, "fight difficulty must be a number from 0 to 6"); return false;
+            }
+            c->difficulty = (int)d;
         }
         if(!copy(c->pilot[0], STORY_NAME, a_pilot) || !copy(c->har[0], STORY_NAME, a_har) ||
            !copy(c->pilot[1], STORY_NAME, b_pilot) || !copy(c->har[1], STORY_NAME, b_har) ||

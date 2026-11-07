@@ -17,6 +17,17 @@ param(
     [ValidateSet('', 'Crystal', 'Steffan', 'Milano', 'Christian', 'Shirro', 'JeanPaul', 'Ibrahim', 'Angel', 'Cossette', 'Raven', 'Ari', 'Selene', 'Mara', 'Ren', 'Lyra', 'Nova')]
     [string]$RivalPilot = '',
     [string]$ResultFile = '',
+    # Story matches: the rival's AI level, 0 (punching bag) to 6 (ultimate). -1 keeps the game's own difficulty setting.
+    [ValidateRange(-1, 6)]
+    [int]$RivalDifficulty = -1,
+    # Story matches: the hangar tune-up for the player's HAR, in percent (50-200; 0 leaves it alone):
+    # health (armor), damage dealt (power), walking speed (speed).
+    [ValidateRange(0, 200)]
+    [int]$PlayerHpPct = 0,
+    [ValidateRange(0, 200)]
+    [int]$PlayerDamagePct = 0,
+    [ValidateRange(0, 200)]
+    [int]$PlayerSpeedPct = 0,
     # Let OpenOMF play its own sound effects and music in the match. Off by default, as before.
     [switch]$Sound
 )
@@ -65,7 +76,11 @@ if ($RivalPilot -ne '') {
     $env:OMF3K_LIVE_RIVAL_PILOT_ID = [string][array]::IndexOf($pilotNames, $RivalPilot)
     $env:OMF3K_LIVE_RIVAL_NAME = $rivalLabel.ToUpperInvariant()
 }
+$env:OMF3K_LIVE_RIVAL_DIFFICULTY = if ($RivalDifficulty -ge 0) { [string]$RivalDifficulty } else { $null }
 $env:OMF3K_SHADOW_ENHANCEMENT = [string]$ShadowEnhancement
+$env:OMF3K_LIVE_PLAYER_HP_PCT = if ($PlayerHpPct -gt 0) { [string]$PlayerHpPct } else { $null }
+$env:OMF3K_LIVE_PLAYER_DAMAGE_PCT = if ($PlayerDamagePct -gt 0) { [string]$PlayerDamagePct } else { $null }
+$env:OMF3K_LIVE_PLAYER_SPEED_PCT = if ($PlayerSpeedPct -gt 0) { [string]$PlayerSpeedPct } else { $null }
 Write-Host "Starting $Pilot / $Player in Stadium"
 $env:OMF3K_INPUT_MAP = 'Local\OMF3KInput_' + [Guid]::NewGuid().ToString('N')
 $env:OMF3K_STATE_MAP = 'Local\OMF3KState_' + [Guid]::NewGuid().ToString('N')
