@@ -488,9 +488,8 @@ choice Carry on to the Hall of Champions -> ch2_hall
 scene ch2_offair
 bg broadcast studio corridor
 present off
+art ari_fs_off_air fade
 say : The interview lights go dark. Lyra, still in a shimmering sponsor jacket over her training gear, sets her Electra gloves on a desk. Alex unclips a microphone.
-present lyra left Lyra Kisaragi
-present alex right Alex
 say Lyra: Everyone asked who I arrived with. Nobody asked how I improved my reaction time.
 say Alex: Your third-round counter was the best part of the fight. The producer cut my analysis.
 say Lyra: You noticed?
@@ -825,6 +824,8 @@ choice Have a quiet word with Mara on the balcony -> ch2_neon_mara set rooftop_c
 choice Skip it and go to the reading lounge -> ch2_neon_skip set rooftop_joined=0
 
 scene ch2_neon
+present off
+art ari_fs_neon_respite fade
 set rooftop_joined=1
 say : Reflected pool light scatters across a display of miniature HARs. Several adult pilots have chosen swimwear or tailored resort attire, and staff ask permission before filming.
 say : Shirro poses for a camera that has already found a better subject: Lyra, demonstrating an impossible-looking dive for the cheering fans.
@@ -1012,9 +1013,8 @@ choice Carry on -> ch3_hold
 scene ch3_velvet
 bg research benefit reception
 present off
+art ari_fs_velvet_problem fade
 say : Late evening, a small research-benefit reception. Jean-Paul stands near the doors with his tuxedo jacket slung over one shoulder. Dr. Varga emerges from the crowd in an elegant evening suit.
-present jeanpaul left Jean-Paul
-present varga right Dr. Varga
 say Jean-Paul: I thought this party was supposed to be boring.
 say Varga: Only if you listen to the presentations.
 say Jean-Paul: Then save me with a dance.
@@ -1208,6 +1208,8 @@ say Steffan: I wanted to win against you. Not only because of Dante.
 say Lyra: You understand how little that helps?
 say Steffan: Yes. I like you, Lyra.
 say Lyra: You make it very difficult to do the sensible thing.
+present off
+art ari_fs_coincidence fade
 say : This time she doesn't laugh. Lyra closes the distance and kisses him. It is affectionate, impulsive and clearly mutual. Afterward she steps back.
 say Lyra: I shouldn't have done that.
 say Steffan: I'm not going to pretend I regret it.
@@ -1306,9 +1308,9 @@ choice Look in on the workshop -> ch3_inventors
 choice Give them privacy and move on -> ch3_inventors_skip
 
 scene ch3_inventors
+present off
+art ari_fs_two_inventors fade
 say : A test-lighting fixture has turned the workshop into an unexpected ballroom. Cossette inspects a circuit while Ibrahim offers a theatrical bow.
-present cossette left Cossette Akira
-present ibrahim right Ibrahim
 say Ibrahim: May I have this dance?
 say Cossette: If you remember who taught you.
 say : They turn beneath the warm light, and Cossette draws him close for a kiss. The test rig flashes an absurd victory animation.
@@ -1402,6 +1404,8 @@ choice Stay friends: "You're important to me, but I don't want to start a romanc
 scene ch3_lovers
 say Ari: I'd still like to find out where this goes.
 say Mara: Good. So would I.
+present off
+art ari_fs_worth_winning fade
 say : They kiss. It is warm, unhurried and mutual. When they part, Mara is smiling.
 say Mara: Well.
 say Ari: Well?
@@ -1621,9 +1625,8 @@ choice Go straight to the consultation -> ch4_consult
 scene ch4_cooling
 bg hangar workshop
 present off
+art ari_fs_cooling_system fade
 say : The hangar workshop. Plug kills the welding current and checks that the bench is safe. Mara pushes her safety goggles up, leaning over the repaired Flail actuator.
-present mara right Mara Voss
-present plug left Plug McEllis
 say Plug: The most expensive part of your machine now has a cheap scar.
 say Mara: It suits the pilot.
 say Plug: The pilot is a walking invoice.
@@ -1846,8 +1849,8 @@ choice Linger a moment at her door -> ch4_blue
 choice Say goodnight -> ch4_qf
 
 scene ch4_blue
-present ari left Ari Solano
-present mara right Mara Voss
+present off
+art ari_fs_blue_hour fade
 say : Mara holds Ari's jacket across her shoulders.
 say Mara: Tomorrow we might have to fight each other.
 say Ari: Can we schedule being enemies for after breakfast?
@@ -2684,8 +2687,8 @@ choice Carry on -> ch5_failure
 scene ch5_spot
 bg press suite
 present off
+art ari_fs_spotlight fade
 say : A sponsor offers Lyra a last-minute promotional portrait: two silhouettes, her Electra and Steffan's Pyros, posed like a romantic duel. Lyra surveys the lighting rig and a rack of tailored outfits.
-present lyra left Lyra Kisaragi
 say Lyra: I'm fighting him tonight. We're not selling a relationship.
 say Photographer: The contrast would get attention.
 say Lyra: So would showing the move that got me here.
@@ -3629,13 +3632,12 @@ jump ch6_alex_ask
 scene ch6_e1_ask
 bg transit station noodle bar
 present off
-art ari_ch1_ganymede fade
+art ari_fs_epi_ari_leena fade
 say : Weeks later. Rain beads against the window of a transit-station noodle bar.
 choice Meet Leena (optional) -> ch6_e1
 choice Carry on -> ch6_alex_ask
 
 scene ch6_e1
-present leena right Leena Sato
 say : Leena sets an obsolete press badge on the table, face down.
 say Leena: I thought handing it in would make this simple.
 say Ari: Does it?
@@ -3669,9 +3671,8 @@ choice Carry on -> ch6_status
 scene ch6_alex
 bg city terrace
 present off
+art ari_fs_no_interview fade
 say : On a terrace after a charitable arena-repair event, Lyra looks up at a huge holographic advertisement of her old smiling self. Alex joins her without a microphone.
-present lyra left Lyra Kisaragi
-present alex right Alex
 say Lyra: She looks perfect. She's very tired.
 say Alex: It's a convincing performance.
 say Lyra: That sounds like a professional review.
@@ -3680,9 +3681,27 @@ say Lyra: Walk with me, then. No interview.
 say : They leave as two friends with an unresolved spark, and nothing more is decided. Alex's earlier commentary and Lyra's victories stay as they were, and her fanbase and her athletic future are intact.
 jump ch6_status
 
+# E4 (Solo / friendship close): Ari's own closure when there is no Mara romance and no Leena date. It runs once, before the vignettes.
 scene ch6_status
 present off
+if ari_mara=lovers -> ch6_status_vignettes
+if ari_leena_date=1 -> ch6_status_vignettes
+jump ch6_e4
+
+scene ch6_e4
+bg ganymede observation platform
+art ari_fs_epi_solo fade
+say : Weeks later, dawn on a station view platform. Ari leans on the rail with a jacket over one arm and watches the first trains cross the city.
+say : The evidence review is still open, the neural monitoring is still on the calendar, and nothing is finished. This morning that is enough.
+say : Out past the glass a cargo ship dims its running lights and slides toward the dock. Ari gives it a ridiculous name, the way Norah would have.
+say Ari: The Unreasonably Optimistic.
+jump ch6_status_vignettes
+
+scene ch6_status_vignettes
+present off
+art ari_fs_epi_mara_plug fade
 say : Elsewhere, the other endings stay quiet. In a public train-station café Plug slides Mara a receipt, the Flail's last invoice, settled in full, and they toast the next contract.
+art ari_fs_epi_crystal_raven fade
 say : In a training room lit only by the sparring lamps, Crystal takes the archival report rather than Raven's offered hand. They agree to cooperate, not to resume anything, and Christian keeps custody of the documents.
 jump ch6_final_image
 

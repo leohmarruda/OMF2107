@@ -16,7 +16,7 @@ Attach the character renders from `project/renders/` as reference images, and sa
 
 Put this at the start of every prompt.
 
-**Content rules (apply to every prompt):** all characters are adults. Tone is flirtatious, glamorou, romantic, or sexy, but never explicit: clothed or in ordinary resort wear, no nudity. Characters keep their own agency and expressions.
+**Content rules (apply to every prompt):** all characters are adults. Tone is flirtatious, glamorous, romantic, or sexy, but never explicit: clothed or in ordinary resort wear, no nudity. Characters keep their own agency and expressions.
 
 > Create a **wide cinematic story-mode scene illustration** for a **futuristic fighting-game visual novel** set in **2107**, in a **polished semi-realistic anime / high-end game illustration style** with **clean linework, cinematic lighting, rich atmospheric color, and strong composition**. The characters must match their approved character renders exactly (face, hair, build, signature outfit colors). All characters are **adults**. The mood is **warm, flirtatious or romantic but tasteful and non-explicit**: characters are fully clothed, expressions are natural and mutual. Landscape 2.58:1 composition with the key characters in the central band so the top and bottom can be cropped. **No text, no lettering, no UI, no logos, no watermarks.**
 
@@ -54,7 +54,7 @@ A quiet station service corridor at night, a large window showing Jupiter's band
 
 ## 6. FS-ARI3-10B — Two Inventors, One Dance (supporting cast) — `ari_fs_two_inventors`
 
-**Attach:** No character renders exist for Cossette or Ibrahim: generate them from the text alone, then save the result as `cossette.png` and `ibrahim.png` in `project/renders/` for reuse. Optional background: `BG-TEC-EXPERIMENT_NIGHT.png` for the workshop.
+**Attach:** `cossette.png` and `ibrahim.png`. Optional background: `BG-TEC-EXPERIMENT_NIGHT.png` for the workshop.
 
 A cluttered workshop turned into an unexpected ballroom by a test lighting fixture throwing colored light across the room. **Cossette** and **Ibrahim**, an established adult couple, dance joyfully among workbenches and half-built equipment, mid-spin and laughing, an "absurd victory" glow behind them. Warm, cozy, comic. Mood: playful and domestic.
 
@@ -66,7 +66,7 @@ An observation garden on the station, evening. Carefully regulated artificial li
 
 ## 8. FS-ARI4-3B — Cooling System (Mara / Plug) — `ari_fs_cooling_system`
 
-**Attach:** `mara_voss.png`. Plug has no render: describe only, then save the result as `plug.png`. Background: `BG-TEC-EXPERIMENT_NIGHT.png` for the workshop, if it suits.
+**Attach:** `mara_voss.png`, `plug.png`. Background: `BG-TEC-EXPERIMENT_NIGHT.png` for the workshop, if it suits.
 
 A hangar workshop, night work lights, a repaired Flail actuator on the bench. **Mara** has pushed her safety goggles up and leans over the actuator, grease on her forearm, exchanging dry banter with **Plug**, who watches her with an unguarded smile. Close, easy, working-partner intimacy; sparks of a welder in the background. Mood: warm, wry, competent.
 
@@ -90,7 +90,7 @@ A city-view terrace in the evening after a repair event. A huge holographic adve
 
 ## 12. FS-ARI6-16B — Alternative Relationship Epilogues (E1–E4)
 
-**Attach:** E1 `ari_solano.png` + `leena_sato.png`; E2 `mara_voss.png` (Plug: describe only, or `plug.png` once saved); E3 `crystal_devroe.png` + `raven.png`; E4 `ari_solano.png`. Generate one frame per call. No backgrounds.
+**Attach:** E1 `ari_solano.png` + `leena_sato.png`; E2 `mara_voss.png` + `plug.png`; E3 `crystal_devroe.png` + `raven.png`; E4 `ari_solano.png`. Generate one frame per call. No backgrounds.
 
 Produce four small frames, one per branch:
 

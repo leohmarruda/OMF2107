@@ -39,6 +39,20 @@ SCENES = {
     "ari_ch1_arena_day": "BG-ARE-MAIN_DAY.png",
     "ari_ch1_med": "BG-ARE-MED_BASE.png",
     "ari_fs_five_seconds": "fs_ari_five_seconds.png",   # optional scene 5B (ch3_towel)
+    "ari_fs_off_air": "ari_fs_off_air.png",
+    "ari_fs_neon_respite": "ari_fs_neon_respite.png",
+    "ari_fs_velvet_problem": "ari_fs_velvet_problem.png",
+    "ari_fs_coincidence": "ari_fs_coincidence.png",
+    "ari_fs_two_inventors": "ari_fs_two_inventors.png",
+    "ari_fs_worth_winning": "ari_fs_worth_winning.png",
+    "ari_fs_cooling_system": "ari_fs_cooling_system.png",
+    "ari_fs_blue_hour": "ari_fs_blue_hour.png",
+    "ari_fs_spotlight": "ari_fs_spotlight.png",
+    "ari_fs_no_interview": "ari_fs_no_interview.png",
+    "ari_fs_epi_ari_leena": "ari_fs_epi_ari_leena.png",
+    "ari_fs_epi_mara_plug": "ari_fs_epi_mara_plug.png",
+    "ari_fs_epi_crystal_raven": "ari_fs_epi_crystal_raven.png",
+    "ari_fs_epi_solo": "ari_fs_epi_solo.png",
 }
 CARDS = {  # name: (render, title, bar colour, figure on the right)
     "ari_card": ("ari_solano.png", "ARI SOLANO", (200, 90, 40), False),
