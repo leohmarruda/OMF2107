@@ -113,9 +113,30 @@ static bool parse_line(Story *s, char *line_text, int line, const char *name, ch
     StoryScene *scene = s->scene_count ? &s->scenes[s->scene_count - 1] : NULL;
 
     if(strcmp(word, "player") == 0 || strcmp(word, "rival") == 0 || strcmp(word, "card") == 0 ||
-       strcmp(word, "route") == 0) {
+       strcmp(word, "route") == 0 || strcmp(word, "blurb") == 0 || strcmp(word, "opponents") == 0) {
         if(scene) { fail(err, err_size, name, line, "'%s' must come before the first scene", word); return false; }
-        if(strcmp(word, "card") == 0) {
+        if(strcmp(word, "blurb") == 0) {
+            if(!*rest) { fail(err, err_size, name, line, "blurb has no text"); return false; }
+            if(s->blurb[0]) { fail(err, err_size, name, line, "a script can have only one blurb"); return false; }
+            if(!copy(s->blurb, STORY_TEXT, rest)) { fail(err, err_size, name, line, "blurb is too long"); return false; }
+        } else if(strcmp(word, "opponents") == 0) {
+            if(!*rest) { fail(err, err_size, name, line, "opponents needs a list of pilots"); return false; }
+            if(s->opponent_count) { fail(err, err_size, name, line, "a script can have only one opponents line"); return false; }
+            while(*rest) {
+                char *comma = strchr(rest, ',');
+                if(comma) *comma = 0;
+                char *pilot = trim(rest);
+                if(!in_list(pilot, known_pilots, sizeof(known_pilots) / sizeof(known_pilots[0]))) {
+                    fail(err, err_size, name, line, "unknown pilot '%s'", pilot); return false;
+                }
+                if(s->opponent_count >= STORY_MAX_OPPONENTS) {
+                    fail(err, err_size, name, line, "at most %d opponents", STORY_MAX_OPPONENTS); return false;
+                }
+                copy(s->opponents[s->opponent_count++], STORY_NAME, pilot);
+                if(!comma) break;
+                rest = comma + 1;
+            }
+        } else if(strcmp(word, "card") == 0) {
             char *colon = strchr(rest, ':');
             if(!colon) { fail(err, err_size, name, line, "card needs '<pilot>: <text>'"); return false; }
             *colon = 0;

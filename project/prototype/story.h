@@ -29,6 +29,10 @@
 //   player <pilot> <har>                the pilot the player controls and the HAR the story recommends
 //   rival <pilot>                       the AI opponent's pilot
 //   card <pilot>: <text>                context shown for that pilot on the selection screen
+//   blurb <text>                        a short premise shown on the selection screen
+//   opponents <pilot>, <pilot>, ...     the faces the route meets, shown on the selection screen in place of a
+//                                       single rival (up to 8; the rival line is still what @rival_har and
+//                                       {rival_pilot} refer to)
 //   route <pilot> <script>              another script the player can pick instead, written from that pilot's
 //                                       side (a path relative to this script); at most one per script, and each
 //                                       script of a pair names the other
@@ -86,6 +90,7 @@ typedef struct {
 } StoryScene;
 
 #define STORY_MAX_CARDS 4
+#define STORY_MAX_OPPONENTS 8
 
 typedef struct { char pilot[STORY_NAME]; char text[STORY_TEXT]; } StoryCard;
 typedef struct { char pilot[STORY_NAME]; char path[256]; } StoryRoute;
@@ -101,6 +106,9 @@ typedef struct {
     char rival_pilot[STORY_NAME];
     StoryCard cards[STORY_MAX_CARDS];
     int card_count;
+    char blurb[STORY_TEXT];          // the selection screen's premise line; empty for none
+    int opponent_count;              // the pilots listed by opponents, in order
+    char opponents[STORY_MAX_OPPONENTS][STORY_NAME];
     bool has_route;                  // the script offers another pilot's script (see route)
     StoryRoute route;
 } Story;

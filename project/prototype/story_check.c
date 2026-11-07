@@ -455,6 +455,13 @@ static void selftest_cast(void) {
     CHECK(rejects("rival Christian\nscene a\nend\n", "needs both"));
     CHECK(rejects("player Crystal Jaguar\nrival Crystal\nscene a\nend\n", "same pilot"));
     CHECK(rejects("scene a\nend\nplayer Crystal Jaguar\n", "before the first scene"));
+    CHECK(story_parse(&story, "player Ari Jaguar\nrival Selene\nblurb A rebel.\nopponents Selene, Crystal, Nova\nscene a\nend\n", "opp", err, sizeof(err)) &&
+          strcmp(story.blurb, "A rebel.") == 0 && story.opponent_count == 3 && strcmp(story.opponents[2], "Nova") == 0);
+    story_free(&story);
+    CHECK(rejects("blurb\nscene a\nend\n", "blurb has no text"));
+    CHECK(rejects("opponents Selene, Bob\nscene a\nend\n", "unknown pilot"));
+    CHECK(rejects("opponents Selene\nopponents Crystal\nscene a\nend\n", "only one opponents"));
+    CHECK(rejects("scene a\nend\nblurb late\n", "before the first scene"));
     CHECK(rejects("card Bob: hi\nscene a\nend\n", "unknown pilot"));
     CHECK(rejects("card Crystal hi\nscene a\nend\n", "card needs"));
     CHECK(rejects("scene a\nfight Crystal @ vs Christian Shadow win -> a lose -> a\n", "'@' needs"));

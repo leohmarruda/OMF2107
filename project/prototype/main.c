@@ -1538,7 +1538,7 @@ static StoryTexture story_speaker_tex[10];   // the ten pilots' cut-outs (build/
 static StoryTexture story_card_tex[2];       // the player's pilot, then the rival's, on the selection cards
 static char story_card_loaded[2][STORY_NAME]; // the pilot now in story_card_tex[side]; loaded when drawn, once GL is up
 typedef struct { GLuint id; float x0,y0,x1,y1,u0,v0,u1,v1,bright,blur,opacity; int split; } StoryTexDraw;
-#define STORY_TEX_DRAWS 4
+#define STORY_TEX_DRAWS 16
 static StoryTexDraw story_tex_draws[STORY_TEX_DRAWS];   // pictures drawn between runs of quads, in order
 static int story_tex_draw_count;
 static float story_tex_blur;                           // mip level the next story_tex_request samples at (0 sharp)
@@ -1841,33 +1841,6 @@ static int story_har_index(const char *name) {
     char c=(char)(name[0]|32);
     return c=='s' ? 1 : c=='k' ? 2 : 0;
 }
-static void story_setup_card(int side,float x,const char *pilot,const char *har,const char *role) {
-    char lines[8][80];
-    {
-        float cx=2.0f*3.0f/(float)win_width, cy=2.0f*3.0f/(float)win_height;
-        if(strcmp(story_card_loaded[side],pilot)!=0) {
-            story_load_cut(&story_card_tex[side],pilot);
-            snprintf(story_card_loaded[side],sizeof(story_card_loaded[side]),"%s",pilot);
-        }
-        story_draw_cut(&story_card_tex[side],pilot,x,.50f,57*cx,57*cy,1.0f,side==1);
-    }
-    char upper[STORY_NAME];
-    snprintf(upper,sizeof(upper),"%s",pilot);
-    label(x+.40f,.46f,.009f,upper,side==0 ? .55f : 1,side==0 ? .90f : .70f,side==0 ? 1 : .62f);
-    label(x+.40f,.36f,.0065f,role,.48f,.60f,.72f);
-    char in_har[48];
-    snprintf(in_har,sizeof(in_har),"IN %s",har);
-    label(x+.40f,.29f,.008f,in_har,.92f,.95f,.98f);
-    const int count=(int)(sizeof(story_pilot_stats)/sizeof(story_pilot_stats[0]));
-    for(int i=0;i<count;i++) {
-        if(strcmp(story_pilot_stats[i].name,pilot)) continue;
-        story_stat_row(x,-.14f,"POWER",story_pilot_stats[i].power);
-        story_stat_row(x,-.23f,"AGILITY",story_pilot_stats[i].agility);
-        story_stat_row(x,-.32f,"ENDURANCE",story_pilot_stats[i].endurance);
-    }
-    int n=story_wrap(story_card_text(&story_data,pilot),20,lines,7);
-    for(int i=0;i<n;i++) label(x,-.48f-.065f*(float)i,.0075f,lines[i],.85f,.90f,.95f);
-}
 // ---- routes: the selection screen can switch to the script written from the rival's side ----
 static char story_script_path[512];
 static bool story_save_named;   // --save-file was given: the save path stays as named
@@ -1907,18 +1880,86 @@ static bool story_switch_route(void) {
     memset(&story_run,0,sizeof(story_run));
     return true;
 }
+// The opening screen: the player's pilot large, a premise line, the HAR to pick (with a picture when there is one) and
+// the faces the route meets. The rival line of the script is no longer a card; opponents (or the rival's name) is a row.
+static StoryTexture story_har_tex[3];            // build/art/har_<name>.bmp, from robots/*/blockout/*-front.png
+static bool story_har_tried[3];
+static StoryTexture story_opp_tex[STORY_MAX_OPPONENTS];
+static char story_opp_loaded[STORY_MAX_OPPONENTS][STORY_NAME];
+static void story_upper(char *out,size_t size,const char *text) {
+    size_t n=0;
+    for(;text[n] && n+1<size;n++) out[n]=(char)((text[n]>='a' && text[n]<='z') ? text[n]-32 : text[n]);
+    out[n]=0;
+}
 static void story_setup_hud(void) {
     static const char *har_names[3]={"JAGUAR","SHADOW","KATANA"};
+    char lines[8][80],upper[STORY_NAME];
     quad(-1,-1,2,2,.015f,.025f,.065f);
     label(-.94f,.985f,.008f,"OMF2107 / STORY",.65f,.92f,1);
-    label(-.94f,.89f,.016f,story_data.has_route ? "PILOT AND HAR" : "CHOOSE YOUR HAR",.80f,.88f,.96f);
+    label(-.94f,.90f,.014f,story_data.has_route ? "PILOT AND HAR" : "CHOOSE YOUR HAR",.80f,.88f,.96f);
+    // The player's pilot, large, with the card text beside it and the OpenOMF stats under it when the pilot has them.
+    const char *pilot=story_data.player_pilot;
+    if(strcmp(story_card_loaded[0],pilot)!=0) {
+        story_load_cut(&story_card_tex[0],pilot);
+        snprintf(story_card_loaded[0],sizeof(story_card_loaded[0]),"%s",pilot);
+    }
+    story_draw_cut(&story_card_tex[0],pilot,-.94f,.76f,.50f,.80f,1.0f,false);
+    story_upper(upper,sizeof(upper),pilot);
+    label(-.40f,.76f,.014f,upper,.55f,.90f,1);
+    int n=story_wrap(story_card_text(&story_data,pilot),18,lines,8);
+    for(int i=0;i<n;i++) label(-.40f,.60f-.06f*(float)i,.0065f,lines[i],.85f,.90f,.95f);
+    const int count=(int)(sizeof(story_pilot_stats)/sizeof(story_pilot_stats[0]));
+    for(int i=0;i<count;i++) {
+        if(strcmp(story_pilot_stats[i].name,pilot)) continue;
+        story_stat_row(-.94f,-.10f,"POWER",story_pilot_stats[i].power);
+        story_stat_row(-.94f,-.19f,"AGILITY",story_pilot_stats[i].agility);
+        story_stat_row(-.94f,-.28f,"ENDURANCE",story_pilot_stats[i].endurance);
+    }
+    // The HAR: a picture where one exists, its name, and the story's recommendation.
+    label(.34f,.76f,.0075f,"YOUR HAR",.48f,.60f,.72f);
+    if(!story_har_tried[story_setup_har]) {
+        story_har_tried[story_setup_har]=true;
+        char path[96],lower[16];
+        story_upper(lower,sizeof(lower),har_names[story_setup_har]);
+        for(char *c=lower;*c;c++) *c=(char)(*c+32);
+        snprintf(path,sizeof(path),"project/build/art/har_%s.bmp",lower);
+        story_texture_load(&story_har_tex[story_setup_har],path);
+    }
+    {
+        float w=.36f,h=w*(float)win_width/(float)win_height;
+        quad(.46f,.70f-h,w,h,.05f,.07f,.12f);
+        if(story_har_tex[story_setup_har].id)
+            story_tex_add(&story_har_tex[story_setup_har],.46f,.70f-h,.46f+w,.70f,0,0,1,1,1.0f,0,1.0f);
+        else label(.52f,.40f,.0065f,"NO PREVIEW",.48f,.60f,.72f);
+    }
     char choice[32];
     snprintf(choice,sizeof(choice),"< %s >",har_names[story_setup_har]);
-    label(-.94f,.73f,.020f,choice,.30f,.90f,1);
+    label(.30f,.02f,.0105f,choice,.30f,.90f,1);
     bool recommended=story_data.player_har[0] && (story_data.player_har[0]|32)==(har_names[story_setup_har][0]|32);
-    if(recommended) label(.34f,.69f,.0075f,"RECOMMENDED",1,.85f,.40f);
-    story_setup_card(0,-.94f,story_data.player_pilot,har_names[story_setup_har],"YOU");
-    story_setup_card(1,.06f,story_data.rival_pilot,har_names[story_rival_of[story_setup_har]],"RIVAL");
+    if(recommended) label(.42f,-.08f,.0075f,"RECOMMENDED",1,.85f,.40f);
+    // The premise.
+    int bn=story_wrap(story_data.blurb,52,lines,3);
+    for(int i=0;i<bn;i++) label(-.94f,-.22f-.06f*(float)i,.0065f,lines[i],.85f,.90f,.95f);
+    // Who the route meets: the listed opponents as small faces, or the rival's name when the script lists none.
+    if(story_data.opponent_count>0) {
+        label(-.94f,-.46f,.0075f,"YOU WILL FACE",.48f,.60f,.72f);
+        for(int i=0;i<story_data.opponent_count;i++) {
+            const char *name=story_data.opponents[i];
+            if(strcmp(story_opp_loaded[i],name)!=0) {
+                story_load_cut(&story_opp_tex[i],name);
+                snprintf(story_opp_loaded[i],sizeof(story_opp_loaded[i]),"%s",name);
+            }
+            float x=-.94f+.23f*(float)i;
+            story_draw_cut(&story_opp_tex[i],name,x,-.54f,.20f,.26f,1.0f,false);
+            story_upper(upper,sizeof(upper),name);
+            label(x,-.82f,.0045f,upper,.80f,.88f,.96f);
+        }
+    } else if(story_data.rival_pilot[0]) {
+        story_upper(upper,sizeof(upper),story_data.rival_pilot);
+        char row[64];
+        snprintf(row,sizeof(row),"FIRST OPPONENT: %s",upper);
+        label(-.94f,-.46f,.0075f,row,.80f,.88f,.96f);
+    }
     label(-.94f,-.945f,.007f,story_data.has_route ? "UP DOWN PILOT  LEFT RIGHT HAR  ENTER START"
                                                    : "LEFT RIGHT HAR  ENTER START  ESC QUIT",.48f,.60f,.72f);
 }
@@ -2127,7 +2168,7 @@ static void story_draw_present_name(int s) {
     float size=.0105f;
     float length=(float)strlen(p->name);
     float plate=length*6.0f*size+.14f;
-    float py=story_v(.24f), ph=.115f;
+    float py=story_v(.17f), ph=.115f;
     float offset=(1.0f-in)*(plate+.25f)+out*(plate+.25f);
     float r=.95f,g=.72f,b=.30f;
     if(left) {   // the plate sits on its portrait's side and slides in from that edge
@@ -2185,7 +2226,6 @@ static void story_hud_body(void) {
         story_speaker_color(c->speaker,&r,&g,&b);
         if(*c->speaker) {   // narration has no name tab
             quad(-.97f,-.37f,.10f+.072f*(float)strlen(c->speaker),.13f,r*.30f,g*.30f,b*.30f);   // name tab
-            quad(-.97f,-.37f,.012f,.13f,r,g,b);
             label(-.93f,-.285f,.012f,c->speaker,r,g,b);
         }
         int n=story_wrap(story_say_text(&story_run),34,lines,6);
@@ -2252,7 +2292,10 @@ static void story_hud_body(void) {
         label(-.92f,-.44f,.009f,"R RESTART  ESC QUIT",.92f,.95f,.98f);
         hint="L LOG";
     }
-    if(!story_log_open) label(-.92f,-.93f,.008f,hint,.48f,.60f,.72f);
+    if(!story_log_open && *hint) {   // shrink a long hint to fit the width, clear of the next arrow
+        float hint_size=fminf(.008f,1.72f/(6.0f*(float)strlen(hint)));
+        label(-.92f,-.93f,hint_size,hint,.48f,.60f,.72f);
+    }
     if(story_log_open) {
         quad(-.95f,-.92f,1.90f,1.80f,.01f,.02f,.05f);
         label(-.90f,.80f,.013f,"LOG",.65f,.92f,1);
