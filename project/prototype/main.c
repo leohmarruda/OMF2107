@@ -2243,17 +2243,33 @@ static void story_hud_body(void) {
         hint=typed_all ? "ENTER NEXT  S SKIP  L LOG  Q SAVE  R LOAD" : "ENTER SHOW ALL  S SKIP  L LOG  Q SAVE  R LOAD";
     } else if(story_run.event==STORY_EVENT_CHOICE) {
         label(-.92f,-.30f,.012f,"CHOOSE",.80f,.90f,.55f);
+        // The choices fill the band between CHOOSE and the hint row. Use the largest text size at which every choice fits
+        // whole (up to four lines each) and shrink only when they would not; a long choice is never cut.
+        static const float sizes[4]={.009f,.0078f,.0068f,.0058f};
+        float size=sizes[3];
+        for(int t=0;t<4;t++) {
+            int width=(int)(1.76f/(6.0f*sizes[t]));
+            int total=0;
+            for(int i=0;i<story_run.choice_count;i++) {
+                char scratch[4][80];
+                total+=story_wrap(story_choice_cmd(&story_run,i)->text,width,scratch,4);
+            }
+            float need=(float)total*sizes[t]*9.4f+(float)story_run.choice_count*sizes[t]*3.3f;
+            if(need<=.47f || t==3) { size=sizes[t]; break; }
+        }
+        int width=(int)(1.76f/(6.0f*size));
         float y=-.42f;
         for(int i=0;i<story_run.choice_count;i++) {
             const StoryCmd *c=story_choice_cmd(&story_run,i);
-            int n=story_wrap(c->text,31,lines,2);
+            char wrapped[4][80];
+            int n=story_wrap(c->text,width,wrapped,4);
             bool on=i==story_sel;
             for(int k=0;k<n;k++) {
-                label(-.92f,y,.009f,k==0 ? (on ? ">" : " ") : " ",1,.85f,.40f);
-                label(-.86f,y,.009f,lines[k],on ? 1.0f : .55f,on ? .95f : .62f,on ? .75f : .70f);
-                y-=.085f;
+                label(-.92f,y,size,k==0 ? (on ? ">" : " ") : " ",1,.85f,.40f);
+                label(-.92f+size*7.5f,y,size,wrapped[k],on ? 1.0f : .55f,on ? .95f : .62f,on ? .75f : .70f);
+                y-=size*9.4f;
             }
-            y-=.03f;
+            y-=size*3.3f;
         }
         hint="UP DOWN SELECT  ENTER CHOOSE  L LOG  Q SAVE  R LOAD";
     } else if(story_run.event==STORY_EVENT_FIGHT) {
