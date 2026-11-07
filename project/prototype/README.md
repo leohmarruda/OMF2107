@@ -354,14 +354,14 @@ closing the story window also ends the match and OpenOMF. The two fighters must 
 
 A script that starts with `player <pilot> <har>` and `rival <pilot>` lines (and optional `card <pilot>: <text>`
 context lines) opens a selection screen first. The player picks their HAR with Left and Right, the rival takes the
-other, and Enter starts the story; the story's recommended HAR is marked. Each side shows a portrait, the pilot's
+other, and Enter starts the story; the story's recommended HAR is marked. Each side shows the pilot's cut-out render (`build/art/<pilot>_cut.bmp`; the rival's is mirrored), the pilot's
 OpenOMF power, agility and endurance, and its card text. A `fight` can name its HARs as `@player_har` and
 `@rival_har`, and dialogue can say `{player_har}` and `{rival_har}`, so any pairing works from one script. A saved
 story resumes without the screen; R restarts and brings it back. `--har Jaguar|Shadow` skips the screen.
 
 Original art and sounds are exported locally by `python project/tools/export_story_assets.py` into the
 git-ignored `project/build/` folder (a local development reference, never committed or distributed; see
-`project/docs/ASSET_LEDGER.md`): the pilot portraits (`portraits/`), the five arena backgrounds
+`project/docs/ASSET_LEDGER.md`): the pilot portraits (`portraits/`, now only used to compose the older frames), the five arena backgrounds
 (`backdrops/`), and four sounds (`sounds/`). A scene's `bg` picks its backdrop: a name such as `stadium`,
 `danger room`, `power plant`, `fire pit`, or `desert` uses the matching original arena image, and other names
 (`green room`, `medical bay`, or anything else) are drawn by the viewer itself. Menu movement, choices, and
@@ -378,7 +378,8 @@ match, `arena0` before the match, and `end` for the endings. A saved story resum
 `OMF2097/` or the audio device is missing the story is simply silent. libxmp is the project's own dependency, so a
 debug build prints its loader log to the console.
 
-The dialogue is presented in a visual-novel style: the two fighters' portraits stand over the backdrop (the
+The dialogue is presented in a visual-novel style: the two fighters' cut-out renders (`build/art/<pilot>_cut.bmp`, built by
+`project/tools/build_ari_art.py`; the right-hand figure is mirrored so both face the middle) stand over the backdrop (the
 player's pilot on the left, the rival on the right), the speaker lit with a coloured frame and the other dimmed, and a name tab sits on the dialogue box. Lines type out at about 55 characters
 a second with no sound; Enter shows the rest of a line at once and a second Enter moves on, and a blinking arrow
 marks a finished line. Narration dims both portraits and shows no tab. An illustration (below) replaces the
@@ -390,7 +391,9 @@ the typewriter after N characters.
 A scene can show an illustration with `art <name> [none|fade|zoom|pan]` (`art off` clears it); the name may use
 `{flag}`, so the draft's face-off frame is `faceoff_{player_har}`. Frames are 320x124 pictures in
 `project/build/art/`, composed from original portraits, arena art, and HAR sprites by
-`project/tools/build_story_art.py` (the export command above runs it). `fade` brightens from black, `zoom` pushes
+`project/tools/build_story_art.py` (the export command above runs it); Ari's route uses wide renders from `project/renders/` built by
+`project/tools/build_ari_art.py` (character cut-outs, backgrounds and the fanservice frames; run it after adding a render).
+A `present` character's name plate comes in from the same side as the portrait, and the picture behind a presentation is only lightly blurred. `fade` brightens from black, `zoom` pushes
 in slowly, and `pan` slides across a slightly zoomed frame. The draft story opens with a four-frame sequence this
 way. A missing frame falls back to the scene's backdrop. Without the exported files the viewer still works: it shows placeholder cards,
 generated backdrops, and no menu sounds.

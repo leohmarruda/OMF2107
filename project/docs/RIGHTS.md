@@ -99,7 +99,7 @@ Do not post your project's details publicly as a question until you are ready fo
 
 | Area | Currently from the original | Replace with |
 | --- | --- | --- |
-| Pilot portraits | `MELEE.BK` | New portrait artwork |
+| Pilot portraits | `MELEE.BK` (no longer read by the story viewer since 2026-11-06; still used to compose the older Crystal-story frames and the news frames) | New portrait artwork (done for the viewer: `project/renders/`) |
 | Arena backdrops (5) | `ARENA0.BK` to `ARENA4.BK` | New arena art |
 | Story illustrated frames | Built from portraits, arenas, HAR sprites | New illustrations |
 | Menu and battle sound | `SOUNDS.DAT` | New sound effects |

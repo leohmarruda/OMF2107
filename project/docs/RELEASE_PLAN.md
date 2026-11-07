@@ -56,10 +56,13 @@ Done before M0 (the old Stages 0 to 2 and the start of 4):
   pilots to Jaguar, Shadow or Katana, using their OpenOMF stats.
 - **Story (2026-11-06):** `project/data/story/ari.story` holds Chapters 1 to 6 of the Story Pack (266 scenes, including the skippable optional scenes) with
   the Group A, bracket and championship branches and a two-fight Nova boss. It passes `story_check`, and
-  `story_check walk` reaches the ending every time. Every character shown with `present` has a portrait. Still open: a
-  live playtest of the route (`run-story-ari.ps1`), and a portrait for Nova (voice-only by design, so possibly none). Kreissack, Sorell and Plug have
-  portraits. The seven NPC results are decided: Mara wins the Group A-out quarterfinal against Selene, the Crystal
-  and Lyra defaults stand, and the three-way tie keeps the announced seed. Scope and open decisions are in
+  `story_check walk` reaches the ending every time. Every character shown with `present` has a project-made render (Nova has none
+  by design), including Kreissack, Sorell, Plug, Cossette and Ibrahim, and the viewer no longer reads the original-game portraits. The
+  14 fanservice frames are wired in, with a solo epilogue `ch6_e4`. The seven NPC results are decided: Mara wins the Group A-out
+  quarterfinal against Selene, the Crystal and Lyra defaults stand, and the three-way tie keeps the announced seed. Ari's sister is
+  Norah (trait and memory proposed). Still open: a live playtest of the route (`run-story-ari.ps1`), the pacing cut (the spine is about
+  90 minutes against 25 to 35; see `data/story/ari.tiers`), and the older Crystal-story and news frames, which still use original
+  portraits. Scope and open decisions are in
   [OMF2107_STAGE4_PLAN.md](OMF2107_STAGE4_PLAN.md).
 - **Pose and mesh authoring:** mesh landmarks (`project/data/mesh_landmarks.json`) and projection-pose matching
   (`match_projection_poses.py`) feed the pose catalog; see [POSE_AUTHORING.md](POSE_AUTHORING.md).

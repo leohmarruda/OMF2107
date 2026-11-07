@@ -232,6 +232,16 @@ text with placeholder portraits.
   at four camera angles including extreme turns, and 12 seconds of real-time playback with the blockout and the Meshy robots, with no
   buffer overflow. Not tested: the wall, spotlights and flashes in motion, how it reads on a smaller or larger window, and the cost on a
   slower machine. The other four arenas are unchanged and the story still uses the Stadium only.
+- **Ari's route: portraits, art and decisions (2026-11-06):** the selection cards, the speaker strip and `present` now draw the project's own
+  cut-out renders instead of the original `MELEE.BK` portraits (right-hand figures mirrored, name plates on the portrait's side, the
+  background blur halved); Kreissack, Sorell, Plug, Cossette and Ibrahim have renders, Nova deliberately has none. The 14 fanservice
+  frames are wired into the optional scenes and the epilogues, with a new solo epilogue `ch6_e4`. Decided: Mara wins the Group A-out
+  Selene-vs-Mara quarterfinal, the Crystal and Lyra NPC defaults stand, the three-way Group A tie keeps the announced seed, and Ari's
+  sister is Norah (her trait and the paper-ship memory are proposed, not approved). `ari.tiers` and `tools/story_tiers.py` report the
+  pacing against the audit's targets: the mandatory spine is about 90 minutes across all branches against a 25 to 35 minute target, so
+  scenes still have to move to optional. Tested: `story_check` (268 scenes) and 300 random walks, the Debug build, and screenshots of
+  the selection screen, the board and workshop scenes and several frames. Not tested: any of it in a live play, the mirrored poses in
+  motion, and how the frames read at other window sizes.
 - **Not yet done:** a clean end-to-end playtest by someone who has not seen the build (step 6).
 
 ## Step 3 design: the match handoff (built)
