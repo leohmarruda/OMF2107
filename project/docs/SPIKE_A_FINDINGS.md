@@ -114,5 +114,5 @@ need replacements too, listed in "Open items".
 ## Estimate
 
 About two weeks for a first loader and one authored move running (the experiment above), then the data-pack format and
-validator in Phase 1 as planned. This fits the release plan's M1 date; the main uncertainty is the animation-string
+validator in Phase 1 as planned. This fits the development plan's M1 date; the main uncertainty is the animation-string
 authoring layer.

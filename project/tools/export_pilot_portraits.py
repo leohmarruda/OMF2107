@@ -5,7 +5,7 @@ same order as OpenOMF's PILOT_* enum). They are written as 24-bit BMP files to p
 which the viewer loads in story mode.
 
 This is original-game artwork. The output stays in the git-ignored build folder: it is a local development
-reference, not something to commit or distribute. See the rights checkpoint in project/docs/RELEASE_PLAN.md.
+reference, not something to commit or distribute. See the rights checkpoint in project/docs/DEVPLAN.md.
 Without these files the story viewer shows plain placeholder cards instead.
 
 Usage (repository root, after building bktool with project/scripts/build.ps1):

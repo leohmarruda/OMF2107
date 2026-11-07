@@ -35,4 +35,4 @@ Design rules: upgrades stay bounded (a well-played base HAR can beat an upgraded
 ## Open questions for discussion
 
 - Arcade's tune-up (armor/power/speed pick between fights) gives diminishing gains per repeat pick (decided). Should it live in the shared match rules, or stay a documented pre-match condition?
-- First slice is decided: Ari's route (spec §6, release plan). Crystal vs Christian is deferred to Phase 3. See `OMF2107_FEATURES.md`.
+- First slice is decided: Ari's route (spec §6, development plan). Crystal vs Christian is deferred to Phase 3. See `OMF2107_FEATURES.md`.

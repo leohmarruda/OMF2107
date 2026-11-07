@@ -122,7 +122,7 @@ pose evaluation in `main.c` (lines ~820-950) to decide what moves into data.
 | P7 | `har_check` report | One command, one pass or fail |
 | P8 | Port Shadow, then use the pipeline for the next HAR as the test of reuse | Time per new HAR recorded |
 
-Measure success by time to add a HAR (target in the release plan) and by the number of places a joint name or rest
+Measure success by time to add a HAR (target in the development plan) and by the number of places a joint name or rest
 height is written (target: one).
 
 ## Risks

@@ -1,6 +1,6 @@
 # OMF2107 Feature List
 
-Single list of committed features with milestone mapping. Sources: spec (`OMF2097_3D_GAME_SPEC.md`), `RELEASE_PLAN.md` (RP, wins on conflict), the task register inside it (DP IDs, from the former `OMF2097_DEVPLAN.md`), and the code state found on 2026-11-07. "Milestone" is from RP/DP; "none" means no doc assigns one.
+Single list of committed features with milestone mapping. Sources: spec (`OMF2097_3D_GAME_SPEC.md`), `DEVPLAN.md` (RP, formerly the release plan; wins on conflict), the task register inside it (DP IDs, from the former `OMF2097_DEVPLAN.md`), and the code state found on 2026-11-07. "Milestone" is from RP/DP; "none" means no doc assigns one.
 
 Milestones (RP): M0 2026-11-20, M1 2027-01-15, M2 2027-03-12, M3 2027-04-30, M4 2027-07-30, M5 2027-11-30, M6 2028-01-31.
 

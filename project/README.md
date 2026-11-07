@@ -4,7 +4,7 @@ This folder contains OMF2107-specific work inside the OpenOMF checkout. The upst
 
 | Folder | Purpose |
 | --- | --- |
-| [docs](docs/README.md) | Release plan, game specification, source baselines, story and reference material |
+| [docs](docs/README.md) | Development plan, game specification, source baselines, story and reference material |
 | [robots](robots/README.md) | Jaguar and Shadow approved modeling views and earlier concept exploration |
 | [prototype](prototype/README.md) | C sources of the side-on 3D viewer and live/replay adapter, with the tables generated for it (pose catalog, blockout and Meshy meshes) |
 | [tools](tools/paths.py) | Python tools: pose inventory and fitting, the pose editor and move browser generators, the catalog merge, mesh generators. `tools/paths.py` is the one place that knows where everything lives |

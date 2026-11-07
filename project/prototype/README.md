@@ -285,7 +285,7 @@ engine. See the [original-game reference](../docs/OMF2097/OMF2097_REFERENCE.md) 
 
 ## Roadmap
 
-See [the release plan](../docs/RELEASE_PLAN.md) for milestones, completion checks,
+See [the development plan](../docs/DEVPLAN.md) for milestones, completion checks,
 near-term work, and scope decisions.
 
 ## Current visual pass

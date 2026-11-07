@@ -1,4 +1,4 @@
-# OMF2107 release plan: free fan project, original assets, real 3D, two looks
+# OMF2107 development plan: free fan project, original assets, real 3D, two looks
 
 Status: proposed 2026-11-05, merged with the former `ROADMAP.md` on 2026-11-06. **This is the single plan.** Where it
 disagrees with another doc, this one wins. All dates are estimates for planning, assuming one main developer working with
@@ -16,7 +16,7 @@ The story pass expands OMF's own neural-link, WAR, Kreissack and Nova themes. Th
 develops the government conspiracy, relationships and the physical cost of an experimental link, keeping the setting,
 cast and central tournament. The [game specification](OMF2097_3D_GAME_SPEC.md) defines modes, combat rules,
 presentation, architecture and acceptance gates. The task register below breaks the phases into tasks; it replaces the
-former `OMF2097_DEVPLAN.md`, retired 2026-11-07 and kept in git history.
+former `OMF2097_DEVPLAN.md`, retired 2026-11-07 and kept in git history. This file was `RELEASE_PLAN.md` until 2026-11-07.
 
 Fixed decisions: [rights and release rules](RIGHTS.md); no original data in a release; real 3D; two visual modes,
 the simplified one a stylised look in its own right, both driven by one rig and one gameplay proxy

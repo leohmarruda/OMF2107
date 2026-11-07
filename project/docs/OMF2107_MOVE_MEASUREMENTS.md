@@ -3,7 +3,7 @@
 Isolated range, timing, damage, and guard checks for every selectable Jaguar and
 Shadow ground and air attack, measured on OpenOMF with the original AF data. They
 complete the "isolated range and guard/stun checks" item of the
-[release plan](RELEASE_PLAN.md#where-development-stands-today). Nothing here changes gameplay; the 3D
+[development plan](DEVPLAN.md#where-development-stands-today). Nothing here changes gameplay; the 3D
 view only renders what OpenOMF reports.
 
 ## Method

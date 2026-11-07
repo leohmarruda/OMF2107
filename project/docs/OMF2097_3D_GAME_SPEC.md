@@ -198,11 +198,11 @@ complete production pass, not the required lead of every route.
   key evidence and decisions. Route select shows which pilots are complete.
 
 **First complete story slice:** Ari's route (`project/data/story/ari.story`,
-Chapters 1 to 6, built and passing `story_check`; see `RELEASE_PLAN.md`
+Chapters 1 to 6, built and passing `story_check`; see `DEVPLAN.md`
 Progress). It covers a pre-fight exchange, match, recovery scene, evidence
 choice, and consequence, and tests the new story's tone while preserving OMF's
 core structure. The Crystal versus Christian route is deferred to Phase 3 of the
-release plan. `RELEASE_PLAN.md` wins where the two documents disagree.
+development plan. `DEVPLAN.md` wins where the two documents disagree.
 
 ## 7. Tournament mode
 
@@ -351,5 +351,5 @@ These do not block the baseline or first 3D spike:
 ## Source notes
 
 - [Local OpenOMF build instructions](../../BUILD.md), [CMake configuration](../../CMakeLists.txt), and [pilot/HAR identifiers](../../src/game/common_defines.c).
-- [Existing 3D prototype notes](../prototype/README.md) and [release plan](RELEASE_PLAN.md).
+- [Existing 3D prototype notes](../prototype/README.md) and [development plan](DEVPLAN.md).
 - [Original OMF manual](https://www.omf2097.com/wiki/doku.php?id=omf2097:manual.doc) and [decoded story text](https://www.omf2097.com/wiki/doku.php?id=omf2097:english.dat) for canon checks.

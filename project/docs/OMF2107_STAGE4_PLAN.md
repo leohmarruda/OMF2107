@@ -1,7 +1,7 @@
 # Stage 4 plan — one-player story slice
 
 Status: proposed 2026-10-27, after the Stage 1–2 match comparison gate was closed.
-This plan narrows the [release plan's](RELEASE_PLAN.md#task-register-from-the-former-development-plan) phase C tasks and the
+This plan narrows the [development plan's](DEVPLAN.md#task-register-from-the-former-development-plan) phase C tasks and the
 [game specification](OMF2097_3D_GAME_SPEC.md) section 6 to what can be built next.
 It does not change either document; open decisions are listed at the end.
 
@@ -10,7 +10,7 @@ It does not change either document; open decisions are listed at the end.
 A player picks a pilot and a HAR, sees a character exchange, fights a match on
 OpenOMF's rules, sees a recovery scene, makes an evidence choice, and sees its
 consequence later. Choices persist through save and load, and the fight stays
-required. This is exit gate C of the former development plan, now in the release plan's task register.
+required. This is exit gate C of the former development plan, now in the development plan's task register.
 
 ## What exists
 
@@ -28,11 +28,11 @@ The 3D prototype originally had no dialogue, cutscene, portrait, choice, or save
 Stage 4 built them (see Progress below): `story.c`, `story_check.c`, the `--story` viewer
 with up to two portraits on stage, saves, and `project/data/story/ari.story`. Still missing:
 the cutscene polish, the live playtest and the remaining art; see the open items in the
-[release plan](RELEASE_PLAN.md#where-development-stands-today).
+[development plan](DEVPLAN.md#where-development-stands-today).
 
 ## Proposed work, in order
 
-IDs refer to the release plan's task register.
+IDs refer to the development plan's task register.
 
 1. **Scene data format and runner (C05).** A data file describes lines, speakers,
    choices, and flags; a runner plays it with skip and a log. First version is text only
@@ -320,7 +320,7 @@ is the intended later integration. Both are better done once the story format ha
 3. **First pass format.** Text and placeholder portraits only, or illustrated frames
    from the start. Text-first lets the writing and flow be judged cheaply.
 4. **Rights.** The story uses the original cast and setting; the
-   [release plan's rights checkpoint](RELEASE_PLAN.md#rights-checkpoint) applies to any portrait or
+   [development plan's rights checkpoint](DEVPLAN.md#rights-checkpoint) applies to any portrait or
    dialogue asset that is reused from the original game.
 
 ## Risks
