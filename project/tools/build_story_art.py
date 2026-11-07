@@ -18,6 +18,9 @@ diagonal colour bars, a vignette, and name plates drawn on top.
   bay_<pilot>_<har>    the VS-screen hangar before the match: the player's pilot in that HAR (left) against the other
                        sibling in the other HAR (right); four frames (crystal or christian, jaguar or shadow)
   news_<pilot>         the newsroom after the match (drawn here, with the anchor Alex), with that pilot on the news screen as the winner
+  news_<har>_<rival>   the arcade ladder's newsroom: Alex at the anchor desk, a LIVE badge and ticker, and the big screen
+                       replaying the finish (Ari's HAR over the fallen rival HAR) with Ari's portrait; nine frames
+  maintenance_<har>    the hangar during maintenance: the player's HAR alone, battered, on the right (the arcade ladder)
   wreck_<har>_<result> the repair bay after the match: the damaged HARs, the player's (left) in that HAR, and the result
                        (won or lost) from the player's side; four frames (jaguar or shadow, won or lost)
 
@@ -336,14 +339,176 @@ def newsroom_set() -> Image.Image:
     return image
 
 
-def news_frame(winner: str) -> Image.Image:
-    """The newsroom set, the winner's portrait on the news screen and a name plate under it."""
+def news_frame(winner: str, face: Image.Image | None = None) -> Image.Image:
+    """The newsroom set, the winner's portrait on the news screen and a name plate under it.
+
+    face is a ready-made picture for pilots with no original-game portrait (Ari, from his render); left out, the
+    original portrait of that pilot is used.
+    """
     frame = newsroom_set().crop((0, 10, W, 10 + H))
     color = PILOT_COLOR[winner]
-    face = portrait(winner.capitalize(), 1.7, color)
+    if face is None:
+        face = portrait(winner.capitalize(), 1.7, color)
     screen = (165, 5, 305, 104)   # the black screen of the original picture, in frame pixels
     frame.paste(face, ((screen[0] + screen[2] - face.width) // 2, (screen[1] + screen[3] - face.height) // 2))
     plate(frame, f"{winner.upper()} WINS", 172, 106, 130, color)
+    return frame
+
+
+PILOT_COLOR["ari"] = (255, 200, 90)   # Ari's gold, for his news plate
+
+
+def ari_news_face() -> Image.Image:
+    """Ari's head and shoulders from his render, framed to sit on the news screen."""
+    render = Image.open(ROOT / "project" / "renders" / "ari_solano.png").convert("RGB")
+    head = render.crop((0, 0, render.width, round(render.width * .8)))      # the top of the full-length picture
+    head = head.resize((130, 98), Image.LANCZOS)
+    framed = Image.new("RGB", (head.width + 6, head.height + 6), PILOT_COLOR["ari"])
+    framed.paste(head, (3, 3))
+    return framed
+
+
+def studio_wall() -> Image.Image:
+    """A dark blue studio wall: a vertical gradient, soft light panels and thin lit seams, with a lighter floor strip."""
+    yy = np.linspace(0, 1, H)[:, None, None]
+    top, bottom = np.array([22, 34, 78], np.float32), np.array([6, 10, 30], np.float32)
+    wall = top * (1 - yy) + bottom * yy
+    wall = np.broadcast_to(wall, (H, W, 3)).copy()
+    xx = np.arange(W)[None, :, None]
+    wall += 8 * np.sin(xx / 17.0)                                      # faint vertical panel shading
+    image = Image.fromarray(np.clip(wall, 0, 255).astype(np.uint8))
+    draw = ImageDraw.Draw(image)
+    for x in range(0, W, 40):
+        draw.line((x, 0, x, H), fill=(40, 62, 130), width=1)           # lit panel seams
+    return image
+
+
+def studio_frame(player_har: str, rival_har: str, tmp: Path) -> Image.Image:
+    """The arcade ladder's newsroom: Alex behind the anchor desk, a LIVE badge, a ticker, and a big screen replaying the
+    finish: the winner's HAR standing over the fallen one, with the winner's portrait in a corner of the screen."""
+    frame = studio_wall()
+    draw = ImageDraw.Draw(frame)
+    gold = PILOT_COLOR["ari"]
+    # The big screen, with a bezel, on the right.
+    sx0, sy0, sx1, sy1 = 166, 10, 312, 100
+    draw.rectangle((sx0 - 5, sy0 - 5, sx1 + 5, sy1 + 5), fill=(18, 20, 34), outline=(90, 110, 190), width=2)
+    scr_w, scr_h = sx1 - sx0, sy1 - sy0
+    scr = ImageEnhance.Brightness(arena("stadium", .9).resize((scr_w, scr_h), Image.LANCZOS)).enhance(.95)
+    winner = har_sprite(player_har, tmp, *HIT_POSE)
+    winner_scale = 44 / max(1, winner.height)
+    paste_sprite(scr, winner, winner_scale, 52, scr_h - 6, mirror=False)
+    loser = damaged(har_sprite(rival_har, tmp, *DEFEAT_POSE[rival_har]), seed=61)
+    loser_scale = min(52 / max(1, loser.width), 40 / max(1, loser.height))
+    paste_sprite(scr, loser, loser_scale, scr_w - 14 - round(loser.width * loser_scale), scr_h - 6, mirror=True)
+    scr = smoke(scr, scr_w - 40, scr_h - 26, seed=71)
+    sparks(scr, scr_w - 52, scr_h - 18, seed=81)
+    scr = vignette_box(scr)
+    frame.paste(scr, (sx0, sy0))
+    # The winner's portrait in a corner of the screen, and the replay tag.
+    render = Image.open(ROOT / "project" / "renders" / "ari_solano.png").convert("RGB")
+    face = render.crop((300, 40, 724, 464)).resize((34, 34), Image.LANCZOS)     # head and shoulders of the tall render
+    framed = Image.new("RGB", (40, 40), gold)
+    framed.paste(face, (3, 3))
+    frame.paste(framed, (sx0 + 4, sy0 + 4))
+    draw.rectangle((sx1 - 52, sy0 + 4, sx1 - 4, sy0 + 17), fill=(10, 12, 24))
+    draw.ellipse((sx1 - 49, sy0 + 7, sx1 - 43, sy0 + 13), fill=(230, 40, 40))
+    text(frame, "REPLAY", (sx1 - 41, sy0 + 4), 9)
+    plate(frame, "ARI WINS", sx0 + 6, sy1 - 16, 78, gold)
+    # Alex behind the desk.
+    layer = Image.new("RGBA", (320, 200), (0, 0, 0, 0))
+    anchor_alex(layer)
+    figure = layer.crop((8, 20, 162, 200)).resize((92, 108), Image.LANCZOS)
+    frame.paste(figure, (28, 5), figure)
+    # The anchor desk: a lit top edge and a dark front with the station colours.
+    draw.polygon([(0, 86), (150, 86), (160, 92), (160, 110), (0, 110)], fill=(24, 30, 60), outline=(90, 110, 190))
+    draw.polygon([(0, 86), (150, 86), (160, 92), (0, 92)], fill=(60, 78, 150))
+    draw.rectangle((0, 96, 160, 98), fill=(196, 36, 48))
+    draw.rectangle((0, 99, 160, 101), fill=(40, 48, 170))
+    pixel_text(frame, "WRDE", (12, 70), 8, 1, (255, 255, 255))
+    # LIVE badge and logo, top left, and the ticker along the bottom.
+    draw.rectangle((6, 5, 44, 19), fill=(200, 30, 40))
+    text(frame, "LIVE", (11, 6), 11)
+    pixel_text(frame, "WRDE NEWS", (50, 6), 9, 1, (255, 220, 120))
+    draw.rectangle((0, 110, W, H), fill=(10, 12, 28))
+    draw.rectangle((0, 110, W, 111), fill=gold)
+    text(frame, "TOURNAMENT LADDER  *  ARI SOLANO ADVANCES", (6, 112), 10)
+    return frame
+
+
+def vignette_box(image: Image.Image) -> Image.Image:
+    """Darken the edges of a screen picture a little so it reads as a lit monitor."""
+    mask = Image.new("L", image.size, 0)
+    ImageDraw.Draw(mask).ellipse((-image.width * .15, -image.height * .2, image.width * 1.15, image.height * 1.2), fill=255)
+    mask = mask.filter(ImageFilter.GaussianBlur(14))
+    dark = Image.new("RGB", image.size, (0, 0, 0))
+    return Image.composite(image, dark, mask.point(lambda v: int(120 + v * 135 / 255)))
+
+
+HD_FRAMES: dict[str, Image.Image] = {}   # frames composed at four times the size from a high-resolution render (see main)
+BAY_CENTER_X = 0.665   # where the repair cradle's platform sits in maintenance_bay.png, across (centre) and down (floor line)
+BAY_FLOOR_Y = 0.765
+BAY_HAR_HEIGHT = 0.58  # the HAR's height as a fraction of the picture
+
+
+def maintenance_frame_rendered(player_har: str, tmp: Path, bay_path: Path) -> Image.Image:
+    """The hangar on the rendered empty bay (renders/maintenance_bay.png): the player's HAR on the repair cradle, facing
+    left, scorched. Composed at 4x for the smooth _hd picture; the 320x124 frame is its reduction, and the HAR's
+    silhouette mask is kept at 320x124 for the viewer's scratches."""
+    S = 4
+    bay = Image.open(bay_path).convert("RGB").resize((W * S, H * S), Image.LANCZOS)
+    art = damaged(har_sprite(player_har, tmp, *HIT_POSE), seed=31)
+    scale = BAY_HAR_HEIGHT * H / art.height
+    width, height = round(art.width * scale), round(art.height * scale)
+    x = round(BAY_CENTER_X * W) - width // 2
+    bottom = round(BAY_FLOOR_Y * H)
+    big = art.transpose(Image.FLIP_LEFT_RIGHT).resize((width * S, height * S), Image.BICUBIC)
+    big = big.filter(ImageFilter.GaussianBlur(1.3))                       # soften the pixel steps against the smooth picture
+    lamp = Image.new("RGBA", big.size, (255, 196, 140, 255))               # lit by the warm work lamps
+    big = Image.composite(Image.blend(big, ImageChops.multiply(big, lamp), .55), big, big.split()[3])
+    shadow = Image.new("RGBA", big.size, (0, 0, 0, 0))
+    shadow.paste((0, 0, 0, 140), mask=big.split()[3])
+    bay.paste(shadow, (x * S + 14, (bottom - height) * S + 10), shadow)
+    bay.paste(big, (x * S, (bottom - height) * S), big)
+    HD_FRAMES[f"maintenance_{player_har}"] = bay
+    mask = Image.new("RGB", (W, H), (0, 0, 0))
+    white = Image.merge("RGBA", (*[Image.new("L", art.size, 255)] * 3, art.split()[3]))
+    paste_sprite(mask, white, scale, x, bottom, mirror=True)
+    (ART / "masks").mkdir(parents=True, exist_ok=True)
+    mask.point(lambda v: 255 if v > 127 else 0).save(ART / "masks" / f"maintenance_{player_har}.bmp")
+    return bay.resize((W, H), Image.LANCZOS)
+
+
+def maintenance_frame(player_har: str, tmp: Path) -> Image.Image:
+    """The hangar during maintenance: the player's HAR alone on the right, battered, in the work lights, with room on the
+    left for the mechanic's portrait. No rival HAR; this is the crew working, not the result."""
+    rendered_bay = ROOT / "project" / "renders" / "maintenance_bay.png"
+    if rendered_bay.is_file():
+        return maintenance_frame_rendered(player_har, tmp, rendered_bay)
+    bay = Image.open(SCENES / "vs.bmp").convert("RGB").crop((0, 12, 150, 12 + H)).resize((W // 2, H), Image.NEAREST)
+    frame = Image.new("RGB", (W, H))
+    frame.paste(bay, (0, 0))
+    frame.paste(bay.transpose(Image.FLIP_LEFT_RIGHT), (W // 2, 0))
+    frame = ImageEnhance.Brightness(frame).enhance(.62)
+    tint = Image.new("RGB", frame.size, (255, 190, 130))          # warm work lamps, milder than the wreck bay
+    frame = Image.blend(frame, ImageChops.multiply(frame, tint), .6)
+    frame = vignette(frame, .65)
+    art = damaged(har_sprite(player_har, tmp, *HIT_POSE), seed=31)
+    scale = 1.0
+    width = round(art.width * scale)
+    x = W - 78 - width
+    paste_sprite(frame, art, scale, x, H - 22, mirror=True)
+    # The HAR's silhouette in this picture (white on black): the story viewer draws the match's scratches only on it.
+    mask = Image.new("RGB", (W, H), (0, 0, 0))
+    white = Image.merge("RGBA", (*[Image.new("L", art.size, 255)] * 3, art.split()[3]))
+    paste_sprite(mask, white, scale, x, H - 22, mirror=True)
+    (ART / "masks").mkdir(parents=True, exist_ok=True)
+    mask.point(lambda v: 255 if v > 127 else 0).save(ART / "masks" / f"maintenance_{player_har}.bmp")
+    art_top = H - 22 - round(art.height * scale)
+    frame = smoke(frame, x + width // 2, max(40, art_top + 10), seed=41)
+    sparks(frame, x + width // 2, art_top + round(art.height * scale * .35), seed=51)
+    sparks(frame, x + width // 2 - 14, art_top + round(art.height * scale * .6), seed=52)
+    pixel_text(frame, "HANGAR", (x + width // 2 - 38, 6), 10, 2, (255, 190, 100))
+    plate(frame, player_har.upper(), x + (width - 76) // 2 + 4, 106, 76, (255, 190, 100))
     return frame
 
 
@@ -433,6 +598,7 @@ def main() -> int:
             print(f"Missing {needed} (run export_story_assets.py first)", file=sys.stderr)
             return 1
     ART.mkdir(parents=True, exist_ok=True)
+    native_hd: dict[str, Image.Image] = {}   # frames drawn from a high-resolution render: their own _hd, not an upscale
     with tempfile.TemporaryDirectory() as tmp:
         frames = {
             "stadium_title": title_frame(),
@@ -450,14 +616,32 @@ def main() -> int:
             "news_crystal": news_frame("crystal"),
             "news_christian": news_frame("christian"),
         }
+        if (ROOT / "project" / "renders" / "ari_solano.png").is_file():
+            # The arcade ladder's winner is always Ari, in the player's HAR, over the beaten rival's HAR.
+            for har in ("jaguar", "shadow", "katana"):
+                for rival in ("jaguar", "shadow", "katana"):
+                    frames[f"news_{har}_{rival}"] = studio_frame(har, rival, Path(tmp))
+        studio_render = ROOT / "project" / "renders" / "news_alex_studio.png"
+        if studio_render.is_file():
+            # The rendered newsroom replaces the drawn one. Its screen stays empty of match detail: the story viewer draws
+            # the real finish of the match there (see main.c, story_draw_art_texture, and REPLAY_* in the match viewer).
+            studio = Image.open(studio_render).convert("RGB")
+            for har in ("jaguar", "shadow", "katana"):
+                for rival in ("jaguar", "shadow", "katana"):
+                    frames[f"news_{har}_{rival}"] = studio.resize((W, H), Image.LANCZOS)
+                    native_hd[f"news_{har}_{rival}"] = studio.resize((W * 4, H * 4), Image.LANCZOS)
         for har in ("jaguar", "shadow", "katana"):
+            frames[f"maintenance_{har}"] = maintenance_frame(har, Path(tmp))
             for result in ("won", "lost"):
                 frames[f"wreck_{har}_{result}"] = wreck_frame(har, result, Path(tmp))
         for pilot in ("crystal", "christian"):
             for har in ("jaguar", "shadow", "katana"):
                 frames[f"bay_{pilot}_{har}"] = hangar_frame(pilot, har, Path(tmp))
+    native_hd.update(HD_FRAMES)
     for name, frame in frames.items():
         frame.save(ART / f"{name}.bmp")
+        if name in native_hd:   # saved after the original, so story_upscale.write_hd keeps it
+            native_hd[name].save(ART / f"{name}_hd.bmp")
     print(f"Wrote {len(frames)} illustration frames to {ART}")
     return 0
 

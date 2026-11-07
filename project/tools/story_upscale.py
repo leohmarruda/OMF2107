@@ -30,6 +30,8 @@ def smooth_upscale(image: Image.Image, scale: int = SCALE) -> Image.Image:
 def write_hd(source: Path) -> Path:
     """Writes <source stem>_hd.bmp next to source and returns its path."""
     target = source.with_name(f"{source.stem}_hd.bmp")
+    if target.exists() and target.stat().st_mtime >= source.stat().st_mtime:
+        return target   # written after the original, from a render: not an upscale to replace
     with Image.open(source) as image:
         smooth_upscale(image).save(target)
     return target
