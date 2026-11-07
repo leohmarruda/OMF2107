@@ -114,9 +114,13 @@ static bool parse_line(Story *s, char *line_text, int line, const char *name, ch
     StoryScene *scene = s->scene_count ? &s->scenes[s->scene_count - 1] : NULL;
 
     if(strcmp(word, "player") == 0 || strcmp(word, "rival") == 0 || strcmp(word, "card") == 0 ||
-       strcmp(word, "route") == 0 || strcmp(word, "blurb") == 0 || strcmp(word, "opponents") == 0) {
+       strcmp(word, "route") == 0 || strcmp(word, "blurb") == 0 || strcmp(word, "opponents") == 0 ||
+       strcmp(word, "arcade") == 0) {
         if(scene) { fail(err, err_size, name, line, "'%s' must come before the first scene", word); return false; }
-        if(strcmp(word, "blurb") == 0) {
+        if(strcmp(word, "arcade") == 0) {
+            if(*rest) { fail(err, err_size, name, line, "arcade takes no arguments"); return false; }
+            s->has_arcade = true;
+        } else if(strcmp(word, "blurb") == 0) {
             if(!*rest) { fail(err, err_size, name, line, "blurb has no text"); return false; }
             if(s->blurb[0]) { fail(err, err_size, name, line, "a script can have only one blurb"); return false; }
             if(!copy(s->blurb, STORY_TEXT, rest)) { fail(err, err_size, name, line, "blurb is too long"); return false; }
@@ -292,6 +296,18 @@ static bool parse_line(Story *s, char *line_text, int line, const char *name, ch
         if(c && !split_assignment(rest, c->flag, c->value)) {
             fail(err, err_size, name, line, "set needs 'flag=value'"); return false;
         }
+    } else if(strcmp(word, "add") == 0) {
+        char *flag = token(&rest), *amount = token(&rest), *extra = token(&rest);
+        char *end = NULL;
+        long delta = amount ? strtol(amount, &end, 10) : 0;
+        if(!flag || !amount || extra || *end || strlen(flag) >= STORY_NAME || strlen(amount) >= STORY_NAME) {
+            fail(err, err_size, name, line, "add needs '<flag> <whole number>'"); return false;
+        }
+        (void)delta;
+        c = add_cmd(s, STORY_CMD_ADD, line);
+        if(!c) return false;
+        copy(c->flag, STORY_NAME, flag);
+        copy(c->value, STORY_NAME, amount);
     } else if(strcmp(word, "if") == 0) {
         char *arrow = strstr(rest, "->");
         if(!arrow) { fail(err, err_size, name, line, "if needs 'flag=value -> scene'"); return false; }
@@ -510,6 +526,8 @@ const char *story_flag(const StoryRun *run, const char *name) {
     return "";
 }
 
+void story_set_flag(StoryRun *run, const char *name, const char *value) { set_flag(run, name, value); }
+
 static const char *find_flag(const StoryRun *r, const char *name) {
     for(int i = 0; i < r->flag_count; i++)
         if(strcmp(r->flags[i].name, name) == 0) return r->flags[i].value;
@@ -588,6 +606,20 @@ static void step_to_event(StoryRun *r, bool log_say) {
                 r->pc++;
                 break;
             case STORY_CMD_SET: set_flag(r, c->flag, c->value); r->pc++; break;
+            case STORY_CMD_ADD: {
+                const char *current = find_flag(r, c->flag);
+                long total = 0;
+                char *end = NULL;
+                if(current && *current) total = strtol(current, &end, 10);
+                if(end && *end) { r->pc++; break; }   // a flag holding text (such as "unlimited") is left alone
+                total += strtol(c->value, NULL, 10);
+                if(total < 0) total = 0;
+                char text[STORY_NAME];
+                snprintf(text, sizeof(text), "%ld", total);
+                set_flag(r, c->flag, text);
+                r->pc++;
+                break;
+            }
             case STORY_CMD_IF:
                 if(strcmp(story_flag(r, c->flag), c->value) == 0) goto_scene(r, c->target);
                 else r->pc++;

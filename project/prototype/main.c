@@ -334,19 +334,104 @@ static void smooth_source_facing(double dt, bool snap) {
     player.facing=shown[0];
     rival.facing=shown[1];
 }
+// ---- Shared input ----
+// The match is played with the same controls as OpenOMF itself: player 1's bindings are read from OpenOMF's own
+// openomf.conf (key1_* entries, so remapping in OpenOMF's Options applies here), and the first gamepad works too
+// (stick or D-pad to move, A punch, B kick, as in OpenOMF). Only when no openomf.conf can be found does the viewer
+// fall back to its old fixed keys: A/D move, W jump, S duck, J punch, K kick.
+// Action bits match src/controller/controller.h; OpenOMF owns all move logic.
+#define SRC_ACT_KICK 0x02
+#define SRC_ACT_PUNCH 0x04
+#define SRC_ACT_UP 0x08
+#define SRC_ACT_DOWN 0x10
+#define SRC_ACT_LEFT 0x20
+#define SRC_ACT_RIGHT 0x40
+typedef struct { const char *name; int action; SDL_Scancode fallback; } SourceBindingSpec;
+static const SourceBindingSpec source_binding_specs[10]={
+    {"key1_jump_up",SRC_ACT_UP,SDL_SCANCODE_W},
+    {"key1_jump_right",SRC_ACT_UP|SRC_ACT_RIGHT,SDL_SCANCODE_UNKNOWN},
+    {"key1_walk_right",SRC_ACT_RIGHT,SDL_SCANCODE_D},
+    {"key1_duck_forward",SRC_ACT_DOWN|SRC_ACT_RIGHT,SDL_SCANCODE_UNKNOWN},
+    {"key1_duck",SRC_ACT_DOWN,SDL_SCANCODE_S},
+    {"key1_duck_back",SRC_ACT_DOWN|SRC_ACT_LEFT,SDL_SCANCODE_UNKNOWN},
+    {"key1_walk_back",SRC_ACT_LEFT,SDL_SCANCODE_A},
+    {"key1_jump_left",SRC_ACT_UP|SRC_ACT_LEFT,SDL_SCANCODE_UNKNOWN},
+    {"key1_kick",SRC_ACT_KICK,SDL_SCANCODE_K},
+    {"key1_punch",SRC_ACT_PUNCH,SDL_SCANCODE_J}};
+static SDL_Scancode source_binding_keys[10];
+static bool source_bindings_ready;
+static SDL_GameController *source_pad;
+static bool source_pad_tried;
+static bool source_conf_find(char *out,size_t size) {
+    const char *dirs[2]={getenv("OPENOMF_CONFIG_PATH"),getenv("XDG_CONFIG_HOME")};
+    for(int i=0;i<2;i++) {
+        if(!dirs[i] || !*dirs[i]) continue;
+        snprintf(out,size,"%s/openomf.conf",dirs[i]);
+        FILE *f=fopen(out,"r");
+        if(f) { fclose(f); return true; }
+    }
+    char *pref=SDL_GetPrefPath("","OpenOMF");   // the folder OpenOMF falls back to (see resource_paths.c)
+    if(pref) {
+        snprintf(out,size,"%sopenomf.conf",pref);
+        SDL_free(pref);
+        FILE *f=fopen(out,"r");
+        if(f) { fclose(f); return true; }
+    }
+    return false;
+}
+static void source_bindings_load(void) {
+    source_bindings_ready=true;
+    for(int i=0;i<10;i++) source_binding_keys[i]=source_binding_specs[i].fallback;
+    char path[600];
+    if(!source_conf_find(path,sizeof(path))) return;
+    FILE *f=fopen(path,"r");
+    if(!f) return;
+    for(int i=0;i<10;i++) source_binding_keys[i]=SDL_SCANCODE_UNKNOWN;   // a config exists: use exactly its bindings
+    char line[160];
+    while(fgets(line,sizeof(line),f)) {   // lines look like: key1_walk_right="D"
+        for(int i=0;i<10;i++) {
+            size_t n=strlen(source_binding_specs[i].name);
+            if(strncmp(line,source_binding_specs[i].name,n)!=0 || (line[n]!='=' && line[n]!=' ')) continue;
+            char *q1=strchr(line,'"'),*q2=q1 ? strchr(q1+1,'"') : NULL;
+            if(!q2) break;
+            *q2=0;
+            source_binding_keys[i]=SDL_GetScancodeFromName(q1+1);
+            break;
+        }
+    }
+    fclose(f);
+}
+static int source_pad_action(void) {
+    if(!source_pad_tried) {
+        source_pad_tried=true;
+        if(SDL_InitSubSystem(SDL_INIT_GAMECONTROLLER)==0)
+            for(int i=0;i<SDL_NumJoysticks() && !source_pad;i++) if(SDL_IsGameController(i)) source_pad=SDL_GameControllerOpen(i);
+    }
+    if(!source_pad) return 0;
+    SDL_GameControllerUpdate();
+    int action=0;
+    const int dead=12000;
+    int x=SDL_GameControllerGetAxis(source_pad,SDL_CONTROLLER_AXIS_LEFTX),y=SDL_GameControllerGetAxis(source_pad,SDL_CONTROLLER_AXIS_LEFTY);
+    if(x<-dead || SDL_GameControllerGetButton(source_pad,SDL_CONTROLLER_BUTTON_DPAD_LEFT)) action|=SRC_ACT_LEFT;
+    if(x>dead || SDL_GameControllerGetButton(source_pad,SDL_CONTROLLER_BUTTON_DPAD_RIGHT)) action|=SRC_ACT_RIGHT;
+    if(y<-dead || SDL_GameControllerGetButton(source_pad,SDL_CONTROLLER_BUTTON_DPAD_UP)) action|=SRC_ACT_UP;
+    if(y>dead || SDL_GameControllerGetButton(source_pad,SDL_CONTROLLER_BUTTON_DPAD_DOWN)) action|=SRC_ACT_DOWN;
+    if(SDL_GameControllerGetButton(source_pad,SDL_CONTROLLER_BUTTON_A)) action|=SRC_ACT_PUNCH;
+    if(SDL_GameControllerGetButton(source_pad,SDL_CONTROLLER_BUTTON_B)) action|=SRC_ACT_KICK;
+    return action;
+}
 static void write_source_input(const unsigned char *keys) {
     if(!source_input_enabled) return;
     static int last_action = -1;
     static Uint64 last_write_ms;
-    // Match src/controller/controller.h ACT flags; OpenOMF owns all move logic.
     int action = 0;
     if(keys) {
-        if(keys[SDL_SCANCODE_A] && !keys[SDL_SCANCODE_D]) action |= 0x20;
-        if(keys[SDL_SCANCODE_D] && !keys[SDL_SCANCODE_A]) action |= 0x40;
-        if(keys[SDL_SCANCODE_W] && !keys[SDL_SCANCODE_S]) action |= 0x08;
-        if(keys[SDL_SCANCODE_S] && !keys[SDL_SCANCODE_W]) action |= 0x10;
-        if(keys[SDL_SCANCODE_J]) action |= 0x04;
-        if(keys[SDL_SCANCODE_K]) action |= 0x02;
+        if(!source_bindings_ready) source_bindings_load();
+        for(int i=0;i<10;i++)
+            if(source_binding_keys[i]!=SDL_SCANCODE_UNKNOWN && keys[source_binding_keys[i]]) action|=source_binding_specs[i].action;
+        action|=source_pad_action();
+        if((action&SRC_ACT_LEFT) && (action&SRC_ACT_RIGHT)) action&=~(SRC_ACT_LEFT|SRC_ACT_RIGHT);   // opposite directions cancel
+        if((action&SRC_ACT_UP) && (action&SRC_ACT_DOWN)) action&=~(SRC_ACT_UP|SRC_ACT_DOWN);
     }
     action = action ? action : 1;
 #ifdef _WIN32
@@ -2051,6 +2136,14 @@ static void story_upper(char *out,size_t size,const char *text) {
     for(;text[n] && n+1<size;n++) out[n]=(char)((text[n]>='a' && text[n]<='z') ? text[n]-32 : text[n]);
     out[n]=0;
 }
+// Arcade difficulty modes, picked on the selection screen with Tab. Lives are the continues a run has: Easy never runs
+// out, Normal has 3, Hard has none (the first lost match ends the run). The script keeps the count in the flag `lives`.
+static const char *const story_mode_names[3]={"EASY","NORMAL","HARD"};
+static const char *const story_mode_flags[3]={"easy","normal","hard"};
+static const char *const story_mode_lives[3]={"unlimited","3","0"};
+static const char *const story_mode_notes[3]={"UNLIMITED CONTINUES","3 CONTINUES","NO CONTINUES"};
+static int story_arcade_mode;   // 0 easy, 1 normal, 2 hard
+static const char *const story_arcade_opponents[5]={"selene","crystal","mara","ren","lyra"};
 static void story_setup_hud(void) {
     static const char *har_names[3]={"JAGUAR","SHADOW","KATANA"};
     char lines[8][80],upper[STORY_NAME];
@@ -2097,6 +2190,12 @@ static void story_setup_hud(void) {
     label(.30f,.02f,.0105f,choice,.30f,.90f,1);
     bool recommended=story_data.player_har[0] && (story_data.player_har[0]|32)==(har_names[story_setup_har][0]|32);
     if(recommended) label(.42f,-.08f,.0075f,"RECOMMENDED",1,.85f,.40f);
+    if(story_data.has_arcade) {   // the difficulty mode: lives for the run
+        char mode[48];
+        snprintf(mode,sizeof(mode),"MODE < %s >",story_mode_names[story_arcade_mode]);
+        label(.30f,-.20f,.0085f,mode,.30f,.90f,1);
+        label(.30f,-.29f,.0065f,story_mode_notes[story_arcade_mode],.85f,.90f,.95f);
+    }
     // The premise.
     int bn=story_wrap(story_data.blurb,52,lines,3);
     for(int i=0;i<bn;i++) label(-.94f,-.22f-.06f*(float)i,.0065f,lines[i],.85f,.90f,.95f);
@@ -2121,12 +2220,18 @@ static void story_setup_hud(void) {
         label(-.94f,-.46f,.0075f,row,.80f,.88f,.96f);
     }
     label(-.94f,-.945f,.007f,story_data.has_route ? "UP DOWN PILOT  LEFT RIGHT HAR  ENTER START"
+                           : story_data.has_arcade ? "LEFT RIGHT HAR  TAB MODE  ENTER START  ESC QUIT"
                                                    : "LEFT RIGHT HAR  ENTER START  ESC QUIT",.48f,.60f,.72f);
 }
 // Starts the story with the chosen HAR for the player; the rival takes the other.
+static void story_flag_put(StoryFlag *flag,const char *name,const char *value) {
+    snprintf(flag->name,STORY_NAME,"%s",name);
+    snprintf(flag->value,STORY_NAME,"%s",value);
+}
 static void story_begin(int har_index) {
     const char *const *names=story_har_names;
-    StoryFlag flags[4];
+    StoryFlag flags[16];
+    int flag_count=4;
     snprintf(flags[0].name,STORY_NAME,"player_har");
     snprintf(flags[0].value,STORY_NAME,"%s",names[har_index]);
     snprintf(flags[1].name,STORY_NAME,"rival_har");
@@ -2135,7 +2240,26 @@ static void story_begin(int har_index) {
     snprintf(flags[2].value,STORY_NAME,"%s",story_data.player_pilot);
     snprintf(flags[3].name,STORY_NAME,"rival_pilot");
     snprintf(flags[3].value,STORY_NAME,"%s",story_data.rival_pilot);
-    story_start_with_flags(&story_run,&story_data,story_start_scene,flags,4);
+    if(story_data.has_arcade) {
+        // A new random order for the five opponents (Fisher-Yates), and the lives the chosen mode allows.
+        int order[5]={0,1,2,3,4};
+        srand((unsigned)SDL_GetPerformanceCounter());
+        for(int i=4;i>0;i--) {
+            int j=rand()%(i+1),t=order[i];
+            order[i]=order[j];
+            order[j]=t;
+        }
+        story_flag_put(&flags[flag_count++],"shuffled","yes");
+        story_flag_put(&flags[flag_count++],"mode",story_mode_flags[story_arcade_mode]);
+        story_flag_put(&flags[flag_count++],"lives",story_mode_lives[story_arcade_mode]);
+        for(int position=0;position<5;position++) {
+            char name[STORY_NAME],value[8];
+            snprintf(name,sizeof(name),"at_%s",story_arcade_opponents[order[position]]);
+            snprintf(value,sizeof(value),"%d",position+1);
+            story_flag_put(&flags[flag_count++],name,value);
+        }
+    }
+    story_start_with_flags(&story_run,&story_data,story_start_scene,flags,flag_count);
     story_setup=false;
     story_sel=0;
     story_log_open=false;
@@ -2476,6 +2600,15 @@ static void story_hud_body(void) {
         label(-.92f,-.44f,.009f,"R RESTART  ESC QUIT",.92f,.95f,.98f);
         hint="L LOG";
     }
+    if(story_data.has_arcade && !story_log_open) {   // continues left (not shown on Easy, which never runs out)
+        const char *lives=story_flag(&story_run,"lives");
+        if(*lives && strcmp(lives,"unlimited")!=0) {
+            char text[32];
+            snprintf(text,sizeof(text),"LIVES %s",lives);
+            bool last=!strcmp(lives,"0");
+            label(.62f,.985f,.0085f,text,last ? 1.0f : .85f,last ? .45f : .95f,last ? .40f : .98f);
+        }
+    }
     if(!story_log_open && *hint) {   // shrink a long hint to fit the width, clear of the next arrow
         float hint_size=fminf(.008f,1.72f/(6.0f*(float)strlen(hint)));
         label(-.92f,-.93f,hint_size,hint,.48f,.60f,.72f);
@@ -2570,13 +2703,34 @@ static void story_match_start(void) {
     story_replay_clear(true);   // no replay from an earlier match
     story_scratch_count=0;      // and no scratches: the hangar crew repairs the HAR between fights
     snprintf(story_match_result_path,sizeof(story_match_result_path),"%s",result);
-    char cmd[1600],difficulty_arg[32]="",tune_arg[64]="";
-    if(c->difficulty>=0) snprintf(difficulty_arg,sizeof(difficulty_arg)," -RivalDifficulty %d",c->difficulty);
-    // The hangar's tune-up (the "tune" flag) changes the player's HAR for the fights that follow, until the next pick.
-    const char *tune=story_flag(&story_run,"tune");
-    if(!strcmp(tune,"armor")) snprintf(tune_arg,sizeof(tune_arg)," -PlayerHpPct 125");
-    else if(!strcmp(tune,"power")) snprintf(tune_arg,sizeof(tune_arg)," -PlayerDamagePct 120");
-    else if(!strcmp(tune,"speed")) snprintf(tune_arg,sizeof(tune_arg)," -PlayerSpeedPct 115");
+    char cmd[1600],difficulty_arg[32]="",tune_arg[96]="";
+    int difficulty=c->difficulty;
+    if(story_data.has_arcade) {
+        // The rival's AI level follows the fight's place in the run (rung 1 to 5 is level 1 to 5, Nova is 5 then 6),
+        // not the opponent, because the opponents come in a random order.
+        int rung=atoi(story_flag(&story_run,"rung"));
+        if(rung>=1 && rung<=7) {
+            difficulty=rung<=5 ? rung : rung-1;
+            // The mode shifts it: Easy one level lower, Hard one higher, kept between 1 and 6.
+            const char *mode=story_flag(&story_run,"mode");
+            if(!strcmp(mode,"easy")) difficulty-=1;
+            else if(!strcmp(mode,"hard")) difficulty+=1;
+            if(difficulty<1) difficulty=1;
+            if(difficulty>6) difficulty=6;
+        }
+    }
+    if(difficulty>=0) snprintf(difficulty_arg,sizeof(difficulty_arg)," -RivalDifficulty %d",difficulty);
+    // The hangar's tune-ups change the player's HAR for the rest of the run. Each stat's picks are counted (tn_armor,
+    // tn_power, tn_speed) and every repeat pick adds half the gain of the one before: base x (2 - 2^(1-n)) after n picks.
+    static const struct { const char *flag,*arg; float base; } tunes[3]={
+        {"tn_armor"," -PlayerHpPct",25.0f},{"tn_power"," -PlayerDamagePct",20.0f},{"tn_speed"," -PlayerSpeedPct",15.0f}};
+    for(int i=0;i<3;i++) {
+        int picks=atoi(story_flag(&story_run,tunes[i].flag));
+        if(picks<1) continue;
+        if(picks>8) picks=8;
+        int pct=100+(int)(tunes[i].base*(2.0f-powf(.5f,(float)(picks-1)))+.5f);
+        snprintf(tune_arg+strlen(tune_arg),sizeof(tune_arg)-strlen(tune_arg),"%s %d",tunes[i].arg,pct);
+    }
     snprintf(cmd,sizeof(cmd),"powershell.exe -NoProfile -ExecutionPolicy Bypass -File \"%s\" -Player %s -Pilot %s "
              "-RivalPilot %s -RivalHar %s -ResultFile \"%s\"%s%s%s",launcher,har0,c->pilot[0],c->pilot[1],har1,result,
              difficulty_arg,tune_arg,story_muted ? "" : " -Sound");
@@ -2745,6 +2899,10 @@ static void story_key(SDL_Scancode key) {
             story_setup_har=(story_setup_har+2)%3; story_sound(SND_MOVE);
         } else if(key==SDL_SCANCODE_RIGHT || key==SDL_SCANCODE_D) {
             story_setup_har=(story_setup_har+1)%3; story_sound(SND_MOVE);
+        }
+        else if(key==SDL_SCANCODE_TAB && story_data.has_arcade) {
+            story_arcade_mode=(story_arcade_mode+((SDL_GetModState()&KMOD_SHIFT) ? 2 : 1))%3;
+            story_sound(SND_MOVE);
         }
         else if(key==SDL_SCANCODE_RETURN || key==SDL_SCANCODE_SPACE) story_begin(story_setup_har);
         return;

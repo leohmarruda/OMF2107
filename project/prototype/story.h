@@ -20,6 +20,8 @@
 //   say <speaker>: <text>               one line of dialogue; an empty speaker (say : text) is narration
 //   choice <text> -> <scene> [set f=v]  a menu entry; consecutive choice lines form one menu
 //   set <flag>=<value>                  stores a flag
+//   add <flag> <number>                 adds a whole number (may be negative) to a numeric flag; an unset flag counts as 0,
+//                                       the result never goes below 0, and a flag holding text (such as "unlimited") is left alone
 //   if <flag>=<value> -> <scene>        jumps when the flag has that value, otherwise continues
 //   jump <scene>                        continues in another scene
 //   fight <pilot> <har> vs <pilot> <har> win -> <scene> lose -> <scene> [difficulty <0-6>]
@@ -34,6 +36,8 @@
 //   opponents <pilot>, <pilot>, ...     the faces the route meets, shown on the selection screen in place of a
 //                                       single rival (up to 8; the rival line is still what @rival_har and
 //                                       {rival_pilot} refer to)
+//   arcade                              marks an arcade ladder: the viewer adds a difficulty mode to the selection screen,
+//                                       shuffles the opponents, and sets the flags mode, lives, shuffled and at_<opponent>
 //   route <pilot> <script>              another script the player can pick instead, written from that pilot's
 //                                       side (a path relative to this script); at most one per script, and each
 //                                       script of a pair names the other
@@ -63,6 +67,7 @@ typedef enum {
     STORY_CMD_SAY,
     STORY_CMD_CHOICE,
     STORY_CMD_SET,
+    STORY_CMD_ADD,
     STORY_CMD_IF,
     STORY_CMD_JUMP,
     STORY_CMD_FIGHT,
@@ -112,6 +117,7 @@ typedef struct {
     int opponent_count;              // the pilots listed by opponents, in order
     char opponents[STORY_MAX_OPPONENTS][STORY_NAME];
     bool has_route;                  // the script offers another pilot's script (see route)
+    bool has_arcade;                 // the script is an arcade ladder (see arcade)
     StoryRoute route;
 } Story;
 
@@ -172,6 +178,7 @@ bool story_choose(StoryRun *run, int index);                       // after a ch
 bool story_fight_result(StoryRun *run, bool win);                  // after a fight event
 int story_skip(StoryRun *run);                                     // skips say lines up to the next choice, fight, or end
 const char *story_flag(const StoryRun *run, const char *name);     // "" when unset
+void story_set_flag(StoryRun *run, const char *name, const char *value);   // for the host; silently ignored when the flag table is full
 void story_note(StoryRun *run, const char *text);                   // adds a "DEBUG" entry to the log
 void story_record(StoryRun *run, const char *speaker, const char *text);  // adds an entry to the log
 int story_log_count(const StoryRun *run);
