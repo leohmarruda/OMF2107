@@ -103,6 +103,40 @@ Mood for all four: quiet, resolved, weeks later. Soft warm light, no kissing req
 
 ---
 
+## 13. FS-ARI6-ENDING — The ending frames (Nova and Kreissack, Mara and Ari)
+
+Five extra frames for the scenes added to the end of Ari's route (2026-11-07): the destruction of Nova and Kreissack, and Mara and Ari after it. Wide, same format and shared direction as the others. The viewer shows a frame only if its file exists (a missing frame falls back to the scene's backdrop), so they can arrive one at a time. Save each file in `project/renders/` under the name given and run `project/tools/build_ari_art.py`: the builder picks these names up when the files exist.
+
+### 13a. `ari_end_latch` — Kreissack's last choice (scene `ch6_latch`)
+
+**Attach:** `kreissack.png`. No background.
+
+The interior of Nova's armored cognitive capsule, cold red emergency light with amber status rings turning red. **Major Kreissack** (the elderly cyborg commander, gaunt face, grey hair, red-lined coat opened over the robotic body, tubes and glass vials at his chest) sits restrained in the capsule, one robotic hand closing a heavy mechanical interlock lever as his other hand rests on the cane across his knees. His face is calm and a little amused, eyes on a status display we cannot read. Behind him the pale reflected outline of Nova's visor-like sensor array, dark and still. Mood: grim resolve, not triumph. No text.
+
+### 13b. `ari_end_blast` — the destruction (scene `ch6_blast`)
+
+**Attach:** `ari_solano.png` (optional, only as the figure at the gate). No other references.
+
+The service gate of a research combat enclosure at the instant the destructive discharge goes off inside it: a blinding white-gold flash behind massive blast shutters, light spilling through the seams and the edges of the door frame, the dark silhouette of Nova's huge machine visible for a heartbeat in the glare. In the foreground a scorched HAR (Ari's, Thorn) stands at the gate with one arm still raised from the last guard, throwing a long shadow back toward the viewer. Smoke, sparks and drifting dust lit from behind. Mood: awe, loss, relief. No text, no gore.
+
+### 13c. `ari_end_mara` — Mara waits (scene `ch6_mara_after`)
+
+**Attach:** `ari_solano.png`, `mara_voss.png`. No background.
+
+The HAR preparation station just after the fight, warm work lamps and cooling steam. The cradle lowers; **Ari** steps down from the open hatch, hands not quite steady, battered flight gear. **Mara** waits at the foot of the cradle with her arms crossed, grease on her jacket, eyes bright and not quite dry, the beginnings of a relieved, exasperated smile. Plug and a blast shutter in soft focus behind her. Mood: relief held back by pride. This frame fits both the romance and the friendship branch.
+
+### 13d. `ari_end_mara_kiss` — lovers variant (scene `ch6_mara_after_close`)
+
+**Attach:** `ari_solano.png`, `mara_voss.png`. Same location as 13c.
+
+Close two-shot in the same preparation station. **Mara** rests her forehead against **Ari's**, one hand at the back of his neck and her thumb along his jaw, mid-kiss or an inch from it, both with eyes closed, steam and warm lamplight behind them, their jackets still scuffed from the fight. Clothed and tender, never explicit. Mood: slow, certain, a little shaky.
+
+### 13e. `ari_end_mara_hug` — friends variant (scene `ch6_mara_after_friends`)
+
+**Attach:** `ari_solano.png`, `mara_voss.png`. Same location as 13c.
+
+The same station. **Mara** has grabbed **Ari** by both shoulders and pulled him into a long, hard, relieved hug, her face half-buried in his shoulder and his arms around her back, both laughing or close to it with their eyes shut. No romantic framing. Mood: warm, shaky relief between close friends.
+
 ## Open points before production
 
 - The Leena, Alex, Plug and Angel renders need confirmed adult ages in the cast notes (the registry asks for this before production). Scenes 1, 8, 11 and E1/E2 use them.

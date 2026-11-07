@@ -54,6 +54,9 @@ SCENES = {
     "ari_fs_epi_crystal_raven": "ari_fs_epi_crystal_raven.png",
     "ari_fs_epi_solo": "ari_fs_epi_solo.png",
 }
+OPTIONAL_SCENES = {  # built only when the render exists: the ending frames, saved one at a time (docs/ARI_FANSERVICE_IMAGE_PROMPTS.md, section 13)
+    f"ari_end_{n}": f"ari_end_{n}.png" for n in ("latch", "blast", "mara", "mara_kiss", "mara_hug")
+}
 CARDS = {  # name: (render, title, bar colour, figure on the right)
     "ari_card": ("ari_solano.png", "ARI SOLANO", (200, 90, 40), False),
     "selene_card": ("selene_vale.png", "SELENE VALE", (120, 70, 190), True),
@@ -207,15 +210,27 @@ def check_renders() -> None:
         raise SystemExit("missing renders in " + str(RENDERS) + ": " + ", ".join(missing))
 
 
+HARS = {  # selection screen previews: name -> front view of the blockout (Katana has none yet)
+    "jaguar": ROOT / "project" / "robots" / "jaguar" / "blockout" / "jaguar-front.png",
+    "shadow": ROOT / "project" / "robots" / "shadow" / "blockout" / "shadow-front.png",
+}
+
+
 def main() -> None:
     check_renders()
+    ART.mkdir(parents=True, exist_ok=True)
+    for name, src in HARS.items():
+        Image.open(src).convert("RGB").save(ART / f"har_{name}.bmp")
     for name, src in SCENES.items():
         save(scene(src), name)
+    for name, src in OPTIONAL_SCENES.items():
+        if (RENDERS / src).is_file():
+            save(scene(src), name)
     for name, (src, title, color, right) in CARDS.items():
         save(card(src, title, color, right, LEFT_TRIM.get(name, 0.09)), name)
     for name, src in CUTS.items():
         save_bmp32(cutout(src, LEFT_TRIM.get(f"ari_ch1_card_{name}", 0.09)), ART / f"{name}_cut.bmp")
-    print("wrote", len(SCENES) + len(CARDS), "frames and", len(CUTS), "cut-outs to", ART)
+    print("wrote", len(SCENES) + len(CARDS), "frames,", len(CUTS), "cut-outs and", len(HARS), "HAR previews to", ART)
 
 
 if __name__ == "__main__":

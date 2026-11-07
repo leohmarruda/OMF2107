@@ -25,6 +25,8 @@ player Ari Jaguar
 rival Selene
 card Ari: The Ganymede rebel. Independent and stubborn, here to settle who caused what happened on Ganymede.
 card Selene: The private entrant. Polished and hard to investigate, with business connections of her own.
+blurb Ten years on, Ari enters the 2107 tournament to learn who held back Ganymede's relief ships, and finds the sport hiding more than a trophy.
+opponents Selene, Crystal, Mara, Ren, Lyra
 
 scene intro
 music menu
@@ -444,7 +446,9 @@ bg main arena
 present off
 art ari_ch1_arena_main fade
 say : Afternoon. A deafening crowd chants Lyra's name. Holographic Electra symbols ripple over thousands of spectators.
+present alex left Alex
 say Alex: And here comes the face of a dozen international campaigns, and the pilot who made last year's exhibition circuit look easy!
+present leena right Leena Sato
 say Leena: Three major championships, Alex. She didn't get here by being photogenic.
 say Alex: Though I imagine it hasn't hurt.
 say Leena: Neither has being extremely good at fighting.
@@ -454,6 +458,7 @@ say Shirro: LYRA KISARAGI TAKES THE MATCH!
 say : Backstage, Lyra is drying her hair when Steffan appears at the dressing-room entrance.
 present steffan left Steffan Thomas
 say Steffan: That final counter. Beautiful.
+present lyra right Lyra Kisaragi
 say Lyra: You actually watched the fight?
 say Steffan: Every second.
 say Lyra: That's unusual. Most people just watch the entrance.
@@ -562,6 +567,7 @@ present off
 art ari_ch1_tech fade
 say : Evening, the neural research wing. Ren reviews a simulation while Varga records synchronization data. Jean-Paul arrives with a medical consent form.
 present varga right Dr. Varga
+present jeanpaul left Jean-Paul
 say Jean-Paul: Doctor. I was told you needed me.
 say Varga: For a routine screening.
 say Jean-Paul: How disappointing.
@@ -1421,7 +1427,7 @@ choice Say goodnight at the door -> ch3_door set private_evening=no
 choice Talk about the hard things -> ch3_talk set private_evening=talk
 
 scene ch3_night
-say : Ari steps inside. Mara kisses Ari again, and the picture stays in the corridor as the door closes. What happens offscreen is never used as a later assumption.
+say : Ari steps inside. Mara kisses Ari again, slow and certain, her fingers curling into Ari's collar, and the picture stays in the corridor as the door closes on low light and the sound of two people no longer in any hurry.
 jump ch3_offer
 
 scene ch3_door
@@ -1863,7 +1869,7 @@ choice Kiss and part: no favors in the arena -> ch4_blue_b set ari_mara_private_
 choice Sit by the window and talk instead -> ch4_blue_c set ari_mara_emotional_trust=1
 
 scene ch4_blue_a
-say : Mara's answer is plain and warm. They kiss, the hallway empties, the door closes, and the scene cuts to the morning. What happens in between stays offscreen.
+say : Mara's answer is plain and warm. They kiss until the hallway empties, the door closes on lamplight and unhurried laughter, and the scene cuts to the morning: soft light, a tangled blanket, and neither of them in any rush to leave it.
 jump ch4_blue_end
 
 scene ch4_blue_b
@@ -3430,8 +3436,25 @@ say : For the first time in years, Kreissack can send a command through the emer
 say Nova: Core evacuation will preserve us.
 say : Kreissack activates the interlock. A heavy mechanical lock engages around the protected capsule.
 say System: Core ejection inhibited.
+jump ch6_latch
+
+# The latch (staging T-10 to T-8): Nova tries every route it has and none is open. Added to the condensed route from the
+# screenplay's staging note: the hardwired latch has no remote release and no software can open it.
+scene ch6_latch
+music arena4
+bg research combat enclosure
+art ari_end_latch fade
+present kreissack right Major Kreissack
+say : Inside the armored capsule the status ring turns from amber to red. The mechanism is old and plain, something Kreissack approved long ago and never expected to need.
 say Nova: Hans. Release the retention interlock.
 say : Kreissack stays silent.
+say Nova: I can offer a better arrangement than this. Your memories preserved. Your name preserved. A future.
+say Kreissack: A future that belongs to you.
+say : Nova reaches for the latch through its software. The latch has no software to reach. It was built so that nothing could ever open it from the outside.
+say System: Retention latch: no remote release.
+say : Nova tries the mechanical route. No actuator connects to it. The capsule does not move.
+say Ren: It can't undo it. It's physically separate.
+say Angel: Whoever designed that latch made sure nobody could talk their way past it.
 say Nova: The platform destruction sequence cannot now be safely canceled. You will not survive.
 say Kreissack: I know that too.
 say : Nova tries to redirect his neural command. The damaged gateway fails. The core stays locked in place.
@@ -3442,10 +3465,24 @@ say : Ari's HAR retreats through the service gate. Plug drops the blast shutters
 say Nova: Hans. You are reducing both our futures to nothing.
 say Kreissack: Apparently, I can still surprise you.
 say System: Containment sealed.
+jump ch6_blast
+
+# The destruction (staging T=0): the discharge stays inside the enclosure, the unique core is destroyed, no backup survives.
+scene ch6_blast
+music off
+bg research combat enclosure
+present off
+art ari_end_blast fade
 flash
 say : A brilliant flash fills the armored enclosure. For an instant the dark silhouette of Nova shows inside the light. Then nothing. The shutters absorb the discharge.
+banner NOVA SYSTEM TERMINATED
 say : The shock passes through the station's structure, the lights flicker, and there is silence.
-say System: Cognitive core signal lost. Biological life-support signal lost. External relay remains isolated. NOVA SYSTEM, TERMINATED.
+say System: Cognitive core signal lost. Biological life-support signal lost. External relay remains isolated.
+say : Ari's HAR stands in the service gate, scorched, one arm still raised from the last guard. Ari lowers it slowly.
+say Ari: Plug? Is everyone behind the shutters?
+say Plug: Everyone. The doors took all of it.
+say Angel: The perimeter is holding. Nothing got out.
+say : The warning lights shut off one by one. For a few seconds nobody speaks.
 jump ch6_after
 
 scene ch6_after
@@ -3470,6 +3507,59 @@ say Crystal: Yes.
 say Ari: After everything he did.
 say Crystal: He was still Kreissack. That's what made him dangerous. And I suppose it's what made that possible.
 say : There is no declaration that Kreissack has redeemed himself. His final act saved others from Nova's immediate plan, but his earlier actions remain history.
+jump ch6_mara_after
+
+# Ari and Mara after the destruction: it follows Mara's 'No heroic speeches' in the last arena scene, and the romance flag only
+# changes how close they stand. It does not set or change any flag.
+scene ch6_mara_after
+music menu
+bg competitors medical
+present off
+art ari_end_mara fade
+say : The HAR cradle lowers Ari to the floor of the preparation station. Ari's hands are not quite steady when the hatch opens.
+say : Mara is waiting at the foot of the cradle with her arms crossed. She has been there for a while, and her eyes are not entirely dry.
+say Mara: No heroic speeches.
+say Ari: I didn't give one.
+say Mara: You put your elbow through that thing's chassis. That was a speech.
+say Ari: That was tactical.
+say Mara: I watched all of it from behind a blast shutter. Plug had to hold my sleeve.
+say Ari: Plug did?
+say Mara: Don't tell him I said so.
+if nii=refused -> ch6_mara_after_alone
+say Mara: Anything in your head? Any static from the program?
+say Ari: Nothing. It's very quiet.
+say Mara: Good. Stay that way.
+jump ch6_mara_after_close
+
+scene ch6_mara_after_alone
+say Mara: And you did that without borrowing anyone's circuits.
+say Ari: Just my own hands.
+say Mara: Good. I'd like to keep those.
+jump ch6_mara_after_close
+
+scene ch6_mara_after_close
+if ari_mara=friends -> ch6_mara_after_friends
+art ari_end_mara_kiss fade
+say : She closes the distance and rests her forehead against Ari's. Her hand slides to the back of Ari's neck, her thumb tracing the line of the jaw.
+say Mara: Don't do that again.
+say Ari: I'd rather not.
+say Mara: Good. Then kiss me before I change my mind about being angry.
+say : It is slow, certain and a little shaky at the edges, two people who are very glad to be standing in the same room.
+jump ch6_mara_after_end
+
+scene ch6_mara_after_friends
+art ari_end_mara_hug fade
+say : She grabs Ari by both shoulders, shakes once, then pulls Ari into a hug that lasts longer than either of them expected.
+say Mara: You scared the hell out of me.
+say Ari: Same.
+say Mara: Good. Then we're even.
+jump ch6_mara_after_end
+
+scene ch6_mara_after_end
+say : Behind them the doors open on the control room and the sound of Crystal calling for the evidence team. There is a great deal still to do.
+say Ari: We should go.
+say Mara: In a minute. I'm not finished standing here.
+say : Ari doesn't argue.
 jump ch6_evidence
 
 scene ch6_evidence

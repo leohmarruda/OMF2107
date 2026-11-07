@@ -12,7 +12,7 @@
 
 Use this shared instruction at the start of every prompt unless intentionally overridden:
 
-> Create a **full-body character render** for a **futuristic fighting-game story mode** set in **2107**, using a **polished semi-realistic anime / high-end game illustration style** with **clean linework, cinematic shading, strong silhouette readability, high facial detail, and premium sci-fi costume design**. Show the character in a **front three-quarter standing pose**, centered, with a **neutral transparent background** or plain studio backdrop, suitable for cutting into dialogue scenes. Keep the design visually consistent across the whole cast. Emphasize **personality, clothing silhouette, age, posture, expression, and color palette**. Avoid chibi proportions, caricature, or overly generic cyberpunk clutter. The result should look like a **playable character render or dialogue sprite base**.
+> Create a **full-body character render** for a **futuristic fighting-game story mode** set in **2107**, using a **polished semi-realistic anime / high-end game illustration style** with **clean linework, cinematic shading, strong silhouette readability, high facial detail, and premium sci-fi costume design**. Show the character in a **front three-quarter standing pose**, centered, with a **neutral transparent background** or plain studio backdrop, suitable for cutting into dialogue scenes. Keep the design visually consistent across the whole cast. Emphasize **personality, clothing silhouette, age, posture, expression, and color palette**. Avoid chibi proportions, caricature, or overly generic cyberpunk clutter. The result should look like a **playable character render or dialogue sprite base**. Transparent background.
 
 ### Standard technical notes
 
