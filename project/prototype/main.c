@@ -2200,7 +2200,7 @@ static void story_hud_body(void) {
             shown-=length+1;
         }
         if(typed_all && ((SDL_GetTicks64()/420)&1)) label(.88f,-.90f,.012f,">",1,.85f,.40f);   // blinking "next" arrow
-        hint=typed_all ? "ENTER NEXT  S SKIP  L LOG" : "ENTER SHOW ALL  S SKIP  L LOG";
+        hint=typed_all ? "ENTER NEXT  S SKIP  L LOG  Q SAVE  R LOAD" : "ENTER SHOW ALL  S SKIP  L LOG  Q SAVE  R LOAD";
     } else if(story_run.event==STORY_EVENT_CHOICE) {
         label(-.92f,-.30f,.012f,"CHOOSE",.80f,.90f,.55f);
         float y=-.42f;
@@ -2215,7 +2215,7 @@ static void story_hud_body(void) {
             }
             y-=.03f;
         }
-        hint="UP DOWN SELECT  ENTER CHOOSE  L LOG";
+        hint="UP DOWN SELECT  ENTER CHOOSE  L LOG  Q SAVE  R LOAD";
     } else if(story_run.event==STORY_EVENT_FIGHT) {
         const StoryCmd *c=story_event_cmd(&story_run);
         label(-.92f,-.30f,.012f,"MATCH",1,.80f,.45f);
@@ -2394,6 +2394,41 @@ static void story_match_poll(void) {
     }
 #endif
 }
+// Quick save and load: one extra slot beside the autosave (<save>.quick), written by Q and read back by R.
+static void story_quick_path(char *out,size_t size) {
+    snprintf(out,size,"%s",story_save_path);
+    size_t n=strlen(out);
+    if(n>5 && !strcmp(out+n-5,".save")) out[n-5]=0;
+    snprintf(out+strlen(out),size-strlen(out),".quick");
+}
+static void story_quicksave(void) {
+    if(!story_run.story) return;
+    if(story_match_state==1) { story_notify("FINISH THE MATCH FIRST"); return; }
+    char path[512],error[256];
+    story_quick_path(path,sizeof(path));
+    story_make_dirs();
+    if(story_save(&story_run,path,error,sizeof(error))) story_notify("QUICKSAVED");
+    else { fprintf(stderr,"Quicksave failed: %s\n",error); story_notify("QUICKSAVE FAILED"); }
+}
+static void story_quickload(void) {
+    char path[512],error[256];
+    story_quick_path(path,sizeof(path));
+    if(!story_save_exists(path)) { story_notify("NO QUICKSAVE YET  Q SAVES"); return; }
+    if(story_match_state==1) { story_notify("FINISH THE MATCH FIRST"); return; }
+    StoryRun restored;
+    if(!story_load_save(&restored,&story_data,path,error,sizeof(error))) {
+        fprintf(stderr,"Quicksave ignored: %s\n",error);
+        story_notify("QUICKSAVE UNREADABLE");
+        return;
+    }
+    story_run=restored;
+    story_sel=0;
+    story_log_open=false;
+    story_typed_line=~0u;                      // type the restored line out again
+    story_effect_seen=story_run.effect_serial; // do not replay the flash or banner that was showing
+    story_autosave();
+    story_notify("QUICKLOAD");
+}
 static void story_restart(void) {
     if(story_data.has_cast) {
         memset(&story_run,0,sizeof(story_run));
@@ -2409,7 +2444,8 @@ static void story_restart(void) {
         story_notify("RESTARTED  SAVE CLEARED");
     }
 }
-// One input, shared by the keyboard and the scripted --script option. Tokens: a, c<N>, u, d, w, l, s, g, r.
+// One input, shared by the keyboard and the scripted --script option. Tokens: a, c<N>, u, d, w, l, s, g, q (quicksave),
+// r (quickload), x (restart).
 static void story_act(char action,int number) {
     if(story_setup) return;   // nothing to act on until a HAR is chosen
     if(action=='a' && !story_script_running) {
@@ -2441,7 +2477,9 @@ static void story_act(char action,int number) {
             break;
         case 's': story_skip(&story_run); story_sel=0; break;
         case 'g': story_log_open=!story_log_open; break;
-        case 'r': story_restart(); break;
+        case 'q': story_quicksave(); break;
+        case 'r': story_quickload(); break;
+        case 'x': story_restart(); break;
     }
     // Autosave when a choice or match is decided, and whenever play stops at a choice, match, or the end.
     bool progressed=action=='a' || action=='c' || action=='w' || action=='l' || action=='s';
@@ -2471,7 +2509,8 @@ static void story_key(SDL_Scancode key) {
         case SDL_SCANCODE_DOWN: story_act('d',0); break;
         case SDL_SCANCODE_S: story_act('s',0); break;
         case SDL_SCANCODE_L: story_act('g',0); break;
-        case SDL_SCANCODE_R: story_act('r',0); break;
+        case SDL_SCANCODE_Q: story_act('q',0); break;
+        case SDL_SCANCODE_R: story_act((SDL_GetModState()&KMOD_SHIFT) ? 'x' : 'r',0); break;   // Shift+R restarts
         case SDL_SCANCODE_Y: if(story_debug_fights) story_act('w',0); break;
         case SDL_SCANCODE_N: if(story_debug_fights) story_act('l',0); break;
         default: break;
@@ -3307,7 +3346,7 @@ int main(int argc,char **argv) {
             if(story_load_save(&restored,&story_data,story_save_path,error,sizeof(error))) {
                 story_run=restored;
                 story_resumed=true;
-                story_notify("RESUMED FROM SAVE  R RESTARTS");
+                story_notify("RESUMED FROM SAVE  SHIFT R RESTARTS");
             } else {
                 fprintf(stderr,"Save ignored: %s\n",error);
                 story_notify("SAVE IGNORED  STARTING OVER");

@@ -323,10 +323,10 @@ build/omf_debug_z7/omf3d_prototype.exe --story project/data/story/crystal_christ
 ```
 
 Enter or Space advances and picks, Up and Down move the choice, S skips to the next choice or match,
-L opens the log, R restarts, and Escape quits. At a match marker the prototype only offers Y for a win
+L opens the log, Q quicksaves, R restores the quicksave, Shift+R restarts, and Escape quits. At a match marker the prototype only offers Y for a win
 and N for a loss; the real match handoff is a later step. Options: `--scene id` starts at a scene,
 `--script a,a,c1,w` applies scripted inputs first (a advance, cN choose, u/d move, w/l match result,
-s skip, g log, r restart), and `--shot out.bmp` saves one frame headlessly and exits.
+s skip, g log, q quicksave, r quickload, x restart), and `--shot out.bmp` saves one frame headlessly and exits.
 
 `story_check` validates and tests scripts without a window:
 
@@ -357,7 +357,7 @@ context lines) opens a selection screen first. The player picks their HAR with L
 other, and Enter starts the story; the story's recommended HAR is marked. Each side shows the pilot's cut-out render (`build/art/<pilot>_cut.bmp`; the rival's is mirrored), the pilot's
 OpenOMF power, agility and endurance, and its card text. A `fight` can name its HARs as `@player_har` and
 `@rival_har`, and dialogue can say `{player_har}` and `{rival_har}`, so any pairing works from one script. A saved
-story resumes without the screen; R restarts and brings it back. `--har Jaguar|Shadow` skips the screen.
+story resumes without the screen; Shift+R restarts and brings it back. `--har Jaguar|Shadow` skips the screen.
 
 Original art and sounds are exported locally by `python project/tools/export_story_assets.py` into the
 git-ignored `project/build/` folder (a local development reference, never committed or distributed; see
@@ -406,7 +406,7 @@ changes under `src/`, because the live match uses `build/omf_trace_z7/openomf.ex
 
 Progress is saved automatically to `project/build/story/<script name>.save` whenever a choice or a
 match result is decided and whenever play stops at a choice, match, or the end. Opening the same
-script again resumes from the save, and R restarts and clears it. `--new` ignores the existing save,
+script again resumes from the save, and Shift+R restarts and clears it. Q writes a separate quicksave (`<script name>.quick` beside the autosave) and R loads it back: the position, flags, log and portraits as they were. Quicksaving or loading is refused while a real match is running. `--new` ignores the existing save,
 and `--save-file path` uses another file. The save is a small versioned text file with the position,
 flags, and log, plus a fingerprint of the script: a save made against an edited script, or by a
 different format version, is refused with a message and the story starts over. Scripted
