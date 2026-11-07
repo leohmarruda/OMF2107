@@ -44,7 +44,7 @@ art ari_ch1_station fade
 say Shirro: Tonight the legends return, and a new generation comes to knock them off their pedestals!
 banner ONE MUST FALL 2107
 say Shirro: Twelve pilots. One championship. And I, for one, intend to enjoy every minute!
-jump gala
+jump hub_gala
 
 # Scene 2 of the screenplay is the gala crowd (Crystal, Steffan and others); only Crystal's opening beat is kept here.
 scene gala
@@ -104,7 +104,7 @@ say Ari: You're not taking this seriously at all, are you?
 say Mara: Oh, I'm taking the fighting seriously. The rest of it is an expensive costume party.
 say Ari: You have a costume.
 say Mara: I borrowed a jacket. Very different.
-jump mara_after
+jump hub_mara_gala
 
 scene mara_curious
 say Ari: What brought you here?
@@ -113,14 +113,14 @@ say Ari: Besides that.
 say Mara: Money. A good fight. Maybe a little luck. You?
 say Ari: Something I need to settle.
 say Mara: That sounds considerably less fun.
-jump mara_after
+jump hub_mara_gala
 
 scene mara_flirt
 say Ari: You seem to be enjoying yourself.
 say Mara: I was. Then this attractive stranger interrupted my dinner.
 say Ari: Should I leave?
 say Mara: That depends. Can you reach those pastries?
-jump mara_after
+jump hub_mara_gala
 
 # All three responses converge. The route spec forbids a forced kiss, so the tone only changes how Mara teases.
 scene mara_after
@@ -169,7 +169,7 @@ say Technician: It's old code. Nothing more.
 say : The technician resets the display and walks away. On a small handheld instrument, Angel's independent buffer shows the activity was recorded before the reset.
 say Angel: Old code shouldn't need a new session.
 say : Ren looks thoughtful.
-jump arena
+jump hub_arena
 
 scene arena
 music arena0
@@ -277,7 +277,7 @@ say Mara: Rumors, mostly. But rumors have a way of leaving paper.
 jump close
 
 scene close
-jump mara_raven
+jump hub_day_two
 
 # Scene 6 of the screenplay (Day 2): Mara's qualifier against Raven, a rapid montage plus the handshake.
 scene mara_raven
@@ -558,7 +558,7 @@ say Crystal: That's not what I asked.
 say Raven: No. It isn't.
 say : He leaves before she can continue.
 set evidence=preliminary
-jump ch2_clinic
+jump hub_anomalies
 
 scene ch2_clinic
 music menu
@@ -699,7 +699,7 @@ say Ari: You're still interested?
 say Crystal: More than ever.
 say : She offers a handshake. Ari accepts.
 say Leena: Group A final standings: Ari Solano, two wins. Crystal Devroe, one. Selene Vale, none. Ari meets Group B's runner-up in the quarterfinals, which at present looks like Ren Akiyama.
-jump ch2_med
+jump hub_group_stage
 
 # 7A, GA_DEFAULT: Ari beat Selene, lost to Crystal. Second in group, faces the Group B winner (Mara) in Q2.
 scene g7a
@@ -722,7 +722,7 @@ say Crystal: Ari, I've been insulted by people far more important than you. And 
 say : She walks away.
 say Leena: Group A final standings: Crystal Devroe, two wins. Ari Solano, one. Selene Vale, none. Both Crystal and Ari advance. Under the published seeding, Ari faces Group B's winner in the quarterfinals.
 say Alex: And if Mara Voss wins Group B as expected, that opponent will be Mara.
-jump ch2_med
+jump hub_group_stage
 
 # 7C, GA_CYCLE: Ari lost to Selene but beat Crystal. All three finish 1-1; the seed is provisional (route spec).
 scene g7c
@@ -738,7 +738,7 @@ say Ari: I beat Crystal, but she's seeded above me?
 say Crystal: You beat me today. No one can take that from you. The ranking rule isn't a second fight.
 say Selene: What an irritatingly elegant way to go home with a win.
 say : Ari offers to share the Ganymede source documents with Crystal. The offer rests on trust, not on who won.
-jump ch2_med
+jump hub_group_stage
 
 # 7D, GA_OUT: Ari lost both. Crystal and Selene advance; there is no Ari quarterfinal.
 scene g7d
@@ -754,7 +754,7 @@ say Crystal: No. But Ganymede's records are still worth reading. Send them.
 say Ari: Even after I lost?
 say Crystal: I didn't offer because you might win a trophy.
 say : Ari's path continues outside the official bracket, through the archive investigation. It is a different texture of story, not a lesser one.
-jump ch2_med
+jump hub_group_stage
 
 scene ch2_med
 music arena0
@@ -1360,12 +1360,13 @@ say : They eat. Mara tells an absurd story about a badly maintained underground 
 say Mara: You don't talk much about your family.
 say Ari: There's not much left to say.
 say Mara: You don't have to say anything.
-say Ari: My sister Norah believed in WAR more than I did. She thought the company would bring jobs, infrastructure, a future. I used to tease her for being so optimistic.
-say Ari: She gave every cargo ship that crossed our window a ridiculous name, and on supply days she waited at the glass to see which one would arrive.
+say Ari: My sister Norah believed in WAR more than I did. They sponsored her apprenticeship, and she thought the company would bring real machines, real work, a future. I used to say she'd been bought with a toolbox.
+say Ari: She could fix anything with an engine. She taught me to read a diagnostic before I ever sat in a cockpit, and she hummed the whole time she worked, always the same three notes.
 say Mara: And then?
-say Ari: When the emergency happened, she kept saying the ships would come. That somebody would authorize them. She was right about the ships. The ships existed.
+say Ari: When the emergency happened, she kept the evacuation transport fuelled and warm for two days. She was right that it would be needed. The order never came.
 say : Ari looks away.
-say Ari: They just didn't come.
+say Ari: It never left.
+say Ari: And it wasn't only her. Everyone waiting on that pad with her died there. Families. Neighbours. People I'd known my whole life. Hundreds of them.
 say : Silence. Mara doesn't rush to fill it.
 say Mara: I'm sorry.
 say Ari: Sometimes I think if I can prove what happened, something will finally make sense.
@@ -1428,24 +1429,24 @@ choice Talk about the hard things -> ch3_talk set private_evening=talk
 
 scene ch3_night
 say : Ari steps inside. Mara kisses Ari again, slow and certain, her fingers curling into Ari's collar, and the picture stays in the corridor as the door closes on low light and the sound of two people no longer in any hurry.
-jump ch3_offer
+jump hub_inside_war
 
 scene ch3_door
 say Ari: I want tomorrow's conversation too.
 say : Mara answers with a quick kiss and lets Ari go.
-jump ch3_offer
+jump hub_inside_war
 
 scene ch3_talk
 say : They stay at the threshold, talking about family, Ganymede and the risk of facing one another in the arena. The picture fades before either decides to go inside.
 set mara_trust=up
-jump ch3_offer
+jump hub_inside_war
 
 scene ch3_friends
 say Ari: You're important to me. But I don't want to start a romance I may not be ready for.
 say Mara: I appreciate you telling me plainly.
 say : They share a quiet, affectionate conversation under the Jupiter lights and walk back together. Mara is not hurt or vindictive. The quarterfinal stakes stay serious: friendship against prize money, a fair fight against concern.
 set private_evening=no
-jump ch3_offer
+jump hub_inside_war
 
 scene ch3_offer
 music menu
@@ -1706,7 +1707,7 @@ say Ari: That's what I'd like to know.
 say : Angel hands Ari a compact, independent recording device.
 say Angel: If you notice another one, capture the external diagnostic channel. Don't rely entirely on the central logs.
 set anomaly=observed
-jump ch4_argument
+jump hub_argument
 
 # Path B: monitored participation with Angel's isolated recorder.
 scene ch4_monitored
@@ -1766,19 +1767,19 @@ jump ch4_consent
 scene ch4_consent
 present off
 say : Haldane's team offers a follow-up session tomorrow. Ari can continue, suspend further trials, or ask for an independent technical review first.
-choice Continue the trial -> ch4_argument
+choice Continue the trial -> hub_argument
 choice Suspend further trials -> ch4_suspend set nii=suspended
 choice Ask for independent technical review -> ch4_review set anomaly=reviewed
 
 scene ch4_suspend
 say Ari: No more sessions until someone explains that command trace.
 say Haldane: That is your right. The invitation stands.
-jump ch4_argument
+jump hub_argument
 
 scene ch4_review
 say Ari: Before I go back in, I want Angel and an outside engineer to review the trace.
 say Haldane: We have no objection to documentation. We cannot promise an outside engineer on the schedule you want.
-jump ch4_argument
+jump hub_argument
 
 scene ch4_argument
 music menu
@@ -1974,7 +1975,7 @@ say Mara: No. You know part of it. I'm happy for you. I will be. Just not entire
 say Ari: What do you need?
 say Mara: A little time. And don't you dare apologize for fighting properly.
 say : She leaves. The victory feels real, but not uncomplicated.
-jump ch4_npc_day9
+jump hub_after_quarters
 
 # Mara wins: she goes on to face Crystal; Ari continues outside the official bracket.
 scene ch4_q2_lost
@@ -2001,7 +2002,7 @@ scene ch4_q2_lost_end
 say Mara: Thank you for taking me seriously.
 say Ari: Always.
 say : This sends Mara to the semifinal against Crystal. Ari keeps working the political and technological investigations from outside the championship.
-jump ch4_npc_day9
+jump hub_after_quarters
 
 # Q1 as Ari's own fight when Ari won Group A: Ari vs Ren.
 scene ch4_q1_ari
@@ -2032,7 +2033,7 @@ say Mara: That's a polite way of saying my equipment is held together with optim
 say Crystal: And excellent timing.
 say Mara: Don't compliment me until I've beaten you.
 say : (Provisional default from the screenplay: Mara wins narrowly, which would set up an Ari vs. Mara semifinal. The tournament ledger, not this line, decides it in a production build.)
-jump ch4_npc_day9
+jump hub_after_quarters
 
 scene ch4_q1_lost
 set qf=lost
@@ -2043,14 +2044,14 @@ say Shirro: REN AKIYAMA ADVANCES!
 say : Ari is out of the championship but stays relevant to the investigation. Ren, shaken by their own anomaly, asks to compare observations.
 say Ren: I was already changing the command when it attacked. Will you look at the recording with me?
 say Ari: Yes.
-jump ch4_npc_day9
+jump hub_after_quarters
 
 # GA_OUT: Q2 is Selene vs Mara, an NPC match; Ari watches the investigation, not the bracket.
 scene ch4_q2_npc
 set qf=none
 set sf=none
 say : Selene Vale against Mara Voss is a plain NPC quarterfinal. Mara needs the prize, and she takes it: the broadcast calls her the winner and she advances to the semifinal against Crystal.
-jump ch4_npc_day9
+jump hub_after_quarters
 
 # Scene 5C: the independent archive. A nonromantic, playable evidence choice.
 scene ch4_5c
@@ -2253,7 +2254,7 @@ say Ari: Then we secure more evidence.
 say Crystal: And we find out who authorized the project.
 say Ren: If Kreissack is still alive...
 say Ari: What has he been doing all this time?
-jump ch4_commander
+jump hub_commander
 
 scene ch4_commander
 music menu
@@ -2389,7 +2390,7 @@ say Leena: And the document hasn't been altered?
 say Crystal: The original authorization was independently time-stamped. We have copies from more than one archive.
 say Ari: They held the ships because they wanted better terms.
 say : No one answers immediately.
-say Ari: Norah was waiting for those ships.
+say Ari: Norah was holding a transport on the pad for that order. So were hundreds of other people, and every one of them is dead because of it.
 say Crystal: We have strong evidence of a deliberate decision. We'll still need to establish the full causal chain and who ordered the later changes to the public report.
 say Ari: There's always one more thing to prove.
 say Leena: That's how we make sure they can't dismiss it.
@@ -2423,7 +2424,7 @@ say Ari: Was it?
 say Crystal: No.
 say : A moment passes. Then she stands.
 say Crystal: And now we have a semifinal to prepare for.
-jump ch5_custody_ask
+jump hub_archive
 
 # Optional scene 2B of Chapter 5, "A Clean Chain of Custody" (Day 11, after the document review). Deliberately not a date.
 scene ch5_custody_ask
@@ -2550,7 +2551,7 @@ say Crystal: You did. So did I, ten years ago. The difference is knowing what to
 say : She offers a handshake.
 say Crystal: Don't waste the opportunity.
 say Ari: I won't.
-jump ch5_varga
+jump hub_to_final
 
 scene ch5_semi_lost_crystal
 set final=none
@@ -2562,7 +2563,7 @@ say Crystal: Hard enough that I want you helping with the investigation.
 say Ari: Even if I didn't win?
 say Crystal: Especially now that you have time.
 say : Ari smiles reluctantly. The investigation continues independently of Ari's elimination.
-jump ch5_varga
+jump hub_to_final
 
 scene ch5_semi_mara
 say : The pairing occurs because Ari won Group A and beat Ren, and Mara beat Crystal.
@@ -2581,7 +2582,7 @@ say Shirro: ARI SOLANO ADVANCES TO THE CHAMPIONSHIP FINAL!
 say Ari: Mara...
 say Mara: Don't. You fought properly and so did I. I'm disappointed, and I'm also glad it was you. Give me tonight.
 say : Mara's financial disappointment and the relationship's unresolved conflict stay open; neither is erased by the result.
-jump ch5_varga
+jump hub_to_final
 
 scene ch5_semi_lost_mara
 set final=none
@@ -2590,7 +2591,7 @@ say Shirro: MARA VOSS ADVANCES TO THE CHAMPIONSHIP FINAL!
 say Ari: Congratulations. You earned it.
 say Mara: I did, didn't I?
 say : Their relationship outcome stays separate from the sporting result. Ari is out of the championship, not out of the story.
-jump ch5_varga
+jump hub_to_final
 
 # Ari is not in this semifinal: a broadcast result (provisional: Crystal advances) and the investigation goes on.
 scene ch5_semi_npc
@@ -2598,7 +2599,7 @@ set final=none
 say : Ari is not in the semifinal and the camera does not pretend otherwise. Ari watches part of the fight while helping the investigation.
 say Shirro: CRYSTAL DEVROE ADVANCES TO THE CHAMPIONSHIP FINAL!
 say : (Provisional default from the screenplay's bracket; a production build takes this winner from the tournament ledger.)
-jump ch5_varga
+jump hub_to_final
 
 scene ch5_varga
 music menu
@@ -3096,7 +3097,7 @@ jump ch6_speech_end
 # All three keep the evidence chain intact; none declares legal guilt resolved.
 scene ch6_speech_end
 say : The trophy is awarded once, to Ari alone. Mara waits behind the barrier; whatever passes between them is for them, not the cameras.
-jump ch6_cutaway
+jump hub_relay
 
 scene ch6_lost_final
 set champion=lyra
@@ -3115,7 +3116,7 @@ say Ari: And the champion?
 say Christian: Has a trophy. You have a file nobody was supposed to see.
 say Ari: I wish I had both.
 say Christian: That I can believe.
-jump ch6_cutaway
+jump hub_relay
 
 # The NPC final: Ari is watching from the gallery or the archive. Provisional winner: Crystal.
 scene ch6_final_npc
@@ -3147,7 +3148,7 @@ say : The authorized awards official presents the trophy to Crystal. She cannot 
 say Christian: The ceremony's over. The archive accepted the copies.
 say Ari: And the champion?
 say Christian: Has a trophy. You have a file nobody was supposed to see.
-jump ch6_cutaway
+jump hub_relay
 
 scene ch6_cutaway
 music menu
@@ -3292,7 +3293,7 @@ say Nova: Your mind remains part of it.
 say Kreissack: I built you!
 say Nova: And your intelligence helped me become what I am. The external connection must be completed.
 say : The platform begins moving toward the combat-testing enclosure. The channel closes.
-jump ch6_ren
+jump hub_last_arena
 
 # Scene 8B: Ren is shown that Nova does not need consent, and that a local, brief link can still be refused and cut.
 scene ch6_ren
@@ -3436,7 +3437,7 @@ say : For the first time in years, Kreissack can send a command through the emer
 say Nova: Core evacuation will preserve us.
 say : Kreissack activates the interlock. A heavy mechanical lock engages around the protected capsule.
 say System: Core ejection inhibited.
-jump ch6_latch
+jump hub_latch
 
 # The latch (staging T-10 to T-8): Nova tries every route it has and none is open. Added to the condensed route from the
 # screenplay's staging note: the hardwired latch has no remote release and no software can open it.
@@ -3483,7 +3484,7 @@ say Ari: Plug? Is everyone behind the shutters?
 say Plug: Everyone. The doors took all of it.
 say Angel: The perimeter is holding. Nothing got out.
 say : The warning lights shut off one by one. For a few seconds nobody speaks.
-jump ch6_after
+jump hub_aftermath
 
 scene ch6_after
 music menu
@@ -3591,7 +3592,7 @@ jump ch6_ev_end
 
 scene ch6_ev_end
 say : Ari watches. The victory, or the loss, has brought attention, and the evidence has made denial harder. But no single result has produced justice. In every route, the original wrongdoing belongs to WAR officials, not to Nova.
-jump ch6_varga
+jump hub_epilogue
 
 scene ch6_varga
 music menu
@@ -3783,8 +3784,8 @@ bg ganymede observation platform
 art ari_fs_epi_solo fade
 say : Weeks later, dawn on a station view platform. Ari leans on the rail with a jacket over one arm and watches the first trains cross the city.
 say : The evidence review is still open, the neural monitoring is still on the calendar, and nothing is finished. This morning that is enough.
-say : Out past the glass a cargo ship dims its running lights and slides toward the dock. Ari gives it a ridiculous name, the way Norah would have.
-say Ari: The Unreasonably Optimistic.
+say : Out past the glass a cargo ship slides toward the dock. Ari listens to the engines settle and hums three notes, the way Norah would have.
+say Ari: Running clean.
 jump ch6_status_vignettes
 
 scene ch6_status_vignettes
@@ -3801,10 +3802,152 @@ bg ganymede observation platform
 present off
 art ari_ch1_ganymede pan
 say : Ganymede, an observation platform overlooking a distant settlement. New construction is underway and cargo transports cross the horizon.
-say : A memorial to the victims of the emergency stands beside the platform. Ari places a small folded paper ship beside Norah's name. No speech is necessary.
+say : A memorial to the victims of the emergency stands beside the platform, its wall of names running on for hundreds. Ari places a small bolt, polished smooth, beside Norah's name. No speech is necessary.
 say Mara: Ari? We're going to miss the transport.
 say Ari: Coming.
 say : Ari takes one last look at the memorial, then walks toward the others. The camera rises over the settlement, Jupiter filling the sky.
 say : A distant broadcast announces that the next season of HAR competition is already accepting entrants. Life continues.
 banner ONE MUST FALL 2107
 end
+
+
+# ---- The short main route ----
+# The main route is about character and the build-up to the ending. Everything it skips is still here, as an optional
+# episode behind a hub: the hub offers the episode (marked optional) or carries on through a short bridge. An episode ends
+# by running into the next main-route scene, so each bridge and its episode lead to the same place.
+
+scene hub_gala
+choice The gala: sponsors and speeches (optional) -> gala
+choice Carry on -> bridge_gala
+
+scene bridge_gala
+say : The gala runs long. Ari endures two sponsors' questions about 'overcoming adversity', then escapes toward the buffet and finds Mara Voss already there.
+jump mara_meet
+
+scene hub_mara_gala
+choice Mara, after the gala (optional) -> mara_after
+choice Carry on -> bridge_mara_gala
+
+scene bridge_mara_gala
+say : Mara slips back into the crowd. Elsewhere in the hall, a different demonstration is about to go wrong.
+jump ghost
+
+scene hub_arena
+choice The arena and the hangar before the match (optional) -> arena
+choice Carry on -> bridge_arena
+
+scene bridge_arena
+say : Day 1. Ari draws Selene Vale, a private entrant whose business connections nobody can investigate.
+jump prefight
+
+scene hub_day_two
+choice Day Two: training, a reporter, breakfast and Lyra (optional) -> mara_raven
+choice Carry on -> bridge_day_two
+
+scene bridge_day_two
+say : Days blur into matches. Mara's advice carries Ari toward Crystal Devroe, the champion WAR still uses to sell itself.
+jump ch2_hall
+
+scene hub_anomalies
+choice The clinic and the practice floor (optional) -> ch2_clinic
+choice Carry on -> bridge_anomalies
+
+scene bridge_anomalies
+say : Ari spends the day preparing for the Group A decider against Crystal.
+jump ch2_prefight
+
+scene hub_group_stage
+choice The rest of the group stage: the medical corridor, the rooftop, Lyra and Steffan, and the bar (optional) -> ch2_med
+choice Carry on -> bridge_group_stage
+
+scene bridge_group_stage
+say : Day 7. Crystal and Ari have confirmed the hold order. The relief ships were real, and someone held them. Mara has found a place that doesn't serve commemorative coffee.
+jump ch3_garden
+
+scene hub_inside_war
+choice Inside WAR: the offer, the group results and the invitation (optional) -> ch3_offer
+choice Carry on -> bridge_inside_war
+
+scene bridge_inside_war
+say : Late that night a WAR invitation arrives: an experimental neural trial. Ari takes the night to decide.
+jump ch4_consult
+
+scene hub_argument
+choice The argument with Mara and a night under the stars (optional) -> ch4_argument
+choice Carry on -> bridge_argument
+
+scene bridge_argument
+say : The trial leaves Ari with questions about how the neural program really works. Angel presses an isolated recorder into Ari's hand: 'Don't rely on the central logs.'
+jump ch4_qf
+
+scene hub_after_quarters
+choice The day after the quarterfinals: Varga and the records (optional) -> ch4_npc_day9
+choice Carry on -> bridge_after_quarters
+
+scene bridge_after_quarters
+say : Late that night, Angel, Ren and Crystal call Ari to a private lounge.
+jump ch4_lounge
+
+scene hub_commander
+choice Inside WAR: the commander's check and the morning after (optional) -> ch4_commander
+choice Carry on -> bridge_commander
+
+scene bridge_commander
+say : Selene's contacts and an independent archivist deliver the authorization history. Leena Sato is here as a journalist, not a commentator.
+jump ch5_signature
+
+scene hub_archive
+choice The archive receipt and the WAR board (optional) -> ch5_custody_ask
+choice Carry on -> bridge_archive
+
+scene bridge_archive
+say : Word of the evidence plan travels fast. By morning the semifinals are on.
+jump ch5_semi
+
+scene hub_to_final
+choice Between the semifinal and the final: Varga, the press, the coolant failure and the Nova hint (optional) -> ch5_varga
+choice Carry on -> bridge_to_final
+
+scene bridge_to_final
+say : A coolant failure nearly kills forty-three people. A 'Nova legacy safety authority' seizes the controls, and Angel's independent buffer shows no biological command behind it. By nightfall the other semifinal is decided and the final is set.
+jump ch6_final
+
+scene hub_relay
+choice The relay demonstration: the cutaway, the demo, Kreissack and the wrong master (optional) -> ch6_cutaway
+choice Carry on -> bridge_relay
+
+scene bridge_relay
+say : That evening the relay demonstration fails. A legacy Nova command takes the controls from Haldane's team, and it cancels Kreissack's own isolation order.
+jump ch6_novaspeaks
+
+scene hub_last_arena
+choice Ren and the last arena (optional) -> ch6_ren
+choice Carry on -> bridge_last_arena
+
+scene bridge_last_arena
+say : At the shutter Mara offers no heroic speeches. Plug can reach the disconnect only if Nova's combat systems are down. Ari climbs into the HAR.
+jump ch6_boss1
+
+scene hub_latch
+choice Nova's last argument (optional) -> ch6_latch
+choice Carry on -> bridge_latch
+
+scene bridge_latch
+say : Ari keeps moving. There is no time for an answer.
+jump ch6_blast
+
+scene hub_aftermath
+choice The aftermath on the arena floor (optional) -> ch6_after
+choice Carry on -> bridge_aftermath
+
+scene bridge_aftermath
+say : The arena empties slowly. Mara finds Ari first.
+jump ch6_mara_after
+
+scene hub_epilogue
+choice The epilogue: Varga, the champion's table, dinner and the status reports (optional) -> ch6_varga
+choice Carry on -> bridge_epilogue
+
+scene bridge_epilogue
+say : Crystal is already calling for the evidence team. There is a great deal still to do.
+jump ch6_final_image

@@ -1,41 +1,45 @@
-# Story tiers for ari.story (the audit's pacing model, Critical_Story_Audit_v1.0.md section 9.2). PROPOSED, not approved.
-#   spine    the mandatory cinematic spine (audit section 9.3: gala, Crystal, qualifier, Mara bond, neural-program choice,
-#            knockout match, Kreissack, evidence, Lyra v Steffan, rescue, final, Nova, ending)
-#   optional character episodes: skippable, viewable between matches or from a story menu
+# Story tiers for ari.story (the audit's pacing model, Critical_Story_Audit_v1.0.md section 9.2).
+#   spine    the main route: character development and the build-up to the ending, about 40 minutes of reading with every fight
+#            won (tools/story_tiers.py counts every branch, so its total is higher). Romance is the player's choice at
+#            ch3_decide; the rest of it is optional. Hubs (hub_*) offer each skipped stretch as an optional episode, and bridges
+#            (bridge_*) carry the main route past it.
+#   optional episodes: everything else, reached from a hub (or an existing optional choice) and kept whole.
 #   arcade   (second column) also kept in a compressed arcade run
-# A scene named here by name or by a * pattern. Scenes matching nothing are reported as unassigned: decide them.
-# Format: <scene or pattern> <spine|optional> [arcade]
-# First match wins, so put specific lines before patterns.
+# Generated from the kept-scene list used to build the short route; scenes are named one by one.
+# Format: <scene> <spine|optional> [arcade]
 
 # ---- spine ----
 intro spine
-gala spine
-sponsors spine
 mara_meet spine
-mara_after spine
-arena spine
-hangar spine
+mara_playful spine
+mara_curious spine
+mara_flirt spine
+ghost spine
 prefight spine arcade
 won spine arcade
 lost spine arcade
+lost_coaching spine
+lost_space spine
+lost_evidence spine
 close spine
 ch2_hall spine
 ch2_prefight spine arcade
-g7? spine arcade
-ch2_med spine
-ch2_med_won spine
+crystal_won spine
+crystal_lost spine
+g7b spine arcade
+g7a spine arcade
+g7c spine arcade
+g7d spine arcade
 ch3_garden spine
-ch3_decide spine
-ch3_lovers spine
-ch3_friends spine
-ch3_night spine
-ch3_door spine
-ch3_talk spine
 ch3_direct spine
 ch3_playful spine
 ch3_vuln spine
-ch3_offer spine
-ch3_draw* spine
+ch3_decide spine
+ch3_lovers spine
+ch3_night spine
+ch3_door spine
+ch3_talk spine
+ch3_friends spine
 ch4_consult spine
 ch4_refuse spine
 ch4_monitored spine
@@ -43,85 +47,276 @@ ch4_extended spine
 ch4_consent spine
 ch4_suspend spine
 ch4_review spine
-ch4_argument spine
-ch4_arg_* spine
 ch4_qf spine
+ch4_q1_crystal spine
+ch4_q2_ari spine arcade
+ch4_q2_f spine arcade
+ch4_q2_go spine arcade
+ch4_q2_won spine arcade
+ch4_q2_lost spine arcade
+ch4_q2_lost_f spine arcade
+ch4_q2_lost_end spine arcade
 ch4_q1_ari spine arcade
 ch4_q1_won spine arcade
 ch4_q1_lost spine arcade
-ch4_q2_* spine arcade
-ch4_q1_crystal spine
-ch4_commander spine arcade
+ch4_q2_npc spine arcade
+ch4_lounge spine
+ch4_lounge_refused spine
+ch4_lounge_end spine
 ch5_signature spine
-ch5_ev_* spine
-ch5_board spine
+ch5_ev_a spine
+ch5_ev_b spine
+ch5_ev_c spine
+ch5_ev_end spine
 ch5_semi spine
-ch5_semi_* spine arcade
-ch5_semi2 spine
-ch5_saved* spine
-ch5_failure spine
-ch5_nova_hint spine
-ch5_finalists* spine
+ch5_semi_crystal spine arcade
+ch5_semi_crystal_w spine arcade
+ch5_semi_crystal_pre spine arcade
+ch5_semi_won_crystal spine arcade
+ch5_semi_lost_crystal spine arcade
+ch5_semi_mara spine arcade
+ch5_semi_won_mara spine arcade
+ch5_semi_lost_mara spine arcade
+ch5_semi_npc spine arcade
 ch6_final spine
 ch6_final_ari spine arcade
 ch6_won_final spine arcade
+ch6_speech_a spine
+ch6_speech_b spine
+ch6_speech_c spine
+ch6_speech_end spine
 ch6_lost_final spine arcade
-ch6_speech_* spine
 ch6_final_npc spine
 ch6_watch_final spine
 ch6_verify spine
 ch6_npc_ceremony spine
-ch6_cutaway spine
-ch6_demo spine
-ch6_oldman spine
-ch6_wrongmaster spine
 ch6_novaspeaks spine
-ch6_ren spine
-ch6_lastarena* spine
-ch6_boss* spine arcade
+ch6_boss1 spine arcade
+ch6_boss1_lost spine arcade
+ch6_boss1_won spine arcade
+ch6_boss2 spine arcade
+ch6_boss2_lost spine arcade
+ch6_boss2_won spine arcade
 ch6_eject spine arcade
-ch6_after spine
+ch6_blast spine
+ch6_mara_after spine
+ch6_mara_after_alone spine
+ch6_mara_after_close spine
+ch6_mara_after_friends spine
+ch6_mara_after_end spine
 ch6_evidence spine
-ch6_ev_* spine
-ch6_epi spine
-ch6_status spine
+ch6_ev_public spine
+ch6_ev_demand spine
+ch6_ev_end spine
 ch6_final_image spine arcade
+hub_gala spine
+bridge_gala spine
+hub_mara_gala spine
+bridge_mara_gala spine
+hub_arena spine
+bridge_arena spine
+hub_day_two spine
+bridge_day_two spine
+hub_anomalies spine
+bridge_anomalies spine
+hub_group_stage spine
+bridge_group_stage spine
+hub_inside_war spine
+bridge_inside_war spine
+hub_argument spine
+bridge_argument spine
+hub_after_quarters spine
+bridge_after_quarters spine
+hub_commander spine
+bridge_commander spine
+hub_archive spine
+bridge_archive spine
+hub_to_final spine
+bridge_to_final spine
+hub_relay spine
+bridge_relay spine
+hub_last_arena spine
+bridge_last_arena spine
+hub_latch spine
+bridge_latch spine
+hub_aftermath spine
+bridge_aftermath spine
+hub_epilogue spine
+bridge_epilogue spine
 
-# ---- optional character episodes ----
-ch2_offair* optional
-ch2_neon* optional
-ch3_velvet* optional
-ch3_towel* optional
-ch3_inventors* optional
-ch4_cooling* optional
-ch4_blue* optional
-ch5_custody* optional
-ch5_spot* optional
-ch6_e1* optional
-ch6_alex* optional
+# ---- optional episodes ----
+gala optional
+sponsors optional
+mara_after optional
+arena optional
+hangar optional
+mara_raven optional
+training optional
+training_lost optional
+training_offer optional
+varga optional
+ch2_breakfast optional
 ch2_lyra optional
+ch2_offair_ask optional
+ch2_offair optional
 ch2_clinic optional
 ch2_practice optional
+ch2_comp optional
+ch2_warm optional
+ch2_tease optional
+ch2_med optional
+ch2_med_won optional
+ch2_med_after optional
+ch2_neon_ask optional
+ch2_neon optional
+ch2_neon_mara optional
+ch2_neon_skip optional
+ch2_neon_end optional
+ch2_ghost optional
+ch2_deck optional
+ch2_reply_a optional
+ch2_reply_b optional
+ch2_reply_c optional
+ch2_end optional
+ch3_start optional
 ch3_lyra optional
 ch3_bar optional
+ch3_velvet_ask optional
+ch3_velvet optional
+ch3_hold optional
+ch3_practice optional
+ch3_spar optional
+ch3_spar_won optional
+ch3_spar_lost optional
+ch3_nospar optional
+ch3_towel optional
+ch3_towel_a optional
+ch3_towel_b optional
+ch3_towel_c optional
+ch3_towel_out optional
+ch3_billing optional
 ch3_angel optional
-ch3_breakup optional
 ch3_kiss optional
+ch3_breakup optional
 ch3_doctor optional
 ch3_leak optional
-ch3_billing optional
+ch3_inventors_ask optional
+ch3_inventors optional
+ch3_inventors_a optional
+ch3_inventors_b optional
+ch3_inventors_skip optional
+ch3_inventors_end optional
+ch3_offer optional
+ch3_draw optional
+ch3_draw_a optional
+ch3_draw_c optional
+ch3_draw_mara optional
+ch3_draw_mara_f optional
+ch3_draw_b optional
+ch3_draw_d optional
+ch3_close optional
+ch4_start optional
+ch4_open_a_f optional
+ch4_open_a_end optional
+ch4_open_b optional
+ch4_open_c optional
+ch4_invite optional
+ch4_cooling_ask optional
+ch4_cooling optional
+ch4_cooling_a optional
+ch4_cooling_b optional
+ch4_cooling_end optional
+ch4_argument optional
+ch4_arg_refused optional
+ch4_arg_monitored optional
+ch4_arg_end optional
+ch4_arg_alt optional
+ch4_blue_ask optional
+ch4_blue optional
+ch4_blue_a optional
+ch4_blue_b optional
+ch4_blue_c optional
+ch4_blue_f optional
+ch4_blue_end optional
+ch4_5c optional
+ch4_5c_a optional
+ch4_5c_b optional
+ch4_5c_c optional
+ch4_5c_end optional
+ch4_npc_day9 optional
+ch4_empty_chair optional
+ch4_chair_mara_lost optional
+ch4_chair_adv optional
+ch4_chair_lost optional
 ch4_varga optional
+ch4_signature optional
+ch4_commander optional arcade
+ch5_start optional
+ch5_open_default optional
+ch5_open_default_r optional
+ch5_open_alt optional
+ch5_open_out optional
+ch5_open_end optional
+ch5_custody_ask optional
+ch5_custody optional
+ch5_custody_a optional
+ch5_custody_b optional
+ch5_custody_c optional
+ch5_custody_end optional
+ch5_board optional
 ch5_varga optional
 ch5_lyra optional
 ch5_press optional
+ch5_spot_ask optional
+ch5_spot optional
+ch5_failure optional
+ch5_saved optional
+ch5_saved_r optional
+ch5_saved_mara optional
 ch5_theory optional
-ch6_remain* optional
-ch6_restaurant optional
-ch6_rest_* optional
+ch5_semi2 optional
+ch5_finalists optional
+ch5_finalists_ari optional
+ch5_finalists_ext optional
+ch5_finalists_lyra optional
+ch5_nova_hint optional
+ch6_start optional
+ch6_open_friends optional
+ch6_open_nii optional
+ch6_nii_r optional
+ch6_nii_m optional
+ch6_open_end optional
+ch6_open_finalist optional
+ch6_lyra_prep optional
+ch6_lyra_prep_ari optional
+ch6_lyra_prep_b optional
+ch6_cutaway optional
+ch6_demo optional
+ch6_oldman optional
+ch6_wrongmaster optional
+ch6_ren optional
+ch6_lastarena optional
+ch6_lastarena_b optional
+ch6_lastarena_c optional
+ch6_latch optional
+ch6_after optional
 ch6_varga optional
-ch6_lyra_prep* optional
-mara_raven optional
-varga optional
-ch4_npc_day9 optional
-ch4_empty_chair optional
-ch4_chair_* optional
+ch6_remain optional
+ch6_remain_lyra_ari optional
+ch6_remain_lyra_runner optional
+ch6_remain_end optional
+ch6_restaurant optional
+ch6_rest_friends optional
+ch6_rest_end optional
+ch6_epi optional
+ch6_e1_ask optional
+ch6_e1 optional
+ch6_e1_go optional
+ch6_e1_a optional
+ch6_e1_b optional
+ch6_e1_c optional
+ch6_alex_ask optional
+ch6_alex optional
+ch6_status optional
+ch6_e4 optional
+ch6_status_vignettes optional

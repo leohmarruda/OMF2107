@@ -237,11 +237,32 @@ text with placeholder portraits.
   background blur halved); Kreissack, Sorell, Plug, Cossette and Ibrahim have renders, Nova deliberately has none. The 14 fanservice
   frames are wired into the optional scenes and the epilogues, with a new solo epilogue `ch6_e4`. Decided: Mara wins the Group A-out
   Selene-vs-Mara quarterfinal, the Crystal and Lyra NPC defaults stand, the three-way Group A tie keeps the announced seed, and Ari's
-  sister is Norah (her trait and the paper-ship memory are proposed, not approved). `ari.tiers` and `tools/story_tiers.py` report the
+  sister is Norah (decided 2026-11-07: a loader mechanic who taught Ari to read a diagnostic, hummed three notes while she worked, and held the evacuation transport for an order that never came, with hundreds of others dying on the same pad; the memorial leaves a polished bolt, no paper ship). `ari.tiers` and `tools/story_tiers.py` report the
   pacing against the audit's targets: the mandatory spine is about 90 minutes across all branches against a 25 to 35 minute target, so
   scenes still have to move to optional. Tested: `story_check` (268 scenes) and 300 random walks, the Debug build, and screenshots of
   the selection screen, the board and workshop scenes and several frames. Not tested: any of it in a live play, the mirrored poses in
   motion, and how the frames read at other window sizes.
+- **Arcade mode polish and the short main route (2026-11-07, requested):** the arcade ladder (`arcade_ari.story`) stays a separate short
+  mode beside Ari's route. Built: (1) a **newscast replay**: the match viewer keeps the last 1.6 s of a story match as 320x180 frames
+  taken before the HUD is drawn, saves them to `project/build/news_replay/` when the match ends, and the news scene plays them on the studio
+  screen, drawn as a four-corner shape clipped to the picture (the studio picture is `renders/news_alex_studio.png`); (2) **hangar
+  scratches**: the match viewer writes one `hit=side,height,damage` line per blow the player's HAR takes into the result file, and the hangar
+  scene draws a scratch for each on the HAR, kept on the metal by a silhouette mask (`project/build/art/masks/maintenance_<har>.bmp`), reset
+  at each match; the hangar picture uses `renders/maintenance_bay.png` with the HAR sprite placed on the cradle; (3) **name tags** for both
+  pilots on the prefight screen; (4) the **hangar tune-up** now changes the next fights: armor +25% health, power +20% damage dealt, speed
+  +15% walking speed, passed as `-PlayerHpPct/-PlayerDamagePct/-PlayerSpeedPct` to the launcher and as `OMF3K_LIVE_PLAYER_*_PCT` to the
+  engine (local play only, not synced for netplay); (5) the hangar's welding sparks are gone. Decided: Norah's trait (a loader mechanic who
+  kept the evacuation transport fuelled for two days; hundreds died with her; the memorial leaves a polished bolt, no paper ship), and that
+  the arcade ladder is a separate mode. **The short main route:** `ari.story` now has a main route of about character development and the
+  build-up to the ending (about 41 minutes of reading with every fight won, from 133; a route with lost fights averages 43), with romance
+  the player's choice at `ch3_decide`. Every skipped stretch is an optional episode behind a hub scene (`hub_*`, 17 of them), and a bridge
+  scene (`bridge_*`) carries the main route past it; no scene was removed. `ari.tiers` was regenerated (134 spine, 175 optional scenes).
+  `story_check walk` gained `--mandatory-only 1`, `--win 1` and `--trace 1`, which report the reading time of a route and list its scenes.
+  Not trimmed: the main route is still above the audit's 25 to 35 minutes; a line-level trim of the longest kept scenes (`ch2_hall`,
+  `ch3_garden`, `ch5_signature`, `ch6_novaspeaks`) would save about 2.4 minutes and is left for later. Tested: the Debug and trace builds,
+  `story_check check` (309 scenes) and 300 random walks, all reaching the end, and the art build. Not tested: any of it in a live play (the
+  replay, the corner fit on the studio screen, the scratches, the tune-up, the frame rate cost of the capture), the bridges read in
+  context, and both romance endings with the episodes skipped.
 - **Not yet done:** a clean end-to-end playtest by someone who has not seen the build (step 6).
 
 ## Step 3 design: the match handoff (built)

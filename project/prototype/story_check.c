@@ -2,7 +2,7 @@
 //   story_check check <script>                       validate and list unreachable scenes
 //   story_check play <script> [--scene id] [--har Jaguar|Shadow] [--choices 0,1,...] [--results W,L,...]
 //                                                    play a script with scripted answers and print a transcript
-//   story_check walk <script> [--runs N] [--seed S] [--har Jaguar|Shadow|Katana] [--tally flag]
+//   story_check walk <script> [--runs N] [--seed S] [--har Jaguar|Shadow|Katana] [--tally flag] [--mandatory-only 1]
 //                                                    random walks: every run must reach the end; reports scenes where play never stopped
 //   story_check selftest                            run the module's own tests
 #include "story.h"
@@ -131,8 +131,14 @@ static unsigned walk_rand(unsigned n) {            // xorshift64: deterministic 
 static int cmd_walk(int argc, char **argv) {
     const char *path = argv[2], *har = NULL, *tally = "champion";
     int runs = 300;
+    bool mandatory_only = false;   // --mandatory-only: never take a choice marked "(optional)" when another is offered
+    bool always_win = false;       // --win 1: every fight is won, so no lost-fight retries add to the reading time
+    bool trace = false;            // --trace 1: list the scenes of the first run in order, with their reading minutes
     for(int i = 3; i + 1 < argc; i += 2) {
-        if(strcmp(argv[i], "--runs") == 0) runs = atoi(argv[i + 1]);
+        if(strcmp(argv[i], "--win") == 0) always_win = atoi(argv[i + 1]) != 0;
+        else if(strcmp(argv[i], "--trace") == 0) trace = atoi(argv[i + 1]) != 0;
+        else if(strcmp(argv[i], "--mandatory-only") == 0) mandatory_only = atoi(argv[i + 1]) != 0;
+        else if(strcmp(argv[i], "--runs") == 0) runs = atoi(argv[i + 1]);
         else if(strcmp(argv[i], "--seed") == 0) walk_rng ^= (unsigned long long)strtoull(argv[i + 1], NULL, 10) * 0x9E3779B97F4A7C15ull;
         else if(strcmp(argv[i], "--har") == 0) har = argv[i + 1];
         else if(strcmp(argv[i], "--tally") == 0) tally = argv[i + 1];
@@ -157,15 +163,46 @@ static int cmd_walk(int argc, char **argv) {
     }
     char values[32][STORY_NAME];
     int counts[32], value_count = 0;
+    double minutes_sum = 0, minutes_min = 1e9, minutes_max = 0;   // reading time of each finished run: 170 words a minute + 1.5 s a line
+    int minutes_runs = 0;
+    double *trace_minutes = trace ? calloc((size_t)story.scene_count, sizeof(double)) : NULL;   // the first run, per scene
+    int *trace_order = trace ? calloc((size_t)story.scene_count, sizeof(int)) : NULL;
+    int trace_count = 0;
     for(int r = 0; r < runs; r++) {
         StoryRun run;
         if(!story_start_with_flags(&run, &story, NULL, flags, flag_count)) { fprintf(stderr, "cannot start\n"); free(visited); story_free(&story); return 1; }
         int steps = 0;
         bool failed = false;
+        double reading = 0;
         for(; steps < 100000; steps++) {
             if(run.scene >= 0 && run.scene < story.scene_count) visited[run.scene] = 1;
-            if(run.event == STORY_EVENT_SAY) story_advance(&run);
-            else if(run.event == STORY_EVENT_CHOICE) story_choose(&run, (int)walk_rand((unsigned)run.choice_count));
+            if(run.event == STORY_EVENT_SAY) {
+                int words = 0;
+                bool in_word = false;
+                for(const char *c = story_say_text(&run); *c; c++) {
+                    bool space = *c == ' ' || *c == '\t';
+                    if(!space && !in_word) words++;
+                    in_word = !space;
+                }
+                double spent = (double)words / 170.0 + 1.5 / 60.0;
+                reading += spent;
+                if(trace_minutes && r == 0 && run.scene >= 0 && run.scene < story.scene_count) {
+                    if(trace_minutes[run.scene] == 0) trace_order[trace_count++] = run.scene;
+                    trace_minutes[run.scene] += spent;
+                }
+                story_advance(&run);
+            } else if(run.event == STORY_EVENT_CHOICE) {
+                int pick = (int)walk_rand((unsigned)run.choice_count);
+                if(mandatory_only) {   // choose among the entries not marked (optional), if there are any
+                    int plain[16], plain_count = 0;
+                    for(int k = 0; k < run.choice_count && plain_count < 16; k++) {
+                        const StoryCmd *entry = story_choice_cmd(&run, k);
+                        if(entry && !strstr(entry->text, "(optional)")) plain[plain_count++] = k;
+                    }
+                    if(plain_count > 0) pick = plain[walk_rand((unsigned)plain_count)];
+                }
+                story_choose(&run, pick);
+            }
             else if(run.event == STORY_EVENT_FIGHT) {
                 char h0[STORY_NAME], h1[STORY_NAME];
                 const StoryCmd *c = story_event_cmd(&run);
@@ -174,12 +211,15 @@ static int cmd_walk(int argc, char **argv) {
                     failed = true;
                     break;
                 }
-                story_fight_result(&run, walk_rand(2) != 0);
+                story_fight_result(&run, always_win ? true : walk_rand(2) != 0);
             } else break;
         }
         if(steps > steps_max) steps_max = steps;
         if(failed) { bad++; continue; }
         if(run.event != STORY_EVENT_END) { stuck++; printf("run %d: did not reach the end in %d steps\n", r, steps); continue; }
+        minutes_sum += reading; minutes_runs++;
+        if(reading < minutes_min) minutes_min = reading;
+        if(reading > minutes_max) minutes_max = reading;
         const char *v = story_flag(&run, tally);
         if(!*v) v = "(unset)";
         int k = 0;
@@ -195,6 +235,17 @@ static int cmd_walk(int argc, char **argv) {
     printf("%d runs: %d reached the end, %d stuck, %d with a bad fight; longest run %d steps\n", runs,
            runs - stuck - bad, stuck, bad, steps_max);
     printf("scenes where play stopped: %d of %d (scenes that only set, jump or banner never stop)\n", story.scene_count - unvisited, story.scene_count);
+    if(trace_minutes) {   // the first run, scene by scene: where its time goes, and the running total
+        double total = 0;
+        for(int i = 0; i < trace_count; i++) {
+            total += trace_minutes[trace_order[i]];
+            printf("trace %3d  %-24s %5.2f min  total %6.1f\n", i + 1, story.scenes[trace_order[i]].id, trace_minutes[trace_order[i]], total);
+        }
+    }
+    free(trace_minutes); free(trace_order);
+    if(minutes_runs > 0)
+        printf("reading time of one run (fights not counted)%s: shortest %.1f min, average %.1f min, longest %.1f min\n",
+               mandatory_only ? ", optional choices skipped" : "", minutes_min, minutes_sum / minutes_runs, minutes_max);
     for(int k = 0; k < value_count; k++) printf("  %s=%s: %d\n", tally, values[k], counts[k]);
     free(visited);
     story_free(&story);

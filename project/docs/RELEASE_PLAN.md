@@ -60,8 +60,8 @@ Done before M0 (the old Stages 0 to 2 and the start of 4):
   by design), including Kreissack, Sorell, Plug, Cossette and Ibrahim, and the viewer no longer reads the original-game portraits. The
   14 fanservice frames are wired in, with a solo epilogue `ch6_e4`. The seven NPC results are decided: Mara wins the Group A-out
   quarterfinal against Selene, the Crystal and Lyra defaults stand, and the three-way tie keeps the announced seed. Ari's sister is
-  Norah (trait and memory proposed). Still open: a live playtest of the route (`run-story-ari.ps1`), the pacing cut (the spine is about
-  90 minutes against 25 to 35; see `data/story/ari.tiers`), and the older Crystal-story and news frames, which still use original
+  Norah (trait and memory decided 2026-11-07: a loader mechanic, hundreds died with her). Still open: a live playtest of the route (`run-story-ari.ps1`), the last trim of the short main route
+  (about 41 minutes with every fight won against 25 to 35; the rest is optional episodes, see `data/story/ari.tiers`), and the older Crystal-story and news frames, which still use original
   portraits. Scope and open decisions are in
   [OMF2107_STAGE4_PLAN.md](OMF2107_STAGE4_PLAN.md).
 - **Pose and mesh authoring:** mesh landmarks (`project/data/mesh_landmarks.json`) and projection-pose matching
