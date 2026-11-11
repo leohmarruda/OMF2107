@@ -1,7 +1,7 @@
 # OMF2107 documents
 
-- [Development plan](DEVPLAN.md) — the single plan: target, current state, milestones M0 to M6, phases, task register with acceptance checks, rights checkpoint and risks.
-- [Game specification](OMF2097_3D_GAME_SPEC.md) — intended game and first playable gates.
+- [Development plan](DEVPLAN.md) — the single plan: target, current state, milestones M0 to M7, phases, task register with acceptance checks, rights checkpoint and risks.
+- [Game specification](OMF2107_GAME_SPEC.md) — intended game and first playable gates.
 - [Core loop](OMF2107_CORE_LOOP.md) — one-page session and career loop, with open questions.
 - [Feature list](OMF2107_FEATURES.md) — modes, combat, content and platform with milestone and state, plus known doc conflicts.
 - [Controls](OMF2107_CONTROLS.md) — default keyboard, gamepad, menu and story-window bindings as found in code.

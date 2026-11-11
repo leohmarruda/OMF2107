@@ -65,7 +65,7 @@ What the review found:
   model and is shared on the game's no-charge terms. Only the MIT source code can be reused, never its `public/`
   artwork, audio or game data.
 - **It is young and has one maintainer.** The repository is dated 2026 and has a single main author, so expect churn.
-- **Parity with your baseline is untested.** Your roadmap already notes it has no parity tests against OpenOMF.
+- **Parity with your baseline is untested.** The development plan (`DEVPLAN.md`, which absorbed the old roadmap) notes it has no parity tests against OpenOMF.
 
 Assessment:
 
@@ -106,29 +106,31 @@ The release must be a real 3D game, not pre-rendered sprites. This changes the r
      changes the rules, so parity must be re-measured.
   Recommendation: start with 1 to keep parity, and move to 2 only if the measured feel allows it.
 
-## Constraint: two 3D visual modes (decided 2026-11-05)
+## Constraint: two 3D visual modes (decided 2026-11-05, renamed 2026-11-09)
 
-The release keeps two looks, both still being refined: a **simplified** mode (blockout, geometric forms) and a
-**detailed** mode (full meshes). Design rules that follow:
+The release keeps two looks, called **blockout** (geometric forms) and **mesh** (full meshes). They were called
+"simplified" and "detailed" before 2026-11-09 (`DEVPLAN.md`). The blockout ships as a finished look. Design rules that
+follow:
 
 1. **Gameplay is independent of the look.** Hit masks or volumes, timing and stats come from one canonical collision
    proxy per HAR, never from whichever mesh is on screen. Replays, saves and any future netplay are then identical in
-   both modes, and switching modes mid-match is safe. Suggested proxy: the simplified blockout, since it is the
-   most stable and measurable; the detailed mesh must fit inside agreed tolerances of it.
+   both modes, and switching modes mid-match is safe. Suggested proxy: the blockout, since it is the
+   most stable and measurable; the mesh must fit inside agreed tolerances of it.
 2. **One skeleton and one pose/animation set** drive both meshes. Each mode is a skin or mesh bound to the same rig,
    with the same named landmarks (the existing mesh landmarks and pose catalog). Animation is authored once.
-3. **Modes are data, not code.** A HAR's data pack lists its visual variants (`simplified`, `detailed`) with mesh,
+3. **Modes are data, not code.** A HAR's data pack lists its visual variants (`blockout`, `mesh`) with mesh,
    materials and effect anchors, plus a validator check that both bind to the rig and cover every pose.
 4. **Effects anchor to rig points,** not to a mesh, so hit sparks, trails and projectiles work in both.
 5. **A fidelity check per HAR:** render both modes from the same pose set and compare silhouettes against the proxy,
-   as the model match review already does for the blockouts. Flag poses where the detailed mesh sticks out or
+   as the model match review already does for the blockouts. Flag poses where the mesh sticks out or
    falls short of the proxy by more than the tolerance (to be set).
-6. **Performance and options:** the simplified mode doubles as a low-spec setting; the player chooses a mode in Options.
+6. **Performance and options:** the blockout doubles as a low-spec setting; the player chooses a mode in Options.
 
-Decided 2026-11-05: the simplified mode is a **stylised look in its own right**, not a fallback. It gets its own art
+Decided 2026-11-05: the blockout is a **stylised look in its own right**, not a fallback. It gets its own art
 direction (shading, palette, lighting, arena treatment, effects, HUD fit), its own polish pass and its own acceptance
-review for every HAR and arena, equal to the detailed mode. Low-spec use is a side benefit, not its purpose. Open: the
-specific style (flat-shaded, faceted, cel, or other) and the detailed-mode tolerance against the proxy.
+review for every HAR and arena, equal to the mesh look. Low-spec use is a side benefit, not its purpose. Open: the
+specific style (flat-shaded, faceted, cel, or other; the M0 blockout style brief in `DEVPLAN.md` settles it) and the
+mesh tolerance against the proxy.
 
 ## Recommendation
 
@@ -139,10 +141,14 @@ B's main advantages shrink. Keep one short, optional Spike B (below) only to bor
   harness and compare results with your recorded traces; (2) boot a stripped-down mod with the original files
   removed and list every file it still asks for; (3) read `GameState` and note how a 3D viewer would read per-tick
   state. Output: parity result, the dependency list, and a go or no-go.
-- **Spike A (about one to two weeks):** the extraction described in step 1 below.
+- **Spike A (about one to two weeks):** the extraction described in step 1 below. **Done 2026-11-05, go with
+  conditions** (`SPIKE_A_FINDINGS.md`).
+- **Spike C (about one week, M1):** a renderer test, not a rules test. On the Jaguar blockout and a throwaway
+  production-budget mesh, render all 15 region states, swap parts, and run a particle and transparency stress scene;
+  capture frame times against the engine requirements table in `DEVPLAN.md`. Output: renderer go or no-go.
 
-Spike B is now optional. Run it only if you want Remastered's REC-replay harness, training lab or netplay design as a
-reference. Go ahead with Spike A first. The later steps are the same either way:
+Spike B is optional. Run it only if you want Remastered's REC-replay harness, training lab or netplay design as a
+reference. The later steps are the same either way:
 a project-made data pack, authored from the measurements, and a build gate against original data. The decision
 costs little to reverse until one of them is picked.
 
@@ -163,6 +169,6 @@ costs little to reverse until one of them is picked.
 ## Open decisions
 
 - Data format: JSON, a custom text format, or binary with tools. Recommendation: text with a validator.
-- Whether the release stays on the C viewer or moves to a game engine (option C). Decide after step 3.
+- Whether the release stays on the C viewer or moves to a game engine (option C). Decided 2026-10-15: option A (C viewer); Spike C at M1 re-checks the renderer against the engine table in `DEVPLAN.md`. Spike A was done 2026-11-05 (go with conditions).
 - Tolerances for "feels the same" in step 4, since authored data will not match the original exactly.
 - Whether to keep a developer-only mode that loads the original data for comparison. Recommendation: yes, never shipped.

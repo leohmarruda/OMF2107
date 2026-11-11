@@ -34,7 +34,7 @@ Vitality default 100 (`settings.c:114`). Pilot stat table (power, agility, endur
 
 ## Arcade tune-ups
 
-Current code: armor 125% HP, power 120% damage, speed 115% walk speed, one pick at a time. Decided: gains diminish with repeat picks. Proposed scheme (halving increments, about +47% HP, +38% damage, +28% speed after four picks of one stat) is in `OMF2107_ARCADE_MODE.md`. Neither version has been checked against the "bounded upgrade" rule.
+Current code: armor 125% HP, power 120% damage, speed 115% walk speed, first-pick values. Decided and implemented: picks stack with halving increments (about +47% HP, +38% damage, +28% speed after four picks of one stat; see `OMF2107_ARCADE_MODE.md`). The stacking has not been play-tested or checked against the "bounded upgrade" rule.
 
 ## Other numbers
 

@@ -1,8 +1,8 @@
 # Stage 4 plan — one-player story slice
 
-Status: proposed 2026-10-27, after the Stage 1–2 match comparison gate was closed.
-This plan narrows the [development plan's](DEVPLAN.md#task-register-from-the-former-development-plan) phase C tasks and the
-[game specification](OMF2097_3D_GAME_SPEC.md) section 6 to what can be built next.
+Status: **superseded in part (2026-11-09).** Proposed 2026-10-27, after the Stage 1–2 match comparison gate was closed. `DEVPLAN.md` now defines the first story slice as Ari's route (decided 2026-11-07), not Crystal versus Christian, and "Stage 4" corresponds to DEVPLAN Phase 4 (M4). Read this file for the scene and flag design only; where it disagrees, DEVPLAN wins.
+This plan narrows the [development plan's](DEVPLAN.md#task-register) phase C tasks and the
+[game specification](OMF2107_GAME_SPEC.md) section 6 to what can be built next.
 It does not change either document; open decisions are listed at the end.
 
 ## Goal and exit check
@@ -217,7 +217,7 @@ text with placeholder portraits.
   a replay of that trace in the viewer. Not tested: a Katana match played by hand through the story, the face-off frame in the viewer, and
   Katana's attack timing in the viewer (its animation numbers for punch, kick and low punch are from the pose index and not measured).
 - **The anchor Alex (2026-10-31, requested):** the newscast anchor is now Alex, a nonbinary, androgynous presenter (they/them), and
-  the lore documents (`OMF2107_LORE_v2.md`, `OMF2097_3D_GAME_SPEC.md`) name Alex in place of Nadia Solis, dropping the surname. The
+  the lore documents (`OMF2107_LORE_v2.md`, `OMF2107_GAME_SPEC.md`) name Alex in place of Nadia Solis, dropping the surname. The
   newsroom picture is now drawn by `build_story_art.py` instead of exported from `NEWSROOM.BK`: a cream wall of tilted "WRDE NEWS"
   lettering, the news screen, and a new character drawing of Alex (a swept layered cut, a soft jaw, a tailored teal jacket with a high
   collar and a small stud). It is project-made, so one more original-game picture is gone from the build, though the winner's portrait

@@ -342,7 +342,7 @@ defeated, refuses, disappears, or changes sides, another route remains open.
 | **I. The Showcase** | Round 1 | The "safe" spectacle. Each pilot's wants and masks established. Tier-2 offers. |
 | **II. The Prize** | Round 2 | Pilots accept or decline Tier-2. First symptoms. Varga begins courting. Jean-Paul starts his work. |
 | **III. Fractures** | Round 3 | Rivalries become real. Raven's brutality crosses the safety line. Twists T3, T4. Angel's taps surface contradictions. |
-| **IV. The Collapse** | Semifinals | On the default path Steffan collapses live; if his route diverges, another pilot's evidence or symptoms expose the deep-link. Shirro, Nadia, or the player decides whether the feed stays live. |
+| **IV. The Collapse** | Semifinals | On the default path Steffan collapses live; if his route diverges, another pilot's evidence or symptoms expose the deep-link. Shirro, Alex, or the player decides whether the feed stays live. |
 | **V. Nova** | Finals | The board's betrayal of Kreissack (T7). The final duel. Intercut with allies saving files. |
 | **Epilogue: After the Arena** | Outcomes | Nova's lab, Core access, and the choice of what to publish respond to player action. |
 
@@ -454,3 +454,5 @@ Do **not** begin with a single sibling match. Build a **two-match ensemble slice
 4. The green room scene above.
 
 It shows the cast, the tone, the trap and the core question: *what will you hide to stay strong?*
+
+**Production note (2026-11-09):** `DEVPLAN.md` sets the first built story slice to **Ari's route** (decided 2026-11-07; milestone M4), as a short main route. The ensemble slice above remains the creative target for the wider cast; it is not the first build.
