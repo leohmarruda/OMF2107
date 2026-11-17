@@ -1,0 +1,1167 @@
+# MECHA LINK 2100
+## Consolidated Mecha Design Guide
+**Version 1.5 — November 17, 2026**  
+**Status:** Working design reference  
+**Scope:** 17 candidate mechas, visual direction, mechanical anatomy, combat identity, and tournament compatibility.
+
+---
+
+# 1. Project Overview
+
+*Mecha Link 2100* is a futuristic one-on-one fighting game featuring advanced combat robots operated remotely by human pilots.
+
+The tournament showcases technologies relevant to military, industrial, and extraterrestrial applications. Mechas may use humanoid, animal-inspired, or entirely original mechanical anatomies.
+
+The game combines the visual spectacle of futuristic robotic combat with an emphasis on coherent mechanical functionality.
+
+### Core Principles
+
+1. **Distinctive silhouettes:** Every mecha should be recognizable from its outline alone.
+2. **Functional anatomy:** Structures should have understandable mechanical purposes.
+3. **Stylistic exaggeration:** Proportions may be dramatic without abandoning physical plausibility.
+4. **Diverse architectures:** Humanoid designs coexist with quadrupeds, arthropods, flying machines, serpentine robots, and unconventional locomotion systems.
+5. **Unified combat controls:** All mechas share the same inputs, regardless of anatomy.
+6. **Human tactical control:** Pilots make combat decisions; automation manages motor coordination and stabilization.
+7. **Competitive counterplay:** Every major strength must have meaningful limitations.
+8. **Technological plausibility:** Advanced materials, propulsion, and controls are permitted, but capabilities must be internally consistent.
+9. **Originality:** All final designs, names, animations, and assets must be independently developed.
+
+### Roster Scope
+
+There are currently **17 candidate mechas**.
+
+The intended initial release remains approximately **10 playable mechas plus one story boss**, subject to revision. The boss has not been selected or designed.
+
+No current candidate is guaranteed inclusion in the release roster.
+
+---
+
+# 2. Visual Art Direction
+
+## 2.1 Overall Style
+
+**Stylized futuristic science fiction with grounded mechanical realism.**
+
+The preferred visual quality is comparable to premium, semi-realistic science-fiction game concept art.
+
+The design should emphasize:
+
+- Clean, readable overall silhouettes.
+- Bold yet purposeful mechanical proportions.
+- Sophisticated hard-surface construction.
+- Recognizable joints, actuators, structural connections, and protective systems.
+- Advanced industrial materials.
+- Clear focal areas such as sensor clusters, weapons, and primary manipulators.
+- Strong differences in size, posture, and movement.
+- Controlled use of illumination and energy effects.
+
+The goal is not documentary engineering realism. Rather, designs should make physical and technological sense within a coherent advanced-technology setting.
+
+## 2.2 Shape Language
+
+Each mecha should have one dominant geometric identity.
+
+| Geometry | Typical association |
+|---|---|
+| Broad wedges | Charging, stability, frontal impact |
+| Tall vertical masses | Monumentality, reach, intimidation |
+| Sharp diagonals | Speed, aggression, precision |
+| Circular forms | Rotation, mobility, unconventional engineering |
+| Flat horizontal profiles | Gliding, hovering, low-profile movement |
+| Segmented curves | Flexibility, serpentine locomotion |
+| Radial structures | Multidirectional stability and mobility |
+| Large asymmetry | Specialized attack and defense |
+
+These associations are artistic guidelines, not mandatory rules.
+
+## 2.3 Materials
+
+Suggested material families include:
+
+- Advanced metallic alloys.
+- High-strength ceramic and composite armor.
+- Flexible reinforced coverings around joints.
+- Hardened transparent sensor housings.
+- Replaceable protective panels.
+- High-temperature coatings.
+- Visible bearing assemblies and articulated load-bearing structures.
+
+Surface detailing should reinforce physical function rather than add unnecessary complexity.
+
+## 2.4 Color and Lighting
+
+Each mecha should receive a distinct palette, generally containing:
+
+- One dominant structural color.
+- One secondary armor or machinery color.
+- One restricted accent color.
+- A small amount of functional illumination.
+
+Large forms must remain readable without color.
+
+Lighting and effects must not obscure important movement cues or vulnerable components.
+
+## 2.5 Mechanical Credibility
+
+Every design should answer:
+
+- Where are its principal loads transmitted?
+- How are its joints actuated?
+- How does it accelerate, turn, stop, and recover from impacts?
+- How does it maintain stability across different gravity environments?
+- Where are its vulnerable components?
+- How can damaged parts remain operational?
+- How do its weapons physically perform their attacks?
+
+Exact engineering calculations are not required at the concept stage, but obvious contradictions should be avoided.
+
+---
+
+# 3. Shared Combat System
+
+## 3.1 Basic Format
+
+Combat occurs on a two-dimensional fighting plane with three-dimensional rendering.
+
+Matches feature rounds, health, stun, knockdowns, aerial attacks, and short combos.
+
+Two principal modes use the same moves:
+
+- **Classic:** Story and Arcade fighting rules.
+- **Career:** Tournament rules with persistent component damage until repair.
+
+No super, heat, rage, or special-energy meter is planned.
+
+The game's existing health and stun systems remain in force.
+
+## 3.2 Attributes
+
+Each mecha has three attributes ranging from 1 to 10, totaling **18 points**:
+
+| Attribute | Meaning |
+|---|---|
+| Power (P) | Attack damage and impact |
+| Agility (A) | Speed, mobility, repositioning |
+| Resistance (R) | Durability and stability under attack |
+
+The attribute scale is established, but individual roster values remain provisional.
+
+Move-specific parameters ultimately determine actual combat behavior.
+
+## 3.3 Universal Controls
+
+| Input | Function |
+|---|---|
+| Forward / Back | Advance / retreat; backward direction guards |
+| Up / Down | Jump or rise / crouch |
+| Down + Back | Low guard |
+| S1 | Light punch-function attack |
+| S2 | Heavy punch-function attack |
+| C1 | Light kick-function attack |
+| C2 | Heavy kick-function attack |
+| S1 + C1 | Universal grab |
+| Down + S1 + S2 | Signature ability |
+| Quarter-circle forward + S1/S2 | Offensive special family |
+| Quarter-circle backward + C1/C2 | Mobility/control special family |
+
+Every mecha receives standing, crouching, and airborne versions of S1, S2, C1, and C2.
+
+The four-button system describes **combat functions, not literal human limbs**.
+
+For example, a serpentine robot may execute a kick-function attack using its tail, while a wheel-based robot may attack using its rotating rim.
+
+The intended base repertoire contains 12 normal attacks, one universal grab, and three special-move families, although the exact number of distinct special variants remains a design detail.
+
+## 3.4 Component Damage
+
+All mechas use four functional damage slots.
+
+| Slot | Effect of damage |
+|---|---|
+| Arms | Punch-function attacks become weaker |
+| Legs | Walking speed decreases; jumping remains available |
+| Torso | Incoming damage increases |
+| Head | Stun recovery becomes longer |
+
+Each component has three states:
+
+**Operational → Damaged → Critical**
+
+A Critical component never removes a move or disables its associated input.
+
+The physical implementation of these slots depends on the mecha's anatomy. A wheel, tail, wing, or thruster assembly can represent the locomotion slot.
+
+## 3.5 Special Traits
+
+Five established trait categories exist:
+
+- **Camouflage:** reduces visual predictability without eliminating reasonable reaction opportunities.
+- **Counter:** rewards correctly timed defensive actions.
+- **Flight:** offers limited powered aerial mobility.
+- **Modular Weapons:** allows a fixed repertoire of different integrated weapons; no live weapon swapping.
+- **Energy Shield:** provides active protection that must have meaningful counterplay.
+
+Traits do not require additional buttons or resource meters.
+
+## 3.6 Power Subtypes
+
+The established twelve power subtypes are:
+
+**Impact, Penetration, Cutting, Explosive, Thermal, Electric, Electromagnetic, Energy, Corrosive, Kinetic, Concussive, Structural.**
+
+These primarily influence existing damage, stun, guard pressure, and component-damage systems.
+
+They do not automatically authorize persistent status effects, new combat resources, or bypasses of armor and defense.
+
+---
+
+# 4. Tournament and Physical Constraints
+
+The following tournament decisions apply to the entire candidate roster.
+
+## 4.1 Human Piloting
+
+Combat is remotely piloted by humans.
+
+Automatic systems may coordinate multiple limbs, stabilize the machine, and execute predefined movements.
+
+They may not independently choose targets, select tactical actions, aim intelligently, or execute autonomous evasive strategies.
+
+## 4.2 Arenas and Gravity
+
+Mechas must be operable in standardized competition arenas on:
+
+| Location | Approximate natural gravity |
+|---|---:|
+| Earth | 1.000 g |
+| Mars | 0.378 g |
+| Moon | 0.165 g |
+
+The controlled atmosphere is standardized to approximately 1 atm. Detailed composition and density remain unspecified.
+
+Propulsion systems must not depend exclusively on atmospheric oxygen or aerodynamic lift.
+
+## 4.3 Universal Descent Module
+
+All competing mechas use a standardized Universal Descent Module (MUD).
+
+During downward vertical motion, it supplies supplemental downward acceleration in reduced-gravity environments, producing approximately **0.7 g effective descent acceleration** where natural gravity falls below that level.
+
+It does not provide tactical steering, horizontal attacks, or additional targeting functions.
+
+The existing proposal applies this assistance to all qualifying descents, including being launched into the air by an opponent.
+
+## 4.4 Levitation and Flight
+
+Standard low-level levitation is permitted up to **20 cm** above the ground.
+
+Limited powered flight is allowed under universal constraints:
+
+- Maximum vertical displacement is tied to the standardized jump-height reference, \(H_J\).
+- Active vertical propulsion outside the low-levitation zone is limited to two accumulated seconds.
+- The allowance resets after one continuous second within the low-levitation zone.
+- Passive ballistic motion does not consume powered-flight time.
+
+The numerical value of \(H_J\) is not finalized. A 2 m value has been used experimentally.
+
+## 4.5 Ranged Weapons
+
+Ranged projectiles are permitted, including fixed integrated guns and discrete energy shots.
+
+However:
+
+- Continuous energy beams are prohibited.
+- Explosive projectiles are prohibited.
+- Detached auxiliary combat drones are prohibited.
+- Autonomous targeting and target-seeking intelligence are prohibited.
+
+The Explosive power subtype remains usable through other legal attack mechanisms.
+
+## 4.6 Projectile Activation Limits
+
+The current rule provides a shared pool of six projectile activations across a mecha's weapons.
+
+Each activation uses one charge, which individually becomes available again one second later. Recharge timers operate in parallel.
+
+The purpose is to restrict repeated projectile activation without introducing a separately managed tactical resource for the player.
+
+The engine must clearly distinguish one homologated attack activation from a sequence of separate shots.
+
+---
+
+# 5. Roster Overview
+
+Attributes and traits inherited from the original 15-archetype catalog remain provisional. For replacement concepts, inherited values are retained only as working baselines.
+
+| # | Working Name | Anatomy | P/A/R | Traits |
+|---|---|---|---|---|
+| 01 | Rhino Bastion | Heavy armored quadruped | 7/2/9 | Energy Shield |
+| 02 | Panther Wraith | Stealth humanoid | 8/8/2 | Camouflage |
+| 03 | Falcon Raptor | Mechanical bird | 5/9/4 | Flight |
+| 04 | Siege Scarab | Armored hexapod | 4/4/10 | Shield, Counter |
+| 05 | Forge Ape | Industrial humanoid | 9/5/4 | None |
+| 06 | Manta Skimmer | Hovering manta-shaped machine | 5/10/3* | Camouflage, Flight* |
+| 07 | Titan Atlas | Colossal humanoid | 10/2/6 | None |
+| 08 | Modular Jackal | Modular quadruped | 6/6/6 | Modular Weapons |
+| 09 | Viper Coil | Segmented serpent | 7/7/4 | Camouflage |
+| 10 | Tower Duelist | Asymmetric humanoid | 3/6/9 | Shield, Counter |
+| 11 | Raptor Fang | Predatory biped | 7/9/2 | Counter |
+| 12 | Pterosaur Striker | Flying reptilian assault machine | 8/7/3* | Flight |
+| 13 | Widow Engineer | Technical arachnid | 5/7/6 | Modular Weapons |
+| 14 | Arena Goliath | Four-armed humanoid | 9/3/6 | Counter |
+| 15 | Tripod Core | Non-biomimetic tripod | TBD | TBD |
+| 16 | Mantis Reaver | Mantis-inspired machine | TBD | TBD |
+| 17 | Monowheel Striker | Single-wheel combat robot | TBD | TBD |
+
+*Inherited from the replaced concept; requires explicit reassessment.*
+
+---
+
+# 6. Individual Mecha Design Profiles
+
+## 01 — Rhino Bastion
+
+**Original archetype:** Heavy Tank  
+**Role:** Armored frontal assault  
+**Attributes:** 7 Power / 2 Agility / 9 Resistance  
+**Trait:** Energy Shield  
+**Power subtypes:** Impact, Concussive  
+**Concept status:** Retained
+
+### Anatomy and Appearance
+
+A low, massive quadruped combining rhinoceros-inspired proportions with the construction logic of a futuristic armored assault vehicle.
+
+Its primary silhouette is a broad forward wedge.
+
+Key anatomical features:
+
+- Four heavy load-bearing legs.
+- Large protective chassis.
+- Reinforced frontal horn or mechanical battering ram.
+- Low center of gravity.
+- Thick frontal armor.
+- Compact sensor assembly.
+- Integrated shield mechanisms.
+
+### Combat Identity
+
+Emphasizes frontal pressure, armored advances, powerful collisions, and close-range dominance.
+
+The machine should feel difficult to displace but visibly slow to reposition.
+
+### Design Challenges
+
+- Distinguish frontal pressure from Siege Scarab's defensive posture.
+- Prevent low height from granting unintended immunity to attacks.
+- Make the horn and impact systems physically credible.
+
+---
+
+## 02 — Panther Wraith
+
+**Original archetype:** Stealth Assassin  
+**Role:** Fast, precise infiltration fighter  
+**Attributes:** 8/8/2  
+**Trait:** Camouflage  
+**Power subtypes:** Cutting, Penetration  
+**Concept status:** Retained
+
+### Anatomy and Appearance
+
+A narrow, athletic humanoid whose styling references feline predators without reproducing literal feline anatomy.
+
+Key features:
+
+- Long, articulated legs.
+- Compact torso.
+- Retractable cutting weapons.
+- Segmented lightweight armor.
+- Narrow sensor visor.
+- Minimal projecting armor.
+- Large ranges of joint movement.
+
+### Combat Identity
+
+Precision attacks, rapid repositioning, feints, and exploitation of openings.
+
+Camouflage must preserve fair reaction opportunities.
+
+### Design Challenges
+
+- Distinguish its humanoid posture from Raptor Fang's animal-like locomotion.
+- Prevent extremely low Resistance from making it unusable.
+- Avoid excessively thin structural elements.
+
+### Experimental Geometry
+
+This character has been used in the G03–G06.2 geometry studies.
+
+An illustrative height of **2.7 m** and horizontal mobility assumptions have been explored. These are not final model dimensions.
+
+---
+
+## 03 — Falcon Raptor
+
+**Original archetype:** Aerial Bird  
+**Role:** Agile aerial interceptor  
+**Attributes:** 5/9/4  
+**Trait:** Flight  
+**Power subtypes:** Energy, Kinetic  
+**Concept status:** Retained
+
+### Anatomy and Appearance
+
+A mechanical bird of prey with foldable wings, articulated talons, and a compact central body.
+
+Key features:
+
+- Triangular wing silhouette.
+- Functional wing hinges.
+- Retractable or compacted wings in ground combat.
+- Claw-like manipulators.
+- Reinforced forward striking structure.
+- Integrated non-atmosphere-dependent propulsion.
+
+### Combat Identity
+
+Rapid aerial repositioning, controlled dives, claw attacks, and precise mobility.
+
+### Design Challenges
+
+- Maintain readable anatomy when the wings fold.
+- Protect large exposed wing surfaces.
+- Differentiate its elegant aerial movement from Pterosaur Striker's heavier assault style.
+- Operate within universal flight restrictions.
+
+---
+
+## 04 — Siege Scarab
+
+**Original archetype:** Defensive Fortress  
+**Role:** Defensive area controller  
+**Attributes:** 4/4/10  
+**Traits:** Energy Shield, Counter  
+**Power subtypes:** Impact, Electric  
+**Concept status:** Refined
+
+### Anatomy and Appearance
+
+A heavily armored hexapod inspired by beetles and defensive industrial machinery.
+
+Key features:
+
+- Broad protective carapace.
+- Six compact supporting legs.
+- Low internal body placement.
+- Retractable vulnerable structures.
+- Powerful anchoring mechanisms.
+- Concealed or protected offensive appendages.
+
+### Combat Identity
+
+Guarding, positional denial, counterattacks, and resisting heavy pressure.
+
+### Design Challenges
+
+- Avoid an overly static silhouette.
+- Make attacks visible even when the body is mostly armored.
+- Differentiate its defensive identity from Rhino Bastion.
+
+---
+
+## 05 — Forge Ape
+
+**Original archetype:** Industrial Brawler  
+**Role:** Close-range heavy striker  
+**Attributes:** 9/5/4  
+**Traits:** None assigned  
+**Power subtypes:** Thermal, Explosive  
+**Concept status:** Retained
+
+### Anatomy and Appearance
+
+A gorilla-proportioned industrial humanoid with extraordinarily large mechanical arms.
+
+Key features:
+
+- Massive shoulder assemblies.
+- Heavy hydraulic or electromechanical manipulators.
+- Compact, powerful legs.
+- Reinforced knuckles.
+- Exposed functional machinery.
+- Visible heat-resistant structural elements.
+
+### Combat Identity
+
+Heavy punches, close-range pressure, industrial striking techniques, and legally implemented thermal or explosive effects.
+
+### Design Challenges
+
+- Avoid becoming a generic bulky humanoid.
+- Ensure explosive-themed moves comply with projectile restrictions.
+- Keep high-impact actions readable and interruptible.
+
+---
+
+## 06 — Manta Skimmer
+
+**Replaces:** Disc Drone  
+**Role:** Fast, low-profile hovering fighter  
+**Inherited attributes:** 5/10/3 — provisional  
+**Inherited traits:** Camouflage, Flight — provisional  
+**Inherited power subtypes:** Electromagnetic, Electric — provisional  
+**Concept status:** Replacement selected; mechanics not finalized
+
+### Anatomy and Appearance
+
+A hovering, manta-ray-inspired machine with an extremely broad and flattened profile.
+
+Key features:
+
+- Diamond-shaped primary silhouette.
+- Wide articulated lateral fins.
+- Protected central core.
+- Ventral propulsion assemblies.
+- Reinforced striking edges.
+- Directional sensor clusters.
+- Limited movable manipulators integrated into the body.
+
+### Combat Identity
+
+Low-altitude gliding, rotating strikes, rapid lateral movement, and unusual approach angles.
+
+### Design Challenges
+
+- Make attacks physically convincing.
+- Ensure it remains vulnerable to low attacks while hovering.
+- Avoid excessive evasiveness.
+- Clearly distinguish active powered flight from permitted low levitation.
+- Reassess whether inherited camouflage remains necessary.
+
+---
+
+## 07 — Titan Atlas
+
+**Original archetype:** Colossus  
+**Role:** Monumental heavyweight  
+**Attributes:** 10/2/6  
+**Traits:** None assigned  
+**Power subtypes:** Impact, Structural, Concussive  
+**Concept status:** Retained
+
+### Anatomy and Appearance
+
+A colossal humanoid with the visual language of large industrial construction equipment.
+
+Key features:
+
+- Exceptional height.
+- Thick structural limbs.
+- Powerful load-bearing legs.
+- Large manipulators.
+- Massive central structural supports.
+- Restrained decorative armor.
+- Industrial mechanisms clearly supporting the machine's weight.
+
+### Combat Identity
+
+Enormous reach, powerful attacks, slower commitment, and strong positional pressure.
+
+### Design Challenges
+
+- Ensure smaller opponents can meaningfully engage it.
+- Provide credible low-target attacks.
+- Maintain fair attack startup and recovery.
+- Prevent oversized pushboxes from breaking movement interactions.
+
+### Experimental Geometry
+
+Earlier prototype studies explored a **7.2 m height**, with approximately 2.7 m heavy-punch reach.
+
+The attack geometry was adjusted to allow contact with much smaller opponents.
+
+These are experimental dimensions, not approved production specifications.
+
+---
+
+## 08 — Modular Jackal
+
+**Original archetype:** Adaptive Quadruped  
+**Role:** Versatile terrestrial fighter  
+**Attributes:** 6/6/6  
+**Trait:** Modular Weapons  
+**Power subtypes:** Cutting, Kinetic, Energy  
+**Concept status:** Retained
+
+### Anatomy and Appearance
+
+A medium-sized quadruped inspired by canine predators and advanced robotic field platforms.
+
+Key features:
+
+- Long mechanical body.
+- Four agile limbs.
+- Angular dorsal structure.
+- Integrated weapon modules.
+- Narrow sensor assembly.
+- Articulated striking surfaces.
+
+### Combat Identity
+
+Balanced movement, varied engagement ranges, and different integrated weapons within a fixed move repertoire.
+
+### Design Challenges
+
+- Avoid resemblance to generic robotic dogs.
+- Make fixed modular weapons visually understandable.
+- Distinguish its movement from Rhino Bastion and its aggression from Raptor Fang.
+
+---
+
+## 09 — Viper Coil
+
+**Original archetype:** Serpent  
+**Role:** Flexible reach and body-positioning fighter  
+**Attributes:** 7/7/4  
+**Trait:** Camouflage  
+**Power subtypes:** Corrosive, Penetration  
+**Concept status:** Retained
+
+### Anatomy and Appearance
+
+A long, mechanically segmented serpent with protective overlapping armor.
+
+Key features:
+
+- Flexible multi-segment body.
+- Distinct offensive head assembly.
+- Distributed articulation.
+- Reinforced striking sections.
+- Low ground profile.
+- Compact sensors and piercing mechanisms.
+
+### Combat Identity
+
+Unusual strike angles, tail attacks, piercing actions, and flexible body positioning.
+
+### Design Challenges
+
+- Translate its anatomy into the universal combat buttons.
+- Define consistent pushboxes and vulnerable body regions.
+- Avoid excessive flexibility making attack ranges unreadable.
+- Ensure movement remains plausible in all arena gravities.
+
+---
+
+## 10 — Tower Duelist
+
+**Original archetype:** Technical Defender  
+**Role:** Precision defense and counterattacks  
+**Attributes:** 3/6/9  
+**Traits:** Energy Shield, Counter  
+**Power subtypes:** Concussive, Electric  
+**Concept status:** Refined
+
+### Anatomy and Appearance
+
+An asymmetric humanoid with a highly specialized defensive side and a more precise offensive side.
+
+Key features:
+
+- One oversized shield-bearing structural assembly.
+- One thinner, high-precision manipulator.
+- Asymmetric armor distribution.
+- Stable lower body.
+- Compact sensor head.
+- Mechanisms that visually communicate defensive timing.
+
+### Combat Identity
+
+Precise blocking, controlled counterattacks, and punishment of poorly timed approaches.
+
+### Design Challenges
+
+- Make asymmetry visible even at gameplay distance.
+- Avoid a generic humanoid-with-shield appearance.
+- Provide credible compensation for unequal mass distribution.
+
+---
+
+## 11 — Raptor Fang
+
+**Original archetype:** Predator  
+**Role:** Aggressive terrestrial pursuit fighter  
+**Attributes:** 7/9/2  
+**Trait:** Counter  
+**Power subtypes:** Cutting, Kinetic  
+**Concept status:** Retained
+
+### Anatomy and Appearance
+
+A mechanical predatory biped inspired by fast terrestrial dinosaurs.
+
+Key features:
+
+- Forward-leaning torso.
+- Powerful digitigrade-style legs.
+- Long stabilizing tail.
+- Compact forelimbs or striking manipulators.
+- Aggressive head profile.
+- Exposed speed-oriented structural proportions.
+
+### Combat Identity
+
+Rapid advances, lunges, jumping attacks, and aggressive pressure.
+
+### Design Challenges
+
+- Protect highly loaded leg joints.
+- Differentiate its animal posture from Panther Wraith.
+- Avoid designing attacks that cannot reasonably be countered.
+
+---
+
+## 12 — Pterosaur Striker
+
+**Replaces:** Air Bomber  
+**Role:** Heavy aerial assault fighter  
+**Inherited attributes:** 8/7/3 — provisional  
+**Trait:** Flight  
+**Inherited power subtypes:** Explosive, Energy, Thermal — subject to redesign  
+**Concept status:** Replacement selected; weapon implementation not finalized
+
+### Anatomy and Appearance
+
+A mechanical pterosaur emphasizing powerful forward assaults rather than agile avian maneuvering.
+
+Key features:
+
+- Long, angular wing structures.
+- Reinforced frontal striking assembly.
+- Foldable wing mechanisms.
+- Strong forward-oriented body.
+- Robust propulsion system.
+- Ground-support appendages.
+
+### Combat Identity
+
+Heavy diving strikes, direct assaults, physical impact, and limited discrete energy fire.
+
+### Design Challenges
+
+- Distinguish it substantially from Falcon Raptor.
+- Avoid prohibited explosive projectiles.
+- Explain how its wings and ground-support structures survive impact.
+- Ensure it can fight effectively without indefinite flight.
+
+---
+
+## 13 — Widow Engineer
+
+**Original archetype:** Spider  
+**Role:** Technical multi-limb fighter  
+**Attributes:** 5/7/6  
+**Trait:** Modular Weapons  
+**Power subtypes:** Electromagnetic, Electric, Concussive  
+**Concept status:** Retained
+
+### Anatomy and Appearance
+
+A tall, angular arachnid-like combat machine with a relatively small central chassis and multiple supporting limbs.
+
+Key features:
+
+- Elevated central body.
+- Long segmented appendages.
+- Distributed support points.
+- Ventral precision manipulators.
+- Integrated technical weapon systems.
+- Distinctive narrow-profile joints.
+
+### Combat Identity
+
+Precise positioning, angular attacks, specialized integrated tools, and technical control.
+
+### Design Challenges
+
+- Differentiate it from Siege Scarab and Mantis Reaver.
+- Keep multiple limbs visually readable.
+- Prevent excessive stability or reach from producing unfair advantages.
+
+---
+
+## 14 — Arena Goliath
+
+**Original archetype:** Four-Arm Gladiator  
+**Role:** Heavy grappling and close-range control  
+**Attributes:** 9/3/6  
+**Trait:** Counter  
+**Power subtypes:** Impact, Structural  
+**Concept status:** Retained
+
+### Anatomy and Appearance
+
+A large humanoid with two distinct pairs of arms and a heavily reinforced torso.
+
+Key features:
+
+- Broad shoulder structure.
+- Upper and lower manipulator pairs.
+- Large load-bearing torso.
+- Reinforced grasping systems.
+- Powerful lower body.
+- Mechanical differences between the arm pairs.
+
+### Combat Identity
+
+Grabbing, containment, layered strikes, and heavy close-range pressure.
+
+The additional arms do not provide extra buttons or independent tactical automation.
+
+### Design Challenges
+
+- Avoid chaotic overlapping animations.
+- Ensure grabs remain escapable.
+- Differentiate its four-arm silhouette from Titan Atlas and Forge Ape.
+
+---
+
+## 15 — Tripod Core
+
+**Original archetype:** New  
+**Role:** Unconventional multi-directional terrestrial combatant  
+**Attributes:** Not assigned  
+**Traits:** Not assigned  
+**Power subtypes:** Not assigned  
+**Concept status:** Added to candidate roster
+
+### Anatomy and Appearance
+
+A deliberately non-biomimetic machine centered around a protected mechanical core supported by three large articulated legs.
+
+Key features:
+
+- Triangular radial support arrangement.
+- Central armored body.
+- Clearly directional sensor cluster.
+- Three independently articulated load-bearing legs.
+- Integrated offensive mechanisms.
+- Mechanically plausible rotational joints.
+
+### Combat Identity
+
+Rotational movement, angular repositioning, and unusual attack trajectories.
+
+Exact combat mechanics remain open.
+
+### Design Challenges
+
+- Avoid resembling a walking turret.
+- Make facing direction unmistakable.
+- Establish readable attack windups.
+- Ensure stability under lateral impacts.
+- Preserve clear front-facing gameplay despite its radial anatomy.
+
+---
+
+## 16 — Mantis Reaver
+
+**Original archetype:** New  
+**Role:** Reach-oriented, aggressive precision fighter  
+**Attributes:** Not assigned  
+**Traits:** Not assigned  
+**Power subtypes:** Not assigned  
+**Concept status:** Added to candidate roster
+
+### Anatomy and Appearance
+
+An upright mechanical mantis with large folding scythe-like arms and an unusually slender central structure.
+
+Key features:
+
+- Narrow vertical torso.
+- Oversized hinged forelimbs.
+- Multiple supporting appendages.
+- Angular head and sensor assembly.
+- Long folded attacking geometry.
+- Compact defensive stance.
+
+### Combat Identity
+
+Quick extension attacks, variable reach, aggressive pressure, and carefully timed close-range strikes.
+
+### Design Challenges
+
+- Differentiate its anatomy from Widow Engineer.
+- Avoid fragile, impractically thin limbs.
+- Give scythe mechanisms plausible cutting and load-bearing capabilities.
+- Prevent long-reaching attacks from dominating smaller opponents.
+
+---
+
+## 17 — Monowheel Striker
+
+**Original archetype:** New  
+**Role:** High-mobility rolling combatant  
+**Attributes:** Not assigned  
+**Traits:** Not assigned  
+**Power subtypes:** Not assigned  
+**Concept status:** Single giant central wheel selected; detailed implementation provisional
+
+### Anatomy and Appearance
+
+A single massive wheel surrounds a suspended and armored central module.
+
+Its dominant silhouette is nearly circular.
+
+Key features:
+
+- Large external wheel or segmented rolling ring.
+- Protected central mechanical core.
+- Internal bearing and suspension system.
+- Retractable combat manipulators.
+- Directional sensor cluster.
+- Active balance control.
+- Small deployable stabilizing supports.
+- Possible corrective thrusters, subject to tournament compliance.
+
+The wheel should dominate the machine's visible proportions, while the central module remains compact.
+
+### Combat Identity
+
+Rolling approaches, abrupt repositioning, momentum-based impacts, and attacks combining manipulators with the wheel's rotating structure.
+
+Ordinary movement does not automatically inflict damage. Offensive collisions must correspond to valid attack actions.
+
+### Proposed Component Mapping
+
+| Universal slot | Physical implementation |
+|---|---|
+| Arms | Retractable manipulators |
+| Legs | Wheel and drive assembly |
+| Torso | Central chassis |
+| Head | Directional sensor cluster |
+
+### Design Challenges
+
+- Maintain lateral stability under attack.
+- Clearly indicate facing direction.
+- Distinguish movement animation from offensive attacks.
+- Make recovery from falls physically understandable.
+- Preserve low attacks, aerial attacks, grabs, and anti-air functionality.
+- Avoid making continuous rolling contact a persistent offensive advantage.
+
+The wheel configuration is selected, but the proportions, colors, specific mechanisms, and move set remain unapproved.
+
+---
+
+# 7. Provisional Visual Development Priorities
+
+The previous 16-mecha review divided the roster into three design-priority groups. Monowheel Striker was added afterward.
+
+These are **art exploration priorities**, not final judgments of quality or release eligibility.
+
+## Priority A — Core Visual References
+
+- Rhino Bastion
+- Panther Wraith
+- Falcon Raptor
+- Forge Ape
+- Manta Skimmer
+- Titan Atlas
+- Viper Coil
+- Tripod Core
+
+These concepts establish the strongest contrasts in fundamental body architecture.
+
+## Priority B — Strong Candidates Needing Refinement
+
+- Siege Scarab
+- Raptor Fang
+- Arena Goliath
+- Mantis Reaver
+
+These have strong recognizable shapes but require additional differentiation.
+
+## Priority C — Experimental or Overlapping Designs
+
+- Modular Jackal
+- Tower Duelist
+- Pterosaur Striker
+- Widow Engineer
+
+Their final standing depends heavily on stronger visual concepts.
+
+## Newly Added
+
+- Monowheel Striker
+
+It should receive early silhouette and engineering studies because its single-wheel anatomy presents unusually valuable design challenges.
+
+---
+
+# 8. Visual Differentiation Matrix
+
+| Potential overlap | Required distinction |
+|---|---|
+| Rhino / Scarab | Frontal momentum versus protective enclosure |
+| Rhino / Jackal | Heavy low-speed assault versus flexible medium quadruped |
+| Panther / Raptor Fang | Humanoid precision versus animal locomotion |
+| Falcon / Pterosaur | Agile bird-like control versus heavier frontal assault |
+| Manta / Falcon | Flat hovering surface versus articulated bird |
+| Scarab / Widow | Heavy enclosed chassis versus elevated technical structure |
+| Widow / Mantis | Distributed support limbs versus oversized striking forelimbs |
+| Forge Ape / Atlas | Industrial arm mass versus colossal height and reach |
+| Atlas / Goliath | Scale versus number and specialization of arms |
+| Jackal / Raptor Fang | Quadrupedal adaptability versus bipedal pursuit |
+| Tripod / Widow | Radial three-point support versus arachnid multi-limb geometry |
+| Monowheel / Manta | Ground rolling momentum versus low-altitude hovering |
+
+The art team should test these contrasts in monochrome silhouette sheets before adding textures or surface details.
+
+---
+
+# 9. Geometry and Animation Status
+
+Prior prototype work has focused on three mechas:
+
+- Panther Wraith / Stealth Assassin
+- Rhino Bastion / Heavy Tank
+- Titan Atlas / Colossus
+
+The geometry work includes:
+
+- Two-dimensional fighting coordinates.
+- Pushboxes, hurtboxes, hitboxes, and grab regions.
+- Anatomical mapping to the four component slots.
+- Basic dynamic attack trajectories.
+- Exploratory attack startup, active, and recovery frames.
+- Crouching and partial guard interactions.
+- Basic proximity and movement checks.
+- Simplified reduced-gravity descent calculations.
+
+The G06.2 prototype reported passing its automated checks under its chosen abstractions. These checks do not demonstrate competitive balance or validate production-quality animation and collision models.
+
+Exact mecha dimensions, hitbox shapes, and frame data remain provisional.
+
+No full move library has yet been validated for all 17 mechas.
+
+---
+
+# 10. Standard Design Deliverables
+
+For each mecha, the design team should eventually provide:
+
+### A. Visual Identity
+
+- Final candidate name.
+- Silhouette sheet.
+- Front, side, and three-quarter views.
+- Height and mass estimates.
+- Color palette.
+- Materials and surface treatment.
+- Readable sensor and weapon placements.
+
+### B. Mechanical Anatomy
+
+- Main structural frame.
+- Propulsion and locomotion mechanisms.
+- Joints and actuator placements.
+- Stabilization systems.
+- Armor and vulnerable areas.
+- Four functional component mappings.
+- Operational, Damaged, and Critical visual states.
+
+### C. Combat Identity
+
+- Final P/A/R attributes.
+- Approved special traits.
+- Approved power subtypes.
+- Twelve normal attacks.
+- Universal grab animation.
+- Three special families.
+- Attack range and recovery characteristics.
+- Primary strengths, weaknesses, and counterplay.
+
+### D. Tournament Compliance
+
+- Earth, Mars, and Moon gravity compatibility.
+- MUD compatibility.
+- Flight and levitation restrictions.
+- Projectile activation restrictions.
+- No prohibited autonomous combat decisions.
+- No prohibited detached drones or explosive projectiles.
+
+### E. Originality and Rights
+
+- Original development sketches.
+- Reference and inspiration notes.
+- Distinctive design rationale.
+- Name-clearance review.
+- Final approval record.
+
+---
+
+# 11. Outstanding Design Decisions
+
+The following are not yet resolved:
+
+1. Final selection of the approximately ten launch mechas.
+2. Story boss identity and anatomy.
+3. Final approved names.
+4. Detailed silhouettes and character models.
+5. Mechanical specifications and mass estimates.
+6. Complete attributes for Tripod Core, Mantis Reaver, and Monowheel Striker.
+7. Reassessment of inherited attributes and traits for Manta Skimmer and Pterosaur Striker.
+8. Complete move sets for all 17 mechas.
+9. Final guard classifications, grab tuning, and collision rules.
+10. Exact gravitational movement calibration, including standardized jump height.
+11. Final weapon and projectile implementation details.
+12. Competitive balance after playable prototypes and testing.
+
+---
+
+# 12. Next Development Milestones
+
+**Milestone 1 — Art Direction Reference**
+
+Establish a consistent art reference covering proportions, materials, lighting, linework, and surface complexity.
+
+**Milestone 2 — Silhouette Exploration**
+
+Create multiple substantially different silhouettes per candidate, beginning with Monowheel Striker, Tripod Core, Manta Skimmer, and the two principal humanoid extremes.
+
+**Milestone 3 — Functional Anatomy**
+
+Refine one selected silhouette for each candidate, including movement, mechanisms, and vulnerable components.
+
+**Milestone 4 — Candidate Evaluation**
+
+Evaluate visual identity, engineering credibility, combat potential, production complexity, and roster redundancy.
+
+**Milestone 5 — Launch Roster Selection**
+
+Choose the approximate ten playable mechas and a separate story boss.
+
+**Milestone 6 — Combat Production**
+
+Finalize component maps, moves, hitboxes, animation, frame data, and tournament compliance.
+
+---
+
+# 13. Document Governance
+
+This guide consolidates the working roster and visual/anatomical direction established through November 17, 2026.
+
+It supplements, rather than automatically overrides, the project's established combat mechanics and tournament regulations.
+
+**Established decisions:** shared combat architecture, four component slots, five trait categories, twelve power subtypes, human piloting, tournament restrictions, the 17-candidate roster, the Manta and Pterosaur replacements, and Monowheel's single giant wheel.
+
+**Working proposals:** individual attributes, inherited traits, visual palettes, detailed materials, movement styles, names, and most per-mecha attack concepts.
+
+**Not yet validated:** competitive balance, real-world engineering feasibility, full mechanical collision behavior, and complete 17-mecha implementation.
+
+The guiding principle for future revisions is:
+
+**Distinctive futuristic machines, credible mechanical functions, expressive fighting styles, and one coherent competitive ruleset.**

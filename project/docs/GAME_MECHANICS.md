@@ -204,6 +204,6 @@ For each mecha the design team supplies:
 
 ## 14. Project status, for context
 
-Concept stage for the new mechas. The three team documents (two in Portuguese, the design guide in English) are not kept in the repo and are summarised here. The combat prototype still uses one punch and one kick; the four-button input, grab and per-mecha attributes are decided and are scheduled with the first new mechas. Nothing here is balanced yet: every number is a starting hypothesis.
+Concept stage for the new mechas. The design guide (English) is kept as `MECHA_DESIGN_GUIDE_V1.5.txt`; the other two team documents (Portuguese) are not kept. All three are summarised here. The combat prototype still uses one punch and one kick; the four-button input, grab and per-mecha attributes are decided and are scheduled with the first new mechas. Nothing here is balanced yet: every number is a starting hypothesis.
 
 Project documents (`COMBAT_UPGRADE.md`, `GAME_SPEC.md`, `DEVPLAN.md`, `BALANCE.md`, `CONTROLS.md`) hold the project-side detail. When this document and a project document disagree, the project document wins until the project agrees a change.
