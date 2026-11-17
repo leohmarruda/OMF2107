@@ -25,6 +25,7 @@ Milestones (RP, re-planned 2026-11-07): M0 2026-11-20, M1 2027-01-22, M2 2027-03
 - Four attack buttons (S1, S2, C1, C2) and a universal S1 + C1 grab with an escape window; three standard special-command families (decided 2026-11-17; R24, M1 spike, M2). State: not built; the prototype still has one punch and one kick.
 - Mecha attributes Power, Agility, Resistance (1 to 10, 18 points), authored per mecha (R25, M2).
 - Five special traits (camouflage, counter, flight, modular weapons as a fixed move set, energy shield) and twelve power subtypes acting through stun and component damage only (R26, M2 first traits, M5 to M6 the rest).
+- Geometry model (pushboxes, component hurtboxes, timed hitboxes, universal grab at any size, appendage rules): proposed 2026-11-17 by the design team, R28, M1 to M2. Gravity arenas with a descent rule, flight limits and projectile rules: proposed, open (R29, R30; see DEVPLAN open decisions).
 - Details in `COMBAT_UPGRADE.md`; the shared design document for the external team is `GAME_MECHANICS.md`.
 - Shared rules for player and AI; difficulty 0 to 6 in code.
 - Replays store inputs, game version and ruleset ID (DEVPLAN, Evidence table).
@@ -53,7 +54,7 @@ Milestones (RP, re-planned 2026-11-07): M0 2026-11-20, M1 2027-01-22, M2 2027-03
 ## Content
 
 - Pilots: an original cast of about ten, each with an ending, plus an antagonist. All new; the original game's pilots are placeholders only.
-- Mechas: an original roster of about ten standard mechas plus a story boss, each from a written brief. Unlock policy open (spec §13). Each mecha needs component masks and swap parts in both looks, attributes, a trait list and a move set on four buttons. Roster archetypes proposed in `COMBAT_UPGRADE.md` (section 7).
+- Mechas: an original roster of about ten standard mechas plus a story boss, each from a written brief. Unlock policy open (spec §13). Each mecha needs component masks and swap parts in both looks, attributes, a trait list and a move set on four buttons. Roster archetypes proposed in `COMBAT_UPGRADE.md` (section 7); the design team's guide now lists 17 candidates (the mecha design guide), from which about ten plus a boss are chosen.
 - Arenas: about five original arenas, each with one hazard.
 - Story tools: skip and log required; critical evidence has alternate carriers.
 - Presentation: portraits, short 2D scenes, in-engine scenes, dialogue panels; reduced flashes, shake and particles option.

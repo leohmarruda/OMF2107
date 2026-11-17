@@ -9,6 +9,7 @@ Mecha Link 2100 is an independent game inspired by One Must Fall 2097. Older fil
 - [Controls](CONTROLS.md) — default keyboard, gamepad, menu and story-window bindings as found in code.
 - [Combat upgrade](COMBAT_UPGRADE.md) — proposal: four attack buttons, S1+C1 grab, components, robot attributes, special traits and subtypes, roster archetypes.
 - [Game mechanics](GAME_MECHANICS.md) — v0.8, for the external robot design team: what is fixed, what is open, robot template and archetypes. Supersedes their v0.7 file.
+- Design team documents (received 2026-11-17 in Portuguese, not kept in the repo): geometry model v0.1, technical and environmental regulation v0.5 (arenas, gravity, flight, projectiles) and mecha design guide v1.5 (17 candidate mechas, art and deliverables). Their status and open points are in `DEVPLAN.md` and `GAME_MECHANICS.md` §13.
 - [Arcade mode](ARCADE_MODE.md) — ladder flow, newscast, hangar, tune-ups, implemented vs missing.
 - [Balance and tuning](BALANCE.md) — formulas, difficulty, tune-up values, rules and a tuning log.
 - [Original One Must Fall 2097 reference](OMF2097/README.md) — private dev-only comparison material (local, gitignored): never a source of names, art or text for the game.

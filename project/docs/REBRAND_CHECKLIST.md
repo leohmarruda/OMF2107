@@ -29,7 +29,7 @@ Fall 2097, Battlegrounds or their owners, while crediting OpenOMF (MIT) and nami
   (`COMBAT_UPGRADE.md` section 7, `GAME_MECHANICS.md`) are the starting pool for the roster plan. Their working names
   (Juggernaut, Phantom, Valkyrie, Titan, Tempest, Nexus and the rest) were **not** collision-checked and are generic or
   already in use elsewhere, so none is adopted: each final name needs the same clearance as the title (D1) and a
-  derivation note saying which archetype it echoes. Tempest is also one of the optional Remastered mod robots.
+  derivation note saying which archetype it echoes. Tempest is also one of the optional Remastered mod robots. The design guide (the mecha design guide v1.5) adds 17 candidates with new working names (Rhino Bastion, Panther Wraith, Falcon Raptor, Siege Scarab, Forge Ape, Manta Skimmer, Titan Atlas, Modular Jackal, Viper Coil, Tower Duelist, Raptor Fang, Pterosaur Striker, Widow Engineer, Arena Goliath, Tripod Core, Mantis Reaver, Monowheel Striker). These are also uncleared: "Raptor", "Titan", "Viper" and "Panther" are common, and Panther Wraith sits close to the Panthera brief (already flagged as too close to the jaguar). Treat as labels until each passes the similarity search.
 - [x] **D3. Characters: all replaced, "eventually" (decided 2026-11-10).** All ten original pilots plus Kreissack
   (Crystal Devroe, Steffan Thomas, Raven, Christian Devroe, Shirro, Jean-Paul, Angel, Cossette, Milano, Ibrahim,
   Kreissack) get new names, backstories and looks. Still open: confirm which story characters are project-invented

@@ -1,6 +1,6 @@
 # Mecha Link 2100: game mechanics for the robot design team
 
-Version 0.8, 2026-11-17. Replaces the external "Robot Fighting Game: Game Design Document" v0.7, which is kept only as a source. This document is shared with the external robot design team and is developed jointly. Sections marked **Fixed** come from the project's combat rules and need project agreement to change. Sections marked **Open** are for the design team to propose.
+Version 0.9, 2026-11-17 (v0.8 plus section 13: geometry, arenas, 17 candidates). Replaces the external "Robot Fighting Game: Game Design Document" v0.7, which is kept only as a source. This document is shared with the external robot design team and is developed jointly. Sections marked **Fixed** come from the project's combat rules and need project agreement to change. Sections marked **Open** are for the design team to propose.
 
 Terms: robots are called **mechas** (working term). Names of mechas, including the 15 working names in v0.7, are placeholders until they pass a name clearance (section 9).
 
@@ -140,6 +140,8 @@ The game is independent. Nothing may resemble or derive from the robots, charact
 
 The release roster is about ten mechas plus a story boss, and the design team is asked to propose which archetypes to build and which to merge or drop. All rows total 18 points.
 
+**v0.9 update:** the team's design guide (v1.5) lists **17 candidates**. It replaces the disc drone with a hovering manta and the air bomber with a flying reptilian striker (their inherited attributes need reassessment) and adds three non-humanoid candidates: a non-biomimetic tripod, a mantis-inspired machine and a single-wheel combat robot (attributes and traits to be defined). The table below is the original 15-row pool; use the guide for the 17 and its working names, which are uncleared (section 9).
+
 | Archetype | Anatomy | P / A / R | Traits | Subtypes |
 |---|---|---|---|---|
 | Heavy tank | Armoured quadruped | 7 / 2 / 9 | Shield | Impact, Concussive |
@@ -183,8 +185,25 @@ For each mecha the design team supplies:
 6. How a mecha's Damaged and Critical states should look for each of the four slots, readable at fight-camera distance.
 7. Whether 18 points is enough room to separate fast, tough and heavy builds.
 
-## 13. Project status, for context
+## 13. Geometry, arenas and environment (v0.9, from the team's documents)
 
-Concept stage for the new mechas. The combat prototype still uses one punch and one kick; the four-button input, grab and per-mecha attributes are decided and are scheduled with the first new mechas. Nothing here is balanced yet: every number is a starting hypothesis.
+**Geometry (accepted in principle, to be prototyped).**
+- Play is on the X-Y plane. Each mecha has solid bodies (pushboxes) that may leave out wings, tails and arms so appendages never block movement permanently; hurtboxes that follow the anatomy and map to the four components; hitboxes active only during a move's active frames, each with shape, timing, class and component.
+- Attack classes (low, mid, high) are functional, not literal contact height. Every anatomy has low and high attacks, a guard and an anti-air answer.
+- No mecha is permanently unreachable because of size, shape or rest position (the 20 cm levitation does not make a mecha immune to low attacks).
+- Mixed sizes are allowed. Long reach is balanced with speed, recovery, mobility, exposure and counterplay. The 2 to 8 m range is exploratory, not an approval limit.
+- The universal grab works at any size difference. A small mecha need not lift a large one; the animation changes, the rules do not.
+- Appendages that add reach need matching limits or vulnerabilities.
+- First test bodies: small agile, wide low, tall long-reach; then serpent, bird and disc or manta. Eight geometry tests (approach and collision, low attacks, high attacks and guards, grabs, anti-air, throws and descents, arena edges, no permanent overlap or block) are repeated in each gravity.
+
+**Arenas and gravity (proposed, not decided).** Earth (1 g), Mars (about 0.378 g) and Moon (about 0.165 g), one command set. A descent module gives a minimum fall acceleration of 0.7 g so low-gravity jumps stay readable. Flight is capped at the height of a standard jump (2 m is a proposal, the arena length 30 m too). Low levitation is up to 0.20 m.
+
+**Rules the project cannot accept as written (needs your input).** The regulation's **2 s flight budget** and **shared pool of 6 projectile charges** act as limited resources, while the project's rule is that stun is the only resource. Proposed fix: express both as per-move recovery and cooldowns, with no pool and no HUD counter. If the team needs a pool, bring the case and the project will decide. Banned in the regulation and kept: energy beams, grenades, warheads and impact, proximity or command detonation; secondary explosions from damage are allowed. Rule enforcement should be deterministic (an illegal design fails validation) rather than penalties in play.
+
+**Other open points the team is asked to settle:** how the descent rule affects hitstun, throws, air combos and knockdowns; the physical reference point for measuring flight height; oblique and combined propulsion; simultaneous shots; the "Shield" and "Energy Shield" naming; whether Explosive attacks are consistent with the banned-explosives list (Forge Ape and the pterosaur carry that subtype); and the regulation's count (still 15 candidates, still lists the replaced drone and bomber).
+
+## 14. Project status, for context
+
+Concept stage for the new mechas. The three team documents are kept in Portuguese as sources and are summarised here. The combat prototype still uses one punch and one kick; the four-button input, grab and per-mecha attributes are decided and are scheduled with the first new mechas. Nothing here is balanced yet: every number is a starting hypothesis.
 
 Project documents (`COMBAT_UPGRADE.md`, `GAME_SPEC.md`, `DEVPLAN.md`, `BALANCE.md`, `CONTROLS.md`) hold the project-side detail. When this document and a project document disagree, the project document wins until the project agrees a change.

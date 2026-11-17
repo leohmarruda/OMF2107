@@ -96,6 +96,21 @@ upgrades or damage.
 - **Special traits:** camouflage, counter, flight, modular weapons and energy shield. None has its own button. **Power
   subtypes** (impact, penetration, cutting, explosive, thermal, electric, electromagnetic, energy, corrosive, kinetic,
   concussive, structural) tag attacks and act through stun and component damage only; thermal is not a heat meter.
+- **Geometry (proposed 2026-11-17, from the design team's the geometry model v0.1):** play stays on the
+  fixed X-Y plane. Each mecha has separate solid bodies (pushboxes) that may omit wings, tails and arms so appendages
+  never block movement permanently; hurtboxes that follow the anatomy and map to the four components; and hitboxes
+  active only during a move's active frames, each declaring shape, timing, class and component. Attack classes (low,
+  mid, high) are functional, not literal contact height. Every anatomy must have low and high attacks, a guard and an
+  anti-air answer; no mecha is permanently unreachable because of size, shape or rest position; mixed sizes are allowed
+  and long reach is balanced by speed, recovery, mobility, exposure and counterplay. The universal grab works at any
+  size difference (animation changes, rules do not). Appendages that add reach need matching limits or exposure.
+  Existing hit shapes are authored data (`main.c:248-250` caveat above), so R28 makes the geometry model the authored
+  source.
+- **Arenas and environment (proposed, not decided):** Earth (1 g), Mars (about 0.378 g) and Moon (about 0.165 g) arenas
+  with one command set; a "universal descent module" (MUD) that applies at least 0.7 g on the way down so low-gravity
+  fights stay readable; flight limited to the height of a standard jump (proposed 2 m) and, in the design team's
+  rules, a 2 s flight budget and a shared pool of 6 projectile charges. **Open:** the last two are limited resources
+  and the combat resource decision is stun only. See `DEVPLAN.md` open decisions and `GAME_MECHANICS.md` §13.
 - **Stun is the only combat resource.** There is no heat, overclock, rage or desperation meter.
 - Separate health and stun, round wins, time limits, knockdowns, air hits, combos and a dramatic finish.
 - Destruction finishers are available only in the last round of a match and only when the finishing robot is in good
