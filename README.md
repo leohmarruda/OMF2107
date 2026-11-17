@@ -59,12 +59,14 @@ Contact
 -------
 Discord: https://discord.gg/7CPPzab
 
-OMF2107
------
+Mecha Link 2100
+---------------
 
-OMF2107 is the planned 3D adaptation of One Must Fall 2097. This checkout
-keeps its OMF2107 work together in [project](project/README.md): project plans,
-the Jaguar and Shadow modeling references, and an experimental side-on
+Mecha Link 2100 (working name OMF2107 in older files) is an independent 3D robot
+fighting game inspired by One Must Fall 2097. It is not a sequel or remake, and
+OpenOMF serves as its development scaffold. This checkout keeps the game's work
+together in [project](project/README.md): project plans, placeholder mecha
+references, and an experimental side-on
 [3D prototype](project/prototype/README.md) driven by OpenOMF combat. The
 [development plan](project/docs/DEVPLAN.md) tracks the milestones, tasks and
 validation gates.

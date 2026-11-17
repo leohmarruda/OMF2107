@@ -3,7 +3,7 @@
 Joins the local animation inventory (project/build/pose-inventory.csv, from pose_inventory.py),
 the authored pose catalog (pose_catalog.csv), the recorded source traces in
 build/omf_trace_z7, and the hand-kept move_names.csv. Writes
-project/docs/OMF2107_MOVE_CATALOG.md and project/build/move-catalog.csv.
+project/docs/verification/MOVE_CATALOG.md and project/build/move-catalog.csv.
 
     python project/tools/generate_move_catalog.py
 """
@@ -24,7 +24,7 @@ import sprite_duplicates  # noqa: E402
 ROOT = paths.ROOT
 INVENTORY = paths.ARTIFACTS / "pose-inventory.csv"
 TRACES = paths.TRACE_DIR
-DOC = paths.DOCS / "OMF2107_MOVE_CATALOG.md"
+DOC = paths.DOCS / "verification" / "MOVE_CATALOG.md"
 CSV_OUT = paths.ARTIFACTS / "move-catalog.csv"
 HARS = {0: "Jaguar", 1: "Shadow"}
 DIRECTIONS = {"1": "down-back", "2": "down", "3": "down-forward", "4": "back", "5": "neutral",

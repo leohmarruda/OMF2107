@@ -38,8 +38,8 @@ The full import process and its pitfalls are in [IMPORT_PROCESS.md](IMPORT_PROCE
 Robot Mascot (Jaguar) and Rocket Jester (Shadow) into the prototype's rig groups by
 nearest bone, stands the spine up and hangs the arms and legs in the blockout rest
 pose, decimates by vertex clustering (about 20k triangles) and
-writes `project/prototype/meshy_meshes.h`. After rebuilding `omf3d_prototype`, set
-`OMF3K_MESHY=1` to render it in place of Jaguar's blockout, for example with
+writes `project/prototype/meshy_meshes.h`. After rebuilding `ml2100_prototype`, set
+`ML2100_MESHY=1` to render it in place of Jaguar's blockout, for example with
 `--model-preview-capture`. Without the variable the blockout is used.
 
 Dark ball joints at the shoulders, elbows, wrists, hips, knees and ankles cover

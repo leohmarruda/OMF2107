@@ -1,7 +1,7 @@
 # One Must Fall: Reimagined — Design Pitch (Draft v0.3)
 
 > **ARCHIVED 2026-11-09. Not a source of decisions.** OMF2107 adopted parts of this pitch on 2026-11-07 and 2026-11-09.
-> Current rules live in `DEVPLAN.md` (plan, rulesets, feature tiers) and `OMF2107_GAME_SPEC.md` (AI §4.4, readability
+> Current rules live in `DEVPLAN.md` (plan, rulesets, feature tiers) and `GAME_SPEC.md` (AI §4.4, readability
 > §5, economy, sponsors, rivals and reputation §7, accessibility §8). Kept only to explain where ideas came from; the
 > proposal numbers (#n) are still used for traceability.
 >

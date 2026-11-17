@@ -3,7 +3,7 @@
 How the Robot Mascot (Jaguar) and Rocket Jester (Shadow) were turned into rigged
 prototype models, written so the next mesh goes faster. Everything is driven by
 [`generate_meshy_meshes.py`](../../tools/generate_meshy_meshes.py); the result is
-`project/prototype/meshy_meshes.h`, selected at runtime with `OMF3K_MESHY=1`.
+`project/prototype/meshy_meshes.h`, selected at runtime with `ML2100_MESHY=1`.
 
 ## What the prototype expects
 
@@ -66,7 +66,7 @@ joints and the posed joints, in the (y, z) plane only. So an imported mesh must 
    interpolates the two transforms.
 9. **Colour** per rig group with `palette`.
 10. **Wire it in `main.c`:** include the arrays and add the HAR to the selection in
-    `robot_loaded_model`. `OMF3K_MESHY=1` switches all Meshy meshes on.
+    `robot_loaded_model`. `ML2100_MESHY=1` switches all Meshy meshes on.
 11. **Check the moves for the new HAR** (the mesh is only half of it: a move shows only if
     its poses are authored, see `project/docs/POSE_AUTHORING.md`):
     ```
@@ -90,7 +90,7 @@ project\prototype\run-meshy-fight-jaguar.ps1      # live fight as Jaguar
 project\prototype\run-meshy-fight-shadow.ps1      # live fight as Shadow
 ```
 
-`-Capture` writes `project/build/omf3d_model_{side,front,back,punch,kick,guard,...}.bmp`.
+`-Capture` writes `project/build/ml2100_model_{side,front,back,punch,kick,guard,...}.bmp`.
 Check idle, punch, kick and guard from front and side, **and the live fight** (the
 preview and the fight are different windows).
 
@@ -128,8 +128,8 @@ fits it applied.
   `tail` hides that and old captures get reused. Check for "build failed" before
   trusting a capture.
 - **Replay check.** Preview poses are not the live poses. Compare recorded fights with
-  `omf3d_prototype.exe --source-replay build/omf_trace_z7/<trace>.csv --capture-tick N`
-  with and without `OMF3K_MESHY=1` (e.g. `shadow-assets-live-enhanced.csv` tick 304 is a
+  `ml2100_prototype.exe --source-replay build/omf_trace_z7/<trace>.csv --capture-tick N`
+  with and without `ML2100_MESHY=1` (e.g. `shadow-assets-live-enhanced.csv` tick 304 is a
   Shadow kick, `shadow-special-far-v4.csv` tick 138 a Shadow projectile).
 
 ## Open items

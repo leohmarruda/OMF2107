@@ -78,7 +78,7 @@ swap its data loader, and only later fold it in-process.
 | Field group | Source in the pack | Authored or generated |
 | --- | --- | --- |
 | Stats: health, endurance, four speeds | `har.json` | Authored, tuned to measured behaviour |
-| Move table: input string, category, damage, stun, block values, successor, constraints | `moves.json` | Authored from `OMF2107_MOVE_MEASUREMENTS.md` targets |
+| Move table: input string, category, damage, stun, block values, successor, constraints | `moves.json` | Authored from `verification/MOVE_MEASUREMENTS.md` targets |
 | Animation string and extra strings (the timing script with tags) | `anim/<id>.txt` | Authored |
 | Frame list: per-frame sprite offset and size | Generated | From the proxy pose per frame |
 | Defender mask per frame | Generated | From the blockout proxy, cached by pose hash |

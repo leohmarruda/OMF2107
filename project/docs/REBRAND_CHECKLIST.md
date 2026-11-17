@@ -5,23 +5,31 @@ legal clarity ([RIGHTS.md](RIGHTS.md), "Rebrand"). Counts come from a name inven
 case-insensitive substring counts and approximate, and short names (Ari, Ren, Plug, Alex) also match ordinary words.
 Nothing here is legal advice. Items marked **decision** must be settled before the work that depends on them.
 
-Goal: no title, name, character, robot design or asset in a distributed build that comes from One Must Fall 2097,
-Battlegrounds or their owners, while crediting OpenOMF (MIT) and acknowledging the original game as inspiration.
+**Scope widened 2026-11-11 (project owner):** the project is a completely independent game inspired by One Must Fall
+2097, not a renamed fan game. The setting and story are rewritten rather than renamed (D4, DEVPLAN R23), and OpenOMF is
+a scaffold that may be discarded later.
+
+Goal: no title, name, character, robot design, setting, story or asset in a distributed build that comes from One Must
+Fall 2097, Battlegrounds or their owners, while crediting OpenOMF (MIT) and naming the original game as an inspiration.
 
 ## 0. Decisions first
 
-- [x] **D1. New title: provisionally "Steel Skin 2100" (2026-11-10).** Still to do: a short code name (for targets, env
-  vars, repo), and the clearance below. A web search on 2026-11-10 found no game or trademark filing called "Steel
-  Skin" or "Steel Skin 2100" (similar names exist: Steel Combat, Fight of Steel, Real Steel, Fighting Steel, now
-  cancelled). Not a real clearance: check USPTO and WIPO trademark databases, Steam and itch.io, app stores, domain and
-  repo name. Avoid "One Must Fall", "OMF", "2097" and "Battlegrounds". Note the title says 2100 while the current
-  lore is set in 2107; decide whether the setting year changes (D4).
+- [ ] **D1. New title: "Mecha Link 2100" (chosen 2026-11-11); code name `ML2100` (decided 2026-11-11); clearance still open.** The earlier
+  provisional "Steel Skin 2100" (2026-11-10) is dropped. "Metal Skin" was the other candidate. Still to do: clear the title (USPTO and WIPO
+  trademark databases, Steam and itch.io, app stores, domain and repo name; the 2026-11-10 web search covered only
+  "Steel Skin"), code name `ML2100` for targets, env vars, file names and repo (`ML2100_*`, `ml2100_*`, `ml2100_prototype`). Avoid "One Must Fall", "OMF", "2097" and
+  "Battlegrounds". The title fixes the setting year at 2100 (D4). "Mecha" and "Link" are common words, so the
+  clearance must search for similar names, not only exact ones.
 - [x] **D2. Fighter robots: all replaced, "eventually" (decided 2026-11-10).** New names and new designs for all eleven
   (Jaguar, Shadow, Katana, Thorn, Pyros, Electra, Shredder, Flail, Gargoyle, Chronos, Nova) and a new generic term for
-  "HAR" (1,183 hits in 188 files). The Discord view was that remaking the designs "might be too close" and that
+  "HAR" (1,183 hits in 188 files): **"mecha" (working term, 2026-11-11)**. The Discord view was that remaking the designs "might be too close" and that
   tweaking names ("Mk2") is not a safe fix, so this is a redesign, not a rename. Still open: the new names and the
   term, and the **order**: the original robots stay as private development placeholders until replaced, and none may
-  ship (see "Placeholders" below).
+  ship (see "Placeholders" below). **Update 2026-11-17:** the external robot design team's 15 archetypes
+  (`COMBAT_UPGRADE.md` section 7, `GAME_MECHANICS.md`) are the starting pool for the roster plan. Their working names
+  (Juggernaut, Phantom, Valkyrie, Titan, Tempest, Nexus and the rest) were **not** collision-checked and are generic or
+  already in use elsewhere, so none is adopted: each final name needs the same clearance as the title (D1) and a
+  derivation note saying which archetype it echoes. Tempest is also one of the optional Remastered mod robots.
 - [x] **D3. Characters: all replaced, "eventually" (decided 2026-11-10).** All ten original pilots plus Kreissack
   (Crystal Devroe, Steffan Thomas, Raven, Christian Devroe, Shirro, Jean-Paul, Angel, Cossette, Milano, Ibrahim,
   Kreissack) get new names, backstories and looks. Still open: confirm which story characters are project-invented
@@ -51,18 +59,22 @@ private tester packages. A hard stop: M5 (public demo). To avoid doing the work 
 start where the plan builds new art: the Phase 2 data pack, meshes and keyframes for the first two HARs (M2, H4) should
 be of the replacement robots, not of Jaguar and Shadow, and only the parity measurements (private, dev-only) use the
 originals.
-- [ ] **D4. World terms.** Ganymede (1,048 hits), "2097" (904), "Tournament" (2,593; generic, probably keep), arena
-  names (Stadium, Fire Pit, Power Plant, Desert; generic, probably keep unless copied exactly), in-fiction organisations
-  from the original lore. Decide how far the setting changes; the year "2107" in the old name is tied to the setting.
+- [ ] **D4. Setting (partly decided 2026-11-11).** The setting is **rewritten, not renamed**: new world, year,
+  organisations, places and plot (DEVPLAN R23). Everything tied to the original's plot goes: Ganymede (1,048 hits),
+  "2097" (904) and the 2107 date, WAR, Kreissack, Nova, and the five original arenas as a set (Stadium, Danger Room,
+  Power Plant, Fire Pit, Desert). Generic words ("Tournament", 2,593 hits; a stadium as a place) may stay. Still open:
+  the new world itself, its year (2100 if the title is "Mecha Link 2100") and the tournament frame.
 - [ ] **D5. OpenOMF naming.** Keep upstream names (`openomf`, `OPENOMF_*` env vars, `openomf.conf`, `org.openomf.*`) as
   credited code, or rename them in the project's own build. They are MIT and may be renamed; keep the notice.
-- [ ] **D6. Combat data.** Move data, frame timing and stats parsed from the original files (parity work) are mechanics
-  and are kept per RIGHTS.md rule 4. Confirm that stays the position, and that no original numbers or text ship in
-  the data pack.
+- [ ] **D6. Combat data.** Move data, frame timing and stats measured through OpenOMF are mechanics and are kept per
+  RIGHTS.md rule 4, as a starting baseline the game then tunes (2026-11-11: OpenOMF is a scaffold, not a target).
+  Confirm that no original number tables or text ship in the data pack: values are re-authored per new robot.
 - [ ] **D7. Credits wording** and disclaimer text (section 9).
 
 ## 1. Names and strings in the build
 
+- [ ] In-game title text: `ONE MUST FALL 2107` in `say` and `banner` lines of `project/data/story/ari.story` (34, 45)
+  and the 2107 tournament line in `arcade_ari.story` (25).
 - [ ] Window and view titles: `OMF2107 / PROTOTYPE`, `/ STORY`, `/ MODEL BLOCKOUTS`, `/ LIVE SOURCE`, `OMF2107`
   (`project/prototype/main.c` around 1395, 2151, 2486, 3396, 3407, 3500, 3902); move browser title
   (`project/tools/generate_move_browser.py:210,242`).
@@ -102,11 +114,11 @@ originals.
 - [ ] Pilot stats copied from OpenOMF (`main.c:112-115`) and selection names (`main.c:118-119`).
 - [ ] Renders named for original pilots in `project/renders/` (11 files: `angel`, `christian_devroe`, `cossette`,
   `crystal_devroe`, `ibrahim`, `jean_paul`, `kreissack`, `milano`, `raven`, `shirro`, `steffan_thomas`).
-- [ ] `OMF_2107_Story_Pack/` (472 files, about a quarter of all name hits): decide per file whether to rewrite, archive
+- [ ] `lore/` (472 files, about a quarter of all name hits): decide per file whether to rewrite, archive
   or drop. Largest: `COMBINED_WORKING_EDITION.md` (4,465 hits), `dialogue_cues.csv` (3,082),
   `Fanservice_Scene_Review_v1.0.md`, and the versioned `Chapter_06_One_Must_Fall_v0.x.md` and
   `Chapter_04_No_Holding_Back_v0.x.md` duplicates. Remove the `.pyc` build artifacts inside it.
-- [ ] `OMF2107_LORE_v2.md`, `OMF2097_LORE.md`, `OMF2107_STAGE4_PLAN.md`, `ARCADE_MODE_PROMPTS.md`: rewrite or retire.
+- [ ] `lore/LORE_v2.md`, `OMF2097_LORE.md`, `_archive/STAGE4_PLAN.md`, `prompts/ARCADE_MODE_PROMPTS.md`: rewrite or retire.
   "One Must Fall" also appears as a chapter title in the Story Pack.
 - [ ] Setting terms per D4 (Ganymede, 2097, arena names) in story, art tools (`build_story_art.py`,
   `export_story_assets.py` arena list) and docs.
@@ -142,12 +154,14 @@ originals.
 ## 6. Documentation
 
 - [ ] Rename the 17 `OMF2107_*.md` files in `project/docs/` and the archive files (`OMF2097_3D_GAME_SPEC.md`,
-  `omf-reimagined-design-pitch-v0.3.md`, `OMF2107_BLOCKOUT_REVIEW.md`); update every link. Do this in one commit
+  `omf-reimagined-design-pitch-v0.3.md`, `BLOCKOUT_REVIEW.md`); update every link. Do this in one commit
   after D1 so history stays readable.
 - [ ] `DEVPLAN.md` (title, "Reimagined" naming, R-tasks), `README.md` index, `HAR_PIPELINE.md`, `FEATURES.md`,
   `GAME_SPEC.md`, `ENGINE_PATHS.md`.
-- [ ] `RIGHTS.md`: rewrite the decision and the permission-request draft for the new project; keep the sourced findings
-  and `rights_sources/` unedited as evidence.
+- [x] `GAME_SPEC.md` rewritten for the independent game (v0.4, 2026-11-11); DEVPLAN target, milestones and gates
+  updated the same day.
+- [x] `RIGHTS.md`: decision rewritten and the permission-request draft retired (2026-11-11); sourced findings and
+  `rights_sources/` kept unedited as evidence.
 - [ ] Keep references to the original game only where they state history, credit or comparison (parity baseline,
   OpenOMF), written as "the original game", not as part of the new title.
 
@@ -164,12 +178,15 @@ originals.
 - [ ] Tidy licence ambiguities: `src/vendored/zip/LICENSE.zip` has no holder; README vs `miniz.h` disagree on MIT vs
   public domain; README line 47 gives the wrong gamecontrollerdb path; `resources/openomf.gpl` is a palette, not
   the GPL.
-- [ ] Credits and disclaimer (D7). Suggested content: built on OpenOMF (MIT, link); inspired by One Must Fall 2097 by
-  Diversions Entertainment; unofficial, not affiliated with or endorsed by Diversions, Epic or Rob Elam; free, no
-  monetization. Credit is courtesy, not permission.
-- [ ] Keep the free-only rule, no donation links, and the takedown plan (RIGHTS.md rules 1, 7, 9).
+- [ ] Credits (D7). Suggested content: built on OpenOMF (MIT, link), while any of its code remains; inspired by One Must
+  Fall 2097 by Diversions Entertainment; not affiliated with or endorsed by Diversions Entertainment, Epic or Rob Elam.
+  No "unofficial" or "fan project" wording: the game is not an edition of theirs. Credit is courtesy, not permission.
+- [ ] Free-only and no monetization stay the owner's choice for now (RIGHTS.md rules 1 and 9); revisit if that changes.
+  No permission request is planned (DEVPLAN R13 dropped 2026-11-11).
 
 ## 8. Order of work
+
+This is the order inside the rebrand only. Dates, owners and priorities live in task R22 of the [task register](DEVPLAN.md#task-register); if the two disagree, `DEVPLAN.md` wins.
 
 1. D1 to D7 decisions. Do not start renames before D1 and D2.
 2. Freeze: tag the current state, so the old names stay reachable in history.

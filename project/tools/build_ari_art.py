@@ -54,7 +54,7 @@ SCENES = {
     "ari_fs_epi_crystal_raven": "ari_fs_epi_crystal_raven.png",
     "ari_fs_epi_solo": "ari_fs_epi_solo.png",
 }
-OPTIONAL_SCENES = {  # built only when the render exists: the ending frames, saved one at a time (docs/ARI_FANSERVICE_IMAGE_PROMPTS.md, section 13)
+OPTIONAL_SCENES = {  # built only when the render exists: the ending frames, saved one at a time (docs/prompts/ARI_FANSERVICE_IMAGE_PROMPTS.md, section 13)
     f"ari_end_{n}": f"ari_end_{n}.png" for n in ("latch", "blast", "mara", "mara_kiss", "mara_hug")
 }
 CARDS = {  # name: (render, title, bar colour, figure on the right)

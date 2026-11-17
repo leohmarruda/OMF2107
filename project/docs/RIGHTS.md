@@ -1,12 +1,20 @@
 # Rights position and release rules
 
-Status: decided 2026-11-05 by the project owner. This is research, not legal advice.
+Status: decided 2026-11-05, rebrand 2026-11-10, **independent game 2026-11-11** (project owner). This is research,
+not legal advice.
 
-## Decision
+## Decision (2026-11-11)
 
-OMF2107 is a **free, non-commercial fan project**. It keeps the name, the HARs, the pilots and the
-references to the original One Must Fall 2097. It ships **only original assets**: no art, audio, music,
-text or data file taken from the original game.
+The project is an **independent game inspired by One Must Fall 2097**, not a fan project, sequel or remake. No
+distributed build contains a title, name, character, robot design, setting, story, text, art, music, sound or data
+file from One Must Fall 2097, One Must Fall: Battlegrounds or their owners. Game mechanics are re-authored as the
+project's own data (rule 4). OpenOMF's MIT code is used as a scaffold, with its notice, and may be discarded later.
+Title: *Mecha Link 2100* (chosen 2026-11-11, clearance pending); see [REBRAND_CHECKLIST.md](REBRAND_CHECKLIST.md).
+
+Superseded: the 2026-11-05 decision ("a free, non-commercial fan project" that kept the name, the HARs, the pilots and
+the references to the original) and the 2026-11-10 provisional title "Steel Skin 2100". The research below was done
+under those decisions and is kept as evidence; where it speaks of keeping names or asking permission, it describes the
+old position.
 
 ## What the research found
 
@@ -35,23 +43,28 @@ text or data file taken from the original game.
 3. **Code:** OpenOMF's MIT code may be reused with its copyright notice kept. Check `src/vendored/` licenses and the
    CC-BY icon attribution before release.
 4. **Game rules** (move structure, timing, stats) are mechanics, not expression, and are kept through OpenOMF parity.
-5. **Disclaimer** in the README, the title screen and the store page: unofficial fan project, not affiliated with or
-   endorsed by Diversions Entertainment or Epic.
-6. **Permission request** to Diversions Entertainment (draft below). Send it before any public release.
-7. **Takedown plan:** if the rights holder objects, remove the build quickly and rename or rework as asked.
+5. **Credit line** in the README, the credits and the store page: inspired by One Must Fall 2097 by Diversions
+   Entertainment; not affiliated with or endorsed by its owners (wording in checklist D7). No "unofficial" or "fan"
+   wording (revised 2026-11-11).
+6. ~~**Permission request**~~ Dropped 2026-11-11: the independent game ships nothing that needs permission. The draft
+   below is kept as history.
+7. **Response plan:** if anyone raises a rights concern, check it against the asset ledger and derivation logs and fix
+   what is found quickly.
 8. **Battlegrounds is off limits.** No code, assets, design documents or lore from One Must Fall: Battlegrounds
    without the owner's agreement. Reviewing it for ideas is allowed; copying is not.
 9. **No sign of monetization** of any kind, including donation links, since the community reads this strictly.
 
-## Accepted risk
+## Accepted risk (superseded 2026-11-10)
 
-Keeping the name "One Must Fall", the HAR names (Jaguar, Shadow, and others), the pilot names and the story
+Kept as history; the names are no longer kept. Keeping the name "One Must Fall", the HAR names (Jaguar, Shadow, and others), the pilot names and the story
 references is the owner's choice. Freeware status does not clearly grant trademark or character rights, so a
 public release could be asked to rename or come down. Mitigations: items 1, 5, 6 and 7 above, and keeping the
 character and story text original even where the names are kept. If the rights holder objects, the fallback is a
 rename pass; the work needed is limited to names, title and branding strings.
 
-## Permission request (draft)
+## Permission request (draft, not to be sent)
+
+Retired 2026-11-11 with task R13; kept as history.
 
 > Subject: Fan project based on One Must Fall 2097 — request for confirmation
 >
@@ -122,7 +135,7 @@ vague" (Vagabond); freeware means distributing the unmodified files, and directl
 is not covered by the 2097 waiver (Vagabond). **Decision 2026-11-10 (project owner):** rebrand and credit, as the
 safest course. See "Rebrand" below.
 
-**Rebrand.** Provisional new title: Steel Skin 2100 (2026-11-10). Intended scope to be settled in `DEVPLAN.md` (open decision "Project name"): at minimum a new title with no
+**Rebrand.** (Superseded 2026-11-11 by the independent-game decision at the top; the title is now *Mecha Link 2100*.) Provisional new title at the time: Steel Skin 2100 (2026-11-10). Intended scope to be settled in `DEVPLAN.md` (open decision "Project name"): at minimum a new title with no
 "One Must Fall" or "OMF" in it, with credit and a disclaimer; the further question is whether HAR names, pilot names and
 HAR designs also change. A title change alone does not answer the likeness concern raised above. Credit is courtesy,
 not permission: credit OpenOMF (its MIT notice is required for reused code), and credit Diversions Entertainment and Rob

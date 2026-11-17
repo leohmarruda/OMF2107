@@ -5,7 +5,7 @@ animation, sprite, and completed tick. A catalog entry only overrides a pose
 when a robot and source sprite need a distinct shape. Unauthored frames keep
 the shared rough pose; they are not counted as finished animation fits.
 
-The [move catalog](OMF2107_MOVE_CATALOG.md) lists every Jaguar and Shadow
+The [move catalog](verification/MOVE_CATALOG.md) lists every Jaguar and Shadow
 animation with its input, authored status and a trace to check it against; regenerate it with
 `python project/tools/generate_move_catalog.py` after editing `pose_catalog.csv` or
 `move_names.csv`.
@@ -52,10 +52,10 @@ visible pixels (so a different canvas offset does not hide a match) and prints t
 also saved to `project/build/duplicate-sprites.json`. `~` marks animations that share only some
 sprites. To cover a new HAR, add it to `HAR_DIRS` in `sprite_duplicates.py`.
 
-Then regenerate the [move catalog](OMF2107_MOVE_CATALOG.md), whose "Animations that
+Then regenerate the [move catalog](verification/MOVE_CATALOG.md), whose "Animations that
 share sprites" section lists each group with its members' status and a note: *author once*,
 *free win* (a member is authored, so the others receive its poses), or *all authored*. The
-[move browser](OMF2107_MOVE_CATALOG.md#seeing-a-move) shows a "same sprites as" badge
+[move browser](verification/MOVE_CATALOG.md#seeing-a-move) shows a "same sprites as" badge
 and a "hide duplicates" filter. Match animations by **sprite content**, not by number or
 input: do not assume that animations with similar inputs or neighbouring ids share frames,
 and do not assume that unrelated ones do not. Two animations that share sprites may still
@@ -129,7 +129,7 @@ regenerates `pose_catalog.c`, and restores the previous catalog (kept at
 `project/build/pose_catalog.backup.csv`) if validation fails. An exported row is applied to every
 **player-triggered** animation in the sprite group, never to reaction or state animations, so
 a slide that reuses the idle frames cannot overwrite the idle pose. Rebuild
-`omf3d_prototype`, regenerate the move browser, and compare the render with the sprite.
+`ml2100_prototype`, regenerate the move browser, and compare the render with the sprite.
 
 **Joint markers in the sprites.** The original sprites are paletted, and the palette indices
 carry body-part information. For Jaguar, indices 8-15 are the small dark joint cuffs: neck,
@@ -177,11 +177,11 @@ the latest local inventory.
 
 ## 3. Verify against source frames
 
-Build `omf3d_prototype`, use `--model-preview-capture` for close views, then
+Build `ml2100_prototype`, use `--model-preview-capture` for close views, then
 capture selected ticks from a source replay with `--source-replay ...
 --capture-tick N`. Compare the blockout with the exported source sprites and
 record the observed sequence in the robot baseline. Jaguar's standing punch
-is the first completed example in the [Jaguar baseline](OMF2107_JAGUAR_BASELINE.md).
+is the first completed example in the [Jaguar baseline](verification/JAGUAR_BASELINE.md).
 
 Use the higher-resolution robot and character sprites in
 [OMF 2097 Remastered](https://github.com/Jared-woodruff/OMF-2097-Remastered)

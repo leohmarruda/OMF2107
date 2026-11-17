@@ -1,5 +1,5 @@
 # DRAFT: Ari Solano's whole route, Chapters 1 to 6 (Days 1 to 13 and the epilogue), converted from the Story Pack screenplays.
-# Sources: project/docs/OMF_2107_Story_Pack/04_Screenplay_Reconstructions/Chapter_01_Anniversary_v0.6.md through
+# Sources: project/docs/lore/04_Screenplay_Reconstructions/Chapter_01_Anniversary_v0.6.md through
 # Chapter_06_One_Must_Fall_v0.8.md, routed by 14_Ari_Campaign/Ari_Route_Spec_v0.1.md.
 # Dialogue is condensed to one line per beat and stage directions became narration. Not converted: the optional
 # fan-service scenes are in as optional scenes (1B, 4B, 3B, 5B, 10B, 3B and 4B of Chapter 4, 2B, 7B, 15B, 16B); not converted: the arcade-mode versions, and the other pilots' romance endings.
